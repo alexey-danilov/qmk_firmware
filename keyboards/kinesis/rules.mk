@@ -1,7 +1,7 @@
 
 ## Project specific files
 
-SRC=  matrix.c 
+SRC=  matrix.c
 
 # MCU name
 MCU = at90usb1286
@@ -72,4 +72,4 @@ BLUETOOTH_ENABLE = no       # Enable Bluetooth with the Adafruit EZ-Key HID
 AUDIO_ENABLE = no # Audio output should be port E6, current quantum library hardcodes C6, which we use for programming
 CUSTOM_MATRIX=yes # need to do our own thing with the matrix
 
-DEFAULT_FOLDER = kinesis/alvicstep
+DEFAULT_FOLDER = kinesis/stapelberg
