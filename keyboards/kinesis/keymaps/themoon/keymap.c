@@ -4,15 +4,19 @@
 #define XXXXXXX KC_NO
 
 #define QWERTY 0
-#define _CMD 1 // command layer
-#define _SHIFT_ALT 2 // shift + alt layer
+#define _CMD_ESC 1 // command layer
+#define _CMD_SPACE 2 // command layer
+#define _CTRL_ALT 3 // ctrl + alt layer
 
 enum kinesis_keycodes {
-  CMD_ESC = LT(_CMD, KC_ESC),
-  CMD_SPACE = LT(_CMD, KC_SPC),
+  _L_LCMD = LT(_CMD_ESC, KC_ESC),
+  _L_RCMD = LT(_CMD_SPACE, KC_SPC),
 
-  L_DEL = LT(_SHIFT_ALT, KC_BSPC),
-  R_DEL = LT(_SHIFT_ALT, KC_BSPC),
+  _L_PALM1 = LT(_CTRL_ALT, KC_F16),
+  _L_PALM2 = LT(_CTRL_ALT, KC_F17),
+
+  L_DEL = MT(MOD_LSFT | MOD_LALT, KC_BSPC),
+  R_DEL = MT(MOD_RSFT | MOD_RALT, KC_BSPC),
 
   SHIFT_ENTER = MT(MOD_LSFT, KC_ENTER),
   SHIFT_TAB = MT(MOD_RSFT, KC_TAB),
@@ -20,67 +24,78 @@ enum kinesis_keycodes {
   ALT_SLASH = MT(MOD_LALT, KC_SLSH),
   ALT_BSLASH = MT(MOD_RALT, KC_BSLS),
 
-  PALM1 = MT(MOD_LCTL | MOD_LALT, KC_F16),
-  PALM2 = MT(MOD_RCTL | MOD_RALT, KC_F17),
+  CTRL_DEL = MT(MOD_LCTL, KC_DEL),
+  CTRL_F18 = MT(MOD_RCTL, KC_F18),
 
   TRASH = LGUI(KC_BSPC),
-  SLEEP = LALT(LGUI(KC_EJCT)),
-  CTRL_DEL = MT(MOD_LCTL, KC_DEL),
-  CTRL_F18 = MT(MOD_RCTL, KC_F18)
+  SLEEP = LALT(LGUI(KC_EJCT))
 };
 
 enum holding_keycodes {
-  // HR: replace with another key if held ("2" -> "(" )
-  HR_2 = SAFE_RANGE,
-  HR_3,
-  HR_4,
-  HR_5,
-  HR_6,
-  HR_7,
-  HR_8,
-  HR_9,
-  HR_COMMA,
-  HR_DOT,
-  HR_LBRAC,
-  HR_RBRAC,
-  HR_F5,
-  HR_ESC,
+  HOLD_2 = SAFE_RANGE,
+  HOLD_3,
+  HOLD_4,
+  HOLD_5,
+  HOLD_6,
+  HOLD_7,
+  HOLD_8,
+  HOLD_9,
+  HOLD_COMMA,
+  HOLD_DOT,
+  HOLD_LBRAC,
+  HOLD_RBRAC,
+  HOLD_F5,
+  HOLD_ESC,
 
-  // HS: add shift when held ("f1" -> "shift + f1")
-  HS_F1,
-  HS_F2,
-  HS_F3,
-  HS_F4,
-  HS_F6,
-  HS_F7,
-  HS_F8,
-  HS_F9,
-  HS_F10,
-  HS_F11,
-  HS_F12,
+  HOLD_F1,
+  HOLD_F2,
+  HOLD_F3,
+  HOLD_F4,
+  HOLD_F6,
+  HOLD_F7,
+  HOLD_F8,
+  HOLD_F9,
+  HOLD_F10,
+  HOLD_F11,
+  HOLD_F12,
 
-  // !!!========== NOTE: C-prefix codes are to be used only on command layers! These will get command modifier by default (unless specifically noted they won't)
-  // CHS: add shift when held
-  CHS_LEFT,
-  CHS_RIGHT,
-  CHS_SPACE,
-  CHS_ESC,
-  CHS_ENTER,
+  // cmd layer
+  CMD_ESC,
+  CMD_ENTER,
+  CMD_W,
+  CMD_E,
+  CMD_R,
+  CMD_T,
+  CMD_S,
+  CMD_D,
+  CMD_F,
+  CMD_G,
+  CMD_X,
+  CMD_C,
+  CMD_V,
+  CMD_B,
 
-  // CHRS: replace with another key (for OSX overrides). Add shift if held
-  CHRS_LALT, // command + z
-  CHRS_LCTL, // f3
+  CMD_SPACE,
+  CMD_LEFT,
+  CMD_RIGHT,
+  CMD_UP,
+  CMD_DOWN,
+  CMD_K,
+  CMD_M,
 
-  // CHRMS: replace command modifier from layer with another modifier (for OSX overrides). Add shift if held (NO command from layer in any case!)
-  CHRMS_TAB, // control + tab
-  CHRMS_COMMA, // control + ,
-  CHRMS_DOT, // control + .
-  CHRMS_H, // control + H
-  CHRMS_M, // control + M
-  CHRMS_BSPC, // alt + backspace
+  CMD_LALT, // command + z
+  CMD_LCTL, // f3
 
-  SA_PAGE_UP,
-  SA_PAGE_DOWN
+  CMD_TAB, // control + tab
+  CMD_COMMA, // control + ,
+  CMD_DOT, // control + .
+  CMD_H, // control + H
+  CMD_BSPC, // alt + backspace
+
+  CTRL_ALT_P_UP,
+  CTRL_ALT_P_DN,
+  CTRL_ALT_HOME,
+  CTRL_ALT_END
 };
 
 
@@ -115,59 +130,81 @@ enum holding_keycodes {
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [QWERTY] = KEYMAP(
            // left side
-           HR_ESC, HS_F1  ,HS_F2  ,HS_F3  ,HS_F4  ,HR_F5  ,HS_F6  ,HS_F7  ,HS_F8,
-           KC_EQL, KC_1   ,HR_2   ,HR_3   ,HR_4   ,HR_5   ,
+           HOLD_ESC, HOLD_F1  ,HOLD_F2  ,HOLD_F3  ,HOLD_F4  ,HOLD_F5  ,HOLD_F6  ,HOLD_F7  ,HOLD_F8,
+           KC_EQL, KC_1   ,HOLD_2   ,HOLD_3   ,HOLD_4   ,HOLD_5   ,
            KC_GRV, KC_Q   ,KC_W   ,KC_E   ,KC_R   ,KC_T   ,
            KC_CAPS,KC_A   ,KC_S   ,KC_D   ,KC_F   ,KC_G   ,
            XXXXXXX,KC_Z   ,KC_X   ,KC_C   ,KC_V   ,KC_B   ,
-                   XXXXXXX,HR_LBRAC,HR_COMMA,HR_RBRAC,
+                   XXXXXXX,HOLD_LBRAC,HOLD_COMMA,HOLD_RBRAC,
                                            // left thumb keys
 			                                    L_DEL,TRASH,
                                                    ALT_SLASH,
-                           CMD_ESC, SHIFT_ENTER, CTRL_DEL,
+                           _L_LCMD, SHIFT_ENTER, CTRL_DEL,
                                      // left palm key
-			                         PALM1,
+			                         _L_PALM1,
     // right side
-    HS_F9  ,HS_F10 ,HS_F11 ,HS_F12 ,KC_PSCR ,KC_SLCK  ,KC_PAUS, KC_FN0, RESET,
-	HR_6   ,HR_7   ,HR_8   ,HR_9   ,KC_0   ,KC_MINS,
+    HOLD_F9  ,HOLD_F10 ,HOLD_F11 ,HOLD_F12 ,KC_PSCR ,KC_SLCK  ,KC_PAUS, KC_FN0, RESET,
+	HOLD_6   ,HOLD_7   ,HOLD_8   ,HOLD_9   ,KC_0   ,KC_MINS,
 	KC_Y   ,KC_U   ,KC_I   ,KC_O   ,KC_P   ,XXXXXXX,
 	KC_H   ,KC_J   ,KC_K   ,KC_L   ,KC_SCLN,XXXXXXX,
-	KC_N   ,KC_M   ,KC_UP  ,HR_DOT ,KC_QUOT,XXXXXXX,
+	KC_N   ,KC_M   ,KC_UP  ,HOLD_DOT ,KC_QUOT,XXXXXXX,
 	    	KC_LEFT,KC_DOWN,KC_RGHT,XXXXXXX,
            // right thumb keys
            SLEEP,R_DEL,
            ALT_BSLASH,
-           CTRL_F18, SHIFT_TAB, CMD_SPACE,
+           CTRL_F18, SHIFT_TAB, _L_RCMD,
                                     // right palm key
-                                    PALM2
+                                    _L_PALM2
     ),
 
-// command layer - activated when either of cmd keys is held. Mainly OSX-specific overrides
-[_CMD] = KEYMAP(
+[_CMD_ESC] = KEYMAP(
+         _______,  _______,  _______,  _______,  _______,  _______, _______, _______, _______,
+         _______,  _______,  _______,  _______,  _______,  _______,
+          _______,  _______,  CMD_W,  CMD_E,  CMD_R,  CMD_T,
+         _______,  _______,  CMD_S,  CMD_D,  CMD_F,  CMD_G,
+        _______,  _______,  CMD_X,  CMD_C,  CMD_V,  CMD_B,
+                   _______,  _______,  _______,  _______,
+                             _______,  _______,
+                                       _______,
+                    _L_LCMD, _______,  _______,
+                                     _______,
+         _______,  _______,  _______,  _______,  _______,  _______, _______, _______, _______,
+         _______,  _______,  _______,  _______,  _______,  _______,
+         _______,  _______,  _______,  _______,  _______,  _______,
+         CMD_H,  _______,  CMD_K,  _______,  _______,  _______,
+         _______,  CMD_M,  CMD_UP,  CMD_DOT ,  _______,  _______,
+                   CMD_LEFT,  CMD_DOWN,  CMD_RIGHT, _______,
+         _______,  CMD_BSPC,
+         _______,
+         _______,  CMD_TAB,  CMD_SPACE,
+                             _______
+    ),
+
+[_CMD_SPACE] = KEYMAP(
          _______,  _______,  _______,  _______,  _______,  _______, _______, _______, _______,
          _______,  _______,  _______,  _______,  _______,  _______,
           _______,  _______,  _______,  _______,  _______,  _______,
          _______,  _______,  _______,  _______,  _______,  _______,
         _______,  _______,  _______,  _______,  _______,  _______,
-                   _______,  _______,  CHRMS_COMMA,  _______,
-                             CHRMS_BSPC,  _______,
-                                       CHRS_LALT,
-                    CHS_ESC, CHS_ENTER,  CHRS_LCTL,
+                   _______,  _______,  CMD_COMMA,  _______,
+                             CMD_BSPC,  _______,
+                                       CMD_LALT,
+                    CMD_ESC, CMD_ENTER,  CMD_LCTL,
                                      _______,
-         _______,  _______,  _______,  _______,  _______,  _______, _______, _______, _______,
+          _______,  _______,  _______,  _______,  _______,  _______, _______, _______, _______,
          _______,  _______,  _______,  _______,  _______,  _______,
+          _______,  _______,  _______,  _______,  _______,  _______,
          _______,  _______,  _______,  _______,  _______,  _______,
-         CHRMS_H,  _______,  _______,  _______,  _______,  _______,
-         _______,  CHRMS_M,  _______,  CHRMS_DOT ,  _______,  _______,
-                   CHS_LEFT,  _______,  CHS_RIGHT, _______,
-         _______,  CHRMS_BSPC,
-         _______,
-         _______,  CHRMS_TAB,  CHS_SPACE,
-                             _______
+        _______,  _______,  _______,  _______,  _______,  _______,
+                   _______,  _______,  _______,  _______,
+                             _______,  _______,
+                                       _______,
+                    _______, _______,  _L_RCMD,
+                                     _______
     ),
 
-// shift alt layer
-[_SHIFT_ALT] = KEYMAP(
+// ctrl alt layer
+[_CTRL_ALT] = KEYMAP(
          _______,  _______,  _______,  _______,  _______,  _______, _______, _______, _______,
          _______,  _______,  _______,  _______,  _______,  _______,
           _______,  _______,  _______,  _______,  _______,  _______,
@@ -177,17 +214,17 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                              _______,  _______,
                                        _______,
                     _______, _______,  _______,
-                                     _______,
+                                     _L_PALM1,
          _______,  _______,  _______,  _______,  _______,  _______, _______, _______, _______,
          _______,  _______,  _______,  _______,  _______,  _______,
          _______,  _______,  _______,  _______,  _______,  _______,
-         _______,  _______,  SA_PAGE_UP,  _______,  _______,  _______,
-         _______,  _______,  _______,  _______ ,  _______,  _______,
-                   _______,  _______,  _______, _______,
+         _______,  _______,  _______,  _______,  _______,  _______,
+         _______,  _______,  CTRL_ALT_P_UP,  _______ ,  _______,  _______,
+                   CTRL_ALT_HOME,  CTRL_ALT_P_DN, CTRL_ALT_END, _______,
          _______,  _______,
          _______,
-         _______,  _______,  SA_PAGE_DOWN,
-                             _______
+         _______,  _______,  _______,
+                             _L_PALM2
     ),
 };
 
@@ -208,7 +245,7 @@ void matrix_scan_user(void) {
 
 }
 
-bool hold_add_mod(uint16_t code, uint16_t mod_to_add, bool pressed, uint16_t this_timer) {
+bool add_mod_on_hold(uint16_t code, uint16_t mod_to_add, bool pressed, uint16_t this_timer) {
   if(pressed) {
       this_timer= timer_read();
   } else {
@@ -226,7 +263,7 @@ bool hold_add_mod(uint16_t code, uint16_t mod_to_add, bool pressed, uint16_t thi
 }
 
 bool add_shift_on_hold(uint16_t code, bool pressed, uint16_t this_timer) {
-  return hold_add_mod(code, KC_LSFT, pressed, this_timer);
+  return add_mod_on_hold(code, KC_LSFT, pressed, this_timer);
 }
 
 bool replace_on_hold(uint16_t code, uint16_t replacement_code, bool pressed, uint16_t this_timer) {
@@ -244,89 +281,121 @@ bool replace_on_hold(uint16_t code, uint16_t replacement_code, bool pressed, uin
   return false;
 }
 
-bool cancel_shift_alt(uint16_t code, bool pressed, uint16_t this_timer) {
-  unregister_code(KC_LSFT);
-  unregister_code(KC_LALT);
-  register_code(code);
-  unregister_code(code);
-  register_code(KC_LSFT);
-  register_code(KC_LALT);
-  return false;
-}
-
-bool replace_cmd_with_mod_add_shift_on_hold(uint16_t code, uint16_t mod_to_replace_with, bool pressed, uint16_t this_timer) {
+bool force_mod_plus_mod_if_held(uint16_t code, uint16_t mod, uint16_t mod_if_held, bool pressed, uint16_t this_timer) {
   if(pressed) {
       this_timer= timer_read();
+
   } else {
-      unregister_code(KC_LGUI);
+      uint8_t old_mods = get_mods();
+      if (old_mods) {
+        clear_mods();
+      }
+
       if (timer_elapsed(this_timer) < 150){
-          register_code(mod_to_replace_with);
+          register_code(mod);
           register_code(code);
           unregister_code(code);
-          unregister_code(mod_to_replace_with);
+          unregister_code(mod);
       } else {
-          register_code(KC_LSFT);
-          register_code(mod_to_replace_with);
+          register_code(mod_if_held);
+          register_code(mod);
           register_code(code);
           unregister_code(code);
-          unregister_code(mod_to_replace_with);
-          unregister_code(KC_LSFT);
+          unregister_code(mod);
+          unregister_code(mod_if_held);
+      }
+
+      if (old_mods) {
+        set_mods(old_mods);
       }
   }
   return false;
 }
 
-bool replace_cmd_with_ctrl_add_shift_on_hold(uint16_t code, bool pressed, uint16_t this_timer) {
-  return replace_cmd_with_mod_add_shift_on_hold(code, KC_LCTL, pressed, this_timer);
+bool force_ctrl_plus_shift_if_held(uint16_t code, bool pressed, uint16_t this_timer) {
+ return force_mod_plus_mod_if_held(code, KC_LCTL, KC_LSFT, pressed, this_timer);
+}
+
+bool without_mods(uint16_t code, bool pressed, uint16_t this_timer) {
+  uint8_t old_mods = get_mods();
+      if (old_mods) {
+        clear_mods();
+  }
+
+  register_code(code);
+  unregister_code(code);
+
+  if (old_mods) {
+        set_mods(old_mods);
+  }
+
+  return false;
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
-        case HR_2: { static uint16_t hr_2_timer; return replace_on_hold(KC_2, KC_LEFT_PAREN, record->event.pressed, hr_2_timer); }
-        case HR_3: { static uint16_t hr_3_timer; return replace_on_hold(KC_3, KC_UNDERSCORE, record->event.pressed, hr_3_timer); }
-        case HR_4: { static uint16_t hr_4_timer; return replace_on_hold(KC_4, KC_RIGHT_PAREN, record->event.pressed, hr_4_timer); }
-        case HR_5: { static uint16_t hr_5_timer; return replace_on_hold(KC_5, KC_PLUS, record->event.pressed, hr_5_timer); }
-        case HR_6: { static uint16_t hr_6_timer; return replace_on_hold(KC_6, KC_EQL, record->event.pressed, hr_6_timer); }
-        case HR_7: { static uint16_t hr_7_timer; return replace_on_hold(KC_7, KC_EXCLAIM, record->event.pressed, hr_7_timer); }
-        case HR_8: { static uint16_t hr_8_timer; return replace_on_hold(KC_8, KC_MINS, record->event.pressed, hr_8_timer); }
-        case HR_9: { static uint16_t hr_9_timer; return replace_on_hold(KC_9, KC_QUESTION, record->event.pressed, hr_9_timer); }
-        case HR_LBRAC: { static uint16_t hs_lbrac_timer; return replace_on_hold(KC_LBRC, KC_LEFT_CURLY_BRACE, record->event.pressed, hs_lbrac_timer); }
-        case HR_RBRAC: { static uint16_t hs_rbrac_timer; return replace_on_hold(KC_RBRC, KC_RIGHT_CURLY_BRACE, record->event.pressed, hs_rbrac_timer); }
-        case HR_COMMA: { static uint16_t hs_comma_timer; return replace_on_hold(KC_COMM, KC_LEFT_ANGLE_BRACKET, record->event.pressed, hs_comma_timer); }
-        case HR_DOT: { static uint16_t hs_dot_timer; return replace_on_hold(KC_DOT, KC_RIGHT_ANGLE_BRACKET, record->event.pressed, hs_dot_timer); }
-        case HR_F5: { static uint16_t hr_f5_timer; return replace_on_hold(KC_F5, LGUI(KC_COMM), record->event.pressed, hr_f5_timer); }
-        case HR_ESC: { static uint16_t hr_esc_timer; return replace_on_hold(KC_ESC, LCTL(KC_F12), record->event.pressed, hr_esc_timer); }
+        case HOLD_2: { static uint16_t hold_2_timer; return replace_on_hold(KC_2, KC_LEFT_PAREN, record->event.pressed, hold_2_timer); }
+        case HOLD_3: { static uint16_t hold_3_timer; return replace_on_hold(KC_3, KC_UNDERSCORE, record->event.pressed, hold_3_timer); }
+        case HOLD_4: { static uint16_t hold_4_timer; return replace_on_hold(KC_4, KC_RIGHT_PAREN, record->event.pressed, hold_4_timer); }
+        case HOLD_5: { static uint16_t hold_5_timer; return replace_on_hold(KC_5, KC_PLUS, record->event.pressed, hold_5_timer); }
+        case HOLD_6: { static uint16_t hold_6_timer; return replace_on_hold(KC_6, KC_EQL, record->event.pressed, hold_6_timer); }
+        case HOLD_7: { static uint16_t hold_7_timer; return replace_on_hold(KC_7, KC_EXCLAIM, record->event.pressed, hold_7_timer); }
+        case HOLD_8: { static uint16_t hold_8_timer; return replace_on_hold(KC_8, KC_MINS, record->event.pressed, hold_8_timer); }
+        case HOLD_9: { static uint16_t hold_9_timer; return replace_on_hold(KC_9, KC_QUESTION, record->event.pressed, hold_9_timer); }
+        case HOLD_LBRAC: { static uint16_t hold_lbrac_timer; return replace_on_hold(KC_LBRC, KC_LEFT_CURLY_BRACE, record->event.pressed, hold_lbrac_timer); }
+        case HOLD_RBRAC: { static uint16_t hold_rbrac_timer; return replace_on_hold(KC_RBRC, KC_RIGHT_CURLY_BRACE, record->event.pressed, hold_rbrac_timer); }
+        case HOLD_COMMA: { static uint16_t hold_comma_timer; return replace_on_hold(KC_COMM, KC_LEFT_ANGLE_BRACKET, record->event.pressed, hold_comma_timer); }
+        case HOLD_DOT: { static uint16_t hold_dot_timer; return replace_on_hold(KC_DOT, KC_RIGHT_ANGLE_BRACKET, record->event.pressed, hold_dot_timer); }
+        case HOLD_F5: { static uint16_t hold_f5_timer; return replace_on_hold(KC_F5, LGUI(KC_COMM), record->event.pressed, hold_f5_timer); }
+        case HOLD_ESC: { static uint16_t hold_esc_timer; return replace_on_hold(KC_ESC, LCTL(KC_F12), record->event.pressed, hold_esc_timer); }
 
-        case HS_F1: { static uint16_t hs_f1_timer; return add_shift_on_hold(KC_F1, record->event.pressed, hs_f1_timer); }
-        case HS_F2: { static uint16_t hs_f2_timer; return add_shift_on_hold(KC_F2, record->event.pressed, hs_f2_timer); }
-        case HS_F3: { static uint16_t hs_f3_timer; return add_shift_on_hold(KC_F3, record->event.pressed, hs_f3_timer); }
-        case HS_F4: { static uint16_t hs_f4_timer; return add_shift_on_hold(KC_F4, record->event.pressed, hs_f4_timer); }
-        case HS_F6: { static uint16_t hs_f6_timer; return add_shift_on_hold(KC_F6, record->event.pressed, hs_f6_timer); }
-        case HS_F7: { static uint16_t hs_f7_timer; return add_shift_on_hold(KC_F7, record->event.pressed, hs_f7_timer); }
-        case HS_F8: { static uint16_t hs_f8_timer; return add_shift_on_hold(KC_F8, record->event.pressed, hs_f8_timer); }
-        case HS_F9: { static uint16_t hs_f9_timer; return add_shift_on_hold(KC_F9, record->event.pressed, hs_f9_timer); }
-        case HS_F10: { static uint16_t hs_f10_timer; return add_shift_on_hold(KC_F10, record->event.pressed, hs_f10_timer); }
-        case HS_F11: { static uint16_t hs_f11_timer; return add_shift_on_hold(KC_F11, record->event.pressed, hs_f11_timer); }
-        case HS_F12: { static uint16_t hs_f12_timer; return add_shift_on_hold(KC_F12, record->event.pressed, hs_f12_timer); }
+        case HOLD_F1: { static uint16_t hold_f1_timer; return add_shift_on_hold(KC_F1, record->event.pressed, hold_f1_timer); }
+        case HOLD_F2: { static uint16_t hold_f2_timer; return add_shift_on_hold(KC_F2, record->event.pressed, hold_f2_timer); }
+        case HOLD_F3: { static uint16_t hold_f3_timer; return add_shift_on_hold(KC_F3, record->event.pressed, hold_f3_timer); }
+        case HOLD_F4: { static uint16_t hold_f4_timer; return add_shift_on_hold(KC_F4, record->event.pressed, hold_f4_timer); }
+        case HOLD_F6: { static uint16_t hold_f6_timer; return add_shift_on_hold(KC_F6, record->event.pressed, hold_f6_timer); }
+        case HOLD_F7: { static uint16_t hold_f7_timer; return add_shift_on_hold(KC_F7, record->event.pressed, hold_f7_timer); }
+        case HOLD_F8: { static uint16_t hold_f8_timer; return add_shift_on_hold(KC_F8, record->event.pressed, hold_f8_timer); }
+        case HOLD_F9: { static uint16_t hold_f9_timer; return add_shift_on_hold(KC_F9, record->event.pressed, hold_f9_timer); }
+        case HOLD_F10: { static uint16_t hold_f10_timer; return add_shift_on_hold(KC_F10, record->event.pressed, hold_f10_timer); }
+        case HOLD_F11: { static uint16_t hold_f11_timer; return add_shift_on_hold(KC_F11, record->event.pressed, hold_f11_timer); }
+        case HOLD_F12: { static uint16_t hold_f12_timer; return add_shift_on_hold(KC_F12, record->event.pressed, hold_f12_timer); }
 
-        case CHS_LEFT: { static uint16_t chs_left_timer; return add_shift_on_hold(KC_LEFT, record->event.pressed, chs_left_timer); }
-        case CHS_RIGHT:{ static uint16_t chs_right_timer; return add_shift_on_hold(KC_RIGHT, record->event.pressed, chs_right_timer); }
-        case CHS_SPACE: { static uint16_t chs_space_timer; return add_shift_on_hold(KC_SPC, record->event.pressed, chs_space_timer); }
-        case CHS_ESC: { static uint16_t chs_esc_timer; return add_shift_on_hold(KC_ESC, record->event.pressed, chs_esc_timer); }
-        case CHS_ENTER: { static uint16_t chs_enter_timer; return add_shift_on_hold(KC_ENTER, record->event.pressed, chs_enter_timer); }
+        case CMD_LEFT: { static uint16_t cmd_left_timer; return add_shift_on_hold(KC_LEFT, record->event.pressed, cmd_left_timer); }
+        case CMD_RIGHT:{ static uint16_t cmd_right_timer; return add_shift_on_hold(KC_RIGHT, record->event.pressed, cmd_right_timer); }
+        case CMD_UP:{ static uint16_t cmd_up_timer; return add_shift_on_hold(KC_RIGHT, record->event.pressed, cmd_up_timer); }
+        case CMD_DOWN:{ static uint16_t cmd_down_timer; return add_shift_on_hold(KC_RIGHT, record->event.pressed, cmd_down_timer); }
+        case CMD_K: { static uint16_t cmd_k_timer; return add_shift_on_hold(KC_K, record->event.pressed, cmd_k_timer); }
+        case CMD_M: { static uint16_t cmd_m_timer; return add_shift_on_hold(KC_M, record->event.pressed, cmd_m_timer); }
+        case CMD_SPACE: { static uint16_t cmd_space_timer; return add_shift_on_hold(KC_SPC, record->event.pressed, cmd_space_timer); }
+        case CMD_ESC: { static uint16_t cmd_esc_timer; return add_shift_on_hold(KC_ESC, record->event.pressed, cmd_esc_timer); }
+        case CMD_ENTER: { static uint16_t cmd_enter_timer; return add_shift_on_hold(KC_ENTER, record->event.pressed, cmd_enter_timer); }
+        case CMD_W: { static uint16_t cmd_w_timer; return add_shift_on_hold(KC_W, record->event.pressed, cmd_w_timer); }
+        case CMD_E: { static uint16_t cmd_e_timer; return add_shift_on_hold(KC_E, record->event.pressed, cmd_e_timer); }
+        case CMD_R: { static uint16_t cmd_r_timer; return add_shift_on_hold(KC_R, record->event.pressed, cmd_r_timer); }
+        case CMD_T: { static uint16_t cmd_t_timer; return add_shift_on_hold(KC_T, record->event.pressed, cmd_t_timer); }
+        case CMD_S: { static uint16_t cmd_s_timer; return add_shift_on_hold(KC_S, record->event.pressed, cmd_s_timer); }
+        case CMD_D: { static uint16_t cmd_d_timer; return add_shift_on_hold(KC_D, record->event.pressed, cmd_d_timer); }
+        case CMD_F: { static uint16_t cmd_f_timer; return add_shift_on_hold(KC_F, record->event.pressed, cmd_f_timer); }
+        case CMD_G: { static uint16_t cmd_g_timer; return add_shift_on_hold(KC_G, record->event.pressed, cmd_g_timer); }
+        case CMD_X: { static uint16_t cmd_x_timer; return add_shift_on_hold(KC_X, record->event.pressed, cmd_x_timer); }
+        case CMD_C: { static uint16_t cmd_c_timer; return add_shift_on_hold(KC_C, record->event.pressed, cmd_c_timer); }
+        case CMD_V: { static uint16_t cmd_v_timer; return add_shift_on_hold(KC_V, record->event.pressed, cmd_v_timer); }
+        case CMD_B: { static uint16_t cmd_b_timer; return add_shift_on_hold(KC_B, record->event.pressed, cmd_b_timer); }
 
-        case CHRS_LALT: { static uint16_t chrs_lalt_timer; return add_shift_on_hold(KC_Z, record->event.pressed, chrs_lalt_timer); }
-        case CHRS_LCTL: { static uint16_t chrs_lctl_timer; return add_shift_on_hold(KC_F3, record->event.pressed, chrs_lctl_timer); }
+        case CMD_LALT: { static uint16_t cmd_lalt_timer; return add_mod_on_hold(KC_Z, KC_LCTL, record->event.pressed, cmd_lalt_timer); }
+        case CMD_LCTL: { static uint16_t cmd_lctl_timer; return add_mod_on_hold(LSFT(KC_Z), KC_LCTL, record->event.pressed, cmd_lctl_timer); }
 
-        case CHRMS_TAB: { static uint16_t chrms_tab_timer; return replace_cmd_with_ctrl_add_shift_on_hold(KC_TAB, record->event.pressed, chrms_tab_timer); }
-        case CHRMS_COMMA: { static uint16_t chrms_comma_timer; return replace_cmd_with_ctrl_add_shift_on_hold(KC_COMM, record->event.pressed, chrms_comma_timer); }
-        case CHRMS_DOT: { static uint16_t chrms_dot_timer; return replace_cmd_with_ctrl_add_shift_on_hold(KC_DOT, record->event.pressed, chrms_dot_timer); }
-        case CHRMS_H: { static uint16_t chrms_h_timer; return replace_cmd_with_ctrl_add_shift_on_hold(KC_H, record->event.pressed, chrms_h_timer); }
-        case CHRMS_M: { static uint16_t chrms_m_timer; return replace_cmd_with_ctrl_add_shift_on_hold(KC_M, record->event.pressed, chrms_m_timer); }
-        case CHRMS_BSPC: { static uint16_t chrms_bspc_timer; return replace_cmd_with_mod_add_shift_on_hold(KC_BSPC, KC_LALT, record->event.pressed, chrms_bspc_timer); }
+        case CMD_TAB: { static uint16_t cmd_tab_timer; return force_ctrl_plus_shift_if_held(KC_TAB, record->event.pressed, cmd_tab_timer); }
+        case CMD_COMMA: { static uint16_t cmd_comma_timer; return force_ctrl_plus_shift_if_held(KC_COMM, record->event.pressed, cmd_comma_timer); }
+        case CMD_DOT: { static uint16_t cmd_dot_timer; return force_ctrl_plus_shift_if_held(KC_DOT, record->event.pressed, cmd_dot_timer); }
+        case CMD_H: { static uint16_t cmd_h_timer; return force_ctrl_plus_shift_if_held(KC_H, record->event.pressed, cmd_h_timer); }
+        case CMD_BSPC: { static uint16_t cmd_bspc_timer; return force_mod_plus_mod_if_held(KC_BSPC, KC_LALT, KC_LSFT, record->event.pressed, cmd_bspc_timer); }
 
-        case SA_PAGE_UP: { static uint16_t sa_page_up_timer; return cancel_shift_alt(KC_PGUP, record->event.pressed, sa_page_up_timer); }
-        case SA_PAGE_DOWN: { static uint16_t sa_page_down_timer; return cancel_shift_alt(KC_PGDN, record->event.pressed, sa_page_down_timer); }
+        case CTRL_ALT_P_UP: { static uint16_t ctrl_alt_p_up_timer; return without_mods(KC_PGUP, record->event.pressed, ctrl_alt_p_up_timer); }
+        case CTRL_ALT_P_DN: { static uint16_t ctrl_alt_p_dn_timer; return without_mods(KC_PGDN, record->event.pressed, ctrl_alt_p_dn_timer); }
+        case CTRL_ALT_HOME: { static uint16_t ctrl_alt_home_timer; return without_mods(KC_PGDN, record->event.pressed, ctrl_alt_home_timer); }
+        case CTRL_ALT_END: { static uint16_t ctrl_alt_end_timer; return without_mods(KC_PGDN, record->event.pressed, ctrl_alt_end_timer); }
 
         default:
             return true;
@@ -338,17 +407,18 @@ void led_set_user(uint8_t usb_led) {
 
 uint32_t layer_state_set_user(uint32_t state) {
     switch (biton32(state)) {
-    case _CMD:
+    case _CMD_ESC:
       register_code(KC_LGUI);
       break;
-    case _SHIFT_ALT:
-      register_code(KC_LSFT);
+    case _CMD_SPACE:
+      register_code(KC_LGUI);
+      break;
+    case _CTRL_ALT:
+      register_code(KC_LCTL);
       register_code(KC_LALT);
       break;
     default:
-      unregister_code(KC_LGUI);
-      unregister_code(KC_LSFT);
-      unregister_code(KC_LALT);
+      clear_mods();
       break;
     }
 return state;
