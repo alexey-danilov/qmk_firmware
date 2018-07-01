@@ -60,7 +60,7 @@ enum holding_keycodes {
   HOLD_F12,
 
   // cmd layer
-  CMD_ESC,
+  CMD_F1,
   CMD_ENTER,
   CMD_W,
   CMD_E,
@@ -189,7 +189,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                    _______,  _______,  CMD_COMMA,  _______,
                              CMD_BSPC,  _______,
                                        CMD_LALT,
-                    CMD_ESC, CMD_ENTER,  CMD_LCTL,
+                    CMD_F1, CMD_ENTER,  CMD_LCTL,
                                      _______,
           _______,  _______,  _______,  _______,  _______,  _______, _______, _______, _______,
          _______,  _______,  _______,  _______,  _______,  _______,
@@ -368,7 +368,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case CMD_K: { static uint16_t cmd_k_timer; return add_shift_on_hold(KC_K, record->event.pressed, cmd_k_timer); }
         case CMD_M: { static uint16_t cmd_m_timer; return add_shift_on_hold(KC_M, record->event.pressed, cmd_m_timer); }
         case CMD_SPACE: { static uint16_t cmd_space_timer; return add_shift_on_hold(KC_SPC, record->event.pressed, cmd_space_timer); }
-        case CMD_ESC: { static uint16_t cmd_esc_timer; return add_shift_on_hold(KC_ESC, record->event.pressed, cmd_esc_timer); }
+        case CMD_F1: { static uint16_t cmd_f1_timer; return add_shift_on_hold(KC_F1, record->event.pressed, cmd_f1_timer); }
         case CMD_ENTER: { static uint16_t cmd_enter_timer; return add_shift_on_hold(KC_ENTER, record->event.pressed, cmd_enter_timer); }
         case CMD_W: { static uint16_t cmd_w_timer; return add_shift_on_hold(KC_W, record->event.pressed, cmd_w_timer); }
         case CMD_E: { static uint16_t cmd_e_timer; return add_shift_on_hold(KC_E, record->event.pressed, cmd_e_timer); }
