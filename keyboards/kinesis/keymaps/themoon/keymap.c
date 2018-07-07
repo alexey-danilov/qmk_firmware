@@ -18,7 +18,6 @@ enum kinesis_keycodes {
   L_DEL = MT(MOD_LSFT | MOD_LALT, KC_BSPC),
   R_DEL = MT(MOD_RSFT | MOD_RALT, KC_BSPC),
 
-  SHIFT_ENTER = SFT_T(KC_ENTER),
   SHIFT_TAB = SFT_T(KC_TAB),
 
   ALT_SLASH = MT(MOD_LALT, KC_SLSH),
@@ -29,7 +28,8 @@ enum kinesis_keycodes {
 };
 
 enum holding_keycodes {
-  HOLD_2 = SAFE_RANGE,
+  HOLD_1 = SAFE_RANGE,
+  HOLD_2,
   HOLD_3,
   HOLD_4,
   HOLD_5,
@@ -37,6 +37,7 @@ enum holding_keycodes {
   HOLD_7,
   HOLD_8,
   HOLD_9,
+  HOLD_0,
   HOLD_ESC,
   HOLD_LBRC,
   HOLD_RBRC,
@@ -105,17 +106,17 @@ enum {
 * Keymap: Default Layer in Qwerty
 *
 * ,-------------------------------------------------------------------------------------------------------------------.
-* |ESC/hide|  F1  |  F2  |  F3  |  F4  |  F5  |  F6  |  F8  |  F9  |  F10 |  F12 | PSCR | SLCK | PAUS |  FN0 |  Reset |
+* |ESC/HIDE|  F1  |  F2  |  F3  |  F4  |  F5  |  F6  |  F8  |  F9  |  F10 |  F12 | PSCR | SLCK | PAUS |  FN0 |  Reset |
 * |--------+------+------+------+------+------+---------------------------+------+------+------+------+------+--------|
 * | =+     |  1!  |  2@  |  3#  |  4$  |  5%  |                           |  6^  |  7&  |  8*  |  9(  |  0)  | -_     |
 * |--------+------+------+------+------+------|                           +------+------+------+------+------+--------|
-* | EMAIL  |   Q  |   W  |   E  |   R  |   T  |                           |   Y  |   U  |   I  |   O  |   P  |        |
+* | `~     |   Q  |   W  |   E  |   R  |   T  |                           |   Y  |   U  |   I  |   O  |   P  |        |
 * |--------+------+------+------+------+------|                           |------+------+------+------+------+--------|
-* |        |   A  |   S  |   D  |   F  |   G  |                           |   H  |   J  |   K  |   L  |  ;:  |        |
+* | CAPS   |   A  |   S  |   D  |   F  |   G  |                           |   H  |   J  |   K  |   L  |  ;:  |CAPS    |
 * |--------+------+------+------+------+------|                           |------+------+------+------+------+--------|
 * |        |   Z  |   X  |   C  |   V  |   B  |                           |   N  |   M  |  Up  |  .>  |  '"  |        |
 * `--------+------+------+------+------+-------                           `------+------+------+------+------+--------'
-*          | `~   |  [{  |  ,.  |  ]}  |                                         | Left | Down | Right| CAPS |
+*          |EMAIL |  [{  |  ,.  |  ]}  |                                         | Left | Down | Right|MOUSE2|
 *          `---------------------------'                                         `---------------------------'
 *                            .-------------------------.         ,-------------------------.
 *                            | LShift+LAlt/BkSp |Trash |         | Sleep| LShift+LAlt/BkSp |
@@ -132,24 +133,24 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [QWERTY] = KEYMAP(
            // left side
            HOLD_ESC, HOLD_F1  ,HOLD_F2  ,HOLD_F3  ,HOLD_F4  ,HOLD_F5  ,HOLD_F6  ,HOLD_F7  ,HOLD_F8,
-           KC_EQL, KC_1   ,HOLD_2   ,HOLD_3   ,HOLD_4   ,HOLD_5   ,
-           M(EMAIL_MACRO), KC_Q   ,KC_W   ,KC_E   ,KC_R   ,KC_T   ,
-           XXXXXXX,KC_A   ,KC_S   ,KC_D   ,KC_F   ,KC_G   ,
+           KC_EQL, HOLD_1, HOLD_2   ,HOLD_3   ,HOLD_4   ,HOLD_5   ,
+           KC_GRV, KC_Q   ,KC_W   ,KC_E   ,KC_R   ,KC_T   ,
+           KC_CAPS,KC_A   ,KC_S   ,KC_D   ,KC_F   ,KC_G   ,
            XXXXXXX,KC_Z   ,KC_X   ,KC_C   ,KC_V   ,KC_B   ,
-                   KC_GRV,HOLD_LBRC,KC_COMM,HOLD_RBRC,
+                   M(EMAIL_MACRO),HOLD_LBRC,KC_COMM,HOLD_RBRC,
                                            // left thumb keys
 			                                    L_DEL,TRASH,
                                                    ALT_SLASH,
-                           _L_CMD_ESC, SHIFT_ENTER, CTRL_F3,
+                           _L_CMD_ESC, KC_SFTENT, CTRL_F3,
                                      // left palm key
 			                         _L_PALM1,
     // right side
     HOLD_F9  ,HOLD_F10 ,HOLD_F11 ,HOLD_F12 ,KC_PSCR ,KC_SLCK  ,KC_PAUS, KC_FN0, RESET,
-	HOLD_6   ,HOLD_7   ,HOLD_8   ,HOLD_9   ,KC_0   ,KC_MINS,
+	HOLD_6   ,HOLD_7   ,HOLD_8   ,HOLD_9   ,HOLD_0   ,KC_MINS,
 	KC_Y   ,KC_U   ,KC_I   ,KC_O   ,KC_P   ,XXXXXXX,
-	KC_H   ,KC_J   ,KC_K   ,KC_L   ,KC_SCLN,XXXXXXX,
+	KC_H   ,KC_J   ,KC_K   ,KC_L   ,KC_SCLN,KC_CAPS,
 	KC_N   ,KC_M   ,KC_UP  ,KC_DOT ,KC_QUOT,XXXXXXX,
-	    	KC_LEFT,KC_DOWN,KC_RGHT,KC_CAPS,
+	    	KC_LEFT,KC_DOWN,KC_RGHT,KC_MS_BTN2,
            // right thumb keys
            M(SLEEP),R_DEL,
            ALT_BSLASH,
@@ -252,13 +253,10 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
     return MACRO_NONE;
 };
 
-
 void matrix_init_user(void) {
-
 }
 
 void matrix_scan_user(void) {
-
 }
 
 bool add_mod_on_hold(uint16_t code, uint16_t mod_to_add, bool pressed) {
@@ -266,7 +264,7 @@ bool add_mod_on_hold(uint16_t code, uint16_t mod_to_add, bool pressed) {
   if(pressed) {
       hold_timer= timer_read();
   } else {
-      if (timer_elapsed(hold_timer) < 165){
+      if (timer_elapsed(hold_timer) < 150){
           register_code(code);
           unregister_code(code);
       } else {
@@ -288,7 +286,7 @@ bool replace_on_hold_with_mod(uint16_t code, uint16_t replacement_code, uint16_t
   if(pressed) {
       hold_timer= timer_read();
   } else {
-      if (timer_elapsed(hold_timer) < 165){
+      if (timer_elapsed(hold_timer) < 150){
           register_code(code);
           unregister_code(code);
       } else {
@@ -306,7 +304,7 @@ bool replace_modded_on_hold(uint16_t code, uint16_t mod, uint16_t replacement_co
   if(pressed) {
       hold_timer= timer_read();
   } else {
-      if (timer_elapsed(hold_timer) < 165){
+      if (timer_elapsed(hold_timer) < 150){
           register_code(mod);
           register_code(code);
           unregister_code(code);
@@ -330,7 +328,7 @@ bool force_mod_plus_mod_if_held(uint16_t code, uint16_t mod, uint16_t mod_if_hel
         clear_mods();
       }
 
-      if (timer_elapsed(hold_timer) < 165){
+      if (timer_elapsed(hold_timer) < 150){
           register_code(mod);
           register_code(code);
           unregister_code(code);
@@ -362,7 +360,7 @@ bool force_mods_plus_mod_if_held(uint16_t code, uint16_t mod1, uint16_t mod2, ui
         clear_mods();
       }
 
-      if (timer_elapsed(hold_timer) < 165){
+      if (timer_elapsed(hold_timer) < 150){
           register_code(mod1);
           register_code(mod2);
           register_code(code);
@@ -391,26 +389,24 @@ bool force_ctrl_plus_shift_if_held(uint16_t code, bool pressed) {
  return force_mod_plus_mod_if_held(code, KC_LCTL, KC_LSFT, pressed);
 }
 
-bool without_mods(uint16_t code, bool pressed) {
-  if (pressed) {
-    uint8_t old_mods = get_mods();
-    if (old_mods) {
-      clear_mods();
-    }
+bool without_ctrl_alt(uint16_t code, bool pressed) {
+   unregister_code(KC_LCTL);
+   unregister_code(KC_LALT);
 
-    register_code(code);
-    unregister_code(code);
+   if (pressed) {
+     register_code(code);
+     unregister_code(code);
+   }
 
-    if (old_mods) {
-      set_mods(old_mods);
-    }
-  }
+   register_code(KC_LALT);
+   register_code(KC_LCTL);
 
   return false;
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
+        case HOLD_1: {return replace_on_hold_with_mod(KC_1, KC_PSCR, KC_NO, record->event.pressed); }
         case HOLD_2: {return replace_on_hold_with_mod(KC_2, KC_9, KC_LSFT, record->event.pressed); }
         case HOLD_3: {return replace_on_hold_with_mod(KC_3, KC_MINS, KC_LSFT, record->event.pressed); }
         case HOLD_4: {return replace_on_hold_with_mod(KC_4, KC_0, KC_LSFT, record->event.pressed); }
@@ -419,6 +415,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case HOLD_7: {return replace_on_hold_with_mod(KC_7, KC_1, KC_LSFT, record->event.pressed); }
         case HOLD_8: {return replace_on_hold_with_mod(KC_8, KC_MINS, KC_NO, record->event.pressed); }
         case HOLD_9: {return replace_on_hold_with_mod(KC_9, KC_SLSH, KC_LSFT, record->event.pressed); }
+        case HOLD_0: {return replace_on_hold_with_mod(KC_0, KC_BSLS, KC_LSFT, record->event.pressed); }
 
         case HOLD_ESC: {return replace_on_hold_with_mod(KC_ESC, KC_F12, KC_LCTL, record->event.pressed); }
         case HOLD_LBRC: {return replace_modded_on_hold(KC_LBRC, KC_LSFT, KC_LBRC, record->event.pressed); }
@@ -468,10 +465,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case CMD_M: {return force_ctrl_plus_shift_if_held(KC_M, record->event.pressed); }
         case CMD_BSPC: {return force_mod_plus_mod_if_held(KC_BSPC, KC_LALT, KC_LSFT, record->event.pressed); }
 
-        case CTRL_ALT_P_UP: {return without_mods(KC_PGUP, record->event.pressed); }
-        case CTRL_ALT_P_DN: {return without_mods(KC_PGDN, record->event.pressed); }
-        case CTRL_ALT_HOME: {return without_mods(KC_HOME, record->event.pressed); }
-        case CTRL_ALT_END: {return without_mods(KC_END, record->event.pressed); }
+        case CTRL_ALT_P_UP: {return without_ctrl_alt(KC_PGUP, record->event.pressed); }
+        case CTRL_ALT_P_DN: {return without_ctrl_alt(KC_PGDN, record->event.pressed); }
+        case CTRL_ALT_HOME: {return without_ctrl_alt(KC_HOME, record->event.pressed); }
+        case CTRL_ALT_END: {return without_ctrl_alt(KC_END, record->event.pressed); }
 
         case TRASH: {return replace_on_hold_with_mod(KC_DEL, KC_BSPC, KC_LGUI, record->event.pressed); }
 
