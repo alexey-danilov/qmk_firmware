@@ -16,15 +16,15 @@ enum kinesis_keycodes {
   _PALM1 = MO(_P1),
   _PALM2 = LT(_P2, KC_F16),
 
-  L_DEL = MT(MOD_LSFT | MOD_LALT, KC_BSPC),
-  R_DEL = MT(MOD_RSFT | MOD_RALT, KC_BSPC),
+  L_DEL = MT(MOD_LALT, KC_BSPC),
+  R_DEL = MT(MOD_RALT, KC_BSPC),
 
   SHIFT_TAB = SFT_T(KC_TAB),
 
-  ALT_SLASH = MT(MOD_LALT, KC_SLSH),
-  ALT_BSLASH = MT(MOD_RALT, KC_BSLS),
+  SLASH = MT(MOD_LSFT | MOD_LALT, KC_SLSH),
+  BSLASH = MT(MOD_RSFT | MOD_RALT, KC_BSLS),
 
-  CTRL_F3 = MT(MOD_LCTL, KC_F3),
+  CTRL_DEL = MT(MOD_LCTL, KC_DEL),
   CTRL_F17 = MT(MOD_RCTL, KC_F17),
 
   IDEA = HYPR(KC_F1),
@@ -83,6 +83,9 @@ enum holding_keycodes {
   CMD_I,
   CMD_O,
   CMD_N,
+  CMD_Y,
+  CMD_J,
+  CMD_L,
   CMD_TAB,
   CMD_LBRC,
   CMD_RBRC,
@@ -95,8 +98,6 @@ enum holding_keycodes {
   CMD_H, // control + H
   CMD_BSPC, // alt + backspace
   CMD_M, // control + M
-
-  TRASH,
 };
 
 enum {
@@ -126,7 +127,7 @@ enum {
 *                            `-----------|------|------|         |------+------+-----------`
 *                                 |      |      | Alt//|         | Alt/\|      |      |
 *                                 | LCMD/|Shift/|------|         |------|Shift/|RCMD/ |
-*                                 | ESC  |Enter |Ctrl/F3 |     |Ctrl/F17|Tab   |SPACE |
+*                                 | ESC  |Enter |Ctrl/Del|     |Ctrl/F17|Tab   |SPACE |
 *                                 `--------------------'         `--------------------'
 *                            P1/Ctrl                                                     P2/F16
 */
@@ -142,46 +143,46 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
            XXXXXXX, KC_Z, KC_X, KC_C, KC_V, KC_B,
                    KC_GRV, KC_LBRC, KC_COMM, KC_RBRC,
                                            // left thumb keys
-			                                    L_DEL,TRASH,
-                                                   ALT_SLASH,
-                           _L_CMD_ESC, KC_SFTENT, CTRL_F3,
+			                                    L_DEL,LGUI(KC_BSPC),
+                                                   SLASH,
+                           _L_CMD_ESC, KC_SFTENT, CTRL_DEL,
                                      // left palm key
 			                         _PALM1,
     // right side
     HOLD_F9  ,HOLD_F10 ,HOLD_F11 ,HOLD_F12 ,KC_PSCR ,KC_SLCK  ,KC_PAUS, KC_FN0, RESET,
 	HOLD_6, HOLD_7, HOLD_8, HOLD_9, KC_0, KC_MINS,
-	KC_Y, KC_U, KC_I, KC_O, KC_P, XXXXXXX,
+	KC_Y, KC_U, KC_I, KC_O, KC_P, M(EMAIL_MACRO),
 	KC_H, KC_J, KC_K, KC_L, KC_SCLN, KC_CAPS,
 	KC_N, KC_M, KC_UP, KC_DOT, KC_QUOT, XXXXXXX,
 	    	KC_LEFT, KC_DOWN, KC_RGHT, KC_MS_BTN2,
            // right thumb keys
            M(SLEEP),R_DEL,
-           ALT_BSLASH,
+           BSLASH,
            CTRL_F17, SHIFT_TAB, _R_CMD_SPACE,
                                     // right palm key
                                     _PALM2
     ),
 
 [_CMD_ESC] = KEYMAP(
+         XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+         XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,
+         XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,
+         XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,
+         XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,
+                   XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,
+                             XXXXXXX,  XXXXXXX,
+                                       XXXXXXX,
+                    _L_CMD_ESC, XXXXXXX,  XXXXXXX,
+                                     XXXXXXX,
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
          __________,  __________,  __________,  __________,  __________,  __________,
-         __________,  __________,  __________,  __________,  __________,  __________,
-         __________,  __________,  __________,  __________,  __________,  __________,
-         __________,  __________,  __________,  __________,  __________,  __________,
-                   __________,  __________,  __________,  __________,
-                             __________,  __________,
-                                       __________,
-                    _L_CMD_ESC, __________,  __________,
-                                     __________,
-         __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
-         __________,  __________,  __________,  __________,  __________,  __________,
-         __________,  CMD_U,  CMD_I,  CMD_O,  __________,  __________,
-         CMD_H,  __________,  CMD_K,  __________,  __________,  __________,
+         CMD_Y,  CMD_U,  CMD_I,  CMD_O,  __________,  __________,
+         CMD_H,  CMD_J,  CMD_K,  CMD_L,  __________,  __________,
          CMD_N,  CMD_M,  CMD_UP,  CMD_DOT ,  __________,  __________,
                    CMD_LEFT,  CMD_DOWN,  CMD_RIGHT, __________,
-         __________,  CMD_BSPC,
+         KC_F15,  CMD_BSPC,
          __________,
-         __________,  CMD_TAB,  CMD_SPACE,
+         KC_F17,  CMD_TAB,  CMD_SPACE,
                              __________
     ),
 
@@ -196,16 +197,16 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                        CMD_UNDO,
                     CMD_ESC, CMD_ENTER,  CMD_REDO,
                                      __________,
-          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
-         __________,  __________,  __________,  __________,  __________,  __________,
-          __________,  __________,  __________,  __________,  __________,  __________,
-         __________,  __________,  __________,  __________,  __________,  __________,
-        __________,  __________,  __________,  __________,  __________,  __________,
-                   __________,  __________,  __________,  __________,
-                             __________,  __________,
-                                       __________,
-                    __________, __________,  _R_CMD_SPACE,
-                                     __________
+          XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+         XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,
+          XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,
+         XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,
+        XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,
+                   XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,
+                             XXXXXXX,  XXXXXXX,
+                                       XXXXXXX,
+                    XXXXXXX, XXXXXXX,  _R_CMD_SPACE,
+                                     XXXXXXX
     ),
 
 [_P1] = KEYMAP(
@@ -233,11 +234,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 [_P2] = KEYMAP(
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
-         __________,  __________,  KC__VOLDOWN,  KC__MUTE,  KC__VOLUP,  __________,
+         __________,  __________,  __________,  __________,  __________,  __________,
           __________,  __________,  __________, FIREFOX,__________,  __________,
          __________,  __________,  SUBLIME,  IDEA,  TEAMS,  __________,
         __________,  __________,  __________,  ITERM,  __________,  __________,
-                   __________,  __________,  __________,  __________,
+                   __________,  KC__VOLDOWN,  KC__MUTE,  KC__VOLUP,
                              __________,  __________,
                                        __________,
                     __________, __________,  __________,
@@ -285,32 +286,18 @@ void matrix_init_user(void) {
 void matrix_scan_user(void) {
 }
 
-uint8_t remove_mods(void) {
-    uint8_t old_mods = get_mods();
-    if (old_mods) {
-        clear_mods();
-    }
-    return old_mods;
-}
-
-void restore_mods(uint8_t old_mods) {
-     if (old_mods) {
-        set_mods(old_mods);
-      }
-}
-
 bool not_held(uint16_t hold_timer, uint8_t hold_duration) {
     return timer_elapsed(hold_timer) < hold_duration;
 }
 
-void no_mods(uint16_t key) {
+void key_code(uint16_t key) {
             register_code(key);
             unregister_code(key);
 }
 
 void with_1_mod(uint16_t key, uint16_t mod1) {
             register_code(mod1);
-            no_mods(key);
+            key_code(key);
             unregister_code(mod1);
 }
 
@@ -332,7 +319,7 @@ bool ___if_held___add_mod(uint16_t code, uint16_t mod_to_add, bool pressed, uint
       hold_timer= timer_read();
   } else {
       if (not_held(hold_timer, hold_duration)){
-          no_mods(code);
+          key_code(code);
       } else {
           with_1_mod(code, mod_to_add);
       }
@@ -340,22 +327,35 @@ bool ___if_held___add_mod(uint16_t code, uint16_t mod_to_add, bool pressed, uint
   return false;
 }
 
-bool ___if_held_replace_add_mod(uint16_t code, uint16_t replacement_code, uint16_t mod____if_held, bool pressed, uint8_t hold_duration) {
+bool ___if_held_replace_add_mod(uint16_t code, uint16_t replacement_code, uint16_t mod_if_held, bool pressed, uint8_t hold_duration) {
   static uint16_t hold_timer;
   if(pressed) {
       hold_timer= timer_read();
   } else {
       if (not_held(hold_timer, hold_duration)){
-          no_mods(code);
+          key_code(code);
       } else {
-          with_1_mod(replacement_code, mod____if_held);
+          with_1_mod(replacement_code, mod_if_held);
       }
   }
   return false;
 }
 
+bool ___if_held_replace(uint16_t code, uint16_t replacement_code, bool pressed, uint8_t hold_duration) {
+  static uint16_t hold_timer;
+  if(pressed) {
+      hold_timer= timer_read();
+  } else {
+      if (not_held(hold_timer, hold_duration)){
+          key_code(code);
+      } else {
+          key_code(replacement_code);
+      }
+  }
+  return false;
+}
 
-bool add_mod____if_held___add_mod(uint16_t code, uint16_t mod, uint16_t mod____if_held, bool pressed, uint8_t hold_duration) {
+bool add_mod____if_held___add_mod(uint16_t code, uint16_t mod, uint16_t mod_if_held, bool pressed, uint8_t hold_duration) {
   static uint16_t hold_timer;
   if(pressed) {
       hold_timer= timer_read();
@@ -364,7 +364,7 @@ bool add_mod____if_held___add_mod(uint16_t code, uint16_t mod, uint16_t mod____i
       if (not_held(hold_timer, hold_duration)){
           with_1_mod(code, mod);
       } else {
-          with_2_mods(code, mod, mod____if_held);
+          with_2_mods(code, mod, mod_if_held);
       }
   }
   return false;
@@ -393,7 +393,7 @@ bool no_ctrl(uint16_t code, bool pressed) {
    unregister_code(KC_LCTL);
 
    if (pressed) {
-       no_mods(code);
+       key_code(code);
    }
 
    register_code(KC_LCTL);
@@ -414,8 +414,8 @@ bool ___if_held_200___add_shift(uint16_t code, bool pressed) {
 }
 
 
-bool ___if_held_200___replace_add_mod(uint16_t code, uint16_t replacement_code, uint16_t mod____if_held, bool pressed) {
-  return ___if_held_replace_add_mod(code, replacement_code, mod____if_held, pressed, 200);
+bool ___if_held_200___replace_add_mod(uint16_t code, uint16_t replacement_code, uint16_t mod_if_held, bool pressed) {
+  return ___if_held_replace_add_mod(code, replacement_code, mod_if_held, pressed, 200);
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
@@ -442,6 +442,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case CMD_I: {return ___if_held_200___add_shift(KC_I, record->event.pressed); }
         case CMD_O: {return ___if_held_200___add_shift(KC_O, record->event.pressed); }
         case CMD_N: {return ___if_held_200___add_shift(KC_N, record->event.pressed); }
+        case CMD_Y: {return ___if_held_200___add_shift(KC_Y, record->event.pressed); }
+        case CMD_J: {return ___if_held_200___add_shift(KC_J, record->event.pressed); }
+        case CMD_L: {return ___if_held_200___add_shift(KC_L, record->event.pressed); }
         case CMD_W: {return ___if_held_200___add_shift(KC_W, record->event.pressed); }
         case CMD_E: {return ___if_held_200___add_shift(KC_E, record->event.pressed); }
         case CMD_R: {return ___if_held_200___add_shift(KC_R, record->event.pressed); }
@@ -469,13 +472,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case HOLD_2: {return ___if_held_200___replace_add_mod(KC_2, KC_9, KC_LSFT, record->event.pressed); }
         case HOLD_3: {return ___if_held_200___replace_add_mod(KC_3, KC_MINS, KC_LSFT, record->event.pressed); }
         case HOLD_4: {return ___if_held_200___replace_add_mod(KC_4, KC_0, KC_LSFT, record->event.pressed); }
-        case HOLD_5: {return ___if_held_200___replace_add_mod(KC_5, KC_EQL, KC_LSFT, record->event.pressed); }
-        case HOLD_6: {return ___if_held_200___replace_add_mod(KC_6, KC_EQL, KC_NO, record->event.pressed); }
+        case HOLD_5: {return ___if_held_200___replace_add_mod(KC_5, KC_EQL, KC_NO, record->event.pressed); }
+        case HOLD_6: {return ___if_held_200___replace_add_mod(KC_6, KC_EQL, KC_LSFT, record->event.pressed); }
         case HOLD_7: {return ___if_held_200___replace_add_mod(KC_7, KC_1, KC_LSFT, record->event.pressed); }
         case HOLD_8: {return ___if_held_200___replace_add_mod(KC_8, KC_MINS, KC_NO, record->event.pressed); }
         case HOLD_9: {return ___if_held_200___replace_add_mod(KC_9, KC_SLSH, KC_LSFT, record->event.pressed); }
         case HOLD_F5: {return ___if_held_200___replace_add_mod(KC_F5, KC_COMM, KC_LGUI, record->event.pressed); }
-        case TRASH: {return ___if_held_200___replace_add_mod(KC_DEL, KC_BSPC, KC_LGUI, record->event.pressed); }
 
         case HOLD_F1: {return ___if_held_200___add_shift(KC_F1, record->event.pressed); }
         case HOLD_F2: {return ___if_held_200___add_shift(KC_F2, record->event.pressed); }
