@@ -272,16 +272,13 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
 void matrix_init_user(void) {
 }
 
-void matrix_scan_user(void) {
+void key_code(uint16_t key) {
+            register_code(key);
+            unregister_code(key);
 }
 
 bool not_held(uint16_t hold_timer, uint8_t hold_duration) {
     return timer_elapsed(hold_timer) < hold_duration;
-}
-
-void key_code(uint16_t key) {
-            register_code(key);
-            unregister_code(key);
 }
 
 void with_1_mod(uint16_t key, uint16_t mod1) {
@@ -384,18 +381,38 @@ bool replace_cmd_with_mod____if_held___cmd_shift(uint16_t code, uint16_t replace
   return replace_mod1_with_mod2____if_held___mod3_plus_mod4(code, KC_LGUI, replacement_mod, KC_LGUI, KC_LSFT, pressed, hold_duration);
 }
 
-bool no_meh(uint16_t code, bool pressed) {
-   unregister_code(KC_LSFT);
-   unregister_code(KC_LALT);
-   unregister_code(KC_LCTL);
+bool without_mods(uint16_t code, uint16_t mod1, uint16_t mod2, uint16_t mod3, uint16_t mod4) {
+   unregister_code(mod1);
+   unregister_code(mod2);
+   unregister_code(mod3);
+   unregister_code(mod4);
 
+   key_code(code);
+
+   register_code(mod4);
+   register_code(mod3);
+   register_code(mod2);
+   register_code(mod1);
+
+  return false;
+}
+
+bool without_meh(uint16_t code) {
+  return without_mods(code, KC_LSFT, KC_LALT, KC_LCTL, KC_NO);
+}
+
+uint16_t palm_repeat_code;
+uint16_t palm_repeat_timer;
+uint8_t first_repeat_delay;
+bool no_meh_repeat(uint16_t code, bool pressed) {
    if (pressed) {
-       key_code(code);
+       without_meh(code);
+       palm_repeat_code = code;
+       palm_repeat_timer = timer_read();
+       first_repeat_delay = 200;
+   } else {
+       palm_repeat_code = 0;
    }
-
-   register_code(KC_LCTL);
-   register_code(KC_LALT);
-   register_code(KC_LSFT);
 
   return false;
 }
@@ -417,13 +434,22 @@ bool ___if_held_200___replace_add_mod(uint16_t code, uint16_t replacement_code, 
   return ___if_held_replace_add_mod(code, replacement_code, mod_if_held, pressed, 200);
 }
 
+void matrix_scan_user(void) {
+   if (palm_repeat_code) {
+      if (timer_elapsed(palm_repeat_timer) > (50 + first_repeat_delay)) {
+         without_meh(palm_repeat_code);
+         first_repeat_delay = 0;
+      }
+   }
+}
+
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
         // no holding delay
-        case KC_PGUP: {return no_meh(KC_PGUP, record->event.pressed); }
-        case KC_PGDN: {return no_meh(KC_PGDN, record->event.pressed); }
-        case KC_HOME: {return no_meh(KC_HOME, record->event.pressed); }
-        case KC_END: {return no_meh(KC_END, record->event.pressed); }
+        case KC_PGUP: {return no_meh_repeat(KC_PGUP, record->event.pressed); }
+        case KC_PGDN: {return no_meh_repeat(KC_PGDN, record->event.pressed); }
+        case KC_HOME: {return no_meh_repeat(KC_HOME, record->event.pressed); }
+        case KC_END: {return no_meh_repeat(KC_END, record->event.pressed); }
 
         // 140 ms
         case MOD_LEFT: {return ___if_held_140___add_shift(KC_LEFT, record->event.pressed); }
