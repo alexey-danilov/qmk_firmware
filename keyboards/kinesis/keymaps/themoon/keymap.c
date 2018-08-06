@@ -20,8 +20,6 @@
 #define _PALM 10
 #define _ALT 11
 
-#define TAP_MACRO 0
-
 enum kinesis_keycodes {
   // mac
   CMD_ESC = MO(_COMMAND_ESCAPE),
@@ -110,6 +108,7 @@ enum {
   LB_TD = 1,
   RB_TD = 2,
   K_TD = 3,
+  TAP_MACRO = 4
 };
 //Enums used to clearly convey the state of the tap dance
 enum {
