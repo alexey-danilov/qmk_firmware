@@ -226,7 +226,6 @@ void k_finished (qk_tap_dance_state_t *state, void *user_data) {
   switch (k_tap_state.state) {
     case SINGLE_TAP: register_code(KC_K); break;
     case SINGLE_HOLD: register_code(KC_LSFT); register_code(KC_K); unregister_code(KC_K); break;
-    case DOUBLE_SINGLE_TAP: register_code(KC_K); unregister_code(KC_K); register_code(KC_K); break;
     default: register_code(KC_LCTL); register_code(KC_SPC); unregister_code(KC_SPC); break;
   }
 }
@@ -235,7 +234,6 @@ void k_reset (qk_tap_dance_state_t *state, void *user_data) {
   switch (k_tap_state.state) {
     case SINGLE_TAP: unregister_code(KC_K); break;
     case SINGLE_HOLD: unregister_code(KC_LSFT); break;
-    case DOUBLE_SINGLE_TAP: unregister_code(KC_K); break;
     default: unregister_code(KC_LCTL); break;
   }
   k_tap_state.state = 0;
@@ -1067,8 +1065,7 @@ uint32_t layer_state_set_user(uint32_t state) {
 
     // common
     case _ALT:
-      register_code(KC_LALT); // in windows single press of LALT focuses on menu; so instead of creating new layer
-      // let's just sent RALT instead of LALT in all combinations
+      register_code(KC_LALT);
       break;
     case _PALM:
       register_code(KC_LSFT);
