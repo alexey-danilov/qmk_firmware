@@ -61,14 +61,25 @@ enum holding_keycodes {
   MOD_V,
   MOD_B,
   MOD_LBRC,
+  MOD_COMMA,
   MOD_RBRC,
 
   MOD_SPACE,
-
-  MOD_COMMA,
-  MOD_DOT,
+  MOD_Y,
+  MOD_U,
+  MOD_I,
+  MOD_O,
   MOD_H,
+  MOD_J,
+  MOD_K,
+  MOD_L,
+  MOD_N,
   MOD_M,
+  MOD_DOT,
+  MOD_LEFT,
+  MOD_RIGHT,
+  MOD_UP,
+  MOD_DOWN,
 
   // mac-specific overrides
   CTRL_COMMA,
@@ -91,6 +102,207 @@ enum holding_keycodes {
 enum {
     MAIL = 0,
     SLEEP,
+};
+
+//**************** Definitions needed for quad function to work *********************//
+enum {
+  COMM_TD = 0,
+  LB_TD = 1,
+  RB_TD = 2,
+  K_TD = 3,
+};
+//Enums used to clearly convey the state of the tap dance
+enum {
+  SINGLE_TAP = 1,
+  SINGLE_HOLD = 2,
+  DOUBLE_TAP = 3,
+  DOUBLE_HOLD = 4,
+  DOUBLE_SINGLE_TAP = 5 //send SINGLE_TAP twice - NOT DOUBLE_TAP
+  // Add more enums here if you want for triple, quadruple, etc.
+};
+
+typedef struct {
+  bool is_press_action;
+  int state;
+} tap;
+
+int cur_dance (qk_tap_dance_state_t *state) {
+  if (state->count == 1) {
+    //If count = 1, and it has been interrupted - it doesn't matter if it is pressed or not: Send SINGLE_TAP
+    if (state->interrupted || state->pressed==0) return SINGLE_TAP;
+    else return SINGLE_HOLD;
+  }
+  //If count = 2, and it has been interrupted - assume that user is trying to type the letter associated
+  //with single tap. In example below, that means to send `xx` instead of `Escape`.
+  else if (state->count == 2) {
+    if (state->interrupted) return DOUBLE_SINGLE_TAP;
+    else if (state->pressed) return DOUBLE_HOLD;
+    else return DOUBLE_TAP;
+  }
+  else return 6; //magic number. At some point this method will expand to work for more presses
+}
+
+//**************** LBRAC TAP *********************//
+static tap lb_tap_state = {
+  .is_press_action = true,
+  .state = 0
+};
+
+void lb_finished (qk_tap_dance_state_t *state, void *user_data) {
+  lb_tap_state.state = cur_dance(state);
+  switch (lb_tap_state.state) {
+    case SINGLE_TAP: register_code(KC_LBRC); break;
+    case SINGLE_HOLD: register_code(KC_LSFT); register_code(KC_LBRC); unregister_code(KC_LBRC); break;
+    default: register_code(KC_LCTL); register_code(KC_F1); unregister_code(KC_F1);
+  }
+}
+
+void lb_reset (qk_tap_dance_state_t *state, void *user_data) {
+  switch (lb_tap_state.state) {
+    case SINGLE_TAP: unregister_code(KC_LBRC); break;
+    case SINGLE_HOLD: unregister_code(KC_LSFT); break;
+    default: unregister_code(KC_LCTL);
+  }
+  lb_tap_state.state = 0;
+}
+
+//**************** COMMA TAP *********************//
+static tap comma_tap_state = {
+  .is_press_action = true,
+  .state = 0
+};
+
+void comma_finished (qk_tap_dance_state_t *state, void *user_data) {
+  comma_tap_state.state = cur_dance(state);
+  switch (comma_tap_state.state) {
+    case SINGLE_TAP: register_code(KC_COMM); break;
+    case SINGLE_HOLD: register_code(KC_LSFT); register_code(KC_COMM); unregister_code(KC_COMM); break;
+    default: register_code(KC_LCTL); register_code(KC_F2); unregister_code(KC_F2);
+  }
+}
+
+void comma_reset (qk_tap_dance_state_t *state, void *user_data) {
+  switch (comma_tap_state.state) {
+    case SINGLE_TAP: unregister_code(KC_COMM); break;
+    case SINGLE_HOLD: unregister_code(KC_LSFT); break;
+    default: unregister_code(KC_LCTL);
+  }
+  comma_tap_state.state = 0;
+}
+
+//**************** RBRAC TAP *********************//
+static tap rb_tap_state = {
+  .is_press_action = true,
+  .state = 0
+};
+
+void rb_finished (qk_tap_dance_state_t *state, void *user_data) {
+  rb_tap_state.state = cur_dance(state);
+  switch (rb_tap_state.state) {
+    case SINGLE_TAP: register_code(KC_RBRC); break;
+    case SINGLE_HOLD: register_code(KC_LSFT); register_code(KC_RBRC); unregister_code(KC_RBRC); break;
+    default: register_code(KC_LCTL); register_code(KC_F3); unregister_code(KC_F3);
+  }
+}
+
+void rb_reset (qk_tap_dance_state_t *state, void *user_data) {
+  switch (rb_tap_state.state) {
+    case SINGLE_TAP: unregister_code(KC_RBRC); break;
+    case SINGLE_HOLD: unregister_code(KC_LSFT); break;
+    default: unregister_code(KC_LCTL);
+  }
+  rb_tap_state.state = 0;
+}
+
+//**************** K TAP *********************//
+static tap k_tap_state = {
+  .is_press_action = true,
+  .state = 0
+};
+
+void k_finished (qk_tap_dance_state_t *state, void *user_data) {
+  k_tap_state.state = cur_dance(state);
+  switch (k_tap_state.state) {
+    case SINGLE_TAP: register_code(KC_K); break;
+    case SINGLE_HOLD: register_code(KC_LSFT); register_code(KC_K); unregister_code(KC_K); break;
+    default: register_code(KC_LCTL); register_code(KC_SPC); unregister_code(KC_SPC);
+  }
+}
+
+void k_reset (qk_tap_dance_state_t *state, void *user_data) {
+  switch (k_tap_state.state) {
+    case SINGLE_TAP: unregister_code(KC_K); break;
+    case SINGLE_HOLD: unregister_code(KC_LSFT); break;
+    default: unregister_code(KC_LCTL);
+  }
+  k_tap_state.state = 0;
+}
+
+//**************** DYNAMIC MACRO TAP *********************//
+// Whether the macro 1 is currently being recorded.
+static bool is_macro1_recording = false;
+
+// The current set of active layers (as a bitmask).
+// There is a global 'layer_state' variable but it is set after the call
+// to layer_state_set_user().
+static uint32_t current_layer_state = 0;
+uint32_t layer_state_set_user(uint32_t state);
+
+// Method called at the end of the tap dance on the TAP_MACRO key. That key is
+// used to start recording a macro (double tap or more), to stop recording (any
+// number of tap), or to play the recorded macro (1 tap).
+void macro_tapdance_fn(qk_tap_dance_state_t *state, void *user_data) {
+  uint16_t keycode;
+  keyrecord_t record;
+  dprintf("macro_tap_dance_fn %d\n", state->count);
+  if (is_macro1_recording) {
+    keycode = DYN_REC_STOP;
+    is_macro1_recording = false;
+    layer_state_set_user(current_layer_state);
+  } else if (state->count == 1) {
+    keycode = DYN_MACRO_PLAY1;
+  } else {
+    keycode = DYN_REC_START1;
+    is_macro1_recording = true;
+    layer_state_set_user(current_layer_state);
+  }
+
+  record.event.pressed = true;
+  process_record_dynamic_macro(keycode, &record);
+  record.event.pressed = false;
+  process_record_dynamic_macro(keycode, &record);
+}
+
+//**************** ALL TAP MACROS *********************//
+qk_tap_dance_action_t tap_dance_actions[] = {
+  // This Tap dance plays the macro 1 on TAP and records it on double tap.
+  [TAP_MACRO] = ACTION_TAP_DANCE_FN(macro_tapdance_fn),
+  [LB_TD] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, lb_finished, lb_reset),
+  [COMM_TD] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, comma_finished, comma_reset),
+  [RB_TD] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, rb_finished, rb_reset),
+  [K_TD] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, k_finished, k_reset),
+};
+
+const uint16_t PROGMEM fn_actions[] = {
+};
+
+const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
+ switch(id) {
+    case MAIL: {
+        if (record->event.pressed) {
+            SEND_STRING("oleksii.danilov@gmail.com");
+            return false;
+        }
+    }
+
+    case SLEEP: {
+        if (record->event.pressed) {
+            SEND_STRING(SS_DOWN(X_LCTRL) SS_DOWN(X_LSHIFT) SS_DOWN(X_POWER) SS_UP(X_POWER) SS_UP(X_LSHIFT) SS_UP(X_LCTRL));
+            return false;
+        }
+    }
+  }
+    return MACRO_NONE;
 };
 
 /****************************************************************************************************
@@ -130,7 +342,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
            KC_GRV, KC_Q, KC_W, KC_E, KC_R, KC_T,
            KC_CAPSLOCK,KC_A, KC_S, KC_D, KC_F, KC_G,
            M(MAIL) ,KC_Z, KC_X, KC_C, KC_V, KC_B,
-                 KC_INS, KC_LBRC, KC_COMM, KC_RBRC,
+                 KC_INS, TD(LB_TD), TD(COMM_TD), TD(RB_TD),
                                            // left thumb keys
 			                                    ALT_SHIFT_BS,TD(TAP_MACRO),
                                                    ALT_SLASH,
@@ -141,7 +353,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     KC_F9  ,KC_F10 ,KC_F11 ,KC_F12 ,KC_PSCR ,KC_SLCK  ,KC_PAUS, KC_FN0, RESET,
 	KC_6, KC_7, KC_8, KC_9, KC_0, KC_MINS,
 	KC_Y, KC_U, KC_I, KC_O, KC_P, KC_F17,
-	KC_H, KC_J, KC_K, KC_L, KC_SCLN, KC_F18,
+	KC_H, KC_J, TD(K_TD), KC_L, KC_SCLN, KC_F18,
 	KC_N, KC_M, KC_UP, KC_DOT, KC_QUOT, KC_F19,
 	KC_LEFT, KC_DOWN, KC_RGHT, KC_F15,
            // right thumb keys
@@ -165,10 +377,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                      __________,
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
          __________,  __________,  __________,  __________,  __________,  __________,
-         __________,  __________,  __________,  __________,  __________,  __________,
-         CTRL_H,  __________,  __________,  __________,  __________,  __________,
-         __________,  CTRL_M,  __________,  CTRL_DOT ,  __________,  __________,
-                   __________,  __________,  __________, __________,
+         MOD_Y,  MOD_U,  MOD_I,  MOD_O,  __________,  __________,
+         CTRL_H,  MOD_J,  MOD_K,  MOD_L,  __________,  __________,
+         MOD_N,  CTRL_M,  MOD_UP,  CTRL_DOT ,  __________,  __________,
+                   MOD_LEFT,  MOD_DOWN,  MOD_RIGHT, __________,
          KC_F2,  __________,
          SHIFT_BSLS_MAC,
          KC_F16,  SHIFT_TAB_MAC,  MOD_SPACE,
@@ -251,7 +463,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
            KC_GRV, KC_Q, KC_W, KC_E, KC_R, KC_T,
            KC_CAPSLOCK,KC_A, KC_S, KC_D, KC_F, KC_G,
            M(MAIL) ,KC_Z, KC_X, KC_C, KC_V, KC_B,
-                 KC_INS, KC_LBRC, KC_COMM, KC_RBRC,
+                 KC_INS, TD(LB_TD), TD(COMM_TD), TD(RB_TD),
                                            // left thumb keys
 			                                    CTRL_SHIFT_BS,TD(TAP_MACRO),
                                                    ALT_SLASH,
@@ -262,7 +474,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     KC_F9  ,KC_F10 ,KC_F11 ,KC_F12 ,KC_PSCR ,KC_SLCK  ,KC_PAUS, KC_FN0, RESET,
 	KC_6, KC_7, KC_8, KC_9, KC_0, KC_MINS,
 	KC_Y, KC_U, KC_I, KC_O, KC_P, KC_F17,
-	KC_H, KC_J, KC_K, KC_L, KC_SCLN, KC_F18,
+	KC_H, KC_J, TD(K_TD), KC_L, KC_SCLN, KC_F18,
 	KC_N, KC_M, KC_UP, KC_DOT, KC_QUOT, KC_F19,
 	KC_LEFT, KC_DOWN, KC_RGHT, KC_F15,
            // right thumb keys
@@ -286,10 +498,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                      __________,
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
          __________,  __________,  __________,  __________,  __________,  __________,
-         __________,  __________,  __________,  __________,  __________,  __________,
-         MOD_H,  __________,  __________,  __________,  __________,  __________,
-         __________,  MOD_M,  __________,  MOD_DOT ,  __________,  __________,
-                   __________,  __________,  __________, __________,
+           MOD_Y,  MOD_U,  MOD_I,  MOD_O,  __________,  __________,
+           MOD_H,  MOD_J,  MOD_K,  MOD_L,  __________,  __________,
+           MOD_N,  MOD_M,  MOD_UP,  MOD_DOT ,  __________,  __________,
+                     MOD_LEFT,  MOD_DOWN,  MOD_RIGHT, __________,
          KC_F2,  __________,
          SHIFT_BSLS_WIN,
          __________,  SHIFT_TAB_WIN,  MOD_SPACE,
@@ -387,69 +599,6 @@ __________,  __________,  __________,  __________,  __________,  __________, ___
          __________,  __________,  __________,
                              MEH_F14
     ),
-};
-
-
-// Whether the macro 1 is currently being recorded.
-static bool is_macro1_recording = false;
-
-// The current set of active layers (as a bitmask).
-// There is a global 'layer_state' variable but it is set after the call
-// to layer_state_set_user().
-static uint32_t current_layer_state = 0;
-uint32_t layer_state_set_user(uint32_t state);
-
-// Method called at the end of the tap dance on the TAP_MACRO key. That key is
-// used to start recording a macro (double tap or more), to stop recording (any
-// number of tap), or to play the recorded macro (1 tap).
-void macro_tapdance_fn(qk_tap_dance_state_t *state, void *user_data) {
-  uint16_t keycode;
-  keyrecord_t record;
-  dprintf("macro_tap_dance_fn %d\n", state->count);
-  if (is_macro1_recording) {
-    keycode = DYN_REC_STOP;
-    is_macro1_recording = false;
-    layer_state_set_user(current_layer_state);
-  } else if (state->count == 1) {
-    keycode = DYN_MACRO_PLAY1;
-  } else {
-    keycode = DYN_REC_START1;
-    is_macro1_recording = true;
-    layer_state_set_user(current_layer_state);
-  }
-
-  record.event.pressed = true;
-  process_record_dynamic_macro(keycode, &record);
-  record.event.pressed = false;
-  process_record_dynamic_macro(keycode, &record);
-}
-
-// The definition of the tap dance actions:
-qk_tap_dance_action_t tap_dance_actions[] = {
-  // This Tap dance plays the macro 1 on TAP and records it on double tap.
-  [TAP_MACRO] = ACTION_TAP_DANCE_FN(macro_tapdance_fn),
-};
-
-const uint16_t PROGMEM fn_actions[] = {
-};
-
-const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
- switch(id) {
-    case MAIL: {
-        if (record->event.pressed) {
-            SEND_STRING("oleksii.danilov@gmail.com");
-            return false;
-        }
-    }
-
-    case SLEEP: {
-        if (record->event.pressed) {
-            SEND_STRING(SS_DOWN(X_LCTRL) SS_DOWN(X_LSHIFT) SS_DOWN(X_POWER) SS_UP(X_POWER) SS_UP(X_LSHIFT) SS_UP(X_LCTRL));
-            return false;
-        }
-    }
-  }
-    return MACRO_NONE;
 };
 
 void matrix_init_user(void) {
@@ -592,7 +741,7 @@ bool no_meh_repeat(uint16_t code, bool pressed) {
        no_meh(code);
        palm_repeat_code = code;
        palm_repeat_timer = timer_read();
-       first_repeat_delay = 200;
+       first_repeat_delay = 180;
    } else {
        palm_repeat_code = 0;
    }
@@ -608,12 +757,12 @@ bool ___if_held_140___add_shift(uint16_t code, bool pressed) {
   return ___if_held___add_shift(code, pressed, 140);
 }
 
-bool ___if_held_200___add_shift(uint16_t code, bool pressed) {
-  return ___if_held___add_shift(code, pressed, 200);
+bool ___if_held_180___add_shift(uint16_t code, bool pressed) {
+  return ___if_held___add_shift(code, pressed, 180);
 }
 
-bool ___if_held_200___replace_add_mod(uint16_t code, uint16_t replacement_code, uint16_t mod_if_held, bool pressed) {
-  return ___if_held_replace_add_mod(code, replacement_code, mod_if_held, pressed, 200);
+bool ___if_held_180___replace_add_mod(uint16_t code, uint16_t replacement_code, uint16_t mod_if_held, bool pressed) {
+  return ___if_held_replace_add_mod(code, replacement_code, mod_if_held, pressed, 180);
 }
 
 void matrix_scan_user(void) {
@@ -706,7 +855,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         // mac-specific layers
         case CMD_ESC: {
          static uint16_t cmd_esc_layer_timer;
-         if (mo_layer_tap(KC_ESC, KC_NO, KC_LGUI, KC_NO, KC_NO, KC_NO, &cmd_esc_layer_timer, &cmd_esc_interrupted, is_pressed, 200)) {
+         if (mo_layer_tap(KC_ESC, KC_NO, KC_LGUI, KC_NO, KC_NO, KC_NO, &cmd_esc_layer_timer, &cmd_esc_interrupted, is_pressed, 180)) {
            esc_timer = timer_read();
          }
          return true;
@@ -714,20 +863,20 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
         case ALT_SHIFT_BS: {
           static uint16_t alt_shift_layer_timer;
-          mo_layer_tap(KC_BSPC, KC_NO, KC_LSFT, KC_LALT, KC_NO, KC_NO, &alt_shift_layer_timer, &alt_shift_interrupted, is_pressed, 200);
+          mo_layer_tap(KC_BSPC, KC_NO, KC_LSFT, KC_LALT, KC_NO, KC_NO, &alt_shift_layer_timer, &alt_shift_interrupted, is_pressed, 180);
           return true;
         }
 
         case CTRL_CMD_BS: {
           static uint16_t ctrl_layer_timer;
-          mo_layer_tap(KC_BSPC, KC_LGUI, KC_LCTL, KC_NO, KC_NO, KC_NO, &ctrl_layer_timer, &ctrl_interrupted, is_pressed, 200);
+          mo_layer_tap(KC_BSPC, KC_LGUI, KC_LCTL, KC_NO, KC_NO, KC_NO, &ctrl_layer_timer, &ctrl_interrupted, is_pressed, 180);
           return true;
         }
 
         // win-specific layers
         case CTRL_ESC: {
          static uint16_t ctrl_esc_layer_timer;
-         if (mo_layer_tap(KC_ESC, KC_NO, KC_LCTL, KC_NO, KC_NO, KC_NO, &ctrl_esc_layer_timer, &ctrl_esc_interrupted, is_pressed, 200)) {
+         if (mo_layer_tap(KC_ESC, KC_NO, KC_LCTL, KC_NO, KC_NO, KC_NO, &ctrl_esc_layer_timer, &ctrl_esc_interrupted, is_pressed, 180)) {
            esc_timer = timer_read();
          }
          return true;
@@ -735,13 +884,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
         case CTRL_SHIFT_BS: {
           static uint16_t ctrl_shift_layer_timer;
-          mo_layer_tap(KC_BSPC, KC_NO, KC_LSFT, KC_LCTL, KC_NO, KC_NO, &ctrl_shift_layer_timer, &ctrl_shift_interrupted, is_pressed, 200);
+          mo_layer_tap(KC_BSPC, KC_NO, KC_LSFT, KC_LCTL, KC_NO, KC_NO, &ctrl_shift_layer_timer, &ctrl_shift_interrupted, is_pressed, 180);
           return true;
         }
 
         case LGUI_DEL: {
           static uint16_t lgui_del_layer_timer;
-          mo_layer_tap(KC_DEL, KC_NO, KC_LGUI, KC_NO, KC_NO, KC_NO, &lgui_del_layer_timer, &lgui_del_interrupted, is_pressed, 200);
+          mo_layer_tap(KC_DEL, KC_NO, KC_LGUI, KC_NO, KC_NO, KC_NO, &lgui_del_layer_timer, &lgui_del_interrupted, is_pressed, 180);
           return true;
         }
 
@@ -754,17 +903,17 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
         case ALT_SLASH: {
           static uint16_t alt_layer_timer;
-          mo_layer_tap(KC_SLSH, KC_NO, KC_LALT, KC_NO, KC_NO, KC_NO, &alt_layer_timer, &alt_interrupted, is_pressed, 200);
+          mo_layer_tap(KC_SLSH, KC_NO, KC_LALT, KC_NO, KC_NO, KC_NO, &alt_layer_timer, &alt_interrupted, is_pressed, 180);
           return true;
         }
 
         // leaded keys
         case KC_RGHT: {
-          return after_leader(KC_RGHT, KC_LGUI, KC_LSFT, &esc_timer, is_pressed, 200);
+          return after_leader(KC_RGHT, KC_LGUI, KC_LCTL, &esc_timer, is_pressed, 180);
         }
 
         case KC_LEFT: {
-          return after_leader(KC_LEFT, KC_LGUI, KC_LSFT, &esc_timer, is_pressed, 200);
+          return after_leader(KC_LEFT, KC_LGUI, KC_LCTL, &esc_timer, is_pressed, 180);
         }
 
         // no holding delay
@@ -782,65 +931,77 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case MOD_ESC: {return ___if_held_140___add_shift(KC_ESC, is_pressed); }
         case MOD_ENTER: {return ___if_held_140___add_shift(KC_ENTER, is_pressed); }
 
-        // 200 ms
-        case MOD_W: {return ___if_held_200___add_shift(KC_W, is_pressed); }
-        case MOD_E: {return ___if_held_200___add_shift(KC_E, is_pressed); }
-        case MOD_R: {return ___if_held_200___add_shift(KC_R, is_pressed); }
-        case MOD_T: {return ___if_held_200___add_shift(KC_T, is_pressed); }
-        case MOD_S: {return ___if_held_200___add_shift(KC_S, is_pressed); }
-        case MOD_D: {return ___if_held_200___add_shift(KC_D, is_pressed); }
-        case MOD_F: {return ___if_held_200___add_shift(KC_F, is_pressed); }
-        case MOD_G: {return ___if_held_200___add_shift(KC_G, is_pressed); }
-        case MOD_X: {return ___if_held_200___add_shift(KC_X, is_pressed); }
-        case MOD_C: {return ___if_held_200___add_shift(KC_C, is_pressed); }
-        case MOD_V: {return ___if_held_200___add_shift(KC_V, is_pressed); }
-        case MOD_B: {return ___if_held_200___add_shift(KC_B, is_pressed); }
-        case MOD_LBRC: {return ___if_held_200___add_shift(KC_LBRC, is_pressed); }
-        case MOD_RBRC: {return ___if_held_200___add_shift(KC_RBRC, is_pressed); }
+        // 180 ms
+        case MOD_W: {return ___if_held_180___add_shift(KC_W, is_pressed); }
+        case MOD_E: {return ___if_held_180___add_shift(KC_E, is_pressed); }
+        case MOD_R: {return ___if_held_180___add_shift(KC_R, is_pressed); }
+        case MOD_T: {return ___if_held_180___add_shift(KC_T, is_pressed); }
+        case MOD_S: {return ___if_held_180___add_shift(KC_S, is_pressed); }
+        case MOD_D: {return ___if_held_180___add_shift(KC_D, is_pressed); }
+        case MOD_F: {return ___if_held_180___add_shift(KC_F, is_pressed); }
+        case MOD_G: {return ___if_held_180___add_shift(KC_G, is_pressed); }
+        case MOD_X: {return ___if_held_180___add_shift(KC_X, is_pressed); }
+        case MOD_C: {return ___if_held_180___add_shift(KC_C, is_pressed); }
+        case MOD_V: {return ___if_held_180___add_shift(KC_V, is_pressed); }
+        case MOD_B: {return ___if_held_180___add_shift(KC_B, is_pressed); }
+        case MOD_LBRC: {return ___if_held_180___add_shift(KC_LBRC, is_pressed); }
+        case MOD_COMMA: {return ___if_held_180___add_shift(KC_COMM, is_pressed); }
+        case MOD_RBRC: {return ___if_held_180___add_shift(KC_RBRC, is_pressed); }
 
-        case MOD_COMMA: {return ___if_held_200___add_shift(KC_COMM, is_pressed); }
-        case MOD_DOT: {return ___if_held_200___add_shift(KC_DOT, is_pressed); }
-        case MOD_H: {return ___if_held_200___add_shift(KC_H, is_pressed); }
-        case MOD_M: {return ___if_held_200___add_shift(KC_M, is_pressed); }
+        case MOD_Y: {return ___if_held_180___add_shift(KC_Y, is_pressed); }
+        case MOD_U: {return ___if_held_180___add_shift(KC_U, is_pressed); }
+        case MOD_I: {return ___if_held_180___add_shift(KC_I, is_pressed); }
+        case MOD_O: {return ___if_held_180___add_shift(KC_O, is_pressed); }
+        case MOD_H: {return ___if_held_180___add_shift(KC_H, is_pressed); }
+        case MOD_J: {return ___if_held_180___add_shift(KC_J, is_pressed); }
+        case MOD_K: {return ___if_held_180___add_shift(KC_K, is_pressed); }
+        case MOD_L: {return ___if_held_180___add_shift(KC_L, is_pressed); }
+        case MOD_N: {return ___if_held_180___add_shift(KC_N, is_pressed); }
+        case MOD_M: {return ___if_held_180___add_shift(KC_M, is_pressed); }
+        case MOD_DOT: {return ___if_held_180___add_shift(KC_DOT, is_pressed); }
+        case MOD_LEFT: {return ___if_held_180___add_shift(KC_LEFT, is_pressed); }
+        case MOD_RIGHT: {return ___if_held_180___add_shift(KC_RGHT, is_pressed); }
+        case MOD_UP: {return ___if_held_180___add_shift(KC_UP, is_pressed); }
+        case MOD_DOWN: {return ___if_held_180___add_shift(KC_DOWN, is_pressed); }
 
-        case KC_2: {return ___if_held_200___replace_add_mod(KC_2, KC_9, KC_LSFT, is_pressed); }
-        case KC_3: {return ___if_held_200___replace_add_mod(KC_3, KC_MINS, KC_LSFT, is_pressed); }
-        case KC_4: {return ___if_held_200___replace_add_mod(KC_4, KC_0, KC_LSFT, is_pressed); }
-        case KC_5: {return ___if_held_200___replace_add_mod(KC_5, KC_EQL, KC_NO, is_pressed); }
-        case KC_6: {return ___if_held_200___replace_add_mod(KC_6, KC_EQL, KC_LSFT, is_pressed); }
-        case KC_7: {return ___if_held_200___replace_add_mod(KC_7, KC_1, KC_LSFT, is_pressed); }
-        case KC_8: {return ___if_held_200___replace_add_mod(KC_8, KC_MINS, KC_NO, is_pressed); }
-        case KC_9: {return ___if_held_200___replace_add_mod(KC_9, KC_SLSH, KC_LSFT, is_pressed); }
-        case KC_F5: {return ___if_held_200___replace_add_mod(KC_F5, KC_COMM, KC_LGUI, is_pressed); }
+        case KC_2: {return ___if_held_180___replace_add_mod(KC_2, KC_9, KC_LSFT, is_pressed); }
+        case KC_3: {return ___if_held_180___replace_add_mod(KC_3, KC_MINS, KC_LSFT, is_pressed); }
+        case KC_4: {return ___if_held_180___replace_add_mod(KC_4, KC_0, KC_LSFT, is_pressed); }
+        case KC_5: {return ___if_held_180___replace_add_mod(KC_5, KC_EQL, KC_NO, is_pressed); }
+        case KC_6: {return ___if_held_180___replace_add_mod(KC_6, KC_EQL, KC_LSFT, is_pressed); }
+        case KC_7: {return ___if_held_180___replace_add_mod(KC_7, KC_1, KC_LSFT, is_pressed); }
+        case KC_8: {return ___if_held_180___replace_add_mod(KC_8, KC_MINS, KC_NO, is_pressed); }
+        case KC_9: {return ___if_held_180___replace_add_mod(KC_9, KC_SLSH, KC_LSFT, is_pressed); }
+        case KC_F5: {return ___if_held_180___replace_add_mod(KC_F5, KC_COMM, KC_LGUI, is_pressed); }
 
-        case KC_F1: {return ___if_held_200___add_shift(KC_F1, is_pressed); }
-        case KC_F2: {return ___if_held_200___add_shift(KC_F2, is_pressed); }
-        case KC_F3: {return ___if_held_200___add_shift(KC_F3, is_pressed); }
-        case KC_F4: {return ___if_held_200___add_shift(KC_F4, is_pressed); }
-        case KC_F6: {return ___if_held_200___add_shift(KC_F6, is_pressed); }
-        case KC_F7: {return ___if_held_200___add_shift(KC_F7, is_pressed); }
-        case KC_F8: {return ___if_held_200___add_shift(KC_F8, is_pressed); }
-        case KC_F9: {return ___if_held_200___add_shift(KC_F9, is_pressed); }
-        case KC_F10: {return ___if_held_200___add_shift(KC_F10, is_pressed); }
-        case KC_F11: {return ___if_held_200___add_shift(KC_F11, is_pressed); }
-        case KC_F12: {return ___if_held_200___add_shift(KC_F12, is_pressed); }
-        case KC_F13: {return ___if_held_200___add_shift(KC_F13, is_pressed); }
-        case KC_F14: {return ___if_held_200___add_shift(KC_F14, is_pressed); }
-        case KC_F15: {return ___if_held_200___add_shift(KC_F15, is_pressed); }
-        case KC_F16: {return ___if_held_200___add_shift(KC_F16, is_pressed); }
+        case KC_F1: {return ___if_held_180___add_shift(KC_F1, is_pressed); }
+        case KC_F2: {return ___if_held_180___add_shift(KC_F2, is_pressed); }
+        case KC_F3: {return ___if_held_180___add_shift(KC_F3, is_pressed); }
+        case KC_F4: {return ___if_held_180___add_shift(KC_F4, is_pressed); }
+        case KC_F6: {return ___if_held_180___add_shift(KC_F6, is_pressed); }
+        case KC_F7: {return ___if_held_180___add_shift(KC_F7, is_pressed); }
+        case KC_F8: {return ___if_held_180___add_shift(KC_F8, is_pressed); }
+        case KC_F9: {return ___if_held_180___add_shift(KC_F9, is_pressed); }
+        case KC_F10: {return ___if_held_180___add_shift(KC_F10, is_pressed); }
+        case KC_F11: {return ___if_held_180___add_shift(KC_F11, is_pressed); }
+        case KC_F12: {return ___if_held_180___add_shift(KC_F12, is_pressed); }
+        case KC_F13: {return ___if_held_180___add_shift(KC_F13, is_pressed); }
+        case KC_F14: {return ___if_held_180___add_shift(KC_F14, is_pressed); }
+        case KC_F15: {return ___if_held_180___add_shift(KC_F15, is_pressed); }
+        case KC_F16: {return ___if_held_180___add_shift(KC_F16, is_pressed); }
 
         // mac-specific overrides
-        case CTRL_COMMA: {return replace_cmd_with_mod____if_held___cmd_shift(KC_COMM, KC_LCTL, is_pressed, 200); }
-        case CTRL_DOT: {return replace_cmd_with_mod____if_held___cmd_shift(KC_DOT, KC_LCTL, is_pressed, 200); }
-        case CTRL_H: {return replace_cmd_with_mod____if_held___cmd_shift(KC_H, KC_LCTL, is_pressed, 200); }
-        case CTRL_M: {return replace_cmd_with_mod____if_held___cmd_shift(KC_M, KC_LCTL, is_pressed, 200); }
-        case SHIFT_TAB_MAC: {return replace_mod1_with_mod2____if_held___mod3_plus_mod4(KC_TAB, KC_LGUI, KC_LSFT, KC_LCTL, KC_LSFT, is_pressed, 200); }
-        case SHIFT_BSLS_MAC: {return replace_mod1_with_mod2____if_held___mod3_plus_mod4(KC_BSLS, KC_LGUI, KC_LSFT, KC_LCTL, KC_LSFT, is_pressed, 200); }
-        case ALT_BSPC: {return replace_cmd_with_mod____if_held___cmd_shift(KC_BSPC, KC_LALT, is_pressed, 200); }
+        case CTRL_COMMA: {return replace_cmd_with_mod____if_held___cmd_shift(KC_COMM, KC_LCTL, is_pressed, 180); }
+        case CTRL_DOT: {return replace_cmd_with_mod____if_held___cmd_shift(KC_DOT, KC_LCTL, is_pressed, 180); }
+        case CTRL_H: {return replace_cmd_with_mod____if_held___cmd_shift(KC_H, KC_LCTL, is_pressed, 180); }
+        case CTRL_M: {return replace_cmd_with_mod____if_held___cmd_shift(KC_M, KC_LCTL, is_pressed, 180); }
+        case SHIFT_TAB_MAC: {return replace_mod1_with_mod2____if_held___mod3_plus_mod4(KC_TAB, KC_LGUI, KC_LSFT, KC_LCTL, KC_LSFT, is_pressed, 180); }
+        case SHIFT_BSLS_MAC: {return replace_mod1_with_mod2____if_held___mod3_plus_mod4(KC_BSLS, KC_LGUI, KC_LSFT, KC_LCTL, KC_LSFT, is_pressed, 180); }
+        case ALT_BSPC: {return replace_cmd_with_mod____if_held___cmd_shift(KC_BSPC, KC_LALT, is_pressed, 180); }
 
         // win-specific overrides
-        case SHIFT_TAB_WIN: {return replace_mod1_with_mod2____if_held___mod3_plus_mod4(KC_TAB, KC_LCTL, KC_LSFT, KC_LCTL, KC_LSFT, is_pressed, 200); }
-        case SHIFT_BSLS_WIN: {return replace_mod1_with_mod2____if_held___mod3_plus_mod4(KC_BSLS, KC_LCTL, KC_LSFT, KC_LCTL, KC_LSFT, is_pressed, 200); }
+        case SHIFT_TAB_WIN: {return replace_mod1_with_mod2____if_held___mod3_plus_mod4(KC_TAB, KC_LCTL, KC_LSFT, KC_LCTL, KC_LSFT, is_pressed, 180); }
+        case SHIFT_BSLS_WIN: {return replace_mod1_with_mod2____if_held___mod3_plus_mod4(KC_BSLS, KC_LCTL, KC_LSFT, KC_LCTL, KC_LSFT, is_pressed, 180); }
 
         default: {
           return true;
