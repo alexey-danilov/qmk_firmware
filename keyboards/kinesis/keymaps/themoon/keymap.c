@@ -108,7 +108,8 @@ enum {
   LB_TD = 1,
   RB_TD = 2,
   K_TD = 3,
-  TAP_MACRO = 4
+  TAP_MACRO1 = 4,
+  TAP_MACRO2 = 5
 };
 //Enums used to clearly convey the state of the tap dance
 enum {
@@ -152,7 +153,7 @@ void lb_finished (qk_tap_dance_state_t *state, void *user_data) {
   switch (lb_tap_state.state) {
     case SINGLE_TAP: register_code(KC_LBRC); break;
     case SINGLE_HOLD: register_code(KC_LSFT); register_code(KC_LBRC); unregister_code(KC_LBRC); break;
-    default: register_code(KC_LCTL); register_code(KC_F1); unregister_code(KC_F1);
+    default: register_code(KC_HOME);
   }
 }
 
@@ -160,7 +161,7 @@ void lb_reset (qk_tap_dance_state_t *state, void *user_data) {
   switch (lb_tap_state.state) {
     case SINGLE_TAP: unregister_code(KC_LBRC); break;
     case SINGLE_HOLD: unregister_code(KC_LSFT); break;
-    default: unregister_code(KC_LCTL);
+    default: unregister_code(KC_HOME);
   }
   lb_tap_state.state = 0;
 }
@@ -176,7 +177,7 @@ void comma_finished (qk_tap_dance_state_t *state, void *user_data) {
   switch (comma_tap_state.state) {
     case SINGLE_TAP: register_code(KC_COMM); break;
     case SINGLE_HOLD: register_code(KC_LSFT); register_code(KC_COMM); unregister_code(KC_COMM); break;
-    default: register_code(KC_LCTL); register_code(KC_F2); unregister_code(KC_F2);
+    default: register_code(KC_LGUI); register_code(KC_COMM); unregister_code(KC_COMM);
   }
 }
 
@@ -184,7 +185,7 @@ void comma_reset (qk_tap_dance_state_t *state, void *user_data) {
   switch (comma_tap_state.state) {
     case SINGLE_TAP: unregister_code(KC_COMM); break;
     case SINGLE_HOLD: unregister_code(KC_LSFT); break;
-    default: unregister_code(KC_LCTL);
+    default: unregister_code(KC_LGUI);
   }
   comma_tap_state.state = 0;
 }
@@ -200,7 +201,7 @@ void rb_finished (qk_tap_dance_state_t *state, void *user_data) {
   switch (rb_tap_state.state) {
     case SINGLE_TAP: register_code(KC_RBRC); break;
     case SINGLE_HOLD: register_code(KC_LSFT); register_code(KC_RBRC); unregister_code(KC_RBRC); break;
-    default: register_code(KC_LCTL); register_code(KC_F3); unregister_code(KC_F3);
+    default: register_code(KC_END);
   }
 }
 
@@ -208,7 +209,7 @@ void rb_reset (qk_tap_dance_state_t *state, void *user_data) {
   switch (rb_tap_state.state) {
     case SINGLE_TAP: unregister_code(KC_RBRC); break;
     case SINGLE_HOLD: unregister_code(KC_LSFT); break;
-    default: unregister_code(KC_LCTL);
+    default: unregister_code(KC_END);
   }
   rb_tap_state.state = 0;
 }
@@ -237,7 +238,7 @@ void k_reset (qk_tap_dance_state_t *state, void *user_data) {
   k_tap_state.state = 0;
 }
 
-//**************** DYNAMIC MACRO TAP *********************//
+//**************** DYNAMIC MACRO1 TAP *********************//
 // Whether the macro 1 is currently being recorded.
 static bool is_macro1_recording = false;
 
@@ -247,13 +248,12 @@ static bool is_macro1_recording = false;
 static uint32_t current_layer_state = 0;
 uint32_t layer_state_set_user(uint32_t state);
 
-// Method called at the end of the tap dance on the TAP_MACRO key. That key is
+// Method called at the end of the tap dance on the TAP_MACRO1 key. That key is
 // used to start recording a macro (double tap or more), to stop recording (any
 // number of tap), or to play the recorded macro (1 tap).
-void macro_tapdance_fn(qk_tap_dance_state_t *state, void *user_data) {
+void macro1_tapdance_fn(qk_tap_dance_state_t *state, void *user_data) {
   uint16_t keycode;
   keyrecord_t record;
-  dprintf("macro_tap_dance_fn %d\n", state->count);
   if (is_macro1_recording) {
     keycode = DYN_REC_STOP;
     is_macro1_recording = false;
@@ -272,10 +272,35 @@ void macro_tapdance_fn(qk_tap_dance_state_t *state, void *user_data) {
   process_record_dynamic_macro(keycode, &record);
 }
 
+//**************** DYNAMIC MACRO2 TAP *********************//
+static bool is_macro2_recording = false;
+
+void macro2_tapdance_fn(qk_tap_dance_state_t *state, void *user_data) {
+  uint16_t keycode;
+  keyrecord_t record;
+  if (is_macro2_recording) {
+    keycode = DYN_REC_STOP;
+    is_macro2_recording = false;
+    layer_state_set_user(current_layer_state);
+  } else if (state->count == 1) {
+    keycode = DYN_MACRO_PLAY2;
+  } else {
+    keycode = DYN_REC_START2;
+    is_macro2_recording = true;
+    layer_state_set_user(current_layer_state);
+  }
+
+  record.event.pressed = true;
+  process_record_dynamic_macro(keycode, &record);
+  record.event.pressed = false;
+  process_record_dynamic_macro(keycode, &record);
+}
+
 //**************** ALL TAP MACROS *********************//
 qk_tap_dance_action_t tap_dance_actions[] = {
   // This Tap dance plays the macro 1 on TAP and records it on double tap.
-  [TAP_MACRO] = ACTION_TAP_DANCE_FN(macro_tapdance_fn),
+  [TAP_MACRO1] = ACTION_TAP_DANCE_FN(macro1_tapdance_fn),
+  [TAP_MACRO2] = ACTION_TAP_DANCE_FN(macro2_tapdance_fn),
   [LB_TD] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, lb_finished, lb_reset),
   [COMM_TD] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, comma_finished, comma_reset),
   [RB_TD] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, rb_finished, rb_reset),
@@ -336,27 +361,27 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [_MAC] = LAYOUT(
            // left side
-           KC_POWER, KC_F1  ,KC_F2  ,KC_F3  ,KC_F4  ,KC_F5  ,KC_F6  ,KC_F7  ,KC_F8,
+           M(SLEEP), KC_F1  ,KC_F2  ,KC_F3  ,KC_F4  ,KC_F5  ,KC_F6  ,KC_F7  ,KC_F8,
            KC_EQL, KC_1, KC_2, KC_3, KC_4, KC_5,
            KC_GRV, KC_Q, KC_W, KC_E, KC_R, KC_T,
            KC_CAPSLOCK,KC_A, KC_S, KC_D, KC_F, KC_G,
            M(MAIL) ,KC_Z, KC_X, KC_C, KC_V, KC_B,
                  KC_INS, TD(LB_TD), TD(COMM_TD), TD(RB_TD),
                                            // left thumb keys
-			                                    ALT_SHIFT_BS,TD(TAP_MACRO),
+			                                    ALT_SHIFT_BS,TD(TAP_MACRO1),
                                                    ALT_SLASH,
                            CMD_ESC, KC_SFTENT, CTRL_CMD_BS,
                                      // left palm key
 			                         MEH_F13,
     // right side
-    KC_F9  ,KC_F10 ,KC_F11 ,KC_F12 ,KC_PSCR ,KC_SLCK  ,KC_PAUS, KC_FN0, RESET,
+    KC_F9  ,KC_F10 ,KC_F11 ,KC_F12 ,KC_PSCR ,KC_SLCK  ,KC_PAUS, RESET, KC_POWER,
 	KC_6, KC_7, KC_8, KC_9, KC_0, KC_MINS,
 	KC_Y, KC_U, KC_I, KC_O, KC_P, KC_F17,
 	KC_H, KC_J, TD(K_TD), KC_L, KC_SCLN, KC_F18,
 	KC_N, KC_M, KC_UP, KC_DOT, KC_QUOT, KC_F19,
 	KC_LEFT, KC_DOWN, KC_RGHT, KC_F15,
            // right thumb keys
-           M(SLEEP),ALT_SHIFT_DEL,
+           TD(TAP_MACRO2),ALT_SHIFT_DEL,
            ALT_BSLASH,
            CTRL_F16, SFT_T(KC_TAB), CMD_SPACE,
                                     // right palm key
@@ -457,27 +482,27 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 [_WIN] = LAYOUT(
            // left side
-           KC_POWER, KC_F1  ,KC_F2  ,KC_F3  ,KC_F4  ,KC_F5  ,KC_F6  ,KC_F7  ,KC_F8,
+           M(SLEEP), KC_F1  ,KC_F2  ,KC_F3  ,KC_F4  ,KC_F5  ,KC_F6  ,KC_F7  ,KC_F8,
            KC_EQL, KC_1, KC_2, KC_3, KC_4, KC_5,
            KC_GRV, KC_Q, KC_W, KC_E, KC_R, KC_T,
            KC_CAPSLOCK,KC_A, KC_S, KC_D, KC_F, KC_G,
            M(MAIL) ,KC_Z, KC_X, KC_C, KC_V, KC_B,
                  KC_INS, TD(LB_TD), TD(COMM_TD), TD(RB_TD),
                                            // left thumb keys
-			                                    CTRL_SHIFT_BS,TD(TAP_MACRO),
+			                                    CTRL_SHIFT_BS,TD(TAP_MACRO1),
                                                    ALT_SLASH,
                            CTRL_ESC, KC_SFTENT, LGUI_DEL,
                                      // left palm key
 			                         MEH_F13,
     // right side
-    KC_F9  ,KC_F10 ,KC_F11 ,KC_F12 ,KC_PSCR ,KC_SLCK  ,KC_PAUS, KC_FN0, RESET,
+    KC_F9  ,KC_F10 ,KC_F11 ,KC_F12 ,KC_PSCR ,KC_SLCK  ,KC_PAUS, RESET, KC_POWER,
 	KC_6, KC_7, KC_8, KC_9, KC_0, KC_MINS,
 	KC_Y, KC_U, KC_I, KC_O, KC_P, KC_F17,
 	KC_H, KC_J, TD(K_TD), KC_L, KC_SCLN, KC_F18,
 	KC_N, KC_M, KC_UP, KC_DOT, KC_QUOT, KC_F19,
 	KC_LEFT, KC_DOWN, KC_RGHT, KC_F15,
            // right thumb keys
-           M(SLEEP),CTRL_SHIFT_DEL,
+           TD(TAP_MACRO2),CTRL_SHIFT_DEL,
            ALT_BSLASH,
            KC_RGUI, SFT_T(KC_TAB), CTRL_SPACE,
                                     // right palm key
@@ -578,7 +603,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 [_PALM] = LAYOUT(
 __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
-         __________,  __________,  KC__VOLDOWN,  KC__MUTE,  KC__VOLUP,  __________,
+         __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
@@ -592,10 +617,10 @@ __________,  __________,  __________,  __________,  __________,  __________, ___
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  KC_PGUP,  __________ ,  __________,  __________,
-                   KC_HOME,  KC_PGDN, KC_END, __________,
+                   KC__VOLDOWN,  KC_PGDN, KC__VOLUP, __________,
          __________,  __________,
          __________,
-         __________,  __________,  __________,
+         __________,  __________,  KC__MUTE,
                              MEH_F14
     ),
 };
@@ -828,8 +853,8 @@ bool ctrl_esc_interrupted = true;
 bool lgui_del_interrupted = true;
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-    if (keycode != TD(TAP_MACRO)) {
-      // That key is processed by the macro_tapdance_fn. Not ignoring it here is
+    if ((keycode != TD(TAP_MACRO1)) && (keycode != TD(TAP_MACRO2))) {
+      // That key is processed by the macro1_tapdance_fn. Not ignoring it here is
       // mostly a no-op except that it is recorded in the macros (and uses space).
       // We can't just return false when the key is a tap dance, because
       // process_record_user, is called before the tap dance processing (and
@@ -918,8 +943,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         // no holding delay
         case KC_PGUP: {return no_meh_repeat(KC_PGUP, is_pressed); }
         case KC_PGDN: {return no_meh_repeat(KC_PGDN, is_pressed); }
-        case KC_HOME: {return no_meh_repeat(KC_HOME, is_pressed); }
-        case KC_END: {return no_meh_repeat(KC_END, is_pressed); }
 
         case KC__VOLDOWN: {return no_meh_repeat(KC__VOLDOWN, is_pressed); }
         case KC__MUTE: {return no_meh_repeat(KC__MUTE, is_pressed); }
@@ -971,12 +994,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case KC_7: {return ___if_held_180___replace_add_mod(KC_7, KC_1, KC_LSFT, is_pressed); }
         case KC_8: {return ___if_held_180___replace_add_mod(KC_8, KC_MINS, KC_NO, is_pressed); }
         case KC_9: {return ___if_held_180___replace_add_mod(KC_9, KC_SLSH, KC_LSFT, is_pressed); }
-        case KC_F5: {return ___if_held_180___replace_add_mod(KC_F5, KC_COMM, KC_LGUI, is_pressed); }
 
         case KC_F1: {return ___if_held_180___add_shift(KC_F1, is_pressed); }
         case KC_F2: {return ___if_held_180___add_shift(KC_F2, is_pressed); }
         case KC_F3: {return ___if_held_180___add_shift(KC_F3, is_pressed); }
         case KC_F4: {return ___if_held_180___add_shift(KC_F4, is_pressed); }
+        case KC_F5: {return ___if_held_180___add_shift(KC_F5, is_pressed); }
         case KC_F6: {return ___if_held_180___add_shift(KC_F6, is_pressed); }
         case KC_F7: {return ___if_held_180___add_shift(KC_F7, is_pressed); }
         case KC_F8: {return ___if_held_180___add_shift(KC_F8, is_pressed); }
