@@ -142,34 +142,6 @@ int cur_dance (qk_tap_dance_state_t *state) {
   else return 6; //magic number. At some point this method will expand to work for more presses
 }
 
-//**************** LBRAC TAP *********************//
-static tap lb_tap_state = {
-  .is_press_action = true,
-  .state = 0
-};
-
-void lb_finished (qk_tap_dance_state_t *state, void *user_data) {
-  lb_tap_state.state = cur_dance(state);
-  switch (lb_tap_state.state) {
-    case SINGLE_TAP: register_code(KC_LBRC); break;
-    case SINGLE_HOLD: register_code(KC_LSFT); register_code(KC_LBRC); unregister_code(KC_LBRC); break;
-    case DOUBLE_TAP: register_code(KC_LCTL); register_code(KC_F1); unregister_code(KC_F1); break;
-    case DOUBLE_HOLD: register_code(KC_LCTL); register_code(KC_F2); unregister_code(KC_F2); break;
-    case DOUBLE_SINGLE_TAP: register_code(KC_LBRC); unregister_code(KC_LBRC); register_code(KC_LBRC); break;
-  }
-}
-
-void lb_reset (qk_tap_dance_state_t *state, void *user_data) {
-  switch (lb_tap_state.state) {
-    case SINGLE_TAP: unregister_code(KC_LBRC); break;
-    case SINGLE_HOLD: unregister_code(KC_LSFT); break;
-    case DOUBLE_TAP: unregister_code(KC_LCTL); break;
-    case DOUBLE_HOLD: unregister_code(KC_LCTL); break;
-    case DOUBLE_SINGLE_TAP: unregister_code(KC_LBRC); break;
-  }
-  lb_tap_state.state = 0;
-}
-
 //**************** COMMA TAP *********************//
 static tap comma_tap_state = {
   .is_press_action = true,
@@ -182,8 +154,7 @@ void comma_finished (qk_tap_dance_state_t *state, void *user_data) {
     case SINGLE_TAP: register_code(KC_COMM); break;
     case SINGLE_HOLD: register_code(KC_LSFT); register_code(KC_COMM); unregister_code(KC_COMM); break;
     case DOUBLE_TAP: register_code(KC_HOME); break;
-    case DOUBLE_HOLD: register_code(KC_LGUI); register_code(KC_COMM); unregister_code(KC_COMM); break;
-    case DOUBLE_SINGLE_TAP: register_code(KC_COMM); unregister_code(KC_COMM); register_code(KC_COMM); break;
+    default: register_code(KC_END); break;
   }
 }
 
@@ -192,10 +163,34 @@ void comma_reset (qk_tap_dance_state_t *state, void *user_data) {
     case SINGLE_TAP: unregister_code(KC_COMM); break;
     case SINGLE_HOLD: unregister_code(KC_LSFT); break;
     case DOUBLE_TAP: unregister_code(KC_HOME); break;
-    case DOUBLE_HOLD: unregister_code(KC_LGUI); break;
-    case DOUBLE_SINGLE_TAP: unregister_code(KC_COMM); break;
+    case DOUBLE_HOLD: unregister_code(KC_END); break;
+    default: unregister_code(KC_END); break;
   }
   comma_tap_state.state = 0;
+}
+
+//**************** LBRAC TAP *********************//
+static tap lb_tap_state = {
+  .is_press_action = true,
+  .state = 0
+};
+
+void lb_finished (qk_tap_dance_state_t *state, void *user_data) {
+  lb_tap_state.state = cur_dance(state);
+  switch (lb_tap_state.state) {
+    case SINGLE_TAP: register_code(KC_LBRC); break;
+    case SINGLE_HOLD: register_code(KC_LSFT); register_code(KC_LBRC); unregister_code(KC_LBRC); break;
+    default: register_code(KC_LCTL); register_code(KC_F1), unregister_code(KC_F1); break;
+  }
+}
+
+void lb_reset (qk_tap_dance_state_t *state, void *user_data) {
+  switch (lb_tap_state.state) {
+    case SINGLE_TAP: unregister_code(KC_LBRC); break;
+    case SINGLE_HOLD: unregister_code(KC_LSFT); break;
+    default: unregister_code(KC_LCTL); break;
+  }
+  lb_tap_state.state = 0;
 }
 
 //**************** RBRAC TAP *********************//
@@ -209,10 +204,7 @@ void rb_finished (qk_tap_dance_state_t *state, void *user_data) {
   switch (rb_tap_state.state) {
     case SINGLE_TAP: register_code(KC_RBRC); break;
     case SINGLE_HOLD: register_code(KC_LSFT); register_code(KC_RBRC); unregister_code(KC_RBRC); break;
-    case DOUBLE_TAP: register_code(KC_END); break;
-    case DOUBLE_HOLD: register_code(KC_LCTL); register_code(KC_F3); unregister_code(KC_F3); break;
-    case DOUBLE_SINGLE_TAP: register_code(KC_RBRC); unregister_code(KC_RBRC); register_code(KC_RBRC); break;
-    default: register_code(KC_END);
+    default: register_code(KC_LCTL); register_code(KC_F2), unregister_code(KC_F2); break;
   }
 }
 
@@ -220,9 +212,7 @@ void rb_reset (qk_tap_dance_state_t *state, void *user_data) {
   switch (rb_tap_state.state) {
     case SINGLE_TAP: unregister_code(KC_RBRC); break;
     case SINGLE_HOLD: unregister_code(KC_LSFT); break;
-    case DOUBLE_TAP: unregister_code(KC_END); break;
-    case DOUBLE_HOLD: unregister_code(KC_LCTL); break;
-    case DOUBLE_SINGLE_TAP: unregister_code(KC_RBRC); break;
+    default: unregister_code(KC_LCTL);
   }
   rb_tap_state.state = 0;
 }
@@ -238,9 +228,8 @@ void k_finished (qk_tap_dance_state_t *state, void *user_data) {
   switch (k_tap_state.state) {
     case SINGLE_TAP: register_code(KC_K); break;
     case SINGLE_HOLD: register_code(KC_LSFT); register_code(KC_K); unregister_code(KC_K); break;
-    case DOUBLE_TAP: register_code(KC_LCTL); register_code(KC_SPC); unregister_code(KC_SPC); break;
-    case DOUBLE_HOLD: register_code(KC_LOCKING_CAPS); break;
     case DOUBLE_SINGLE_TAP: register_code(KC_K); unregister_code(KC_K); register_code(KC_K); break;
+    default: register_code(KC_LCTL); register_code(KC_SPC); unregister_code(KC_SPC); break;
   }
 }
 
@@ -248,8 +237,8 @@ void k_reset (qk_tap_dance_state_t *state, void *user_data) {
   switch (k_tap_state.state) {
     case SINGLE_TAP: unregister_code(KC_K); break;
     case SINGLE_HOLD: unregister_code(KC_LSFT); break;
-    case DOUBLE_TAP: unregister_code(KC_LCTL); break;
     case DOUBLE_SINGLE_TAP: unregister_code(KC_K); break;
+    default: unregister_code(KC_LCTL); break;
   }
   k_tap_state.state = 0;
 }
