@@ -15,10 +15,9 @@
 #define _CONTROL_ESCAPE 6
 #define _CONTROL_SPACE 7
 #define _CTRL_SHIFT_BS 8
-#define _LGUI 9
 
-#define _PALM 10
-#define _ALT 11
+#define _PALM 9
+#define _ALT 10
 
 enum kinesis_keycodes {
   // mac
@@ -34,7 +33,7 @@ enum kinesis_keycodes {
   CTRL_SPACE = LT(_CONTROL_SPACE, KC_SPC),
   CTRL_SHIFT_DEL = MT(MOD_RCTL | MOD_RSFT, KC_DEL),
   CTRL_SHIFT_BS = MO(_CTRL_SHIFT_BS),
-  LGUI_DEL = MO(_LGUI),
+  LGUI_DEL = MT(KC_LGUI, KC_DEL),
 
   // common
   MEH_F13 = MO(_PALM),
@@ -100,6 +99,7 @@ enum holding_keycodes {
 enum {
     MAIL = 0,
     SLEEP,
+    DEL_WORD,
 };
 
 //**************** Definitions needed for quad function to work *********************//
@@ -153,8 +153,7 @@ void comma_finished (qk_tap_dance_state_t *state, void *user_data) {
   switch (comma_tap_state.state) {
     case SINGLE_TAP: register_code(KC_COMM); break;
     case SINGLE_HOLD: register_code(KC_LSFT); register_code(KC_COMM); unregister_code(KC_COMM); break;
-    case DOUBLE_TAP: register_code(KC_HOME); break;
-    default: register_code(KC_END); break;
+    default: register_code(KC_LSFT); register_code(KC_F14); unregister_code(KC_F14); break;
   }
 }
 
@@ -162,9 +161,7 @@ void comma_reset (qk_tap_dance_state_t *state, void *user_data) {
   switch (comma_tap_state.state) {
     case SINGLE_TAP: unregister_code(KC_COMM); break;
     case SINGLE_HOLD: unregister_code(KC_LSFT); break;
-    case DOUBLE_TAP: unregister_code(KC_HOME); break;
-    case DOUBLE_HOLD: unregister_code(KC_END); break;
-    default: unregister_code(KC_END); break;
+    default: unregister_code(KC_LSFT); break;
   }
   comma_tap_state.state = 0;
 }
@@ -180,7 +177,7 @@ void lb_finished (qk_tap_dance_state_t *state, void *user_data) {
   switch (lb_tap_state.state) {
     case SINGLE_TAP: register_code(KC_LBRC); break;
     case SINGLE_HOLD: register_code(KC_LSFT); register_code(KC_LBRC); unregister_code(KC_LBRC); break;
-    default: register_code(KC_LCTL); register_code(KC_F1), unregister_code(KC_F1); break;
+    default: register_code(KC_HOME); break;
   }
 }
 
@@ -188,7 +185,7 @@ void lb_reset (qk_tap_dance_state_t *state, void *user_data) {
   switch (lb_tap_state.state) {
     case SINGLE_TAP: unregister_code(KC_LBRC); break;
     case SINGLE_HOLD: unregister_code(KC_LSFT); break;
-    default: unregister_code(KC_LCTL); break;
+    default: unregister_code(KC_HOME); break;
   }
   lb_tap_state.state = 0;
 }
@@ -204,7 +201,7 @@ void rb_finished (qk_tap_dance_state_t *state, void *user_data) {
   switch (rb_tap_state.state) {
     case SINGLE_TAP: register_code(KC_RBRC); break;
     case SINGLE_HOLD: register_code(KC_LSFT); register_code(KC_RBRC); unregister_code(KC_RBRC); break;
-    default: register_code(KC_LCTL); register_code(KC_F2), unregister_code(KC_F2); break;
+    default: register_code(KC_END); break;
   }
 }
 
@@ -212,7 +209,7 @@ void rb_reset (qk_tap_dance_state_t *state, void *user_data) {
   switch (rb_tap_state.state) {
     case SINGLE_TAP: unregister_code(KC_RBRC); break;
     case SINGLE_HOLD: unregister_code(KC_LSFT); break;
-    default: unregister_code(KC_LCTL);
+    default: unregister_code(KC_END);
   }
   rb_tap_state.state = 0;
 }
@@ -330,6 +327,13 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
             return false;
         }
     }
+
+    case DEL_WORD: {
+        if (record->event.pressed) {
+            SEND_STRING(SS_DOWN(X_LSHIFT) SS_DOWN(X_LEFT) SS_DOWN(X_BSPACE) SS_UP(X_BSPACE) SS_UP(X_LEFT) SS_UP(X_LSHIFT));
+            return false;
+        }
+    }
   }
     return MACRO_NONE;
 };
@@ -339,7 +343,7 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
 * Keymap: Default Mac Layer in Qwerty
 *
 * ,-------------------------------------------------------------------------------------------------------------------.
-* | Power  |  F1  |  F2  |  F3  |  F4  |  F5  |  F6  |  F8  |  F9  |  F10 |  F12 | PSCR | SLCK | PAUS | FN0? |Program |
+* | Sleep  |  F1  |  F2  |  F3  |  F4  |  F5  |  F6  |  F8  |  F9  |  F10 |  F12 | PSCR | SLCK | PAUS |Program| Power |
 * |--------+------+------+------+------+------+---------------------------+------+------+------+------+------+--------|
 * | =+     |  1!  |  2@  |  3#  |  4$  |  5%  |                           |  6^  |  7&  |  8*  |  9(  |  0)  | -_     |
 * |--------+------+------+------+------+------|                           +------+------+------+------+------+--------|
@@ -352,7 +356,7 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
 *          |Insert|  [{  |  ,<  |  ]}  |                                         | Left | Down | Right| F15  |
 *          `---------------------------'                                         `---------------------------'
 *                            .-------------------------.         ,-------------------------.
-*                            | LShift+LAlt/BkSp | Macro|         | Sleep| LShift+LAlt/Del  |
+*                            | LShift+RAlt/BkSp | Macro|         | Sleep| LShift+RAlt/Del  |
 *                            `-----------|------|------|         |------+------+-----------`
 *                                 |      |      | Alt//|         | Alt/\|      |      |
 *                                 | LCMD/|Shift/|------|         |------|Shift/|RCMD/ |
@@ -487,7 +491,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 [_WIN] = LAYOUT(
            // left side
-           M(SLEEP), KC_F1  ,KC_F2  ,KC_F3  ,KC_F4  ,KC_F5  ,KC_F6  ,KC_F7  ,KC_F8,
+           KC_SLEP, KC_F1  ,KC_F2  ,KC_F3  ,KC_F4  ,KC_F5  ,KC_F6  ,KC_F7  ,KC_F8,
            KC_EQL, KC_1, KC_2, KC_3, KC_4, KC_5,
            KC_GRV, KC_Q, KC_W, KC_E, KC_R, KC_T,
            KC_CAPSLOCK,KC_A, KC_S, KC_D, KC_F, KC_G,
@@ -505,7 +509,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	KC_Y, KC_U, KC_I, KC_O, KC_P, KC_F17,
 	KC_H, KC_J, TD(K_TD), KC_L, KC_SCLN, KC_F18,
 	KC_N, KC_M, KC_UP, KC_DOT, KC_QUOT, KC_F19,
-	KC_LEFT, KC_DOWN, KC_RGHT, KC_F15,
+	KC_LEFT, KC_DOWN, KC_RGHT, KC_APP,
            // right thumb keys
            TD(TAP_MACRO2),CTRL_SHIFT_DEL,
            ALT_BSLASH,
@@ -544,7 +548,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________,  __________,  MOD_S,  MOD_D,  MOD_F,  MOD_G,
          __________,  __________,  MOD_X,  MOD_C,  MOD_V,  MOD_B,
                       __________,  MOD_LBRC, MOD_COMMA, MOD_RBRC,
-                             __________,  KC_F1,
+                             M(DEL_WORD),  KC_F1,
                                         KC_Z,
                     MOD_ESC, MOD_ENTER, LSFT(KC_Z),
                                      __________,
@@ -759,7 +763,7 @@ bool without_mods(uint16_t code, uint16_t mod1, uint16_t mod2, uint16_t mod3, ui
 }
 
 bool no_meh(uint16_t code) {
-  return without_mods(code, KC_LSFT, KC_LALT, KC_LCTL, KC_NO);
+  return without_mods(code, KC_LSFT, KC_RALT, KC_LCTL, KC_NO);
 }
 
 uint16_t palm_repeat_code;
@@ -855,7 +859,6 @@ bool ctrl_interrupted = true;
 bool alt_shift_interrupted = true;
 bool ctrl_shift_interrupted = true;
 bool ctrl_esc_interrupted = true;
-bool lgui_del_interrupted = true;
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     if ((keycode != TD(TAP_MACRO1)) && (keycode != TD(TAP_MACRO2))) {
@@ -878,7 +881,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     if (keycode != ALT_SHIFT_BS) { alt_shift_interrupted = true; }
     if (keycode != CTRL_ESC) { ctrl_esc_interrupted = true; }
     if (keycode != CTRL_SHIFT_BS) { ctrl_shift_interrupted = true; }
-    if (keycode != LGUI_DEL) { lgui_del_interrupted = true; }
 
     switch (keycode) {
         // mac-specific layers
@@ -892,7 +894,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
         case ALT_SHIFT_BS: {
           static uint16_t alt_shift_layer_timer;
-          mo_layer_tap(KC_BSPC, KC_NO, KC_LSFT, KC_LALT, KC_NO, KC_NO, &alt_shift_layer_timer, &alt_shift_interrupted, is_pressed, 180);
+          mo_layer_tap(KC_BSPC, KC_NO, KC_LSFT, KC_RALT, KC_NO, KC_NO, &alt_shift_layer_timer, &alt_shift_interrupted, is_pressed, 180);
           return true;
         }
 
@@ -917,22 +919,16 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           return true;
         }
 
-        case LGUI_DEL: {
-          static uint16_t lgui_del_layer_timer;
-          mo_layer_tap(KC_DEL, KC_NO, KC_LGUI, KC_NO, KC_NO, KC_NO, &lgui_del_layer_timer, &lgui_del_interrupted, is_pressed, 180);
-          return true;
-        }
-
         // common layers
         case MEH_F13: {
           static uint16_t meh_layer_timer;
-          mo_layer_tap(KC_F13, KC_NO, KC_LCTL, KC_LALT, KC_LSFT, KC_NO, &meh_layer_timer, &meh_interrupted, is_pressed, 300);
+          mo_layer_tap(KC_F13, KC_NO, KC_LCTL, KC_RALT, KC_LSFT, KC_NO, &meh_layer_timer, &meh_interrupted, is_pressed, 300);
           return true;
         }
 
         case ALT_SLASH: {
           static uint16_t alt_layer_timer;
-          mo_layer_tap(KC_SLSH, KC_NO, KC_LALT, KC_NO, KC_NO, KC_NO, &alt_layer_timer, &alt_interrupted, is_pressed, 180);
+          mo_layer_tap(KC_SLSH, KC_NO, KC_RALT, KC_NO, KC_NO, KC_NO, &alt_layer_timer, &alt_interrupted, is_pressed, 180);
           return true;
         }
 
@@ -1049,7 +1045,7 @@ uint32_t layer_state_set_user(uint32_t state) {
       register_code(KC_LGUI);
       break;
     case _ALT_SHIFT_BS:
-      register_code(KC_LALT);
+      register_code(KC_RALT);
       register_code(KC_LSFT);
       break;
     case _CTRL:
@@ -1067,24 +1063,22 @@ uint32_t layer_state_set_user(uint32_t state) {
       register_code(KC_LCTL);
       register_code(KC_LSFT);
       break;
-    case _LGUI:
-      register_code(KC_LGUI);
-      break;
 
     // common
     case _ALT:
-      register_code(KC_LALT);
+      register_code(KC_RALT); // in windows single press of LALT focuses on menu; so instead of creating new layer
+      // let's just sent RALT instead of LALT in all combinations
       break;
     case _PALM:
       register_code(KC_LSFT);
-      register_code(KC_LALT);
+      register_code(KC_RALT);
       register_code(KC_LCTL);
       break;
 
     default:
       unregister_code(KC_LGUI);
       unregister_code(KC_LCTL);
-      unregister_code(KC_LALT);
+      unregister_code(KC_RALT);
       unregister_code(KC_LSFT);
       break;
     }
