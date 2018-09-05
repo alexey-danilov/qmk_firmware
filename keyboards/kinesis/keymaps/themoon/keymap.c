@@ -25,6 +25,7 @@ enum kinesis_keycodes {
   CMD_SPACE = LT(_COMMAND_SPACE, KC_SPC),
   ALT_SHIFT_BS = MO(_ALT_SHIFT_BS),
   ALT_SHIFT_DEL = MT(MOD_RALT | MOD_RSFT, KC_DEL),
+  ALT_SLASH = MO(_ALT),
   CTRL_CMD_BS = MO(_CTRL),
   CTRL_F16 = LT(_CTRL, KC_F16),
 
@@ -33,12 +34,12 @@ enum kinesis_keycodes {
   CTRL_SPACE = LT(_CONTROL_SPACE, KC_SPC),
   CTRL_SHIFT_DEL = MT(MOD_RCTL | MOD_RSFT, KC_DEL),
   CTRL_SHIFT_BS = MO(_CTRL_SHIFT_BS),
-  LGUI_DEL = MT(KC_LGUI, KC_DEL),
+  LGUI_DEL = MT(MOD_LGUI, KC_DEL),
+  ALT_SLASH_WIN = MT(MOD_LALT, KC_SLSH), // on windows single alt press results in activating menu
 
   // common
   MEH_F13 = MO(_PALM),
   MEH_F14 = LT(_PALM, KC_F14),
-  ALT_SLASH = MO(_ALT),
   ALT_BSLASH = MT(MOD_RALT, KC_BSLS),
 };
 
@@ -330,7 +331,7 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
 
     case DEL_WORD: {
         if (record->event.pressed) {
-            SEND_STRING(SS_DOWN(X_LSHIFT) SS_DOWN(X_LEFT) SS_DOWN(X_BSPACE) SS_UP(X_BSPACE) SS_UP(X_LEFT) SS_UP(X_LSHIFT));
+            SEND_STRING(SS_DOWN(X_LSHIFT) SS_TAP(X_LEFT) SS_UP(X_LSHIFT) SS_TAP(X_DELETE));
             return false;
         }
     }
@@ -499,7 +500,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                  KC_INS, TD(LB_TD), TD(COMM_TD), TD(RB_TD),
                                            // left thumb keys
 			                                    CTRL_SHIFT_BS,TD(TAP_MACRO1),
-                                                   ALT_SLASH,
+                                                   ALT_SLASH_WIN,
                            CTRL_ESC, KC_SFTENT, LGUI_DEL,
                                      // left palm key
 			                         MEH_F13,
@@ -605,7 +606,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________,  __________,  __________,  __________ ,  __________,  __________,
                    __________,  __________, __________, __________,
          __________,  __________,
-         ALT_BSLASH,
+         __________,
          __________,  __________,  __________,
                              __________
     ),
@@ -763,7 +764,7 @@ bool without_mods(uint16_t code, uint16_t mod1, uint16_t mod2, uint16_t mod3, ui
 }
 
 bool no_meh(uint16_t code) {
-  return without_mods(code, KC_LSFT, KC_RALT, KC_LCTL, KC_NO);
+  return without_mods(code, KC_LSFT, KC_LALT, KC_LCTL, KC_NO);
 }
 
 uint16_t palm_repeat_code;
@@ -894,7 +895,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
         case ALT_SHIFT_BS: {
           static uint16_t alt_shift_layer_timer;
-          mo_layer_tap(KC_BSPC, KC_NO, KC_LSFT, KC_RALT, KC_NO, KC_NO, &alt_shift_layer_timer, &alt_shift_interrupted, is_pressed, 180);
+          mo_layer_tap(KC_BSPC, KC_NO, KC_LSFT, KC_LALT, KC_NO, KC_NO, &alt_shift_layer_timer, &alt_shift_interrupted, is_pressed, 180);
           return true;
         }
 
@@ -922,13 +923,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         // common layers
         case MEH_F13: {
           static uint16_t meh_layer_timer;
-          mo_layer_tap(KC_F13, KC_NO, KC_LCTL, KC_RALT, KC_LSFT, KC_NO, &meh_layer_timer, &meh_interrupted, is_pressed, 300);
+          mo_layer_tap(KC_F13, KC_NO, KC_LCTL, KC_LALT, KC_LSFT, KC_NO, &meh_layer_timer, &meh_interrupted, is_pressed, 300);
           return true;
         }
 
         case ALT_SLASH: {
           static uint16_t alt_layer_timer;
-          mo_layer_tap(KC_SLSH, KC_NO, KC_RALT, KC_NO, KC_NO, KC_NO, &alt_layer_timer, &alt_interrupted, is_pressed, 180);
+          mo_layer_tap(KC_SLSH, KC_NO, KC_LALT, KC_NO, KC_NO, KC_NO, &alt_layer_timer, &alt_interrupted, is_pressed, 180);
           return true;
         }
 
@@ -1045,7 +1046,7 @@ uint32_t layer_state_set_user(uint32_t state) {
       register_code(KC_LGUI);
       break;
     case _ALT_SHIFT_BS:
-      register_code(KC_RALT);
+      register_code(KC_LALT);
       register_code(KC_LSFT);
       break;
     case _CTRL:
@@ -1066,19 +1067,19 @@ uint32_t layer_state_set_user(uint32_t state) {
 
     // common
     case _ALT:
-      register_code(KC_RALT); // in windows single press of LALT focuses on menu; so instead of creating new layer
+      register_code(KC_LALT); // in windows single press of LALT focuses on menu; so instead of creating new layer
       // let's just sent RALT instead of LALT in all combinations
       break;
     case _PALM:
       register_code(KC_LSFT);
-      register_code(KC_RALT);
+      register_code(KC_LALT);
       register_code(KC_LCTL);
       break;
 
     default:
       unregister_code(KC_LGUI);
       unregister_code(KC_LCTL);
-      unregister_code(KC_RALT);
+      unregister_code(KC_LALT);
       unregister_code(KC_LSFT);
       break;
     }
