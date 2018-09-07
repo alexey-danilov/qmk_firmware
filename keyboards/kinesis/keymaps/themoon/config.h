@@ -9,10 +9,6 @@
 
 #define TAPPING_TERM 360
 
-#define BOOTMAGIC_KEY_DEFAULT_LAYER_0 KC_F5
-#define BOOTMAGIC_KEY_DEFAULT_LAYER_5 KC_F7
-#define BOOTMAGIC_KEY_SALT KC_5
-
 #define TAPPING_TOGGLE  1
 
 #include "../../config.h"
