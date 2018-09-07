@@ -74,7 +74,9 @@ enum holding_keycodes {
 
 enum {
     MAIL = 0,
-    SLEEP,
+    SLEEP_MAC,
+    SLEEP_WIN,
+    SHUTDOWN_WIN,
     DEL_WORD_WIN,
 };
 
@@ -330,9 +332,23 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
         }
     }
 
-    case SLEEP: {
+    case SLEEP_MAC: {
         if (record->event.pressed) {
             SEND_STRING(SS_DOWN(X_LCTRL) SS_DOWN(X_LSHIFT) SS_DOWN(X_POWER) SS_UP(X_POWER) SS_UP(X_LSHIFT) SS_UP(X_LCTRL));
+            return false;
+        }
+    }
+
+    case SLEEP_WIN: {
+        if (record->event.pressed) {
+            SEND_STRING(SS_LGUI("x") "u" "s");
+            return false;
+        }
+    }
+
+    case SHUTDOWN_WIN: {
+        if (record->event.pressed) {
+            SEND_STRING(SS_LGUI("x") "u" "u");
             return false;
         }
     }
@@ -352,7 +368,7 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
 * Keymap: Default Mac Layer in Qwerty
 *
 * ,-------------------------------------------------------------------------------------------------------------------.
-* | Sleep  |  F1  |  F2  |  F3  |  F4  |  F5  |  F6  |  F8  |  F9  |  F10 |  F12 | PSCR | SLCK | PAUS |Program| Power |
+* | SLEEP_MAC  |  F1  |  F2  |  F3  |  F4  |  F5  |  F6  |  F8  |  F9  |  F10 |  F12 | PSCR | SLCK | PAUS |Program| Power |
 * |--------+------+------+------+------+------+---------------------------+------+------+------+------+------+--------|
 * | =+     |  1!  |  2@  |  3#  |  4$  |  5%  |                           |  6^  |  7&  |  8*  |  9(  |  0)  | -_     |
 * |--------+------+------+------+------+------|                           +------+------+------+------+------+--------|
@@ -379,7 +395,7 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [_MAC] = LAYOUT(
            // left side
-           M(SLEEP), KC_F1  ,KC_F2  ,KC_F3  ,KC_F4  ,KC_F5  ,KC_F6  ,KC_F7  ,KC_F8,
+           M(SLEEP_MAC), KC_F1  ,KC_F2  ,KC_F3  ,KC_F4  ,KC_F5  ,KC_F6  ,KC_F7  ,KC_F8,
            KC_EQL, KC_1, KC_2, KC_3, KC_4, KC_5,
            KC_GRV, KC_Q, KC_W, KC_E, KC_R, KC_T,
            KC_CAPSLOCK,KC_A, KC_S, KC_D, KC_F, KC_G,
@@ -525,7 +541,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // base win layer
 [_WIN] = LAYOUT(
            // left side
-           KC_SLEP, KC_F1  ,KC_F2  ,KC_F3  ,KC_F4  ,KC_F5  ,KC_F6  ,KC_F7  ,KC_F8,
+           M(SLEEP_WIN), KC_F1  ,KC_F2  ,KC_F3  ,KC_F4  ,KC_F5  ,KC_F6  ,KC_F7  ,KC_F8,
            KC_EQL, KC_1, KC_2, KC_3, KC_4, KC_5,
            KC_GRV, KC_Q, KC_W, KC_E, KC_R, KC_T,
            KC_CAPSLOCK,KC_A, KC_S, KC_D, KC_F, KC_G,
@@ -538,7 +554,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                      // left palm key
 			                         MEH_F13,
     // right side
-    KC_F9  ,KC_F10 ,KC_F11 ,KC_F12 ,KC_PSCR ,KC_SLCK  ,KC_PAUS, RESET, KC_POWER,
+    KC_F9  ,KC_F10 ,KC_F11 ,KC_F12 ,KC_PSCR ,KC_SLCK  ,KC_PAUS, RESET, M(SHUTDOWN_WIN),
 	KC_6, KC_7, KC_8, KC_9, KC_0, KC_MINS,
 	KC_Y, KC_U, KC_I, KC_O, KC_P, KC_F17,
 	KC_H, KC_J, TD(K_TD), KC_L, KC_SCLN, KC_F18,
@@ -950,7 +966,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
         // 140 ms
         case MOD_SPACE: {return ___if_held_140___add_shift(KC_SPC, is_pressed); }
-        case MOD_ESC: {return ___if_held_140___add_shift(KC_ESC, is_pressed); }
+        case MOD_ESC: {return ___if_held_140___add_shift(var_key(KC_ESC, KC_BSPC), is_pressed); }
         case MOD_ENTER: {return ___if_held_140___add_shift(KC_ENTER, is_pressed); }
 
         // 180 ms
