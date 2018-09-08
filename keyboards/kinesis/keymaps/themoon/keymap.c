@@ -341,14 +341,14 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
 
     case SLEEP_WIN: {
         if (record->event.pressed) {
-            SEND_STRING(SS_LGUI("x") "u" "s");
+            SEND_STRING(SS_LGUI("x")); _delay_ms(300); SEND_STRING("u"); _delay_ms(300); SEND_STRING("s");
             return false;
         }
     }
 
     case SHUTDOWN_WIN: {
         if (record->event.pressed) {
-            SEND_STRING(SS_LGUI("x") "u" "u");
+            SEND_STRING(SS_LGUI("x")); _delay_ms(300); SEND_STRING("u"); _delay_ms(300); SEND_STRING("u");
             return false;
         }
     }
