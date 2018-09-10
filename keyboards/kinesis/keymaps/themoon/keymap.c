@@ -44,6 +44,11 @@ enum kinesis_keycodes {
   MEH_F13 = MO(_PALM_L),
   MEH_LAST_APP = MO(_PALM_R),
   ALT_BSLASH = MT(MOD_RALT, KC_BSLS),
+
+  // media
+  VOL_UP,
+  VOL_DOWN,
+  MUTE
 };
 
 enum holding_keycodes {
@@ -237,7 +242,7 @@ void k_finished (qk_tap_dance_state_t *state, void *user_data) {
     case SINGLE_HOLD: down(KC_LSFT); down(KC_K); up(KC_K); break;
     default:
       if (isMac) { down(KC_LCTL); down(KC_SPC); up(KC_SPC); break; }
-      else if (isWin) { down(KC_LCTL); down(KC_LSFT); up(KC_LSFT); break; }
+      else if (isWin) { down(KC_LALT); down(KC_LSFT); up(KC_LSFT); break; }
     }
   }
 
@@ -247,7 +252,7 @@ void k_reset (qk_tap_dance_state_t *state, void *user_data) {
     case SINGLE_HOLD: up(KC_LSFT); break;
     default:
       if (isMac) { up(KC_LCTL); break; }
-      else if (isWin) { up(KC_LCTL); break; }
+      else if (isWin) { up(KC_LALT); break; }
     }
   k_tap_state.state = 0;
 }
@@ -657,10 +662,10 @@ __________,  __________,  __________,  __________,  __________,  SET_LAYER_MAC, 
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  KC_PGUP,  __________ ,  __________,  __________,
-                   KC__VOLDOWN,  KC_PGDN, KC__VOLUP, __________,
+                   VOL_DOWN,  KC_PGDN, VOL_UP, __________,
          __________,  __________,
          __________,
-         __________,  __________,  KC__MUTE,
+         __________,  __________,  MUTE,
                              KC_F14
     ),
 
@@ -994,9 +999,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case KC_PGUP: { return no_meh_repeat(KC_PGUP, is_pressed); }
         case KC_PGDN: { return no_meh_repeat(KC_PGDN, is_pressed); }
 
-        case KC__VOLUP: { return no_meh_repeat(var_key(KC__VOLUP, KC_VOLU), is_pressed); }
-        case KC__VOLDOWN: { return no_meh_repeat(var_key(KC__VOLDOWN, KC_VOLD), is_pressed); }
-        case KC__MUTE: { return no_meh_repeat(var_key(KC__MUTE, KC_MUTE), is_pressed); }
+        case VOL_UP: { return no_meh_repeat(var_key(KC__VOLUP, KC_VOLU), is_pressed); }
+        case VOL_DOWN: { return no_meh_repeat(var_key(KC__VOLDOWN, KC_VOLD), is_pressed); }
+        case MUTE: { return no_meh_repeat(var_key(KC__MUTE, KC_MUTE), is_pressed); }
 
         // 140 ms
         case MOD_SPACE: { return ___if_held_140___add_shift(KC_SPC, is_pressed); }
