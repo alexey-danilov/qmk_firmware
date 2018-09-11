@@ -808,17 +808,17 @@ bool without_mods(uint16_t code, uint16_t mod1, uint16_t mod2, uint16_t mod3, ui
 
    key_code(code);
 
-   down(mod4); down(mod3); down(mod2); down(mod1);
+//   down(mod4); down(mod3); down(mod2); down(mod1);
   return false;
 }
 
 bool no_meh(uint16_t code) {
-  return without_mods(code, KC_LSFT, KC_LALT, KC_LCTL, KC_NO);
+  return without_mods(code, KC_LCTL, KC_LALT, KC_LSFT, KC_NO);
 }
 
-uint16_t palm_repeat_code;
-uint16_t palm_repeat_timer;
-uint8_t first_repeat_delay;
+static uint16_t palm_repeat_code;
+static uint16_t palm_repeat_timer;
+static uint8_t first_repeat_delay;
 bool no_meh_repeat(uint16_t code, bool pressed) {
    if (pressed) {
        no_meh(code);
@@ -852,6 +852,7 @@ void matrix_scan_user(void) {
    if (palm_repeat_code) {
       if (timer_elapsed(palm_repeat_timer) > (50 + first_repeat_delay)) {
          no_meh(palm_repeat_code);
+         palm_repeat_timer = timer_read();
          first_repeat_delay = 0;
       }
    }
@@ -999,9 +1000,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case KC_PGUP: { return no_meh_repeat(KC_PGUP, is_pressed); }
         case KC_PGDN: { return no_meh_repeat(KC_PGDN, is_pressed); }
 
-        case VOL_UP: { return no_meh_repeat(var_key(KC__VOLUP, KC_VOLU), is_pressed); }
-        case VOL_DOWN: { return no_meh_repeat(var_key(KC__VOLDOWN, KC_VOLD), is_pressed); }
-        case MUTE: { return no_meh_repeat(var_key(KC__MUTE, KC_MUTE), is_pressed); }
+        case VOL_UP: { return no_meh_repeat(var_key(KC__VOLUP, KC_F20), is_pressed); }
+        case VOL_DOWN: { return no_meh_repeat(var_key(KC__VOLDOWN, KC_F21), is_pressed); }
+        case MUTE: { return no_meh_repeat(var_key(KC__MUTE, KC_F22), is_pressed); }
 
         // 140 ms
         case MOD_SPACE: { return ___if_held_140___add_shift(KC_SPC, is_pressed); }
