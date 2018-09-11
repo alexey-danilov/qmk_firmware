@@ -457,7 +457,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                              __________,  __________,
                                        __________,
                     CMD_ESC, __________,  __________,
-                                     __________,
+                                     KC_F13,
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
          __________,  __________,  __________,  __________,  __________,  __________,
          MOD_Y,  MOD_U,  MOD_I,  MOD_O,  __________,  __________,
@@ -480,7 +480,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                              ALT_BSPC,  KC_F1,
                                         KC_Z,
                     MOD_ESC, MOD_ENTER, LSFT(KC_Z),
-                                     __________,
+                                     KC_F13,
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
@@ -503,7 +503,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                              ALT_SHIFT_BS,  __________,
                                        __________,
                     __________, __________,  __________,
-                                     __________,
+                                     KC_F13,
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
          __________,  __________,  M(VIM_SAVE_QUIT),  M(VIM_QUIT),  __________,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
@@ -526,7 +526,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                              __________,  __________,
                                        ALT_SLASH,
                     __________, __________,  __________,
-                                     __________,
+                                     KC_F13,
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
@@ -549,7 +549,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                              __________,  __________,
                                        __________,
                     __________, __________,  CTRL_CMD_BS,
-                                     __________,
+                                     KC_F13,
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
@@ -603,7 +603,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                              __________,  __________,
                                        __________,
                     CTRL_ESC, __________,  __________,
-                                     __________,
+                                     KC_F13,
 
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
          __________,  __________,  __________,  __________,  __________,  __________,
@@ -627,7 +627,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                              M(DEL_WORD_WIN),  KC_F1,
                                         KC_Z,
                     MOD_ESC, MOD_ENTER, LSFT(KC_Z),
-                                     __________,
+                                     KC_F13,
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
@@ -650,7 +650,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                              CTRL_SHIFT_BS,  __________,
                                        __________,
                     __________, __________,  __________,
-                                     __________,
+                                     KC_F13,
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
          __________,  __________,  M(VIM_SAVE_QUIT),  M(VIM_QUIT),  __________,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
@@ -900,11 +900,11 @@ bool mo_layer_tap(uint16_t tap_key, uint16_t tap_mod, uint16_t layer_mod1, uint1
   return false;
 }
 
-bool after_leader(uint16_t key, uint16_t mod1, uint16_t mod2, uint16_t *leader_timer, bool is_pressed, uint16_t esc_last_pressed_timeout) {
+bool after_leader(uint16_t key, uint16_t mod1, uint16_t mod2, uint16_t mod3, uint16_t *leader_timer, bool is_pressed, uint16_t esc_last_pressed_timeout) {
   if (*leader_timer && not_held(*leader_timer, esc_last_pressed_timeout)) {
     if (is_pressed) {
       *leader_timer = 0;
-      with_2_mods(key, mod1, mod2);
+      with_3_mods(key, mod1, mod2, mod3);
       return false;
     }
   }
@@ -1010,9 +1010,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
 
         // leaded keys
-        case KC_RGHT: { return after_leader(KC_RGHT, KC_LALT, KC_LCTL, &esc_timer, is_pressed, 180); }
+        case KC_RGHT: { return after_leader(KC_RGHT, KC_LALT, KC_LCTL, KC_LSFT, &esc_timer, is_pressed, 180); }
 
-        case KC_LEFT: { return after_leader(KC_LEFT, KC_LALT, KC_LCTL, &esc_timer, is_pressed, 180); }
+        case KC_LEFT: { return after_leader(KC_LEFT, KC_LALT, KC_LCTL, KC_LSFT, &esc_timer, is_pressed, 180); }
 
         // no holding delay
         case KC_PGUP: { return no_meh_repeat(KC_PGUP, is_pressed); }
@@ -1055,10 +1055,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case MOD_N: { return ___if_held_180___add_shift(KC_N, is_pressed); }
         case MOD_M: { return ___if_held_180___add_shift(KC_M, is_pressed); }
         case MOD_DOT: { return ___if_held_180___add_shift(KC_DOT, is_pressed); }
-        case MOD_LEFT: { return ___if_held_180___add_shift(KC_LEFT, is_pressed); }
-        case MOD_RIGHT: { return ___if_held_180___add_shift(KC_RGHT, is_pressed); }
-        case MOD_UP: { return ___if_held_180___add_shift(KC_UP, is_pressed); }
-        case MOD_DOWN: { return ___if_held_180___add_shift(KC_DOWN, is_pressed); }
+
+        case MOD_LEFT: { return ___if_held___add_mod(KC_LEFT, KC_LALT, is_pressed, 180); }
+        case MOD_RIGHT: { return ___if_held___add_mod(KC_RGHT, KC_LALT, is_pressed, 180); }
+        case MOD_UP: { return ___if_held___add_mod(KC_UP, KC_LALT, is_pressed, 180); }
+        case MOD_DOWN: { return ___if_held___add_mod(KC_DOWN, KC_LALT, is_pressed, 180); }
 
         case KC_2: { return ___if_held_180___replace_add_mod(KC_2, KC_9, KC_LSFT, is_pressed); }
         case KC_3: { return ___if_held_180___replace_add_mod(KC_3, KC_MINS, KC_LSFT, is_pressed); }
