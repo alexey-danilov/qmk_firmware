@@ -84,6 +84,8 @@ enum {
     SLEEP_WIN,
     SHUTDOWN_WIN,
     DEL_WORD_WIN,
+    VIM_SAVE_QUIT,
+    VIM_QUIT,
 };
 
 static bool isMac = false;
@@ -365,6 +367,22 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
             return false;
         }
     }
+
+    case VIM_SAVE_QUIT: {
+        if (record->event.pressed) {
+            SEND_STRING(SS_UP(X_LSHIFT) SS_UP(X_LALT) SS_UP(X_LCTRL) SS_TAP(X_ESCAPE)); // remove modifiers both for mac and win
+            _delay_ms(100); SEND_STRING(":wq!"); SEND_STRING(SS_TAP(X_ENTER));
+            return false;
+        }
+    }
+
+    case VIM_QUIT: {
+        if (record->event.pressed) {
+            SEND_STRING(SS_UP(X_LSHIFT) SS_UP(X_LALT) SS_UP(X_LCTRL) SS_TAP(X_ESCAPE)); // remove modifiers both for mac and win
+            _delay_ms(100); SEND_STRING(":q!"); SEND_STRING(SS_TAP(X_ENTER));
+            return false;
+        }
+    }
   }
     return MACRO_NONE;
 };
@@ -487,7 +505,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                     __________, __________,  __________,
                                      __________,
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
-         __________,  __________,  __________,  __________,  __________,  __________,
+         __________,  __________,  M(VIM_SAVE_QUIT),  M(VIM_QUIT),  __________,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________ ,  __________,  __________,
@@ -634,7 +652,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                     __________, __________,  __________,
                                      __________,
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
-         __________,  __________,  __________,  __________,  __________,  __________,
+         __________,  __________,  M(VIM_SAVE_QUIT),  M(VIM_QUIT),  __________,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________ ,  __________,  __________,
