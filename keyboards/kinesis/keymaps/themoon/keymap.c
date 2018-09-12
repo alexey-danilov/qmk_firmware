@@ -194,7 +194,7 @@ void lb_finished (qk_tap_dance_state_t *state, void *user_data) {
   switch (lb_tap_state.state) {
     case SINGLE_TAP: down(KC_LBRC); break;
     case SINGLE_HOLD: down(KC_LSFT); down(KC_LBRC); up(KC_LBRC); break;
-    default: down(KC_HOME); break;
+    default: down(KC_LSFT); down(KC_LALT); down(KC_LCTL); down(KC_F1); up(KC_F1); up(KC_LCTL); up(KC_LALT); break;
   }
 }
 
@@ -202,7 +202,7 @@ void lb_reset (qk_tap_dance_state_t *state, void *user_data) {
   switch (lb_tap_state.state) {
     case SINGLE_TAP: up(KC_LBRC); break;
     case SINGLE_HOLD: up(KC_LSFT); break;
-    default: up(KC_HOME); break;
+    default: up(KC_LSFT); break;
   }
   lb_tap_state.state = 0;
 }
@@ -218,7 +218,7 @@ void rb_finished (qk_tap_dance_state_t *state, void *user_data) {
   switch (rb_tap_state.state) {
     case SINGLE_TAP: down(KC_RBRC); break;
     case SINGLE_HOLD: down(KC_LSFT); down(KC_RBRC); up(KC_RBRC); break;
-    default: down(KC_END); break;
+    default: down(KC_LSFT); down(KC_LALT); down(KC_LCTL); down(KC_F2); up(KC_F2); up(KC_LCTL); up(KC_LALT); break;
   }
 }
 
@@ -226,7 +226,7 @@ void rb_reset (qk_tap_dance_state_t *state, void *user_data) {
   switch (rb_tap_state.state) {
     case SINGLE_TAP: up(KC_RBRC); break;
     case SINGLE_HOLD: up(KC_LSFT); break;
-    default: up(KC_END);
+    default: up(KC_LSFT);
   }
   rb_tap_state.state = 0;
 }
@@ -394,7 +394,7 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
 * ,-------------------------------------------------------------------------------------------------------------------.
 * | SLEEP_MAC  |  F1  |  F2  |  F3  |  F4  |  F5  |  F6  |  F8  |  F9  |  F10 |  F12 | PSCR | SLCK | PAUS |Program| Power |
 * |--------+------+------+------+------+------+---------------------------+------+------+------+------+------+--------|
-* | =+     |  1!  |  2@  |  3#  |  4$  |  5%  |                           |  6^  |  7&  |  8*  |  9(  |  0)  | -_     |
+* | Hyper1 |  1!  |  2@  |  3#  |  4$  |  5%  |                           |  6^  |  7&  |  8*  |  9(  |  0)  | Hyper0 |
 * |--------+------+------+------+------+------|                           +------+------+------+------+------+--------|
 * | `~     |   Q  |   W  |   E  |   R  |   T  |                           |   Y  |   U  |   I  |   O  |   P  | F17    |
 * |--------+------+------+------+------+------|                           |------+------+------+------+------+--------|
@@ -420,7 +420,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [_MAC] = LAYOUT(
            // left side
            M(SLEEP_MAC), KC_F1  ,KC_F2  ,KC_F3  ,KC_F4  ,KC_F5  ,KC_F6  ,KC_F7  ,KC_F8,
-           KC_EQL, KC_1, KC_2, KC_3, KC_4, KC_5,
+           HYPR(KC_1), KC_1, KC_2, KC_3, KC_4, KC_5,
            KC_GRV, KC_Q, KC_W, KC_E, KC_R, KC_T,
            KC_CAPSLOCK,KC_A, KC_S, KC_D, KC_F, KC_G,
            M(MAIL) ,KC_Z, KC_X, KC_C, KC_V, KC_B,
@@ -433,7 +433,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 			                         MEH_F13,
     // right side
     KC_F9  ,KC_F10 ,KC_F11 ,KC_F12 ,KC_PSCR ,KC_SLCK  ,KC_PAUS, RESET, KC_POWER,
-	KC_6, KC_7, KC_8, KC_9, KC_0, KC_MINS,
+	KC_6, KC_7, KC_8, KC_9, KC_0, HYPR(KC_0),
 	KC_Y, KC_U, KC_I, KC_O, KC_P, KC_F17,
 	KC_H, KC_J, TD(K_TD), KC_L, KC_SCLN, KC_F18,
 	KC_N, KC_M, KC_UP, KC_DOT, KC_QUOT, KC_F19,
@@ -566,7 +566,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [_WIN] = LAYOUT(
            // left side
            M(SLEEP_WIN), KC_F1  ,KC_F2  ,KC_F3  ,KC_F4  ,KC_F5  ,KC_F6  ,KC_F7  ,KC_F8,
-           KC_EQL, KC_1, KC_2, KC_3, KC_4, KC_5,
+           HYPR(KC_1), KC_1, KC_2, KC_3, KC_4, KC_5,
            KC_GRV, KC_Q, KC_W, KC_E, KC_R, KC_T,
            KC_CAPSLOCK,KC_A, KC_S, KC_D, KC_F, KC_G,
            M(MAIL) ,KC_Z, KC_X, KC_C, KC_V, KC_B,
@@ -579,7 +579,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 			                         MEH_F13,
     // right side
     KC_F9  ,KC_F10 ,KC_F11 ,KC_F12 ,KC_PSCR ,KC_SLCK  ,KC_PAUS, RESET, M(SHUTDOWN_WIN),
-	KC_6, KC_7, KC_8, KC_9, KC_0, KC_MINS,
+	KC_6, KC_7, KC_8, KC_9, KC_0, HYPR(KC_0),
 	KC_Y, KC_U, KC_I, KC_O, KC_P, KC_F17,
 	KC_H, KC_J, TD(K_TD), KC_L, KC_SCLN, KC_F18,
 	KC_N, KC_M, KC_UP, KC_DOT, KC_QUOT, KC_F19,
@@ -680,17 +680,17 @@ __________,  __________,  __________,  __________,  __________,  SET_LAYER_MAC, 
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  KC_PGUP,  __________ ,  __________,  __________,
-                   VOL_DOWN,  KC_PGDN, VOL_UP, __________,
+                   KC_HOME,  KC_PGDN, KC_END, __________,
          __________,  __________,
          __________,
-         __________,  __________,  MUTE,
+         __________,  __________,  __________,
                              KC_F14
     ),
 
 // common layers
 [_PALM_R] = LAYOUT(
 __________,  __________,  __________,  __________,  __________,  SET_LAYER_MAC, __________, SET_LAYER_WIN, __________,
-         __________,  __________,  __________,  __________,  __________,  __________,
+         __________,  __________,  VOL_DOWN,  MUTE,  VOL_UP,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
@@ -1017,6 +1017,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         // no holding delay
         case KC_PGUP: { return no_meh_repeat(KC_PGUP, is_pressed); }
         case KC_PGDN: { return no_meh_repeat(KC_PGDN, is_pressed); }
+        case KC_HOME: { return no_meh_repeat(KC_HOME, is_pressed); }
+        case KC_END: { return no_meh_repeat(KC_END, is_pressed); }
 
         case VOL_UP: { return no_meh_repeat(var_key(KC__VOLUP, KC_F20), is_pressed); }
         case VOL_DOWN: { return no_meh_repeat(var_key(KC__VOLDOWN, KC_F21), is_pressed); }
