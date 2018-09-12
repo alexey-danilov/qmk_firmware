@@ -30,6 +30,8 @@ enum kinesis_keycodes {
   ALT_SLASH = MO(_ALT),
   CTRL_CMD_BS = MO(_CTRL),
   CTRL_F16 = LT(_CTRL, KC_F16),
+  MINIMIZE_MAC,
+  MAXIMIZE_MAC,
 
   // win
   SET_LAYER_WIN,
@@ -554,8 +556,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
-         __________,  __________,  __________,  __________ ,  __________,  __________,
-                   __________,  __________, __________, __________,
+         __________,  __________,  MAXIMIZE_MAC,  __________ ,  __________,  __________,
+                   __________,  MINIMIZE_MAC, __________, __________,
          __________,  __________,
          __________,
          CTRL_F16,  __________,  __________,
@@ -1098,6 +1100,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case CTRL_DOT: { return replace_cmd_with_mod____if_held___cmd_shift(KC_DOT, KC_LCTL, is_pressed, 180); }
         case CTRL_H: { return replace_cmd_with_mod____if_held___cmd_shift(KC_H, KC_LCTL, is_pressed, 180); }
         case CTRL_M: { return replace_cmd_with_mod____if_held___cmd_shift(KC_M, KC_LCTL, is_pressed, 180); }
+        case MINIMIZE_MAC: { return replace_mod1_with_mod2____if_held___mod3_plus_mod4(KC_M, KC_LCTL, KC_LGUI, KC_LCTL, KC_LGUI, is_pressed, 180); }
+        case MAXIMIZE_MAC: { return replace_mod1_with_mod2____if_held___mod3_plus_mod4(KC_M, KC_NO, KC_LSFT, KC_LCTL, KC_LALT, is_pressed, 180); }
 
         default: {
           return true;
