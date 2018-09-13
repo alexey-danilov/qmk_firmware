@@ -38,7 +38,7 @@ enum kinesis_keycodes {
   CTRL_SHIFT_DEL = MT(MOD_RCTL | MOD_RSFT, KC_DEL),
   CTRL_SHIFT_BS = MO(_CTRL_SHIFT_BS),
   LGUI_DEL = MT(MOD_LGUI, KC_DEL),
-  ALT_SLASH_WIN = MT(MOD_LALT, KC_SLSH), // on windows single alt press results in activating menu
+  ALT_SLASH_WIN = MT(MOD_RALT, KC_SLSH), // on windows single alt press results in activating menu
 
   // common
   MEH_F13 = MO(_PALM_L),
@@ -82,6 +82,7 @@ enum {
     MAIL = 0,
     SLEEP_MAC,
     SLEEP_WIN,
+    CLOSE_APP_WIN,
     SHUTDOWN_WIN,
     DEL_WORD_WIN,
     VIM_SAVE_QUIT,
@@ -117,12 +118,9 @@ void up(uint16_t key) {
 
 //**************** Definitions needed for quad function to work *********************//
 enum {
-  COMM_TD = 0,
-  LB_TD = 1,
-  RB_TD = 2,
-  K_TD = 3,
-  TAP_MACRO1 = 4,
-  TAP_MACRO2 = 5
+  K_TD = 0,
+  TAP_MACRO1 = 1,
+  TAP_MACRO2 = 2
 };
 //Enums used to clearly convey the state of the tap dance
 enum {
@@ -153,82 +151,6 @@ int cur_dance (qk_tap_dance_state_t *state) {
     else return DOUBLE_TAP;
   }
   else return 6; //magic number. At some point this method will expand to work for more presses
-}
-
-//**************** COMMA TAP *********************//
-static tap comma_tap_state = {
-  .is_press_action = true,
-  .state = 0
-};
-
-void comma_finished (qk_tap_dance_state_t *state, void *user_data) {
-  comma_tap_state.state = cur_dance(state);
-  switch (comma_tap_state.state) {
-    case SINGLE_TAP: down(KC_COMM); break;
-    case SINGLE_HOLD: down(KC_LSFT); down(KC_COMM); up(KC_COMM); break;
-    default:
-      if (isMac) { down(KC_LGUI); down(KC_Q); up(KC_Q); break; }
-      else if (isWin) { down(KC_LALT); down(KC_F4); up(KC_F4); break; }
-    }
-  }
-
-void comma_reset (qk_tap_dance_state_t *state, void *user_data) {
-  switch (comma_tap_state.state) {
-    case SINGLE_TAP: up(KC_COMM); break;
-    case SINGLE_HOLD: up(KC_LSFT); break;
-    default:
-      if (isMac) { up(KC_LGUI); break; }
-      else if (isWin) { up(KC_LALT); break; }
-    }
-  comma_tap_state.state = 0;
-}
-
-//**************** LBRAC TAP *********************//
-static tap lb_tap_state = {
-  .is_press_action = true,
-  .state = 0
-};
-
-void lb_finished (qk_tap_dance_state_t *state, void *user_data) {
-  lb_tap_state.state = cur_dance(state);
-  switch (lb_tap_state.state) {
-    case SINGLE_TAP: down(KC_LBRC); break;
-    case SINGLE_HOLD: down(KC_LSFT); down(KC_LBRC); up(KC_LBRC); break;
-    default: down(KC_LSFT); down(KC_LALT); down(KC_LCTL); down(KC_F1); up(KC_F1); up(KC_LCTL); up(KC_LALT); break;
-  }
-}
-
-void lb_reset (qk_tap_dance_state_t *state, void *user_data) {
-  switch (lb_tap_state.state) {
-    case SINGLE_TAP: up(KC_LBRC); break;
-    case SINGLE_HOLD: up(KC_LSFT); break;
-    default: up(KC_LSFT); break;
-  }
-  lb_tap_state.state = 0;
-}
-
-//**************** RBRAC TAP *********************//
-static tap rb_tap_state = {
-  .is_press_action = true,
-  .state = 0
-};
-
-void rb_finished (qk_tap_dance_state_t *state, void *user_data) {
-  rb_tap_state.state = cur_dance(state);
-  switch (rb_tap_state.state) {
-    case SINGLE_TAP: down(KC_RBRC); break;
-    case SINGLE_HOLD: down(KC_LSFT); down(KC_RBRC); up(KC_RBRC); break;
-    default: down(KC_LSFT); down(KC_LALT); down(KC_LCTL); down(KC_F2); up(KC_F2); up(KC_LCTL); up(KC_LALT); break;
-  }
-}
-
-void rb_reset (qk_tap_dance_state_t *state, void *user_data) {
-  switch (rb_tap_state.state) {
-    case SINGLE_TAP: up(KC_RBRC); break;
-    case SINGLE_HOLD: up(KC_LSFT); break;
-    default: up(KC_LSFT);
-  }
-  rb_tap_state.state = 0;
 }
 
 //**************** K TAP *********************//
@@ -322,10 +244,7 @@ qk_tap_dance_action_t tap_dance_actions[] = {
   // This Tap dance plays the macro 1 on TAP and records it on double tap.
   [TAP_MACRO1] = ACTION_TAP_DANCE_FN(macro1_tapdance_fn),
   [TAP_MACRO2] = ACTION_TAP_DANCE_FN(macro2_tapdance_fn),
-  [K_TD] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, k_finished, k_reset),
-  [LB_TD] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, lb_finished, lb_reset),
-  [RB_TD] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, rb_finished, rb_reset),
-  [COMM_TD] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, comma_finished, comma_reset)
+  [K_TD] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, k_finished, k_reset)
 };
 
 const uint16_t PROGMEM fn_actions[] = {
@@ -343,6 +262,13 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
     case SLEEP_MAC: {
         if (record->event.pressed) {
             SEND_STRING(SS_DOWN(X_LCTRL) SS_DOWN(X_LSHIFT) SS_DOWN(X_POWER) SS_UP(X_POWER) SS_UP(X_LSHIFT) SS_UP(X_LCTRL));
+            return false;
+        }
+    }
+
+    case CLOSE_APP_WIN: {
+        if (record->event.pressed) {
+            SEND_STRING(SS_UP(X_LCTRL) SS_DOWN(X_LALT) SS_TAP(X_F4) SS_UP(X_LALT));
             return false;
         }
     }
@@ -424,7 +350,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
            KC_GRV, KC_Q, KC_W, KC_E, KC_R, KC_T,
            KC_CAPSLOCK,KC_A, KC_S, KC_D, KC_F, KC_G,
            M(MAIL) ,KC_Z, KC_X, KC_C, KC_V, KC_B,
-                 KC_INS, TD(LB_TD), TD(COMM_TD), TD(RB_TD),
+                 KC_INS, KC_LBRC, KC_COMM, KC_RBRC,
                                            // left thumb keys
 			                                    ALT_SHIFT_BS,TD(TAP_MACRO1),
                                                    ALT_SLASH,
@@ -453,7 +379,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________,   __________, __________,
          __________,  __________,  __________,  __________,  __________,  __________,
-                   __________,  __________,  __________,  __________,
+                   __________,  KC_Q,  __________,  KC_F12,
                              __________,  __________,
                                        __________,
                     CMD_ESC, __________,  __________,
@@ -570,7 +496,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
            KC_GRV, KC_Q, KC_W, KC_E, KC_R, KC_T,
            KC_CAPSLOCK,KC_A, KC_S, KC_D, KC_F, KC_G,
            M(MAIL) ,KC_Z, KC_X, KC_C, KC_V, KC_B,
-                 KC_INS, TD(LB_TD), TD(COMM_TD), TD(RB_TD),
+                 KC_INS, KC_LBRC, KC_COMM, KC_RBRC,
                                            // left thumb keys
 			                                    CTRL_SHIFT_BS,TD(TAP_MACRO1),
                                                    ALT_SLASH_WIN,
@@ -599,7 +525,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________,   __________, __________,
          __________,  __________,  __________,  __________,  __________,  __________,
-                   __________,  __________,  __________,  __________,
+                   __________,  M(CLOSE_APP_WIN),  KC_F11,  KC_F12,
                              __________,  __________,
                                        __________,
                     CTRL_ESC, __________,  __________,
