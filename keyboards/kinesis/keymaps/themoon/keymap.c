@@ -27,7 +27,6 @@ enum kinesis_keycodes {
   CMD_SPACE = LT(_COMMAND_SPACE, KC_SPC),
   ALT_SHIFT_BS = MO(_ALT_SHIFT_BS),
   ALT_SHIFT_DEL = MT(MOD_RALT | MOD_RSFT, KC_DEL),
-  ALT_SLASH = MO(_ALT),
   CTRL_CMD_BS = MO(_CTRL),
   CTRL_F16 = LT(_CTRL, KC_F16),
 
@@ -38,12 +37,12 @@ enum kinesis_keycodes {
   CTRL_SHIFT_DEL = MT(MOD_RCTL | MOD_RSFT, KC_DEL),
   CTRL_SHIFT_BS = MO(_CTRL_SHIFT_BS),
   LGUI_DEL = MT(MOD_LGUI, KC_DEL),
-  ALT_SLASH_WIN = MT(MOD_RALT, KC_SLSH), // on windows single alt press results in activating menu
 
   // common
+  ALT_SLASH = MO(_ALT),
   MEH_F13 = MO(_PALM_L),
   MEH_LAST_APP = MO(_PALM_R),
-  ALT_BSLASH = MT(MOD_RALT, KC_BSLS),
+  ALT_BSLASH = MT(MOD_LALT, KC_BSLS),
 
   // media
   VOL_UP,
@@ -538,7 +537,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                    __________,  __________, __________, __________,
          __________,  __________,
          __________,
-         __________,  __________,  __________,
+         __________,  KC_F7,  KC_F8,
                              KC_F14
     ),
 
@@ -576,7 +575,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                  KC_INS, TD(LB_TD), TD(COMM_TD), TD(RB_TD),
                                            // left thumb keys
 			                                    CTRL_SHIFT_BS,TD(TAP_MACRO1),
-                                                   ALT_SLASH_WIN,
+                                                   ALT_SLASH,
                            CTRL_ESC, KC_SFTENT, LGUI_DEL,
                                      // left palm key
 			                         MEH_F13,
@@ -686,7 +685,7 @@ __________,  __________,  __________,  __________,  __________,  SET_LAYER_MAC, 
                    FIND_PREV,  KC_PGDN, FIND_NEXT, __________,
          __________,  __________,
          __________,
-         __________,  __________,  __________,
+         __________,  KC_F7,  KC_F8,
                              KC_F14
     ),
 
@@ -700,7 +699,7 @@ __________,  __________,  __________,  __________,  __________,  SET_LAYER_MAC, 
                    __________, __________, __________, __________,
                              __________,  __________,
                                      __________,
-                      __________, __________,  __________,
+                      KC_F5, KC_F6,  __________,
                                      KC_F13,
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
          __________,  __________,  __________,  __________,  __________,  __________,
