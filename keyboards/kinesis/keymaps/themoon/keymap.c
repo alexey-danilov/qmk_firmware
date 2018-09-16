@@ -269,7 +269,7 @@ bool without_meh_repeat(uint16_t code, bool pressed) {
        without_meh(code);
        palm_repeat_code = code;
        palm_repeat_timer = timer_read();
-       first_repeat_delay = 180;
+       first_repeat_delay = 250;
    } else {
        palm_repeat_code = 0;
    }
@@ -857,7 +857,7 @@ __________,  __________,  __________,  __________,  __________,  SET_LAYER_MAC, 
 // support for repeat keycodes (now only for palm layer keys)
 void matrix_scan_user(void) {
    if (palm_repeat_code) {
-      if (timer_elapsed(palm_repeat_timer) > (50 + first_repeat_delay)) {
+      if (timer_elapsed(palm_repeat_timer) > (10 + first_repeat_delay)) {
          without_meh(palm_repeat_code);
          palm_repeat_timer = timer_read();
          first_repeat_delay = 0;
