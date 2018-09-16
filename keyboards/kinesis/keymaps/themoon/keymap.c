@@ -537,9 +537,9 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
 * ,-------------------------------------------------------------------------------------------------------------------.
 * | SLEEP_MAC  |  F1  |  F2  |  F3  |  F4  |  F5  |  F6  |  F8  |  F9  |  F10 |  F12 | PSCR | SLCK | PAUS |Program| Power |
 * |--------+------+------+------+------+------+---------------------------+------+------+------+------+------+--------|
-* | Insert |  1!  |  2@  |  3#  |  4$  |  5%  |                           |  6^  |  7&  |  8*  |  9(  |  0)  | Hyper0 |
+* | `~     |  1!  |  2@  |  3#  |  4$  |  5%  |                           |  6^  |  7&  |  8*  |  9(  |  0)  | Hyper0 |
 * |--------+------+------+------+------+------|                           +------+------+------+------+------+--------|
-* | `~     |   Q  |   W  |   E  |   R  |   T  |                           |   Y  |   U  |   I  |   O  |   P  | Hyper1 |
+* | Insert |   Q  |   W  |   E  |   R  |   T  |                           |   Y  |   U  |   I  |   O  |   P  | Hyper1 |
 * |--------+------+------+------+------+------|                           |------+------+------+------+------+--------|
 * | CAPS   |   A  |   S  |   D  |   F  |   G  |                           |   H  |   J  |   K  |   L  |  ;:  | Hyper2 |
 * |--------+------+------+------+------+------|                           |------+------+------+------+------+--------|
@@ -563,8 +563,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [_MAC] = LAYOUT(
            // left side
            M(SLEEP_MAC), KC_F1  ,KC_F2  ,KC_F3  ,KC_F4  ,KC_F5  ,KC_F6  ,KC_F7  ,KC_F8,
-           KC_INS, KC_1, KC_2, KC_3, KC_4, KC_5,
-           KC_GRV, KC_Q, KC_W, KC_E, KC_R, KC_T,
+           KC_GRV, KC_1, KC_2, KC_3, KC_4, KC_5,
+           KC_INS, KC_Q, KC_W, KC_E, KC_R, KC_T,
            KC_CAPSLOCK,KC_A, KC_S, KC_D, KC_F, KC_G,
            M(MAIL) ,KC_Z, KC_X, KC_C, KC_V, KC_B,
                  KC_LBRC, LGUI(KC_Z), TD(COMM_TD), KC_F3,
@@ -709,8 +709,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [_WIN] = LAYOUT(
            // left side
            M(SLEEP_WIN), KC_F1  ,KC_F2  ,KC_F3  ,KC_F4  ,KC_F5  ,KC_F6  ,KC_F7  ,KC_F8,
-           KC_INS, KC_1, KC_2, KC_3, KC_4, KC_5,
-           KC_GRV, KC_Q, KC_W, KC_E, KC_R, KC_T,
+           KC_GRV, KC_1, KC_2, KC_3, KC_4, KC_5,
+           KC_INS, KC_Q, KC_W, KC_E, KC_R, KC_T,
            KC_CAPSLOCK,KC_A, KC_S, KC_D, KC_F, KC_G,
            M(MAIL) ,KC_Z, KC_X, KC_C, KC_V, KC_B,
                  KC_LBRC, LCTL(KC_Z), TD(COMM_TD), KC_F3,
