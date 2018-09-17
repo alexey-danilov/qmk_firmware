@@ -537,23 +537,23 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
 * ,-------------------------------------------------------------------------------------------------------------------.
 * | SLEEP_MAC  |  F1  |  F2  |  F3  |  F4  |  F5  |  F6  |  F8  |  F9  |  F10 |  F12 | PSCR | SLCK | PAUS |Program| Power |
 * |--------+------+------+------+------+------+---------------------------+------+------+------+------+------+--------|
-* | `~     |  1!  |  2@  |  3#  |  4$  |  5%  |                           |  6^  |  7&  |  8*  |  9(  |  0)  | Hyper0 |
+* | `~     |  1!  |  2@  |  3#  |  4$  |  5%  |                           |  6^  |  7&  |  8*  |  9(  |  0)  | Insert |
 * |--------+------+------+------+------+------|                           +------+------+------+------+------+--------|
-* | Insert |   Q  |   W  |   E  |   R  |   T  |                           |   Y  |   U  |   I  |   O  |   P  | Hyper1 |
+* | Mail   |   Q  |   W  |   E  |   R  |   T  |                           |   Y  |   U  |   I  |   O  |   P  | Hyper0 |
 * |--------+------+------+------+------+------|                           |------+------+------+------+------+--------|
-* | CAPS   |   A  |   S  |   D  |   F  |   G  |                           |   H  |   J  |   K  |   L  |  ;:  | Hyper2 |
+* | CAPS   |   A  |   S  |   D  |   F  |   G  |                           |   H  |   J  |   K  |   L  |  ;:  | Hyper1 |
 * |--------+------+------+------+------+------|                           |------+------+------+------+------+--------|
-* | Mail   |   Z  |   X  |   C  |   V  |   B  |                           |   N  |   M  |  Up  |  .>  |  '"  | Hyper3 |
+* |   [{   |   Z  |   X  |   C  |   V  |   B  |                           |   N  |   M  |  Up  |  .>  |  '"  |   ]}   |
 * `--------+------+------+------+------+-------                           `------+------+------+------+------+--------'
-*          |  [{  | Undo |  ,<  |  F3  |                                         | Left | Down | Right|  ]}  |
+*          |   {  | Undo |  ,<  |  F3  |                                         | Left | Down | Right|   }  |
 *          `---------------------------'                                         `---------------------------'
 *                            .-------------------------.         ,-------------------------.
 *                            | LShift+RAlt/BkSp |Macro1|         |Macro2| LShift+RAlt/Del  |
 *                            `-----------|------|------|         |------+------+-----------`
 *                                 |      |      | Alt//|         | Alt/\|      |      |
 *                                 | LCMD/|Shift/|------|         |------|Shift/|RCMD/ |
-*                                 | ESC  |Enter |Ctrl/ |         |      |      |SPACE |
-*                                 |      |      |CMD_BkSp|     |Ctrl/F15|Tab   |      |
+*                                 | ESC  |Enter |Ctrl/ |         |      |Tab   |SPACE |
+*                                 |      |      |CMD_BkSp|     |Ctrl/F15|      |      |
 *                                 `--------------------'         `--------------------'
 *                             PALM/F13                                            PALM/F14
 */
@@ -564,10 +564,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
            // left side
            M(SLEEP_MAC), KC_F1  ,KC_F2  ,KC_F3  ,KC_F4  ,KC_F5  ,KC_F6  ,KC_F7  ,KC_F8,
            KC_GRV, KC_1, KC_2, KC_3, KC_4, KC_5,
-           KC_INS, KC_Q, KC_W, KC_E, KC_R, KC_T,
+           M(MAIL), KC_Q, KC_W, KC_E, KC_R, KC_T,
            KC_CAPSLOCK,KC_A, KC_S, KC_D, KC_F, KC_G,
-           M(MAIL) ,KC_Z, KC_X, KC_C, KC_V, KC_B,
-                 KC_LBRC, LGUI(KC_Z), TD(COMM_TD), KC_F3,
+           KC_LBRC ,KC_Z, KC_X, KC_C, KC_V, KC_B,
+                 KC_LCBR, LGUI(KC_Z), TD(COMM_TD), KC_F3,
                                            // left thumb keys
 			                                    ALT_SHIFT_BS,TD(TAP_MACRO1),
                                                    ALT_SLASH,
@@ -576,11 +576,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 			                         MEH_F13,
     // right side
     KC_F9  ,KC_F10 ,KC_F11 ,KC_F12 ,KC_PSCR ,KC_SLCK  ,KC_PAUS, RESET, KC_POWER,
-	KC_6, KC_7, KC_8, KC_9, KC_0, HYPR(KC_0),
-	KC_Y, KC_U, KC_I, KC_O, KC_P, HYPR(KC_1),
-	KC_H, KC_J, TD(K_TD), KC_L, KC_SCLN, HYPR(KC_2),
-	KC_N, KC_M, KC_UP, KC_DOT, KC_QUOT, HYPR(KC_3),
-	KC_LEFT, KC_DOWN, KC_RGHT, KC_RBRC,
+	KC_6, KC_7, KC_8, KC_9, KC_0, KC_INS,
+	KC_Y, KC_U, KC_I, KC_O, KC_P, HYPR(KC_0),
+	KC_H, KC_J, TD(K_TD), KC_L, KC_SCLN, HYPR(KC_1),
+	KC_N, KC_M, KC_UP, KC_DOT, KC_QUOT, KC_RBRC,
+	KC_LEFT, KC_DOWN, KC_RGHT, KC_RCBR,
            // right thumb keys
            TD(TAP_MACRO2),ALT_SHIFT_DEL,
            ALT_BSLASH,
@@ -710,10 +710,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
            // left side
            M(SLEEP_WIN), KC_F1  ,KC_F2  ,KC_F3  ,KC_F4  ,KC_F5  ,KC_F6  ,KC_F7  ,KC_F8,
            KC_GRV, KC_1, KC_2, KC_3, KC_4, KC_5,
-           KC_INS, KC_Q, KC_W, KC_E, KC_R, KC_T,
+           M(MAIL), KC_Q, KC_W, KC_E, KC_R, KC_T,
            KC_CAPSLOCK,KC_A, KC_S, KC_D, KC_F, KC_G,
-           M(MAIL) ,KC_Z, KC_X, KC_C, KC_V, KC_B,
-                 KC_LBRC, LCTL(KC_Z), TD(COMM_TD), KC_F3,
+           KC_LBRC ,KC_Z, KC_X, KC_C, KC_V, KC_B,
+                 KC_LCBR, LCTL(KC_Z), TD(COMM_TD), KC_F3,
                                            // left thumb keys
 			                                    CTRL_SHIFT_BS,TD(TAP_MACRO1),
                                                    ALT_SLASH,
@@ -722,11 +722,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 			                         MEH_F13,
     // right side
     KC_F9  ,KC_F10 ,KC_F11 ,KC_F12 ,KC_PSCR ,KC_SLCK  ,KC_PAUS, RESET, M(SHUTDOWN_WIN),
-	KC_6, KC_7, KC_8, KC_9, KC_0, HYPR(KC_0),
-	KC_Y, KC_U, KC_I, KC_O, KC_P, HYPR(KC_1),
-	KC_H, KC_J, TD(K_TD), KC_L, KC_SCLN, HYPR(KC_2),
-	KC_N, KC_M, KC_UP, KC_DOT, KC_QUOT, HYPR(KC_3),
-	KC_LEFT, KC_DOWN, KC_RGHT, KC_RBRC,
+	KC_6, KC_7, KC_8, KC_9, KC_0, KC_INS,
+	KC_Y, KC_U, KC_I, KC_O, KC_P, HYPR(KC_0),
+	KC_H, KC_J, TD(K_TD), KC_L, KC_SCLN, HYPR(KC_1),
+	KC_N, KC_M, KC_UP, KC_DOT, KC_QUOT, KC_RBRC,
+	KC_LEFT, KC_DOWN, KC_RGHT, KC_RCBR,
            // right thumb keys
            TD(TAP_MACRO2),CTRL_SHIFT_DEL,
            ALT_BSLASH,
@@ -1004,7 +1004,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case KC_HOME: { return without_meh_repeat(KC_HOME, is_pressed); }
         case KC_END: { return without_meh_repeat(KC_END, is_pressed); }
 
-        case SHIFT_TAB: { return replace_mods_hold_mods(KC_TAB, os_specific_key(KC_LGUI, KC_LCTL), KC_LSFT, os_specific_key(KC_LGUI, KC_LCTL), KC_LSFT, is_pressed, 180); }
+        case SHIFT_TAB: { return replace_mods_hold_mods(KC_TAB, os_specific_key(KC_LGUI, KC_LCTL), KC_LSFT, KC_LCTL, KC_LSFT, is_pressed, 180); }
         case SHIFT_BSLS: { return replace_mods_hold_mods(KC_BSLS, os_specific_key(KC_LGUI, KC_LCTL), KC_LSFT, os_specific_key(KC_LGUI, KC_LCTL), KC_LSFT, is_pressed, 180); }
         case SHIFT_SLS: { return hold_180_add_shift(KC_SLSH, is_pressed); }
         case SHIFT_DEL: { return hold_180_add_shift(KC_DEL, is_pressed); }
