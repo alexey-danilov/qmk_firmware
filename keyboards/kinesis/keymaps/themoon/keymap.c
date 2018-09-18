@@ -189,7 +189,7 @@ bool hold_replace(uint16_t code, uint16_t replacement_code, bool pressed, uint8_
 }
 
 // add mod to keycode if it was held for at least provided duration
-bool hold_add_mod(uint16_t code, uint16_t mod_to_add, bool pressed, uint8_t hold_duration) {
+bool hold_add_mods(uint16_t code, uint16_t mod1_to_add, uint16_t mod2_to_add, bool pressed, uint8_t hold_duration) {
   static uint16_t hold_timer;
   if(pressed) {
       hold_timer= timer_read();
@@ -197,7 +197,7 @@ bool hold_add_mod(uint16_t code, uint16_t mod_to_add, bool pressed, uint8_t hold
       if (not_held(hold_timer, hold_duration)){
           key_code(code);
       } else {
-          with_1_mod(code, mod_to_add);
+          with_2_mods(code, mod1_to_add, mod2_to_add);
       }
   }
   return false;
@@ -205,7 +205,7 @@ bool hold_add_mod(uint16_t code, uint16_t mod_to_add, bool pressed, uint8_t hold
 
 // adds shift to keycode if it was held for at least provided duration
 bool hold_shift(uint16_t code, bool pressed, uint8_t hold_duration) {
-  return hold_add_mod(code, KC_LSFT, pressed, hold_duration);
+  return hold_add_mods(code, KC_LSFT, KC_NO, pressed, hold_duration);
 }
 
 // adds shift to keycode if it was held for at 140 ms
@@ -596,7 +596,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________,   __________, __________,
          __________,  __________,  __________,  __________,  __________,  __________,
-                   __________,  LSFT(KC_Z),  __________,  __________,
+                   __________,  LSFT(KC_Z),  LGUI(KC_COMM),  __________,
                              __________,  __________,
                                        __________,
                     CMD_ESC, __________,  __________,
@@ -674,8 +674,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
-         __________,  __________,  __________,  __________ ,  __________,  __________,
-                   __________,  __________, __________, __________,
+         __________,  __________,  MOD_UP,  __________ ,  __________,  __________,
+                   MOD_LEFT,  MOD_DOWN,  MOD_RIGHT, __________,
          __________,  __________,
          __________,
          __________,  KC_F7,  KC_F8,
@@ -742,7 +742,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________,   __________, __________,
          __________,  __________,  __________,  __________,  __________,  __________,
-                   __________,  LSFT(KC_Z),  __________,  __________,
+                   __________,  LSFT(KC_Z),  LCA(KC_COMM),  __________,
                              __________,  __________,
                                        __________,
                     CTRL_ESC, __________,  __________,
@@ -1057,11 +1057,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case MOD_M: { return hold_180_add_shift(KC_M, is_pressed); }
         case MOD_DOT: { return hold_180_add_shift(KC_DOT, is_pressed); }
 
-        case MOD_LEFT: { return hold_add_mod(KC_LEFT, KC_LALT, is_pressed, 180); }
-        case MOD_RIGHT: { return hold_add_mod(KC_RGHT, KC_LALT, is_pressed, 180); }
-        case MOD_UP: { return hold_add_mod(KC_UP, KC_LALT, is_pressed, 180); }
-        case MOD_DOWN: { return hold_add_mod(KC_DOWN, KC_LALT, is_pressed, 180); }
+        case MOD_LEFT: { return hold_add_mods(KC_LEFT, KC_LALT, KC_LCTL, is_pressed, 180); }
+        case MOD_RIGHT: { return hold_add_mods(KC_RGHT, KC_LALT, KC_LCTL, is_pressed, 180); }
+        case MOD_UP: { return hold_add_mods(KC_UP, KC_LALT, KC_LCTL, is_pressed, 180); }
+        case MOD_DOWN: { return hold_add_mods(KC_DOWN, KC_LALT, KC_LCTL, is_pressed, 180); }
 
+        case KC_1: { return hold_180_replace(KC_1, KC_1, os_specific_key(KC_LGUI, KC_LCTL), is_pressed); }
         case KC_2: { return hold_180_replace(KC_2, KC_9, KC_LSFT, is_pressed); }
         case KC_3: { return hold_180_replace(KC_3, KC_MINS, KC_LSFT, is_pressed); }
         case KC_4: { return hold_180_replace(KC_4, KC_0, KC_LSFT, is_pressed); }
@@ -1070,6 +1071,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case KC_7: { return hold_180_replace(KC_7, KC_1, KC_LSFT, is_pressed); }
         case KC_8: { return hold_180_replace(KC_8, KC_MINS, KC_NO, is_pressed); }
         case KC_9: { return hold_180_replace(KC_9, KC_SLSH, KC_LSFT, is_pressed); }
+        case KC_0: { return hold_180_replace(KC_0, KC_0, os_specific_key(KC_LGUI, KC_LCTL), is_pressed); }
 
         case KC_F1: { return hold_180_add_shift(KC_F1, is_pressed); }
         case KC_F2: { return hold_180_add_shift(KC_F2, is_pressed); }
