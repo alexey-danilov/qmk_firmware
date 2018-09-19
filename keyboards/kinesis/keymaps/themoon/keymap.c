@@ -85,6 +85,11 @@ enum {
     SLEEP_WIN,
     SHUTDOWN_WIN,
     DEL_WORD_WIN,
+    DIR_LIST,
+    DIR_UP,
+    DELETE_FORCE,
+    DOCKER_LIST,
+    DOCKER_LOGS,
     VIM_SAVE_QUIT,
     VIM_QUIT
 };
@@ -511,18 +516,59 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
                }
            }
 
+           case DIR_LIST: {
+               if (is_pressed) {
+                   SEND_STRING(SS_UP(X_LSHIFT) SS_UP(X_LALT) SS_UP(X_LCTRL)); // remove meh
+                   SEND_STRING("ls -lah"); SEND_STRING(SS_TAP(X_ENTER));
+                   return false;
+               }
+           }
+
+           case DELETE_FORCE: {
+               if (is_pressed) {
+                   SEND_STRING(SS_UP(X_LSHIFT) SS_UP(X_LALT) SS_UP(X_LCTRL)); // remove meh
+                   SEND_STRING("rm -rf ");
+                   return false;
+               }
+           }
+
+           case DIR_UP: {
+               if (is_pressed) {
+                   SEND_STRING(SS_UP(X_LSHIFT) SS_UP(X_LALT) SS_UP(X_LCTRL)); // remove meh
+                   SEND_STRING("cd .."); SEND_STRING(SS_TAP(X_ENTER));
+                   return false;
+               }
+           }
+
+           case DOCKER_LOGS: {
+               if (is_pressed) {
+                   SEND_STRING(SS_UP(X_LSHIFT) SS_UP(X_LALT) SS_UP(X_LCTRL)); // remove meh
+                   SEND_STRING("docker logs -f --tail=1000 $(docker ps -a -q | head -1)"); SEND_STRING(SS_TAP(X_ENTER));
+                   return false;
+               }
+           }
+
+           case DOCKER_LIST: {
+               if (is_pressed) {
+                   SEND_STRING(SS_UP(X_LSHIFT) SS_UP(X_LALT) SS_UP(X_LCTRL)); // remove meh
+                   SEND_STRING("docker ps -a"); SEND_STRING(SS_TAP(X_ENTER));
+                   return false;
+               }
+           }
+
            case VIM_SAVE_QUIT: {
                if (is_pressed) {
-                   SEND_STRING(SS_UP(X_LSHIFT) SS_UP(X_LALT) SS_UP(X_LCTRL) SS_TAP(X_ESCAPE)); // remove modifiers both for mac and win
-                   _delay_ms(100); SEND_STRING(":wq!"); SEND_STRING(SS_TAP(X_ENTER));
+                   SEND_STRING(SS_UP(X_LSHIFT) SS_UP(X_LALT) SS_UP(X_LCTRL));  // remove meh
+                   SEND_STRING(":wq!"); SEND_STRING(SS_TAP(X_ENTER));
                    return false;
                }
            }
 
            case VIM_QUIT: {
                if (is_pressed) {
-                   SEND_STRING(SS_UP(X_LSHIFT) SS_UP(X_LALT) SS_UP(X_LCTRL) SS_TAP(X_ESCAPE)); // remove modifiers both for mac and win
-                   _delay_ms(100); SEND_STRING(":q!"); SEND_STRING(SS_TAP(X_ENTER));
+                   SEND_STRING(SS_UP(X_LSHIFT) SS_UP(X_LALT) SS_UP(X_LCTRL)); // remove meh
+                   SEND_STRING(SS_TAP(X_ESCAPE)); _delay_ms(100);
+                   SEND_STRING(":q!"); SEND_STRING(SS_TAP(X_ENTER));
                    return false;
                }
            }
@@ -820,19 +866,19 @@ __________,  __________,  __________,  __________,  __________,  SET_LAYER_MAC, 
                                      MEH_F13,
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
          __________,  __________,  __________,  __________,  __________,  __________,
-         __________,  __________,  __________,  __________,  __________,  __________,
-         __________,  __________,  __________,  __________,  __________,  __________,
-         __________,  __________,  KC_PGUP,  __________ ,  __________,  __________,
+         __________,  M(VIM_SAVE_QUIT),  M(DOCKER_LIST),  M(VIM_QUIT),  __________,  __________,
+         __________,  M(DIR_LIST),  M(DELETE_FORCE),  M(DOCKER_LOGS),  __________,  __________,
+         __________,  __________,  KC_PGUP,  M(DIR_UP) ,  __________,  __________,
                    KC_HOME,  KC_PGDN, KC_END, __________,
          __________,  __________,
          __________,
-         __________,  KC_F7,  KC_F8,
+         VOL_DOWN,  VOL_UP,  MUTE,
                              KC_F14
     ),
 
 [_PALM_R] = LAYOUT(
 __________,  __________,  __________,  __________,  __________,  SET_LAYER_MAC, __________, SET_LAYER_WIN, __________,
-         __________,  __________,  VOL_DOWN,  MUTE,  VOL_UP,  __________,
+         __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
