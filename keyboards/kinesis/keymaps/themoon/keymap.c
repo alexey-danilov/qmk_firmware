@@ -541,9 +541,9 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
                if (is_pressed) {
                    SEND_STRING(SS_UP(X_LSHIFT) SS_UP(X_LALT) SS_UP(X_LCTRL)); // remove meh
                    if (isMac) {
-                     SEND_STRING("printf \'\\e]50;ClearScrollback\\a\'");
+                     SEND_STRING("printf \'\\e]50;ClearScrollback\\a\'"); // works in iterm2
                    } else if (isWin) {
-                     SEND_STRING("Write \"\\n\\n\\e[91m========== \'\\e]9;8;\\\"time\\\"\\e\\\\\' ==========\\e[m\\n\\n\"");
+                     SEND_STRING("clear"); // works in conemu/msys64
                    }
                    SEND_STRING(SS_TAP(X_ENTER));
                    return false;
@@ -883,7 +883,7 @@ __________,  __________,  __________,  __________,  __________,  SET_LAYER_MAC, 
                    KC_HOME,  KC_PGDN, KC_END, __________,
          __________,  __________,
          __________,
-         VOL_DOWN,  VOL_UP,  MUTE,
+         MUTE,  VOL_DOWN,  VOL_UP,
                              KC_F14
     ),
 
