@@ -81,8 +81,7 @@ enum holding_keycodes {
 
 enum {
     MAIL = 0,
-    SLEEP_MAC,
-    SLEEP_WIN,
+    SLEEP,
     SHUTDOWN_WIN,
     DEL_WORD_WIN,
     DIR_LIST,
@@ -482,25 +481,22 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
     bool is_pressed = record->event.pressed;
         switch(id) {
 
-            case MAIL: {
+           case MAIL: {
                 if (is_pressed) {
                     SEND_STRING("oleksii.danilov@gmail.com");
                     return false;
                 }
             }
 
-            case SLEEP_MAC: {
+           case SLEEP: {
                 if (is_pressed) {
-                    SEND_STRING(SS_DOWN(X_LCTRL) SS_DOWN(X_LSHIFT) SS_DOWN(X_POWER) SS_UP(X_POWER) SS_UP(X_LSHIFT) SS_UP(X_LCTRL));
+                   if (isMac) {
+                     SEND_STRING(SS_DOWN(X_LCTRL) SS_DOWN(X_LSHIFT) SS_DOWN(X_POWER) SS_UP(X_POWER) SS_UP(X_LSHIFT) SS_UP(X_LCTRL));
+                   } else if (isWin) {
+                     SEND_STRING(SS_LGUI("x")); _delay_ms(300); SEND_STRING("u"); _delay_ms(300); SEND_STRING("s");
+                   }
                     return false;
                 }
-            }
-
-           case SLEEP_WIN: {
-               if (is_pressed) {
-                   SEND_STRING(SS_LGUI("x")); _delay_ms(300); SEND_STRING("u"); _delay_ms(300); SEND_STRING("s");
-                   return false;
-               }
            }
 
            case SHUTDOWN_WIN: {
@@ -573,6 +569,7 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
            case VIM_SAVE_QUIT: {
                if (is_pressed) {
                    SEND_STRING(SS_UP(X_LSHIFT) SS_UP(X_LALT) SS_UP(X_LCTRL));  // remove meh
+                   SEND_STRING(SS_TAP(X_ESCAPE)); _delay_ms(100);
                    SEND_STRING(":wq!"); SEND_STRING(SS_TAP(X_ENTER));
                    return false;
                }
@@ -595,7 +592,7 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
 * Keymap: Default Mac Layer in Qwerty
 *
 * ,-------------------------------------------------------------------------------------------------------------------.
-* | SLEEP_MAC  |  F1  |  F2  |  F3  |  F4  |  F5  |  F6  |  F8  |  F9  |  F10 |  F12 | PSCR | SLCK | PAUS |Program| Power |
+* | SLEEP  |  F1  |  F2  |  F3  |  F4  |  F5  |  F6  |  F8  |  F9  |  F10 |  F12 | PSCR | SLCK | PAUS |Program| Power |
 * |--------+------+------+------+------+------+---------------------------+------+------+------+------+------+--------|
 * | `~     |  1!  |  2@  |  3#  |  4$  |  5%  |                           |  6^  |  7&  |  8*  |  9(  |  0)  | Insert |
 * |--------+------+------+------+------+------|                           +------+------+------+------+------+--------|
@@ -622,7 +619,7 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [_MAC] = LAYOUT(
            // left side
-           M(SLEEP_MAC), KC_F1  ,KC_F2  ,KC_F3  ,KC_F4  ,KC_F5  ,KC_F6  ,KC_F7  ,KC_F8,
+           M(SLEEP), KC_F1  ,KC_F2  ,KC_F3  ,KC_F4  ,KC_F5  ,KC_F6  ,KC_F7  ,KC_F8,
            KC_GRV, KC_1, KC_2, KC_3, KC_4, KC_5,
            M(MAIL), KC_Q, KC_W, KC_E, KC_R, KC_T,
            KC_CAPSLOCK,KC_A, KC_S, KC_D, KC_F, KC_G,
@@ -768,7 +765,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // base win layer
 [_WIN] = LAYOUT(
            // left side
-           M(SLEEP_WIN), KC_F1  ,KC_F2  ,KC_F3  ,KC_F4  ,KC_F5  ,KC_F6  ,KC_F7  ,KC_F8,
+           M(SLEEP), KC_F1  ,KC_F2  ,KC_F3  ,KC_F4  ,KC_F5  ,KC_F6  ,KC_F7  ,KC_F8,
            KC_GRV, KC_1, KC_2, KC_3, KC_4, KC_5,
            M(MAIL), KC_Q, KC_W, KC_E, KC_R, KC_T,
            KC_CAPSLOCK,KC_A, KC_S, KC_D, KC_F, KC_G,
