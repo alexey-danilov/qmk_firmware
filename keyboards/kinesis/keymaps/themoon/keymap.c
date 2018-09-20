@@ -83,6 +83,7 @@ enum {
     SLEEP,
     SHUTDOWN_WIN,
     DEL_WORD_WIN,
+    CLOSE_WIN,
     DIR_LIST,
     DIR_UP,
     DELETE_FORCE,
@@ -424,6 +425,13 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
                }
            }
 
+           case CLOSE_WIN: {
+               if (is_pressed) {
+                   SEND_STRING(SS_UP(X_LCTRL) SS_DOWN(X_LALT)); _delay_ms(100); SEND_STRING(SS_TAP(X_F4) SS_UP(X_LALT));
+                   return false;
+               }
+           }
+
            case DIR_LIST: {
                if (is_pressed) {
                    SEND_STRING(SS_UP(X_LSHIFT) SS_UP(X_LALT) SS_UP(X_LCTRL)); // remove meh
@@ -575,7 +583,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________,   __________, __________,
          __________,  __________,  __________,  __________,  __________,  __________,
-                   __________,  __________,  __________,  __________,
+                   __________,  KC_Q,  __________,  KC_SLSH,
                              __________,  __________,
                                        __________,
                     CMD_ESC, __________,  __________,
@@ -721,7 +729,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________,   __________, __________,
          __________,  __________,  __________,  __________,  __________,  __________,
-                   __________,  __________,  __________,  __________,
+                   __________,  M(CLOSE_WIN),  LALT(KC_COMM),  KC_SLSH,
                              __________,  __________,
                                        __________,
                     CTRL_ESC, __________,  __________,
@@ -977,14 +985,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case KC_RGHT: { return after_leader(KC_RGHT, KC_LALT, KC_LCTL, KC_LSFT, &esc_timer, is_pressed, 180); }
         case KC_LEFT: { return after_leader(KC_LEFT, KC_LALT, KC_LCTL, KC_LSFT, &esc_timer, is_pressed, 180); }
 
-        case KC_3: {
-          if (!after_leader(os_specific_key(KC_Q, KC_F4), os_specific_key(KC_LGUI, KC_LALT), KC_NO, KC_NO, &esc_timer, is_pressed, 180)) {
-            return true;
-          } else {
-            return hold_180_replace(KC_3, KC_MINS, KC_LSFT, is_pressed);
-          };
-        }
-
         // CUSTOM KEYCODES
         case KC_PGUP: { return without_meh_repeat(KC_PGUP, is_pressed); }
         case KC_PGDN: { return without_meh_repeat(KC_PGDN, is_pressed); }
@@ -1049,6 +1049,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
         case KC_1: { return hold_180_replace(KC_1, KC_HOME, KC_NO, is_pressed); }
         case KC_2: { return hold_180_replace(KC_2, KC_9, KC_LSFT, is_pressed); }
+        case KC_3: { return hold_180_replace(KC_3, KC_MINS, KC_LSFT, is_pressed); }
         case KC_4: { return hold_180_replace(KC_4, KC_0, KC_LSFT, is_pressed); }
         case KC_5: { return hold_180_replace(KC_5, KC_EQL, KC_NO, is_pressed); }
         case KC_6: { return hold_180_replace(KC_6, KC_EQL, KC_LSFT, is_pressed); }
