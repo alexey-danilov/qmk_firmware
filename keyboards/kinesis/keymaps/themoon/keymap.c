@@ -44,6 +44,8 @@ enum kinesis_keycodes {
   MEH_LAST_APP = MO(_PALM_R),
   ALT_BSLASH = MT(MOD_LALT, KC_BSLS),
 
+  UNDO_REDO,
+
   // media
   VOL_UP,
   VOL_DOWN,
@@ -224,15 +226,15 @@ bool hold_180_add_shift(uint16_t code, bool pressed) {
 }
 
 // replaces keycode and adds mod to it if it was held for at least provided duration
-bool hold_replace_add_mod(uint16_t code, uint16_t replacement_code, uint16_t mod_if_held, bool pressed, uint8_t hold_duration) {
+bool hold_replace_add_mod(uint16_t code, uint16_t mod, uint16_t replacement_code, uint16_t replacement_mod1, uint16_t replacement_mod2, bool pressed, uint8_t hold_duration) {
   static uint16_t hold_timer;
   if(pressed) {
       hold_timer= timer_read();
   } else {
       if (not_held(hold_timer, hold_duration)){
-          key_code(code);
+          with_1_mod(code, mod);
       } else {
-          with_1_mod(replacement_code, mod_if_held);
+          with_2_mods(replacement_code, replacement_mod1, replacement_mod2);
       }
   }
   return false;
@@ -240,7 +242,7 @@ bool hold_replace_add_mod(uint16_t code, uint16_t replacement_code, uint16_t mod
 
 // replaces keycode and adds mod to it if it was held for at least provided duration
 bool hold_180_replace(uint16_t code, uint16_t replacement_code, uint16_t mod_if_held, bool pressed) {
-  return hold_replace_add_mod(code, replacement_code, mod_if_held, pressed, 180);
+  return hold_replace_add_mod(code, KC_NO, replacement_code, mod_if_held, KC_NO, pressed, 180);
 }
 
 // strips mods from keycode - without putting them back
@@ -319,8 +321,64 @@ bool after_leader(uint16_t key, uint16_t mod1, uint16_t mod2, uint16_t mod3, uin
 // TAP MACROS
 enum {
   TAP_MACRO1 = 1,
-  TAP_MACRO2 = 2
+  TAP_MACRO2 = 2,
+  K_TD = 3
 };
+
+enum {
+  SINGLE_TAP = 1,
+  SINGLE_HOLD = 2,
+  DOUBLE_TAP = 3,
+  DOUBLE_HOLD = 4,
+  DOUBLE_SINGLE_TAP = 5
+};
+
+typedef struct {
+  bool is_press_action;
+  int state;
+} tap;
+
+int cur_dance (qk_tap_dance_state_t *state) {
+  if (state->count == 1) {
+    if (state->interrupted || state->pressed==0) return SINGLE_TAP;
+    else return SINGLE_HOLD;
+  }
+
+  else if (state->count == 2) {
+    if (state->interrupted) return DOUBLE_SINGLE_TAP;
+    else if (state->pressed) return DOUBLE_HOLD;
+    else return DOUBLE_TAP;
+  }
+  else return 6;
+}
+
+// k tap
+static tap k_tap_state = {
+  .is_press_action = true,
+  .state = 0
+};
+
+void k_finished (qk_tap_dance_state_t *state, void *user_data) {
+  k_tap_state.state = cur_dance(state);
+  switch (k_tap_state.state) {
+    case SINGLE_TAP: down(KC_K); break;
+    case SINGLE_HOLD: down(KC_LSFT); down(KC_K); up(KC_K); break;
+    default:
+      if (isMac) { down(KC_LALT); down(KC_SPC); up(KC_SPC); break; }
+      else if (isWin) { down(KC_LALT); down(KC_LSFT); up(KC_LSFT); break; }
+    }
+  }
+
+void k_reset (qk_tap_dance_state_t *state, void *user_data) {
+  switch (k_tap_state.state) {
+    case SINGLE_TAP: up(KC_K); break;
+    case SINGLE_HOLD: up(KC_LSFT); break;
+    default:
+      if (isMac) { up(KC_LALT); break; }
+      else if (isWin) { up(KC_LALT); break; }
+    }
+  k_tap_state.state = 0;
+}
 
 // dynamic macro1
 // Whether the macro 1 is currently being recorded.
@@ -384,7 +442,8 @@ void macro2_tapdance_fn(qk_tap_dance_state_t *state, void *user_data) {
 qk_tap_dance_action_t tap_dance_actions[] = {
   // This Tap dance plays the macro 1 on TAP and records it on double tap.
   [TAP_MACRO1] = ACTION_TAP_DANCE_FN(macro1_tapdance_fn),
-  [TAP_MACRO2] = ACTION_TAP_DANCE_FN(macro2_tapdance_fn)
+  [TAP_MACRO2] = ACTION_TAP_DANCE_FN(macro2_tapdance_fn),
+  [K_TD] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, k_finished, k_reset)
 };
 
 // NON-TAP MACROS
@@ -535,7 +594,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
            M(MAIL), KC_Q, KC_W, KC_E, KC_R, KC_T,
            KC_CAPSLOCK,KC_A, KC_S, KC_D, KC_F, KC_G,
            KC_LBRC ,KC_Z, KC_X, KC_C, KC_V, KC_B,
-                 KC_LCBR, LGUI(KC_Z), KC_COMM, KC_F3,
+                 KC_LCBR, UNDO_REDO, KC_COMM, KC_F3,
                                            // left thumb keys
 			                                    ALT_SHIFT_BS,TD(TAP_MACRO1),
                                                    ALT_SLASH,
@@ -546,7 +605,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     KC_F9  ,KC_F10 ,KC_F11 ,KC_F12 ,KC_PSCR ,KC_SLCK  ,KC_PAUS, RESET, KC_POWER,
 	KC_6, KC_7, KC_8, KC_9, KC_0, KC_INS,
 	KC_Y, KC_U, KC_I, KC_O, KC_P, HYPR(KC_0),
-	KC_H, KC_J, KC_K, KC_L, KC_SCLN, HYPR(KC_1),
+	KC_H, KC_J, TD(K_TD), KC_L, KC_SCLN, HYPR(KC_1),
 	KC_N, KC_M, KC_UP, KC_DOT, KC_QUOT, KC_RBRC,
 	KC_LEFT, KC_DOWN, KC_RGHT, KC_RCBR,
            // right thumb keys
@@ -681,7 +740,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
            M(MAIL), KC_Q, KC_W, KC_E, KC_R, KC_T,
            KC_CAPSLOCK,KC_A, KC_S, KC_D, KC_F, KC_G,
            KC_LBRC ,KC_Z, KC_X, KC_C, KC_V, KC_B,
-                 KC_LCBR, LCTL(KC_Z), KC_COMM, KC_F3,
+                 KC_LCBR, UNDO_REDO, KC_COMM, KC_F3,
                                            // left thumb keys
 			                                    CTRL_SHIFT_BS,TD(TAP_MACRO1),
                                                    ALT_SLASH,
@@ -692,7 +751,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     KC_F9  ,KC_F10 ,KC_F11 ,KC_F12 ,KC_PSCR ,KC_SLCK  ,KC_PAUS, RESET, M(SHUTDOWN_WIN),
 	KC_6, KC_7, KC_8, KC_9, KC_0, KC_INS,
 	KC_Y, KC_U, KC_I, KC_O, KC_P, HYPR(KC_0),
-	KC_H, KC_J, KC_K, KC_L, KC_SCLN, HYPR(KC_1),
+	KC_H, KC_J, TD(K_TD), KC_L, KC_SCLN, HYPR(KC_1),
 	KC_N, KC_M, KC_UP, KC_DOT, KC_QUOT, KC_RBRC,
 	KC_LEFT, KC_DOWN, KC_RGHT, KC_RCBR,
            // right thumb keys
@@ -974,8 +1033,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           };
         }
 
-        case KC_K: { return after_leader(os_specific_key(KC_SPC, KC_LSFT), KC_LALT, KC_NO, KC_NO, &esc_timer, is_pressed, 300); }
-
         // CUSTOM KEYCODES
         case KC_PGUP: { return without_meh_repeat(KC_PGUP, is_pressed); }
         case KC_PGDN: { return without_meh_repeat(KC_PGDN, is_pressed); }
@@ -1007,6 +1064,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case MOD_ENTER: { return hold_140_add_shift(KC_ENTER, is_pressed); }
 
         case KC_F3: { return hold_140_add_shift(KC_F3, is_pressed); }
+        case UNDO_REDO: { return hold_replace_add_mod(KC_Z, os_specific_key(KC_LGUI, KC_LCTL), KC_Z, os_specific_key(KC_LGUI, KC_LCTL), KC_LSFT, is_pressed, 140); }
 
         // 180 ms
         case MOD_W: { return hold_180_add_shift(KC_W, is_pressed); }
