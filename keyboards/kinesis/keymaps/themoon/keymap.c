@@ -318,96 +318,9 @@ bool after_leader(uint16_t key, uint16_t mod1, uint16_t mod2, uint16_t mod3, uin
 
 // TAP MACROS
 enum {
-  COMM_TD = 0,
-  LB_TD = 1,
-  RB_TD = 2,
-  K_TD = 3,
-  TAP_MACRO1 = 4,
-  TAP_MACRO2 = 5
+  TAP_MACRO1 = 1,
+  TAP_MACRO2 = 2
 };
-
-enum {
-  SINGLE_TAP = 1,
-  SINGLE_HOLD = 2,
-  DOUBLE_TAP = 3,
-  DOUBLE_HOLD = 4,
-  DOUBLE_SINGLE_TAP = 5
-};
-
-typedef struct {
-  bool is_press_action;
-  int state;
-} tap;
-
-int cur_dance (qk_tap_dance_state_t *state) {
-  if (state->count == 1) {
-    if (state->interrupted || state->pressed==0) return SINGLE_TAP;
-    else return SINGLE_HOLD;
-  }
-
-  else if (state->count == 2) {
-    if (state->interrupted) return DOUBLE_SINGLE_TAP;
-    else if (state->pressed) return DOUBLE_HOLD;
-    else return DOUBLE_TAP;
-  }
-  else return 6;
-}
-
-// comma tap
-static tap comma_tap_state = {
-  .is_press_action = true,
-  .state = 0
-};
-
-void comma_finished (qk_tap_dance_state_t *state, void *user_data) {
-  comma_tap_state.state = cur_dance(state);
-  switch (comma_tap_state.state) {
-    case SINGLE_TAP: down(KC_COMM); break;
-    case SINGLE_HOLD: down(KC_LSFT); down(KC_COMM); up(KC_COMM); break;
-    default:
-      if (isMac) { down(KC_LGUI); down(KC_Q); up(KC_Q); break; }
-      else if (isWin) { down(KC_LALT); down(KC_F4); up(KC_F4); break; }
-    }
-  }
-
-void comma_reset (qk_tap_dance_state_t *state, void *user_data) {
-  switch (comma_tap_state.state) {
-    case SINGLE_TAP: up(KC_COMM); break;
-    case SINGLE_HOLD: up(KC_LSFT); break;
-    default:
-      if (isMac) { up(KC_LGUI); break; }
-      else if (isWin) { up(KC_LALT); break; }
-    }
-  comma_tap_state.state = 0;
-}
-
-// k tap
-static tap k_tap_state = {
-  .is_press_action = true,
-  .state = 0
-};
-
-void k_finished (qk_tap_dance_state_t *state, void *user_data) {
-  k_tap_state.state = cur_dance(state);
-  switch (k_tap_state.state) {
-    case SINGLE_TAP: down(KC_K); break;
-    case SINGLE_HOLD: down(KC_LSFT); down(KC_K); up(KC_K); break;
-    default:
-      if (isMac) { down(KC_LALT); down(KC_SPC); up(KC_SPC); break; }
-      else if (isWin) { down(KC_LALT); down(KC_LSFT); up(KC_LSFT); break; }
-    }
-  }
-
-void k_reset (qk_tap_dance_state_t *state, void *user_data) {
-  switch (k_tap_state.state) {
-    case SINGLE_TAP: up(KC_K); break;
-    case SINGLE_HOLD: up(KC_LSFT); break;
-    default:
-      if (isMac) { up(KC_LALT); break; }
-      else if (isWin) { up(KC_LALT); break; }
-    }
-  k_tap_state.state = 0;
-}
 
 // dynamic macro1
 // Whether the macro 1 is currently being recorded.
@@ -471,9 +384,7 @@ void macro2_tapdance_fn(qk_tap_dance_state_t *state, void *user_data) {
 qk_tap_dance_action_t tap_dance_actions[] = {
   // This Tap dance plays the macro 1 on TAP and records it on double tap.
   [TAP_MACRO1] = ACTION_TAP_DANCE_FN(macro1_tapdance_fn),
-  [TAP_MACRO2] = ACTION_TAP_DANCE_FN(macro2_tapdance_fn),
-  [K_TD] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, k_finished, k_reset),
-  [COMM_TD] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, comma_finished, comma_reset)
+  [TAP_MACRO2] = ACTION_TAP_DANCE_FN(macro2_tapdance_fn)
 };
 
 // NON-TAP MACROS
@@ -624,7 +535,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
            M(MAIL), KC_Q, KC_W, KC_E, KC_R, KC_T,
            KC_CAPSLOCK,KC_A, KC_S, KC_D, KC_F, KC_G,
            KC_LBRC ,KC_Z, KC_X, KC_C, KC_V, KC_B,
-                 KC_LCBR, LGUI(KC_Z), TD(COMM_TD), KC_F3,
+                 KC_LCBR, LGUI(KC_Z), KC_COMM, KC_F3,
                                            // left thumb keys
 			                                    ALT_SHIFT_BS,TD(TAP_MACRO1),
                                                    ALT_SLASH,
@@ -635,7 +546,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     KC_F9  ,KC_F10 ,KC_F11 ,KC_F12 ,KC_PSCR ,KC_SLCK  ,KC_PAUS, RESET, KC_POWER,
 	KC_6, KC_7, KC_8, KC_9, KC_0, KC_INS,
 	KC_Y, KC_U, KC_I, KC_O, KC_P, HYPR(KC_0),
-	KC_H, KC_J, TD(K_TD), KC_L, KC_SCLN, HYPR(KC_1),
+	KC_H, KC_J, KC_K, KC_L, KC_SCLN, HYPR(KC_1),
 	KC_N, KC_M, KC_UP, KC_DOT, KC_QUOT, KC_RBRC,
 	KC_LEFT, KC_DOWN, KC_RGHT, KC_RCBR,
            // right thumb keys
@@ -770,7 +681,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
            M(MAIL), KC_Q, KC_W, KC_E, KC_R, KC_T,
            KC_CAPSLOCK,KC_A, KC_S, KC_D, KC_F, KC_G,
            KC_LBRC ,KC_Z, KC_X, KC_C, KC_V, KC_B,
-                 KC_LCBR, LCTL(KC_Z), TD(COMM_TD), KC_F3,
+                 KC_LCBR, LCTL(KC_Z), KC_COMM, KC_F3,
                                            // left thumb keys
 			                                    CTRL_SHIFT_BS,TD(TAP_MACRO1),
                                                    ALT_SLASH,
@@ -781,7 +692,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     KC_F9  ,KC_F10 ,KC_F11 ,KC_F12 ,KC_PSCR ,KC_SLCK  ,KC_PAUS, RESET, M(SHUTDOWN_WIN),
 	KC_6, KC_7, KC_8, KC_9, KC_0, KC_INS,
 	KC_Y, KC_U, KC_I, KC_O, KC_P, HYPR(KC_0),
-	KC_H, KC_J, TD(K_TD), KC_L, KC_SCLN, HYPR(KC_1),
+	KC_H, KC_J, KC_K, KC_L, KC_SCLN, HYPR(KC_1),
 	KC_N, KC_M, KC_UP, KC_DOT, KC_QUOT, KC_RBRC,
 	KC_LEFT, KC_DOWN, KC_RGHT, KC_RCBR,
            // right thumb keys
@@ -1055,6 +966,16 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case KC_RGHT: { return after_leader(KC_RGHT, KC_LALT, KC_LCTL, KC_LSFT, &esc_timer, is_pressed, 180); }
         case KC_LEFT: { return after_leader(KC_LEFT, KC_LALT, KC_LCTL, KC_LSFT, &esc_timer, is_pressed, 180); }
 
+        case KC_3: {
+          if (!after_leader(os_specific_key(KC_Q, KC_F4), os_specific_key(KC_LGUI, KC_LALT), KC_NO, KC_NO, &esc_timer, is_pressed, 180)) {
+            return true;
+          } else {
+            return hold_180_replace(KC_3, KC_MINS, KC_LSFT, is_pressed);
+          };
+        }
+
+        case KC_K: { return after_leader(os_specific_key(KC_SPC, KC_LSFT), KC_LALT, KC_NO, KC_NO, &esc_timer, is_pressed, 300); }
+
         // CUSTOM KEYCODES
         case KC_PGUP: { return without_meh_repeat(KC_PGUP, is_pressed); }
         case KC_PGDN: { return without_meh_repeat(KC_PGDN, is_pressed); }
@@ -1121,7 +1042,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
         case KC_1: { return hold_180_replace(KC_1, KC_1, os_specific_key(KC_LGUI, KC_LCTL), is_pressed); }
         case KC_2: { return hold_180_replace(KC_2, KC_9, KC_LSFT, is_pressed); }
-        case KC_3: { return hold_180_replace(KC_3, KC_MINS, KC_LSFT, is_pressed); }
         case KC_4: { return hold_180_replace(KC_4, KC_0, KC_LSFT, is_pressed); }
         case KC_5: { return hold_180_replace(KC_5, KC_EQL, KC_NO, is_pressed); }
         case KC_6: { return hold_180_replace(KC_6, KC_EQL, KC_LSFT, is_pressed); }
