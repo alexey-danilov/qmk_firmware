@@ -26,7 +26,6 @@ enum kinesis_keycodes {
   CMD_ESC = MO(_COMMAND_ESCAPE),
   CMD_SPACE = LT(_COMMAND_SPACE, KC_SPC),
   ALT_SHIFT_BS = MO(_ALT_SHIFT_BS),
-  ALT_SHIFT_CAPS = MT(MOD_RALT | MOD_RSFT, KC_CAPS),
   CTRL_CMD_BS = MO(_CTRL),
   CTRL_F16 = LT(_CTRL, KC_F16),
 
@@ -34,7 +33,6 @@ enum kinesis_keycodes {
   SET_LAYER_WIN,
   CTRL_ESC = MO(_CONTROL_ESCAPE),
   CTRL_SPACE = LT(_CONTROL_SPACE, KC_SPC),
-  CTRL_SHIFT_CAPS = MT(MOD_RCTL | MOD_RSFT, KC_CAPS),
   CTRL_SHIFT_BS = MO(_CTRL_SHIFT_BS),
   LGUI_DEL = MT(MOD_LGUI, KC_DEL),
 
@@ -67,6 +65,8 @@ enum holding_keycodes {
   SHIFT_TAB,
   SHIFT_BSLS,
 
+  LANG_CAPS,
+
   // mac-specific overrides
   CTRL_COMMA, CTRL_DOT, CTRL_H, CTRL_M, CMD_M,
   ALT_BSPC,
@@ -80,10 +80,10 @@ enum holding_keycodes {
 // macros
 enum {
     MAIL = 0,
+    CLOSE_APP,
     SLEEP,
     SHUTDOWN_WIN,
     DEL_WORD_WIN,
-    CLOSE_WIN,
     DIR_LIST,
     DIR_UP,
     DELETE_FORCE,
@@ -317,11 +317,11 @@ bool after_leader(uint16_t key, uint16_t mod1, uint16_t mod2, uint16_t mod3, uin
   return true;
 }
 
-// TAP MACROS
 enum {
   TAP_MACRO1 = 1,
   TAP_MACRO2 = 2
 };
+
 
 // dynamic macro1
 // Whether the macro 1 is currently being recorded.
@@ -393,6 +393,21 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
     bool is_pressed = record->event.pressed;
         switch(id) {
 
+           case CLOSE_APP: {
+                if (is_pressed) {
+                   SEND_STRING(SS_UP(X_LSHIFT) SS_UP(X_LALT) SS_UP(X_LCTRL)); // remove meh
+
+                   if (isMac) {
+                     SEND_STRING(SS_DOWN(X_LGUI) SS_TAP(X_Q) SS_UP(X_LGUI));
+                   } else if (isWin) {
+                     SEND_STRING(SS_DOWN(X_LALT)); _delay_ms(100); SEND_STRING(SS_TAP(X_F4) SS_UP(X_LALT));
+                   }
+
+                   SEND_STRING(SS_DOWN(X_LSHIFT) SS_DOWN(X_LALT) SS_DOWN(X_LCTRL)); // add meh
+                   return false;
+                }
+           }
+
            case MAIL: {
                 if (is_pressed) {
                     SEND_STRING("oleksii.danilov@gmail.com");
@@ -421,13 +436,6 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
            case DEL_WORD_WIN: {
                if (is_pressed) {
                    SEND_STRING(SS_DOWN(X_LSHIFT) SS_TAP(X_LEFT) SS_UP(X_LSHIFT) SS_TAP(X_DELETE));
-                   return false;
-               }
-           }
-
-           case CLOSE_WIN: {
-               if (is_pressed) {
-                   SEND_STRING(SS_UP(X_LCTRL) SS_DOWN(X_LALT)); _delay_ms(100); SEND_STRING(SS_TAP(X_F4) SS_UP(X_LALT));
                    return false;
                }
            }
@@ -524,23 +532,23 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
 * ,-------------------------------------------------------------------------------------------------------------------.
 * | SLEEP  |  F1  |  F2  |  F3  |  F4  |  F5  |  F6  |  F8  |  F9  |  F10 |  F12 | PSCR | SLCK | PAUS |Program| Power |
 * |--------+------+------+------+------+------+---------------------------+------+------+------+------+------+--------|
-* | Hyper1 |  1!  |  2@  |  3#  |  4$  |  5%  |                           |  6^  |  7&  |  8*  |  9(  |  0)  | Hyper0 |
+* | `~     |  1!  |  2@  |  3#  |  4$  |  5%  |                           |  6^  |  7&  |  8*  |  9(  |  0)  |        |
 * |--------+------+------+------+------+------|                           +------+------+------+------+------+--------|
-* | `~     |   Q  |   W  |   E  |   R  |   T  |                           |   Y  |   U  |   I  |   O  |   P  | F16    |
+* | Mail   |   Q  |   W  |   E  |   R  |   T  |                           |   Y  |   U  |   I  |   O  |   P  |        |
 * |--------+------+------+------+------+------|                           |------+------+------+------+------+--------|
-* | CAPS   |   A  |   S  |   D  |   F  |   G  |                           |   H  |   J  |   K  |   L  |  ;:  | F17    |
+* |        |   A  |   S  |   D  |   F  |   G  |                           |   H  |   J  |   K  |   L  |  ;:  |        |
 * |--------+------+------+------+------+------|                           |------+------+------+------+------+--------|
-* | Mail   |   Z  |   X  |   C  |   V  |   B  |                           |   N  |   M  |  Up  |  .>  |  '"  | F18    |
+* |        |   Z  |   X  |   C  |   V  |   B  |                           |   N  |   M  |  Up  |  .>  |  '"  |        |
 * `--------+------+------+------+------+-------                           `------+------+------+------+------+--------'
-*          |Insert|  [{  |  ,<  |  ]}  |                                         | Left | Down | Right|  ]}  |
+*          |  Ins |  [{  |  ,<  |  ]}  |                                         | Left | Down | Right|  F15 |
 *          `---------------------------'                                         `---------------------------'
-*                            .-------------------------.         ,-------------------------.
-*                            | LShift+RAlt/BkSp |Macro1|         |Macro2| LShift+RAlt/Del  |
-*                            `-----------|------|------|         |------+------+-----------`
+*                            .-------------------------.         ,---------------------------.
+*                            | LShift+RAlt/BkSp |Macro1|         |Macro2| Lang/Caps/Close TD |
+*                            `-----------|------|------|         |------+------+-------------`
 *                                 |      |      | Alt//|         | Alt/\|      |      |
 *                                 | LCMD/|Shift/|------|         |------|Shift/|RCMD/ |
 *                                 | ESC  |Enter |Ctrl/ |         |      |Tab   |SPACE |
-*                                 |      |      |CMD_BkSp|     |Ctrl/F15|      |      |
+*                                 |      |      |CMD_BkSp|     |Ctrl/F16|      |      |
 *                                 `--------------------'         `--------------------'
 *                             PALM/F13                                            PALM/F14
 */
@@ -550,8 +558,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [_MAC] = LAYOUT(
            // left side
            M(SLEEP), KC_F1  ,KC_F2  ,KC_F3  ,KC_F4  ,KC_F5  ,KC_F6  ,KC_F7  ,KC_F8,
-           M(MAIL), KC_1, KC_2, KC_3, KC_4, KC_5,
-           KC_GRV, KC_Q, KC_W, KC_E, KC_R, KC_T,
+           KC_GRV, KC_1, KC_2, KC_3, KC_4, KC_5,
+           M(MAIL), KC_Q, KC_W, KC_E, KC_R, KC_T,
            __________,KC_A, KC_S, KC_D, KC_F, KC_G,
            __________, KC_Z, KC_X, KC_C, KC_V, KC_B,
                  KC_INS, KC_LBRC, KC_COMM, KC_RBRC,
@@ -569,7 +577,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	KC_N, KC_M, KC_UP, KC_DOT, KC_QUOT, __________,
 	KC_LEFT, KC_DOWN, KC_RGHT, KC_F15,
            // right thumb keys
-           TD(TAP_MACRO2),ALT_SHIFT_CAPS,
+           TD(TAP_MACRO2), LANG_CAPS,
            ALT_BSLASH,
            CTRL_F16, SFT_T(KC_TAB), CMD_SPACE,
                                     // right palm key
@@ -581,9 +589,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
-         __________,  __________,  __________,  __________,   __________, __________,
-         __________,  __________,  __________,  __________,  __________,  __________,
-                   __________,  KC_Q,  __________,  KC_SLSH,
+         __________,  __________,  __________,  __________,   __________, MOD_G,
+         __________,  __________,  __________,  __________,  __________,  MOD_B,
+                   __________,  __________,  __________,  MOD_RBRC,
                              __________,  __________,
                                        __________,
                     CMD_ESC, __________,  __________,
@@ -696,8 +704,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [_WIN] = LAYOUT(
            // left side
            M(SLEEP), KC_F1  ,KC_F2  ,KC_F3  ,KC_F4  ,KC_F5  ,KC_F6  ,KC_F7  ,KC_F8,
-           M(MAIL), KC_1, KC_2, KC_3, KC_4, KC_5,
-           KC_GRV, KC_Q, KC_W, KC_E, KC_R, KC_T,
+           KC_GRV, KC_1, KC_2, KC_3, KC_4, KC_5,
+           M(MAIL), KC_Q, KC_W, KC_E, KC_R, KC_T,
            __________,KC_A, KC_S, KC_D, KC_F, KC_G,
            __________, KC_Z, KC_X, KC_C, KC_V, KC_B,
                  KC_INS, KC_LBRC, KC_COMM, KC_RBRC,
@@ -713,9 +721,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	KC_Y, KC_U, KC_I, KC_O, KC_P, __________,
 	KC_H, KC_J, KC_K, KC_L, KC_SCLN, __________,
 	KC_N, KC_M, KC_UP, KC_DOT, KC_QUOT, __________,
-	KC_LEFT, KC_DOWN, KC_RGHT, KC_F15,
+	KC_LEFT, KC_DOWN, KC_RGHT, KC_APP,
            // right thumb keys
-           TD(TAP_MACRO2),CTRL_SHIFT_CAPS,
+           TD(TAP_MACRO2), LANG_CAPS,
            ALT_BSLASH,
            KC_RGUI, SFT_T(KC_TAB), CTRL_SPACE,
                                     // right palm key
@@ -727,9 +735,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
-         __________,  __________,  __________,  __________,   __________, __________,
-         __________,  __________,  __________,  __________,  __________,  __________,
-                   __________,  M(CLOSE_WIN),  LALT(KC_COMM),  KC_SLSH,
+         __________,  __________,  __________,  __________,   __________, MOD_G,
+         __________,  __________,  __________,  __________,  __________,  MOD_B,
+                   __________,  __________,  HYPR(KC_COMM),  MOD_RBRC,
                              __________,  __________,
                                        __________,
                     CTRL_ESC, __________,  __________,
@@ -826,7 +834,7 @@ __________,  __________,  __________,  __________,  __________,  SET_LAYER_MAC, 
                    __________, __________, __________, __________,
                              __________,  __________,
                                      __________,
-                      KC_F5, KC_F6,  __________,
+                      M(CLOSE_APP), __________,  __________,
                                      KC_F13,
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
          __________,  __________,  __________,  __________,  __________,  __________,
@@ -991,6 +999,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case KC_HOME: { return without_meh_repeat(KC_HOME, is_pressed); }
         case KC_END: { return without_meh_repeat(KC_END, is_pressed); }
 
+        case LANG_CAPS: { return hold_replace_add_mod(os_specific_key(KC_SPC, KC_LSFT), KC_RALT, KC_LOCKING_CAPS, KC_NO, KC_NO, is_pressed, 140); }
+
         case SHIFT_TAB: { return replace_mods_hold_mods(KC_TAB, os_specific_key(KC_LGUI, KC_LCTL), KC_LSFT, KC_LCTL, KC_LSFT, is_pressed, 180); }
         case SHIFT_BSLS: { return replace_mods_hold_mods(KC_BSLS, os_specific_key(KC_LGUI, KC_LCTL), KC_LSFT, os_specific_key(KC_LGUI, KC_LCTL), KC_LSFT, is_pressed, 180); }
 
@@ -1047,7 +1057,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case MOD_UP: { return hold_add_mods(KC_UP, KC_LALT, KC_LCTL, is_pressed, 180); }
         case MOD_DOWN: { return hold_add_mods(KC_DOWN, KC_LALT, KC_LCTL, is_pressed, 180); }
 
-        case KC_1: { return hold_180_replace(KC_1, KC_HOME, KC_NO, is_pressed); }
+        case KC_1: { return hold_180_replace(KC_1, KC_5, KC_LSFT, is_pressed); }
         case KC_2: { return hold_180_replace(KC_2, KC_9, KC_LSFT, is_pressed); }
         case KC_3: { return hold_180_replace(KC_3, KC_MINS, KC_LSFT, is_pressed); }
         case KC_4: { return hold_180_replace(KC_4, KC_0, KC_LSFT, is_pressed); }
@@ -1056,7 +1066,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case KC_7: { return hold_180_replace(KC_7, KC_1, KC_LSFT, is_pressed); }
         case KC_8: { return hold_180_replace(KC_8, KC_MINS, KC_NO, is_pressed); }
         case KC_9: { return hold_180_replace(KC_9, KC_SLSH, KC_LSFT, is_pressed); }
-        case KC_0: { return hold_180_replace(KC_0, KC_END, KC_NO, is_pressed); }
+        case KC_0: { return hold_180_replace(KC_0, KC_6, KC_LSFT, is_pressed); }
 
         case KC_F1: { return hold_180_add_shift(KC_F1, is_pressed); }
         case KC_F2: { return hold_180_add_shift(KC_F2, is_pressed); }
