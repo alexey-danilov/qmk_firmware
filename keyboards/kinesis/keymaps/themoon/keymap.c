@@ -999,7 +999,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case KC_HOME: { return without_meh_repeat(KC_HOME, is_pressed); }
         case KC_END: { return without_meh_repeat(KC_END, is_pressed); }
 
-        case LANG_CAPS: { return hold_replace_add_mod(os_specific_key(KC_SPC, KC_LSFT), KC_RALT, KC_LOCKING_CAPS, KC_NO, KC_NO, is_pressed, 140); }
+        case LANG_CAPS: { return hold_replace_add_mod(os_specific_key(KC_SPC, os_specific_key(KC_LALT, KC_RGUI), os_specific_key(KC_LOCKING_CAPS, KC_CAPSLOCK), KC_NO, KC_NO, is_pressed, 140); }
 
         case SHIFT_TAB: { return replace_mods_hold_mods(KC_TAB, os_specific_key(KC_LGUI, KC_LCTL), KC_LSFT, KC_LCTL, KC_LSFT, is_pressed, 180); }
         case SHIFT_BSLS: { return replace_mods_hold_mods(KC_BSLS, os_specific_key(KC_LGUI, KC_LCTL), KC_LSFT, os_specific_key(KC_LGUI, KC_LCTL), KC_LSFT, is_pressed, 180); }
