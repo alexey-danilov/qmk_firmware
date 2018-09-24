@@ -58,7 +58,7 @@ enum holding_keycodes {
   MOD_LBRC, MOD_COMMA, MOD_RBRC,
   MOD_ENTER,
 
-  MOD_SPACE,
+  SPACE_LANG,
   MOD_Y, MOD_U, MOD_I, MOD_O,
   MOD_H, MOD_J, MOD_K, MOD_L,
   MOD_N, MOD_M, MOD_UP, MOD_DOT,
@@ -92,8 +92,7 @@ enum {
     DOCKER_LIST,
     DOCKER_LOGS,
     VIM_SAVE_QUIT,
-    VIM_QUIT,
-    CHANGE_LANG
+    VIM_QUIT
 };
 
 // HELPER FUNCTIONS
@@ -155,29 +154,29 @@ bool not_held(uint16_t hold_timer, uint16_t hold_duration) {
 }
 
 // replaces single mod of keycode, adds additional mods if it was held for at least provided duration
-bool replace_mods_hold_mods(uint16_t code, uint16_t mod1, uint16_t mod2, uint16_t mod3, uint16_t mod4, bool pressed, uint8_t hold_duration) {
+bool replace_mods_hold_mods(uint16_t code, uint16_t mod_to_be_replaced, uint16_t replacement_mod, uint16_t hold_code, uint16_t hold_mod1, uint16_t hold_mod2, bool pressed, uint8_t hold_duration) {
   static uint16_t hold_timer;
   if(pressed) {
       hold_timer= timer_read();
 
   } else {
-      up(mod1);
+      up(mod_to_be_replaced);
 
       if (not_held(hold_timer, hold_duration)){
-          with_1_mod(code, mod2);
+          with_1_mod(code, replacement_mod);
 
       } else {
-          with_2_mods(code, mod3, mod4);
+          with_2_mods(hold_code, hold_mod1, hold_mod2);
       }
 
-      down(mod1);
+      down(mod_to_be_replaced);
   }
   return false;
 }
 
 // replaced command, if held adds shift to keycode
 bool replace_cmd_hold_cmd_shift(uint16_t code, uint16_t replacement_mod, bool pressed, uint8_t hold_duration) {
-  return replace_mods_hold_mods(code, KC_LGUI, replacement_mod, KC_LGUI, KC_LSFT, pressed, hold_duration);
+  return replace_mods_hold_mods(code, KC_LGUI, replacement_mod, code, KC_LGUI, KC_LSFT, pressed, hold_duration);
 }
 
 // replaces keycode if it was held for at least provided duration
@@ -485,17 +484,6 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
                }
            }
 
-           case CHANGE_LANG: {
-               if (is_pressed) {
-                   if (isMac) {
-                     SEND_STRING(SS_UP(X_LGUI) SS_DOWN(X_LALT) SS_TAP(X_SPACE) SS_UP(X_LALT));
-                   } else if (isWin) {
-                     SEND_STRING(SS_UP(X_LCTRL) SS_DOWN(X_LALT)); _delay_ms(100); SEND_STRING(SS_TAP(X_LSHIFT) SS_UP(X_LALT));
-                   }
-                   return false;
-               }
-           }
-
            case DOCKER_LOGS: {
                if (is_pressed) {
                    SEND_STRING(SS_UP(X_LSHIFT) SS_UP(X_LALT) SS_UP(X_LCTRL)); // remove meh
@@ -610,9 +598,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          CTRL_H,  MOD_J,  MOD_K,  MOD_L,  __________,  __________,
          MOD_N,  CTRL_M,  MOD_UP,  CTRL_DOT ,  __________,  __________,
                    MOD_LEFT,  MOD_DOWN,  MOD_RIGHT, __________,
-         KC_F2,  M(CHANGE_LANG),
+         KC_F2,  KC_DEL,
          SHIFT_BSLS,
-         KC_F16,  SHIFT_TAB,  MOD_SPACE,
+         KC_F16,  SHIFT_TAB,  SPACE_LANG,
                              KC_F14
     ),
 
@@ -757,9 +745,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
            MOD_H,  MOD_J,  MOD_K,  MOD_L,  __________,  __________,
            MOD_N,  MOD_M,  MOD_UP,  MOD_DOT ,  __________,  __________,
                      MOD_LEFT,  MOD_DOWN,  MOD_RIGHT, __________,
-         KC_F2,  M(CHANGE_LANG),
+         KC_F2,  KC_DEL,
          SHIFT_BSLS,
-         __________,  SHIFT_TAB,  MOD_SPACE,
+         __________,  SHIFT_TAB,  SPACE_LANG,
                              KC_F14
     ),
 
@@ -998,8 +986,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
 
         // ESCAPE AS LEADER KEY
-        // change lang
-        case KC_K: { return after_leader(KC_SPC, os_specific_key(KC_LALT, KC_RGUI), KC_NO, KC_NO, &esc_timer, is_pressed, 180); }
         // home/end
         case KC_LBRC: { return after_leader(KC_HOME, KC_NO, KC_NO, KC_NO, &esc_timer, is_pressed, 600); }
         case KC_RBRC: { return after_leader(KC_END, KC_NO, KC_NO, KC_NO, &esc_timer, is_pressed, 600); }
@@ -1013,8 +999,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case KC_HOME: { return without_meh_repeat(KC_HOME, is_pressed); }
         case KC_END: { return without_meh_repeat(KC_END, is_pressed); }
 
-        case SHIFT_TAB: { return replace_mods_hold_mods(KC_TAB, os_specific_key(KC_LGUI, KC_LCTL), KC_LSFT, KC_LCTL, KC_LSFT, is_pressed, 180); }
-        case SHIFT_BSLS: { return replace_mods_hold_mods(KC_BSLS, os_specific_key(KC_LGUI, KC_LCTL), KC_LSFT, os_specific_key(KC_LGUI, KC_LCTL), KC_LSFT, is_pressed, 180); }
+        case SHIFT_TAB: { return replace_mods_hold_mods(KC_TAB, os_specific_key(KC_LGUI, KC_LCTL), KC_LSFT, KC_TAB, KC_LCTL, KC_LSFT, is_pressed, 180); }
+        case SHIFT_BSLS: { return replace_mods_hold_mods(KC_BSLS, os_specific_key(KC_LGUI, KC_LCTL), KC_LSFT, KC_TAB, os_specific_key(KC_LGUI, KC_LCTL), KC_LSFT, is_pressed, 180); }
 
         case MUTE: { return without_mods_for_single_press(os_specific_key(KC__MUTE, KC_F22), KC_LCTL, KC_LALT, KC_LSFT, KC_NO, is_pressed); }
 
@@ -1027,11 +1013,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case CTRL_DOT: { return replace_cmd_hold_cmd_shift(KC_DOT, KC_LCTL, is_pressed, 180); }
         case CTRL_H: { return replace_cmd_hold_cmd_shift(KC_H, KC_LCTL, is_pressed, 180); }
         case CTRL_M: { return replace_cmd_hold_cmd_shift(KC_M, KC_LCTL, is_pressed, 180); }
-        case CMD_M: { return replace_mods_hold_mods(KC_M, KC_LCTL, KC_LGUI, KC_LGUI, KC_LSFT, is_pressed, 180); }
+        case CMD_M: { return replace_mods_hold_mods(KC_M, KC_LCTL, KC_LGUI, KC_M, KC_LGUI, KC_LSFT, is_pressed, 180); }
 
         // MODIFYING KEYCODES BASED ON HOLD DURATION
         // 140 ms
-        case MOD_SPACE: { return hold_140_add_shift(KC_SPC, is_pressed); }
+        case SPACE_LANG: { return replace_mods_hold_mods(KC_SPC, os_specific_key(KC_LGUI, KC_LCTL), os_specific_key(KC_LGUI, KC_LCTL), KC_SPC, os_specific_key(KC_LALT, KC_LGUI), KC_NO, is_pressed, 140); }
         case MOD_ESC: { return hold_140_add_shift(os_specific_key(KC_ESC, KC_BSPC), is_pressed); }
         case MOD_ENTER: { return hold_140_add_shift(KC_ENTER, is_pressed); }
 
