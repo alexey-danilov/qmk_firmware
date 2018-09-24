@@ -26,6 +26,7 @@ enum kinesis_keycodes {
   CMD_ESC = MO(_COMMAND_ESCAPE),
   CMD_SPACE = LT(_COMMAND_SPACE, KC_SPC),
   ALT_SHIFT_BS = MO(_ALT_SHIFT_BS),
+  ALT_SHIFT_DEL = MT(MOD_RALT | MOD_RSFT, KC_DEL),
   CTRL_CMD_BS = MO(_CTRL),
   CTRL_F16 = LT(_CTRL, KC_F16),
 
@@ -34,6 +35,7 @@ enum kinesis_keycodes {
   CTRL_ESC = MO(_CONTROL_ESCAPE),
   CTRL_SPACE = LT(_CONTROL_SPACE, KC_SPC),
   CTRL_SHIFT_BS = MO(_CTRL_SHIFT_BS),
+  CTRL_SHIFT_DEL = MT(MOD_RCTL | MOD_RSFT, KC_DEL),
   LGUI_DEL = MT(MOD_LGUI, KC_DEL),
 
   // common
@@ -65,8 +67,6 @@ enum holding_keycodes {
   SHIFT_TAB,
   SHIFT_BSLS,
 
-  LANG_CAPS,
-
   // mac-specific overrides
   CTRL_COMMA, CTRL_DOT, CTRL_H, CTRL_M, CMD_M,
   ALT_BSPC,
@@ -80,6 +80,7 @@ enum holding_keycodes {
 // macros
 enum {
     MAIL = 0,
+    NAME,
     CLOSE_APP,
     SLEEP,
     SHUTDOWN_WIN,
@@ -413,7 +414,14 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
                     SEND_STRING("oleksii.danilov@gmail.com");
                     return false;
                 }
-            }
+           }
+
+           case NAME: {
+                if (is_pressed) {
+                    SEND_STRING("Alexey Danilov");
+                    return false;
+                }
+           }
 
            case SLEEP: {
                 if (is_pressed) {
@@ -536,14 +544,14 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
 * |--------+------+------+------+------+------|                           +------+------+------+------+------+--------|
 * | Mail   |   Q  |   W  |   E  |   R  |   T  |                           |   Y  |   U  |   I  |   O  |   P  |        |
 * |--------+------+------+------+------+------|                           |------+------+------+------+------+--------|
-* |        |   A  |   S  |   D  |   F  |   G  |                           |   H  |   J  |   K  |   L  |  ;:  |        |
+* | Caps   |   A  |   S  |   D  |   F  |   G  |                           |   H  |   J  |   K  |   L  |  ;:  |        |
 * |--------+------+------+------+------+------|                           |------+------+------+------+------+--------|
 * |        |   Z  |   X  |   C  |   V  |   B  |                           |   N  |   M  |  Up  |  .>  |  '"  |        |
 * `--------+------+------+------+------+-------                           `------+------+------+------+------+--------'
 *          |  Ins |  [{  |  ,<  |  ]}  |                                         | Left | Down | Right|  F15 |
 *          `---------------------------'                                         `---------------------------'
 *                            .-------------------------.         ,---------------------------.
-*                            | LShift+RAlt/BkSp |Macro1|         |Macro2| Lang/Caps/Close TD |
+*                            | LShift+RAlt/BkSp |Macro1|         |Macro2| LShift+RAlt/Del    |
 *                            `-----------|------|------|         |------+------+-------------`
 *                                 |      |      | Alt//|         | Alt/\|      |      |
 *                                 | LCMD/|Shift/|------|         |------|Shift/|RCMD/ |
@@ -559,9 +567,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
            // left side
            M(SLEEP), KC_F1  ,KC_F2  ,KC_F3  ,KC_F4  ,KC_F5  ,KC_F6  ,KC_F7  ,KC_F8,
            KC_GRV, KC_1, KC_2, KC_3, KC_4, KC_5,
-           M(MAIL), KC_Q, KC_W, KC_E, KC_R, KC_T,
-           __________,KC_A, KC_S, KC_D, KC_F, KC_G,
-           __________, KC_Z, KC_X, KC_C, KC_V, KC_B,
+           M(NAME), KC_Q, KC_W, KC_E, KC_R, KC_T,
+           KC_CAPS,KC_A, KC_S, KC_D, KC_F, KC_G,
+           M(MAIL), KC_Z, KC_X, KC_C, KC_V, KC_B,
                  KC_INS, KC_LBRC, KC_COMM, KC_RBRC,
                                            // left thumb keys
 			                                    ALT_SHIFT_BS,TD(TAP_MACRO1),
@@ -573,11 +581,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     KC_F9  ,KC_F10 ,KC_F11 ,KC_F12 ,KC_PSCR ,KC_SLCK  ,KC_PAUS, RESET, KC_POWER,
 	KC_6, KC_7, KC_8, KC_9, KC_0, __________,
 	KC_Y, KC_U, KC_I, KC_O, KC_P, __________,
-	KC_H, KC_J, KC_K, KC_L, KC_SCLN, __________,
+	KC_H, KC_J, KC_K, KC_L, KC_SCLN, KC_CAPS,
 	KC_N, KC_M, KC_UP, KC_DOT, KC_QUOT, __________,
 	KC_LEFT, KC_DOWN, KC_RGHT, KC_F15,
            // right thumb keys
-           TD(TAP_MACRO2), LANG_CAPS,
+           TD(TAP_MACRO2), ALT_SHIFT_DEL,
            ALT_BSLASH,
            CTRL_F16, SFT_T(KC_TAB), CMD_SPACE,
                                     // right palm key
@@ -705,9 +713,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
            // left side
            M(SLEEP), KC_F1  ,KC_F2  ,KC_F3  ,KC_F4  ,KC_F5  ,KC_F6  ,KC_F7  ,KC_F8,
            KC_GRV, KC_1, KC_2, KC_3, KC_4, KC_5,
-           M(MAIL), KC_Q, KC_W, KC_E, KC_R, KC_T,
-           __________,KC_A, KC_S, KC_D, KC_F, KC_G,
-           __________, KC_Z, KC_X, KC_C, KC_V, KC_B,
+           M(NAME), KC_Q, KC_W, KC_E, KC_R, KC_T,
+           KC_CAPS,KC_A, KC_S, KC_D, KC_F, KC_G,
+           M(MAIL), KC_Z, KC_X, KC_C, KC_V, KC_B,
                  KC_INS, KC_LBRC, KC_COMM, KC_RBRC,
                                            // left thumb keys
 			                                    CTRL_SHIFT_BS,TD(TAP_MACRO1),
@@ -719,11 +727,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     KC_F9  ,KC_F10 ,KC_F11 ,KC_F12 ,KC_PSCR ,KC_SLCK  ,KC_PAUS, RESET, M(SHUTDOWN_WIN),
 	KC_6, KC_7, KC_8, KC_9, KC_0, __________,
 	KC_Y, KC_U, KC_I, KC_O, KC_P, __________,
-	KC_H, KC_J, KC_K, KC_L, KC_SCLN, __________,
-	KC_N, KC_M, KC_UP, KC_DOT, KC_QUOT, __________,
+	KC_H, KC_J, KC_K, KC_L, KC_SCLN, KC_CAPS,
+	KC_N, KC_M, KC_UP, KC_DOT, KC_QUOT,__________,
 	KC_LEFT, KC_DOWN, KC_RGHT, KC_APP,
            // right thumb keys
-           TD(TAP_MACRO2), LANG_CAPS,
+           TD(TAP_MACRO2), CTRL_SHIFT_DEL,
            ALT_BSLASH,
            KC_RGUI, SFT_T(KC_TAB), CTRL_SPACE,
                                     // right palm key
@@ -990,16 +998,20 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
 
         // ESCAPE AS LEADER KEY
-        case KC_RGHT: { return after_leader(KC_RGHT, KC_LALT, KC_LCTL, KC_LSFT, &esc_timer, is_pressed, 180); }
-        case KC_LEFT: { return after_leader(KC_LEFT, KC_LALT, KC_LCTL, KC_LSFT, &esc_timer, is_pressed, 180); }
+        // change lang
+        case KC_K: { return after_leader(KC_SPC, os_specific_key(KC_LALT, KC_RGUI), KC_NO, KC_NO, &esc_timer, is_pressed, 180); }
+        // home/end
+        case KC_LBRC: { return after_leader(KC_HOME, KC_NO, KC_NO, KC_NO, &esc_timer, is_pressed, 600); }
+        case KC_RBRC: { return after_leader(KC_END, KC_NO, KC_NO, KC_NO, &esc_timer, is_pressed, 600); }
+        // ctrl home/end
+        case KC_LEFT: { return after_leader(KC_HOME, KC_LCTL, KC_NO, KC_NO, &esc_timer, is_pressed, 180); }
+        case KC_RGHT: { return after_leader(KC_END, KC_LCTL, KC_NO, KC_NO, &esc_timer, is_pressed, 180); }
 
         // CUSTOM KEYCODES
         case KC_PGUP: { return without_meh_repeat(KC_PGUP, is_pressed); }
         case KC_PGDN: { return without_meh_repeat(KC_PGDN, is_pressed); }
         case KC_HOME: { return without_meh_repeat(KC_HOME, is_pressed); }
         case KC_END: { return without_meh_repeat(KC_END, is_pressed); }
-
-        case LANG_CAPS: { return hold_replace_add_mod(os_specific_key(KC_SPC, os_specific_key(KC_LALT, KC_RGUI), os_specific_key(KC_LOCKING_CAPS, KC_CAPSLOCK), KC_NO, KC_NO, is_pressed, 140); }
 
         case SHIFT_TAB: { return replace_mods_hold_mods(KC_TAB, os_specific_key(KC_LGUI, KC_LCTL), KC_LSFT, KC_LCTL, KC_LSFT, is_pressed, 180); }
         case SHIFT_BSLS: { return replace_mods_hold_mods(KC_BSLS, os_specific_key(KC_LGUI, KC_LCTL), KC_LSFT, os_specific_key(KC_LGUI, KC_LCTL), KC_LSFT, is_pressed, 180); }
