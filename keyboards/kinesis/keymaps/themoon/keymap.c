@@ -51,14 +51,14 @@ enum kinesis_keycodes {
 };
 
 enum holding_keycodes {
-  MOD_ESC = SAFE_RANGE,
+  ESC_LANG = SAFE_RANGE,
   MOD_W, MOD_E, MOD_R, MOD_T,
   MOD_S, MOD_D, MOD_F, MOD_G,
   MOD_X, MOD_C, MOD_V, MOD_B,
   MOD_LBRC, MOD_COMMA, MOD_RBRC,
   MOD_ENTER,
 
-  SPACE_LANG,
+  MOD_SPACE,
   MOD_Y, MOD_U, MOD_I, MOD_O,
   MOD_H, MOD_J, MOD_K, MOD_L,
   MOD_N, MOD_M, MOD_UP, MOD_DOT,
@@ -600,7 +600,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                    MOD_LEFT,  MOD_DOWN,  MOD_RIGHT, __________,
          KC_F2,  KC_DEL,
          SHIFT_BSLS,
-         KC_F16,  SHIFT_TAB,  SPACE_LANG,
+         KC_F16,  SHIFT_TAB,  MOD_SPACE,
                              KC_F14
     ),
 
@@ -613,7 +613,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                    __________,  MOD_LBRC,  CTRL_COMMA,  MOD_RBRC,
                              ALT_BSPC,  KC_F1,
                                         KC_Z,
-                    MOD_ESC, MOD_ENTER, LSFT(KC_Z),
+                    ESC_LANG, MOD_ENTER, LSFT(KC_Z),
                                      KC_F13,
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
          __________,  __________,  __________,  __________,  __________,  __________,
@@ -665,11 +665,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
-         __________,  __________,  MOD_UP,  __________ ,  __________,  __________,
-                   MOD_LEFT,  MOD_DOWN,  MOD_RIGHT, __________,
+         __________,  __________,  __________,  __________ ,  __________,  __________,
+                   __________,  __________,  __________, __________,
          __________,  __________,
-         __________,
-         __________,  KC_F7,  KC_F8,
+         KC_F11,
+         KC_F12,  KC_F15,  KC_F16, // replace alt+tab and alt+space combinations
                              KC_F14
     ),
 
@@ -747,7 +747,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                      MOD_LEFT,  MOD_DOWN,  MOD_RIGHT, __________,
          KC_F2,  KC_DEL,
          SHIFT_BSLS,
-         __________,  SHIFT_TAB,  SPACE_LANG,
+         __________,  SHIFT_TAB,  MOD_SPACE,
                              KC_F14
     ),
 
@@ -760,7 +760,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                       __________,  MOD_LBRC, MOD_COMMA, MOD_RBRC,
                              M(DEL_WORD_WIN),  KC_F1,
                                         KC_Z,
-                    MOD_ESC, MOD_ENTER, LSFT(KC_Z),
+                    ESC_LANG, MOD_ENTER, LSFT(KC_Z),
                                      KC_F13,
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
          __________,  __________,  __________,  __________,  __________,  __________,
@@ -1013,12 +1013,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case CTRL_DOT: { return replace_cmd_hold_cmd_shift(KC_DOT, KC_LCTL, is_pressed, 180); }
         case CTRL_H: { return replace_cmd_hold_cmd_shift(KC_H, KC_LCTL, is_pressed, 180); }
         case CTRL_M: { return replace_cmd_hold_cmd_shift(KC_M, KC_LCTL, is_pressed, 180); }
-        case CMD_M: { return replace_mods_hold_mods(KC_M, KC_LCTL, KC_LGUI, KC_M, KC_LGUI, KC_LSFT, is_pressed, 180); }
+        case CMD_M: { return replace_mods_hold_mods(KC_M, KC_LCTL, KC_LALT, KC_M, KC_LGUI, KC_LSFT, is_pressed, 180); }
 
         // MODIFYING KEYCODES BASED ON HOLD DURATION
         // 140 ms
-        case SPACE_LANG: { return replace_mods_hold_mods(KC_SPC, os_specific_key(KC_LGUI, KC_LCTL), os_specific_key(KC_LGUI, KC_LCTL), KC_SPC, os_specific_key(KC_LALT, KC_LGUI), KC_NO, is_pressed, 140); }
-        case MOD_ESC: { return hold_140_add_shift(os_specific_key(KC_ESC, KC_BSPC), is_pressed); }
+        case ESC_LANG: { return replace_mods_hold_mods(os_specific_key(KC_ESC, KC_BSPC), os_specific_key(KC_LGUI, KC_LCTL), os_specific_key(KC_LGUI, KC_LCTL), KC_SPC, os_specific_key(KC_LALT, KC_LGUI), KC_NO, is_pressed, 140); }
+        case MOD_SPACE: { return hold_140_add_shift(KC_SPC, is_pressed); }
         case MOD_ENTER: { return hold_140_add_shift(KC_ENTER, is_pressed); }
 
         // 180 ms
@@ -1050,10 +1050,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case MOD_M: { return hold_180_add_shift(KC_M, is_pressed); }
         case MOD_DOT: { return hold_180_add_shift(KC_DOT, is_pressed); }
 
-        case MOD_LEFT: { return hold_add_mods(KC_LEFT, KC_LALT, KC_LCTL, is_pressed, 180); }
-        case MOD_RIGHT: { return hold_add_mods(KC_RGHT, KC_LALT, KC_LCTL, is_pressed, 180); }
-        case MOD_UP: { return hold_add_mods(KC_UP, KC_LALT, KC_LCTL, is_pressed, 180); }
-        case MOD_DOWN: { return hold_add_mods(KC_DOWN, KC_LALT, KC_LCTL, is_pressed, 180); }
+        case MOD_LEFT: { return hold_add_mods(KC_LEFT, os_specific_key(KC_LCTL, KC_LALT), KC_NO, is_pressed, 180); }
+        case MOD_RIGHT: { return hold_add_mods(KC_RGHT, os_specific_key(KC_LCTL, KC_LALT), KC_NO, is_pressed, 180); }
+        case MOD_UP: { return hold_add_mods(KC_UP, os_specific_key(KC_LCTL, KC_LALT), KC_NO, is_pressed, 180); }
+        case MOD_DOWN: { return hold_add_mods(KC_DOWN, os_specific_key(KC_LCTL, KC_LALT), KC_NO, is_pressed, 180); }
 
         case KC_1: { return hold_180_replace(KC_1, KC_5, KC_LSFT, is_pressed); }
         case KC_2: { return hold_180_replace(KC_2, KC_9, KC_LSFT, is_pressed); }
