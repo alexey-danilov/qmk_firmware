@@ -992,6 +992,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         // ctrl home/end
         case KC_LEFT: { return after_leader(KC_HOME, KC_LCTL, KC_NO, KC_NO, &esc_timer, is_pressed, 180); }
         case KC_RGHT: { return after_leader(KC_END, KC_LCTL, KC_NO, KC_NO, &esc_timer, is_pressed, 180); }
+        // close app
+        case KC_COMM: { return after_leader(os_specific_key(KC_Q, KC_F4), os_specific_key(KC_LGUI, KC_LALT), KC_NO, KC_NO, &esc_timer, is_pressed, 300); }
 
         // CUSTOM KEYCODES
         case KC_PGUP: { return without_meh_repeat(KC_PGUP, is_pressed); }

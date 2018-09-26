@@ -1,7 +1,6 @@
 AUTO_SHIFT_ENABLE = yes
 TAP_DANCE_ENABLE = yes
-NKRO_ENABLE = yes           # Nkey Rollover - if this doesn't work, see here: https://github.com/tmk/tmk_keyboard/wiki/FAQ#nkro-doesnt-work
-
+NKRO_ENABLE = yes # https://github.com/tmk/tmk_keyboard/wiki/FAQ#nkro-doesnt-work
 KEY_LOCK_ENABLE = no
 MOUSEKEY_ENABLE = no        # Mouse keys(+4700)
 EXTRAKEY_ENABLE = no       # Audio control and System control(+450)
