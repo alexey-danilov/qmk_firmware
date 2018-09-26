@@ -585,9 +585,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
-         __________,  __________,  __________,  __________,   __________, MOD_G,
-         __________,  __________,  __________,  __________,  __________,  MOD_B,
-                   __________,  __________,  __________,  MOD_RBRC,
+         __________,  __________,  __________,  __________,   __________, __________,
+         __________,  __________,  __________,  __________,  __________,  __________,
+                   __________,  __________,  __________,  __________,
                              __________,  __________,
                                        __________,
                     CMD_ESC, __________,  __________,
@@ -731,9 +731,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
-         __________,  __________,  __________,  __________,   __________, MOD_G,
-         __________,  __________,  __________,  __________,  __________,  MOD_B,
-                   __________,  __________,  HYPR(KC_COMM),  MOD_RBRC,
+         __________,  __________,  __________,  __________,   __________, __________,
+         __________,  __________,  __________,  __________,  __________,  __________,
+                   __________,  __________,  HYPR(KC_COMM),  __________,
                              __________,  __________,
                                        __________,
                     CTRL_ESC, __________,  __________,
@@ -986,14 +986,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
 
         // ESCAPE AS LEADER KEY
-        // home/end
-        case KC_LBRC: { return after_leader(KC_HOME, KC_NO, KC_NO, KC_NO, &esc_timer, is_pressed, 600); }
-        case KC_RBRC: { return after_leader(KC_END, KC_NO, KC_NO, KC_NO, &esc_timer, is_pressed, 600); }
         // ctrl home/end
-        case KC_LEFT: { return after_leader(KC_HOME, KC_LCTL, KC_NO, KC_NO, &esc_timer, is_pressed, 180); }
-        case KC_RGHT: { return after_leader(KC_END, KC_LCTL, KC_NO, KC_NO, &esc_timer, is_pressed, 180); }
-        // close app
-        case KC_COMM: { return after_leader(os_specific_key(KC_Q, KC_F4), os_specific_key(KC_LGUI, KC_LALT), KC_NO, KC_NO, &esc_timer, is_pressed, 300); }
+        case KC_LEFT: { return after_leader(KC_HOME, KC_LCTL, KC_NO, KC_NO, &esc_timer, is_pressed, 220); }
+        case KC_RGHT: { return after_leader(KC_END, KC_LCTL, KC_NO, KC_NO, &esc_timer, is_pressed, 220); }
 
         // CUSTOM KEYCODES
         case KC_PGUP: { return without_meh_repeat(KC_PGUP, is_pressed); }
