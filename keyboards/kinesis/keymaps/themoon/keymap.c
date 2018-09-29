@@ -370,7 +370,7 @@ void comma_finished (qk_tap_dance_state_t *state, void *user_data) {
     case SINGLE_HOLD: down(KC_LSFT); down(KC_COMM); up(KC_COMM); break;
     default:
       if (isMac) { down(KC_LGUI); down(KC_Q); up(KC_Q); break; }
-      else if (isWin) { down(KC_LALT); down(KC_F4); up(KC_F4); break; }
+      else if (isWin) { down(KC_LALT); _delay_ms(200); down(KC_F4); up(KC_F4); break; }
     }
   }
 
