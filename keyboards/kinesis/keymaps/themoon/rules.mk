@@ -1,18 +1,20 @@
 AUTO_SHIFT_ENABLE = yes
 TAP_DANCE_ENABLE = yes
-NKRO_ENABLE = yes # https://github.com/tmk/tmk_keyboard/wiki/FAQ#nkro-doesnt-work
+NKRO_ENABLE = yes
+BOOTMAGIC_ENABLE = yes
+
 KEY_LOCK_ENABLE = no
-MOUSEKEY_ENABLE = no        # Mouse keys(+4700)
-EXTRAKEY_ENABLE = no       # Audio control and System control(+450)
-CONSOLE_ENABLE = no         # Console for debug(+400)
-COMMAND_ENABLE = no        # Commands for debug and configuration
-BACKLIGHT_ENABLE = no       # Enable keyboard backlight functionality
-MIDI_ENABLE = no            # MIDI controls
-AUDIO_ENABLE = no           # Audio output on port C6
-UNICODE_ENABLE = no         # Unicode
-BLUETOOTH_ENABLE = no       # Enable Bluetooth with the Adafruit EZ-Key HID
-RGBLIGHT_ENABLE = no        # Enable WS2812 RGB underlight.  Do not enable this with audio at the same time.
-SLEEP_LED_ENABLE = no       # Breathing sleep LED during USB suspend
+MOUSEKEY_ENABLE = no
+EXTRAKEY_ENABLE = no
+CONSOLE_ENABLE = no
+COMMAND_ENABLE = no
+BACKLIGHT_ENABLE = no
+MIDI_ENABLE = no
+AUDIO_ENABLE = no
+UNICODE_ENABLE = no
+BLUETOOTH_ENABLE = no
+RGBLIGHT_ENABLE = no
+SLEEP_LED_ENABLE = no
 
 ifndef QUANTUM_DIR
 	include ../../../../Makefile
