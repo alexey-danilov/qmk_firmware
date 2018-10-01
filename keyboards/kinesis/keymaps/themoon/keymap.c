@@ -63,6 +63,7 @@ enum holding_keycodes {
   MOD_H, MOD_J, MOD_K, MOD_L,
   MOD_N, MOD_M, MOD_UP, MOD_DOT,
   MOD_LEFT, MOD_DOWN, MOD_RIGHT,
+  MOD_BSLS,
 
   LANG_CAPS,
 
@@ -593,7 +594,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          MOD_N,  CTRL_M,  MOD_UP,  CTRL_DOT ,  __________,  __________,
                    MOD_LEFT,  MOD_DOWN,  MOD_RIGHT, __________,
          KC_F2,  KC_DEL,
-         __________,
+         MOD_BSLS,
          KC_F16,  LANG_CAPS,  MOD_SPACE,
                              __________
     ),
@@ -640,7 +641,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                    __________,  __________, __________, __________,
          __________,  __________,
          __________,
-         __________,  __________,  __________,
+         KC_F16,  __________,  __________,
                              __________
     ),
 
@@ -662,7 +663,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________,  __________,  __________,  __________ ,  __________,  __________,
                    __________,  CMD_M, __________, __________,
          __________,  __________,
-         __________,
+         MOD_BSLS,
          CTRL_F16,  __________,  __________,
                              __________
     ),
@@ -717,8 +718,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
            MOD_N,  MOD_M,  MOD_UP,  MOD_DOT ,  __________,  __________,
                      MOD_LEFT,  MOD_DOWN,  MOD_RIGHT, __________,
          KC_F2,  KC_DEL,
-         __________,
-         __________,  LANG_CAPS,  MOD_SPACE,
+         MOD_BSLS,
+         KC_F16,  LANG_CAPS,  MOD_SPACE,
                              __________
     ),
 
@@ -740,8 +741,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________,  __________,  __________,  __________,  __________,  __________,
                    __________,  __________,  __________,  __________,
                              __________,  __________,
-                                       __________,
-                    __________, __________,  CTRL_SPACE,
+                                       MOD_BSLS,
+                    KC_F16, __________,  CTRL_SPACE,
                                      __________
     ),
 
@@ -764,7 +765,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                    __________,  __________, __________, __________,
          __________,  __________,
          __________,
-         __________,  __________,  __________,
+         KC_F16,  __________,  __________,
                              __________
     ),
 
@@ -787,8 +788,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________,  __________,  __________,  __________ ,  __________,  __________,
                    __________,  __________,  __________, __________,
          __________,  __________,
-         __________,
-         KC_F11,  KC_F12,  KC_F13, // replace alt+f16/rwin, alt+tab, alt+space combinations
+         MOD_BSLS,
+         KC_F16,  KC_F11,  KC_F12, // replace alt+tab, alt+space combinations
                              __________
     ),
 
@@ -1040,6 +1041,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case MOD_N: { return if_held_180_add_shift(KC_N, is_pressed); }
         case MOD_M: { return if_held_180_add_shift(KC_M, is_pressed); }
         case MOD_DOT: { return if_held_180_add_shift(KC_DOT, is_pressed); }
+        case MOD_BSLS: { return if_held_180_add_shift(KC_BSLS, is_pressed); }
 
         case MOD_LEFT: { return if_held_add_mods(KC_LEFT, os_specific_key(KC_LCTL, KC_LALT), KC_NO, is_pressed, 180); }
         case MOD_RIGHT: { return if_held_add_mods(KC_RGHT, os_specific_key(KC_LCTL, KC_LALT), KC_NO, is_pressed, 180); }
@@ -1071,6 +1073,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case KC_F12: { return if_held_180_add_shift(KC_F12, is_pressed); }
         case KC_F13: { return if_held_180_add_shift(KC_F13, is_pressed); }
         case KC_F14: { return if_held_180_add_shift(KC_F14, is_pressed); }
+        case KC_F15: { return if_held_180_add_shift(KC_F15, is_pressed); }
+        case KC_F16: { return if_held_180_add_shift(KC_F16, is_pressed); }
 
         default: {
           return true;
