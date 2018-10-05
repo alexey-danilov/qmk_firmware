@@ -8,17 +8,18 @@
 #define _COMMAND_ESCAPE 1
 #define _COMMAND_SPACE 2
 #define _ALT_SHIFT_BS 3
-#define _CTRL 4
+#define _CTRL_CMD_BS 4
 
 // win layers
 #define _WIN 5
 #define _CONTROL_ESCAPE 6
 #define _CONTROL_SPACE 7
 #define _CTRL_SHIFT_BS 8
+#define _CTRL_ALT_DEL 9
 
-#define _PALM_L 9
-#define _PALM_R 10
-#define _ALT 11
+#define _PALM_L 10
+#define _PALM_R 11
+#define _ALT 12
 
 enum kinesis_keycodes {
   // mac
@@ -27,8 +28,8 @@ enum kinesis_keycodes {
   CMD_SPACE = LT(_COMMAND_SPACE, KC_SPC),
   ALT_SHIFT_BS = MO(_ALT_SHIFT_BS),
   ALT_SHIFT_DEL = MT(MOD_RALT | MOD_RSFT, KC_DEL),
-  CTRL_CMD_BS = MO(_CTRL),
-  CTRL_F15 = LT(_CTRL, KC_F15),
+  CTRL_CMD_BS = MO(_CTRL_CMD_BS),
+  CTRL_F15 = LT(_CTRL_CMD_BS, KC_F15),
 
   // win
   SET_LAYER_WIN,
@@ -36,7 +37,7 @@ enum kinesis_keycodes {
   CTRL_SPACE = LT(_CONTROL_SPACE, KC_SPC),
   CTRL_SHIFT_BS = MO(_CTRL_SHIFT_BS),
   CTRL_SHIFT_DEL = MT(MOD_RCTL | MOD_RSFT, KC_DEL),
-  LGUI_DEL = MT(MOD_LGUI, KC_DEL),
+  CTRL_ALT_DEL = MO(_CTRL_ALT_DEL),
 
   // common
   ALT_SLASH = MO(_ALT),
@@ -72,6 +73,13 @@ enum holding_keycodes {
   CMD_M,
   ALT_BSPC,
 
+  // LWin + key overrides
+  W_F9, W_F10, W_F11, W_F12,
+  W_6, W_7, W_8, W_9, W_0,
+  W_Y, W_U, W_I, W_O, W_P,
+  W_H, W_J, W_K, W_L, W_SCLN,
+  W_N, W_M, W_DOT, W_QUOT,
+
   // required for dynamic macros
   DYNAMIC_MACRO_RANGE
 };
@@ -81,14 +89,15 @@ enum holding_keycodes {
 // macros
 enum {
     MAIL = 0,
-    NAME,
     CLOSE_APP,
+    POS_LEFT,
+    POS_RIGHT,
+    POS_CENTER,
+    POS_FULL,
     SLEEP,
     SHUTDOWN_WIN,
     DEL_WORD_WIN,
-    DIR_LIST,
     DIR_UP,
-    DELETE_FORCE,
     TERMINAL_CLEAR,
     DOCKER_LIST,
     DOCKER_LOGS,
@@ -154,30 +163,36 @@ bool not_held(uint16_t hold_timer, uint16_t hold_duration) {
     return timer_elapsed(hold_timer) < hold_duration;
 }
 
-// replaces single mod of keycode, adds additional mods if it was held for at least provided duration
-bool replace_mod_if_held_add_mods(uint16_t code, uint16_t mod_to_be_replaced, uint16_t replacement_mod, uint16_t held_code, uint16_t held_mod1, uint16_t held_mod2, bool pressed, uint8_t hold_duration) {
+// replaces mods of keycode, adds additional mods if it was held for at least provided duration
+bool replace_mods_if_held_add_mods(uint16_t code, uint16_t mod1_to_be_replaced, uint16_t mod2_to_be_replaced, uint16_t replacement_mod1, uint16_t replacement_mod2, uint16_t held_code, uint16_t held_mod1, uint16_t held_mod2, bool pressed, uint8_t hold_duration) {
   static uint16_t hold_timer;
   if(pressed) {
       hold_timer= timer_read();
 
   } else {
-      up(mod_to_be_replaced);
+      up(mod1_to_be_replaced);
+      up(mod2_to_be_replaced);
 
       if (not_held(hold_timer, hold_duration)){
-          with_1_mod(code, replacement_mod);
+          with_2_mods(code, replacement_mod1, replacement_mod2);
 
       } else {
           with_2_mods(held_code, held_mod1, held_mod2);
       }
 
-      down(mod_to_be_replaced);
+      down(mod1_to_be_replaced);
+      down(mod2_to_be_replaced);
   }
   return false;
 }
 
 // replaced command, if held adds shift to keycode
 bool replace_cmd_if_held_add_cmd_shift(uint16_t code, uint16_t replacement_mod, bool pressed, uint8_t hold_duration) {
-  return replace_mod_if_held_add_mods(code, KC_LGUI, replacement_mod, code, KC_LGUI, KC_LSFT, pressed, hold_duration);
+  return replace_mods_if_held_add_mods(code, KC_LGUI, KC_NO, replacement_mod, KC_NO, code, KC_LGUI, KC_LSFT, pressed, hold_duration);
+}
+
+bool replace_ctrl_alt_with_lgui(uint16_t code, bool pressed) {
+  return replace_mods_if_held_add_mods(code, KC_LCTL, KC_LALT, KC_LGUI, KC_NO, code, KC_LGUI, KC_NO, pressed, 180);
 }
 
 // replaces keycode if it was held for at least provided duration
@@ -403,16 +418,53 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
                 }
            }
 
-           case MAIL: {
+           case POS_LEFT: {
                 if (is_pressed) {
-                    SEND_STRING("oleksii.danilov@gmail.com");
-                    return false;
+                   if (isMac) {
+                     SEND_STRING(SS_TAP(X_J));
+                   } else if (isWin) {
+                     SEND_STRING(SS_UP(X_LSHIFT) SS_UP(X_LALT) SS_UP(X_LCTRL) SS_DOWN(X_LGUI) SS_TAP(X_LEFT) SS_UP(X_LGUI) SS_DOWN(X_LSHIFT) SS_DOWN(X_LALT) SS_DOWN(X_LCTRL));
+                   }
+                   return false;
                 }
            }
 
-           case NAME: {
+           case POS_RIGHT: {
                 if (is_pressed) {
-                    SEND_STRING("Alexey Danilov");
+                   if (isMac) {
+                     SEND_STRING(SS_TAP(X_L));
+                   } else if (isWin) {
+                     SEND_STRING(SS_UP(X_LSHIFT) SS_UP(X_LALT) SS_UP(X_LCTRL) SS_DOWN(X_LGUI) SS_TAP(X_RIGHT) SS_UP(X_LGUI) SS_DOWN(X_LSHIFT) SS_DOWN(X_LALT) SS_DOWN(X_LCTRL));
+                   }
+                   return false;
+                }
+           }
+
+           case POS_FULL: {
+                if (is_pressed) {
+                   if (isMac) {
+                     SEND_STRING(SS_TAP(X_SPACE));
+                   } else if (isWin) {
+                     SEND_STRING(SS_UP(X_LSHIFT) SS_UP(X_LALT) SS_UP(X_LCTRL) SS_DOWN(X_LGUI) SS_TAP(X_UP) SS_UP(X_LGUI) SS_DOWN(X_LSHIFT) SS_DOWN(X_LALT) SS_DOWN(X_LCTRL));
+                   }
+                   return false;
+                }
+           }
+
+           case POS_CENTER: {
+                if (is_pressed) {
+                   if (isMac) {
+                     SEND_STRING(SS_TAP(X_K));
+                   } else if (isWin) {
+                     SEND_STRING(SS_UP(X_LSHIFT) SS_UP(X_LALT) SS_UP(X_LCTRL) SS_DOWN(X_LGUI) SS_TAP(X_DOWN) SS_UP(X_LGUI) SS_DOWN(X_LSHIFT) SS_DOWN(X_LALT) SS_DOWN(X_LCTRL));
+                   }
+                   return false;
+                }
+           }
+
+           case MAIL: {
+                if (is_pressed) {
+                    SEND_STRING("oleksii.danilov@gmail.com");
                     return false;
                 }
            }
@@ -442,26 +494,10 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
                }
            }
 
-           case DIR_LIST: {
-               if (is_pressed) {
-                   SEND_STRING(SS_UP(X_LSHIFT) SS_UP(X_LALT) SS_UP(X_LCTRL)); // remove meh
-                   SEND_STRING("ls -lah"); SEND_STRING(SS_TAP(X_ENTER));
-                   return false;
-               }
-           }
-
-           case DELETE_FORCE: {
-               if (is_pressed) {
-                   SEND_STRING(SS_UP(X_LSHIFT) SS_UP(X_LALT) SS_UP(X_LCTRL)); // remove meh
-                   SEND_STRING("rm -rf ");
-                   return false;
-               }
-           }
-
            case DIR_UP: {
                if (is_pressed) {
                    SEND_STRING(SS_UP(X_LSHIFT) SS_UP(X_LALT) SS_UP(X_LCTRL)); // remove meh
-                   SEND_STRING("cd .."); SEND_STRING(SS_TAP(X_ENTER));
+                   SEND_STRING("cd .. && ls"); SEND_STRING(SS_TAP(X_ENTER));
                    return false;
                }
            }
@@ -645,7 +681,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                              __________
     ),
 
-[_CTRL] = LAYOUT(
+[_CTRL_CMD_BS] = LAYOUT(
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
@@ -661,7 +697,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________ ,  __________,  __________,
-                   __________,  CMD_M, __________, __________,
+                   __________,  __________, __________, __________,
          __________,  __________,
          __________,
          KC_F15,  __________,  __________,
@@ -680,7 +716,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                            // left thumb keys
 			                                    CTRL_SHIFT_BS,TD(TAP_MACRO1),
                                                    ALT_SLASH,
-                           CTRL_ESC, KC_SFTENT, LGUI_DEL,
+                           CTRL_ESC, KC_SFTENT, CTRL_ALT_DEL,
                                      // left palm key
 			                         MEH_F14,
     // right side
@@ -769,6 +805,29 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                              __________
     ),
 
+[_CTRL_ALT_DEL] = LAYOUT(
+         __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
+         __________,  __________,  __________,  __________,  __________,  __________,
+         __________,  __________,  __________,  __________,  __________,  __________,
+         __________,  __________,  __________,  __________,  __________,  __________,
+         __________,  __________,  __________,  __________,  __________,  __________,
+                   __________,  __________,  __________,  __________,
+                             __________,  __________,
+                                       __________,
+                    __________, __________,  CTRL_ALT_DEL,
+                                     __________,
+         W_F9,  W_F10,  W_F11,  KC_F12,  __________,  __________, __________, __________, __________,
+         W_6,  W_7,  W_8,  W_9,  W_0,  __________,
+         W_Y,  W_U,  W_I,  W_O,  W_P,  __________,
+         W_H,  W_J,  W_K, W_L,  W_QUOT,  __________,
+         W_N, W_M, W_DOT, W_SCLN,  __________,  __________,
+                   __________,  __________, __________, __________,
+         __________,  __________,
+         __________,
+         KC_F15,  __________,  __________,
+                             __________
+    ),
+
 // common layers
 [_ALT] = LAYOUT(
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
@@ -805,14 +864,14 @@ __________,  __________,  __________,  __________,  __________,  SET_LAYER_MAC, 
                       __________, __________,  __________,
                                      MEH_F14,
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
+         __________,  M(VIM_SAVE_QUIT),  __________,  M(VIM_QUIT),  __________,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
-         __________,  M(VIM_SAVE_QUIT),  M(DOCKER_LIST),  M(VIM_QUIT),  __________,  __________,
-         __________,  M(DIR_LIST),  M(DELETE_FORCE),  M(DOCKER_LOGS),  __________,  __________,
-         __________,  M(TERMINAL_CLEAR),  KC_PGUP,  M(DIR_UP) ,  __________,  __________,
-                   KC_HOME,  KC_PGDN, KC_END, __________,
-         __________,  __________,
-         __________,
-         __________,  __________,  __________,
+         __________,  M(POS_LEFT),  M(POS_CENTER),  M(POS_RIGHT),  __________,  __________,
+         __________,  M(DIR_UP),  KC_PGUP,  __________,  __________,  __________,
+                                KC_HOME,  KC_PGDN, KC_END, __________,
+         __________,  M(TERMINAL_CLEAR),
+         M(DOCKER_LIST),
+         M(DOCKER_LOGS),  __________,  M(POS_FULL),
                              __________
     ),
 
@@ -860,12 +919,13 @@ uint32_t layer_state_set_user(uint32_t state) {
     case _COMMAND_SPACE: down(KC_LGUI); break;
     case _ALT_SHIFT_BS: down(KC_LALT); down(KC_LSFT); break;
     case _ALT: down(KC_LALT); break;
-    case _CTRL: down(KC_LCTL); break;
+    case _CTRL_CMD_BS: down(KC_LCTL); break;
 
     // win-specific
     case _CONTROL_ESCAPE: down(KC_LCTL); break;
     case _CONTROL_SPACE: down(KC_LCTL); break;
     case _CTRL_SHIFT_BS: down(KC_LCTL); down(KC_LSFT); break;
+    case _CTRL_ALT_DEL: down(KC_LCTL); down(KC_LALT); break;
 
     // common
     case _PALM_L: down(KC_LSFT); down(KC_LALT); down(KC_LCTL); break;
@@ -882,7 +942,8 @@ bool cmd_esc_interrupted = true;
 bool meh_f14_interrupted = true;
 bool meh_last_app_interrupted = true;
 bool alt_interrupted = true;
-bool ctrl_interrupted = true;
+bool ctrl_cmd_bs_interrupted = true;
+bool ctrl_alt_del_interrupted = true;
 bool alt_shift_interrupted = true;
 bool ctrl_shift_interrupted = true;
 bool ctrl_esc_interrupted = true;
@@ -904,10 +965,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     if (keycode != MEH_F14) { meh_f14_interrupted = true; }
     if (keycode != MEH_LAST_APP) { meh_last_app_interrupted = true; }
     if (keycode != ALT_SLASH) { alt_interrupted = true; }
-    if (keycode != CTRL_CMD_BS) { ctrl_interrupted = true; }
+    if (keycode != CTRL_CMD_BS) { ctrl_cmd_bs_interrupted = true; }
     if (keycode != ALT_SHIFT_BS) { alt_shift_interrupted = true; }
     if (keycode != CTRL_ESC) { ctrl_esc_interrupted = true; }
     if (keycode != CTRL_SHIFT_BS) { ctrl_shift_interrupted = true; }
+    if (keycode != CTRL_ALT_DEL) { ctrl_alt_del_interrupted = true; }
 
     // MO LAYER TAP FUNCTIONALITY
     switch (keycode) {
@@ -941,8 +1003,14 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
 
         case CTRL_CMD_BS: {
-          static uint16_t ctrl_layer_timer;
-          momentary_layer_tap(KC_BSPC, KC_LGUI, KC_LCTL, KC_NO, KC_NO, KC_NO, &ctrl_layer_timer, &ctrl_interrupted, is_pressed, 180);
+          static uint16_t ctrl_cmd_bs_layer_timer;
+          momentary_layer_tap(KC_BSPC, KC_LGUI, KC_LCTL, KC_NO, KC_NO, KC_NO, &ctrl_cmd_bs_layer_timer, &ctrl_cmd_bs_interrupted, is_pressed, 180);
+          return true;
+        }
+
+        case CTRL_ALT_DEL: {
+          static uint16_t ctrl_alt_del_layer_timer;
+          momentary_layer_tap(KC_DEL, KC_NO, KC_LCTL, KC_LALT, KC_NO, KC_NO, &ctrl_alt_del_layer_timer, &ctrl_alt_del_interrupted, is_pressed, 180);
           return true;
         }
 
@@ -980,6 +1048,31 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           return true;
         }
 
+        // LWin + key overrides
+        case W_F9: { return replace_ctrl_alt_with_lgui(KC_F9, is_pressed); }
+        case W_F10: { return replace_ctrl_alt_with_lgui(KC_F10, is_pressed); }
+        case W_F11: { return replace_ctrl_alt_with_lgui(KC_F11, is_pressed); }
+        case W_F12: { return replace_ctrl_alt_with_lgui(KC_F12, is_pressed); }
+        case W_6: { return replace_ctrl_alt_with_lgui(KC_6, is_pressed); }
+        case W_7: { return replace_ctrl_alt_with_lgui(KC_7, is_pressed); }
+        case W_8: { return replace_ctrl_alt_with_lgui(KC_8, is_pressed); }
+        case W_9: { return replace_ctrl_alt_with_lgui(KC_9, is_pressed); }
+        case W_0: { return replace_ctrl_alt_with_lgui(KC_0, is_pressed); }
+        case W_Y: { return replace_ctrl_alt_with_lgui(KC_Y, is_pressed); }
+        case W_U: { return replace_ctrl_alt_with_lgui(KC_U, is_pressed); }
+        case W_I: { return replace_ctrl_alt_with_lgui(KC_I, is_pressed); }
+        case W_O: { return replace_ctrl_alt_with_lgui(KC_O, is_pressed); }
+        case W_P: { return replace_ctrl_alt_with_lgui(KC_P, is_pressed); }
+        case W_H: { return replace_ctrl_alt_with_lgui(KC_H, is_pressed); }
+        case W_J: { return replace_ctrl_alt_with_lgui(KC_J, is_pressed); }
+        case W_K: { return replace_ctrl_alt_with_lgui(KC_K, is_pressed); }
+        case W_L: { return replace_ctrl_alt_with_lgui(KC_L, is_pressed); }
+        case W_QUOT: { return replace_ctrl_alt_with_lgui(KC_QUOT, is_pressed); }
+        case W_N: { return replace_ctrl_alt_with_lgui(KC_N, is_pressed); }
+        case W_M: { return replace_ctrl_alt_with_lgui(KC_M, is_pressed); }
+        case W_DOT: { return replace_ctrl_alt_with_lgui(KC_DOT, is_pressed); }
+        case W_SCLN: { return replace_ctrl_alt_with_lgui(KC_SCLN, is_pressed); }
+
         // REPEATING KEYCODES
         case KC_HOME: { return repeat_without_meh(KC_HOME, is_pressed); }
         case KC_END: { return repeat_without_meh(KC_END, is_pressed); }
@@ -997,8 +1090,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case KC_RGHT: { return following_custom_leader_key(KC_END, KC_LCTL, KC_NO, KC_NO, &esc_timer, is_pressed, 220); }
 
         // CUSTOM KEYCODES
-        case LANG_CAPS: { return replace_mod_if_held_add_mods(KC_SPC, os_specific_key(KC_LGUI, KC_LCTL), os_specific_key(KC_LALT, KC_LGUI), os_specific_key(KC_LOCKING_CAPS, KC_CAPS), KC_NO, KC_NO, is_pressed, 140); }
-        case ENTER_MENU: { return replace_mod_if_held_add_mods(KC_ENTER, os_specific_key(KC_LGUI, KC_LCTL), os_specific_key(KC_LGUI, KC_LCTL), os_specific_key(KC_F16, KC_APP), KC_NO, KC_NO, is_pressed, 140); }
+        case LANG_CAPS: { return replace_mods_if_held_add_mods(KC_SPC, os_specific_key(KC_LGUI, KC_LCTL), KC_NO, os_specific_key(KC_LALT, KC_LGUI), KC_NO, os_specific_key(KC_LOCKING_CAPS, KC_CAPS), KC_NO, KC_NO, is_pressed, 180); }
+        case ENTER_MENU: { return replace_mods_if_held_add_mods(KC_ENTER, os_specific_key(KC_LGUI, KC_LCTL), KC_NO, os_specific_key(KC_LGUI, KC_LCTL), KC_NO, os_specific_key(KC_F16, KC_APP), KC_NO, KC_NO, is_pressed, 180); }
 
         // mac-only overrides
         case ALT_BSPC: { return replace_cmd_if_held_add_cmd_shift(KC_BSPC, KC_LALT, is_pressed, 180); }
@@ -1006,15 +1099,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case CTRL_DOT: { return replace_cmd_if_held_add_cmd_shift(KC_DOT, KC_LCTL, is_pressed, 180); }
         case CTRL_H: { return replace_cmd_if_held_add_cmd_shift(KC_H, KC_LCTL, is_pressed, 180); }
         case CTRL_M: { return replace_cmd_if_held_add_cmd_shift(KC_M, KC_LCTL, is_pressed, 180); }
-        case CMD_M: { return replace_mod_if_held_add_mods(KC_M, KC_LCTL, KC_LALT, KC_M, KC_LGUI, KC_LSFT, is_pressed, 180); }
 
-        // MODIFYING KEYCODES BASED ON HOLD DURATION
-        // 140 ms
-        case MOD_ESC: { return if_held_140_add_shift(os_specific_key(KC_ESC, KC_BSPC), is_pressed); }
         case MOD_SPACE: { return if_held_140_add_shift(KC_SPC, is_pressed); }
+        case MOD_ESC: { return if_held_140_add_shift(os_specific_key(KC_ESC, KC_BSPC), is_pressed); }
         case MOD_K: { return if_held_140_add_shift(KC_K, is_pressed); }
 
-        // 180 ms
         case MOD_W: { return if_held_180_add_shift(KC_W, is_pressed); }
         case MOD_E: { return if_held_180_add_shift(KC_E, is_pressed); }
         case MOD_R: { return if_held_180_add_shift(KC_R, is_pressed); }
