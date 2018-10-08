@@ -15,7 +15,7 @@
 #define _CONTROL_ESCAPE 6
 #define _CONTROL_SPACE 7
 #define _CTRL_SHIFT_BS 8
-#define _SHIFT_ALT_DEL 9
+#define _CTRL_ALT_DEL 9
 
 #define _PALM_L 10
 #define _PALM_R 11
@@ -35,7 +35,7 @@ enum kinesis_keycodes {
   CTRL_ESC = MO(_CONTROL_ESCAPE),
   CTRL_SPACE = LT(_CONTROL_SPACE, KC_SPC),
   CTRL_SHIFT_BS = MO(_CTRL_SHIFT_BS),
-  SHIFT_ALT_DEL = MO(_SHIFT_ALT_DEL),
+  CTRL_ALT_DEL = MO(_CTRL_ALT_DEL),
 
   // common
   ALT_SLASH = MO(_ALT),
@@ -190,8 +190,8 @@ bool replace_cmd_if_held_add_cmd_shift(uint16_t code, uint16_t replacement_mod, 
   return replace_mods_if_held_add_mods(code, KC_LGUI, KC_NO, replacement_mod, KC_NO, code, KC_LGUI, KC_LSFT, pressed, hold_duration);
 }
 
-bool replace_shift_alt_with_lgui(uint16_t code, bool pressed) {
-  return replace_mods_if_held_add_mods(code, KC_LSFT, KC_LALT, KC_LGUI, KC_NO, code, KC_LGUI, KC_NO, pressed, 180);
+bool replace_ctrl_alt_with_lgui(uint16_t code, bool pressed) {
+  return replace_mods_if_held_add_mods(code, KC_LCTL, KC_LALT, KC_LGUI, KC_NO, code, KC_LGUI, KC_NO, pressed, 180);
 }
 
 // replaces keycode if it was held for at least provided duration
@@ -726,7 +726,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                            // left thumb keys
 			                                    CTRL_SHIFT_BS,TD(TAP_MACRO1),
                                                    ALT_SLASH,
-                           CTRL_ESC, KC_SFTENT, SHIFT_ALT_DEL,
+                           CTRL_ESC, KC_SFTENT, CTRL_ALT_DEL,
                                      // left palm key
 			                         MEH_F14,
     // right side
@@ -815,7 +815,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________
     ),
 
-[_SHIFT_ALT_DEL] = LAYOUT(
+[_CTRL_ALT_DEL] = LAYOUT(
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
@@ -824,7 +824,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                    __________,  __________,  __________,  __________,
                              __________,  __________,
                                        __________,
-                    __________, __________,  SHIFT_ALT_DEL,
+                    __________, __________,  CTRL_ALT_DEL,
                                      __________,
          W_F9,  W_F10,  W_F11,  KC_F12,  __________,  __________, __________, __________, __________,
          W_6,  W_7,  W_8,  W_9,  W_0,  __________,
@@ -857,8 +857,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________,  __________,  __________,  __________ ,  __________,  __________,
                    __________,  __________,  __________, __________,
          __________,  KC_F3,
-         KC_F9,
-         KC_F12,  KC_F10,  KC_F11, // replace alt+win, alt+tab, alt+space combinations
+         KC_F5,
+         KC_F6,  KC_F7,  KC_F8, // replace alt+win, alt+tab, alt+space combinations
                              __________
     ),
 
@@ -935,7 +935,7 @@ uint32_t layer_state_set_user(uint32_t state) {
     case _CONTROL_ESCAPE: down(KC_LCTL); break;
     case _CONTROL_SPACE: down(KC_LCTL); break;
     case _CTRL_SHIFT_BS: down(KC_LCTL); down(KC_LSFT); break;
-    case _SHIFT_ALT_DEL: down(KC_LSFT); down(KC_LALT); break;
+    case _CTRL_ALT_DEL: down(KC_LCTL); down(KC_LALT); break;
 
     // common
     case _PALM_L: down(KC_LSFT); down(KC_LALT); down(KC_LCTL); break;
@@ -953,7 +953,7 @@ bool meh_f14_interrupted = true;
 bool meh_last_app_interrupted = true;
 bool alt_interrupted = true;
 bool ctrl_cmd_bs_interrupted = true;
-bool shift_alt_del_interrupted = true;
+bool ctrl_alt_del_interrupted = true;
 bool alt_shift_interrupted = true;
 bool ctrl_shift_interrupted = true;
 bool ctrl_esc_interrupted = true;
@@ -979,7 +979,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     if (keycode != ALT_SHIFT_BS) { alt_shift_interrupted = true; }
     if (keycode != CTRL_ESC) { ctrl_esc_interrupted = true; }
     if (keycode != CTRL_SHIFT_BS) { ctrl_shift_interrupted = true; }
-    if (keycode != SHIFT_ALT_DEL) { shift_alt_del_interrupted = true; }
+    if (keycode != CTRL_ALT_DEL) { ctrl_alt_del_interrupted = true; }
 
     // MO LAYER TAP FUNCTIONALITY
     switch (keycode) {
@@ -1018,9 +1018,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           return true;
         }
 
-        case SHIFT_ALT_DEL: {
-          static uint16_t shift_alt_del_layer_timer;
-          momentary_layer_tap(KC_DEL, KC_NO, KC_LSFT, KC_LALT, KC_NO, KC_NO, &shift_alt_del_layer_timer, &shift_alt_del_interrupted, is_pressed, 180);
+        case CTRL_ALT_DEL: {
+          static uint16_t ctrl_alt_del_layer_timer;
+          momentary_layer_tap(KC_DEL, KC_NO, KC_LALT, KC_LCTL, KC_NO, KC_NO, &ctrl_alt_del_layer_timer, &ctrl_alt_del_interrupted, is_pressed, 180);
           return true;
         }
 
@@ -1059,29 +1059,29 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
 
         // LWin + key overrides
-        case W_F9: { return replace_shift_alt_with_lgui(KC_F9, is_pressed); }
-        case W_F10: { return replace_shift_alt_with_lgui(KC_F10, is_pressed); }
-        case W_F11: { return replace_shift_alt_with_lgui(KC_F11, is_pressed); }
-        case W_F12: { return replace_shift_alt_with_lgui(KC_F12, is_pressed); }
-        case W_6: { return replace_shift_alt_with_lgui(KC_6, is_pressed); }
-        case W_7: { return replace_shift_alt_with_lgui(KC_7, is_pressed); }
-        case W_8: { return replace_shift_alt_with_lgui(KC_8, is_pressed); }
-        case W_9: { return replace_shift_alt_with_lgui(KC_9, is_pressed); }
-        case W_0: { return replace_shift_alt_with_lgui(KC_0, is_pressed); }
-        case W_Y: { return replace_shift_alt_with_lgui(KC_Y, is_pressed); }
-        case W_U: { return replace_shift_alt_with_lgui(KC_U, is_pressed); }
-        case W_I: { return replace_shift_alt_with_lgui(KC_I, is_pressed); }
-        case W_O: { return replace_shift_alt_with_lgui(KC_O, is_pressed); }
-        case W_P: { return replace_shift_alt_with_lgui(KC_P, is_pressed); }
-        case W_H: { return replace_shift_alt_with_lgui(KC_H, is_pressed); }
-        case W_J: { return replace_shift_alt_with_lgui(KC_J, is_pressed); }
-        case W_K: { return replace_shift_alt_with_lgui(KC_K, is_pressed); }
-        case W_L: { return replace_shift_alt_with_lgui(KC_L, is_pressed); }
-        case W_QUOT: { return replace_shift_alt_with_lgui(KC_QUOT, is_pressed); }
-        case W_N: { return replace_shift_alt_with_lgui(KC_N, is_pressed); }
-        case W_M: { return replace_shift_alt_with_lgui(KC_M, is_pressed); }
-        case W_DOT: { return replace_shift_alt_with_lgui(KC_DOT, is_pressed); }
-        case W_SCLN: { return replace_shift_alt_with_lgui(KC_SCLN, is_pressed); }
+        case W_F9: { return replace_ctrl_alt_with_lgui(KC_F9, is_pressed); }
+        case W_F10: { return replace_ctrl_alt_with_lgui(KC_F10, is_pressed); }
+        case W_F11: { return replace_ctrl_alt_with_lgui(KC_F11, is_pressed); }
+        case W_F12: { return replace_ctrl_alt_with_lgui(KC_F12, is_pressed); }
+        case W_6: { return replace_ctrl_alt_with_lgui(KC_6, is_pressed); }
+        case W_7: { return replace_ctrl_alt_with_lgui(KC_7, is_pressed); }
+        case W_8: { return replace_ctrl_alt_with_lgui(KC_8, is_pressed); }
+        case W_9: { return replace_ctrl_alt_with_lgui(KC_9, is_pressed); }
+        case W_0: { return replace_ctrl_alt_with_lgui(KC_0, is_pressed); }
+        case W_Y: { return replace_ctrl_alt_with_lgui(KC_Y, is_pressed); }
+        case W_U: { return replace_ctrl_alt_with_lgui(KC_U, is_pressed); }
+        case W_I: { return replace_ctrl_alt_with_lgui(KC_I, is_pressed); }
+        case W_O: { return replace_ctrl_alt_with_lgui(KC_O, is_pressed); }
+        case W_P: { return replace_ctrl_alt_with_lgui(KC_P, is_pressed); }
+        case W_H: { return replace_ctrl_alt_with_lgui(KC_H, is_pressed); }
+        case W_J: { return replace_ctrl_alt_with_lgui(KC_J, is_pressed); }
+        case W_K: { return replace_ctrl_alt_with_lgui(KC_K, is_pressed); }
+        case W_L: { return replace_ctrl_alt_with_lgui(KC_L, is_pressed); }
+        case W_QUOT: { return replace_ctrl_alt_with_lgui(KC_QUOT, is_pressed); }
+        case W_N: { return replace_ctrl_alt_with_lgui(KC_N, is_pressed); }
+        case W_M: { return replace_ctrl_alt_with_lgui(KC_M, is_pressed); }
+        case W_DOT: { return replace_ctrl_alt_with_lgui(KC_DOT, is_pressed); }
+        case W_SCLN: { return replace_ctrl_alt_with_lgui(KC_SCLN, is_pressed); }
 
         // REPEATING KEYCODES
         case KC_HOME: { return repeat_without_meh(KC_HOME, is_pressed); }
@@ -1141,10 +1141,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case MOD_DOT: { return if_held_180_add_shift(KC_DOT, is_pressed); }
         case MOD_BSLS: { return if_held_180_add_shift(KC_BSLS, is_pressed); }
 
-        case MOD_LEFT: { return if_held_add_mods(KC_LEFT, os_specific_key(KC_LCTL, KC_LALT), KC_NO, is_pressed, 180); }
-        case MOD_RIGHT: { return if_held_add_mods(KC_RGHT, os_specific_key(KC_LCTL, KC_LALT), KC_NO, is_pressed, 180); }
-        case MOD_UP: { return if_held_add_mods(KC_UP, os_specific_key(KC_LCTL, KC_LALT), KC_NO, is_pressed, 180); }
-        case MOD_DOWN: { return if_held_add_mods(KC_DOWN, os_specific_key(KC_LCTL, KC_LALT), KC_NO, is_pressed, 180); }
+        case MOD_LEFT: { return if_held_add_mods(KC_LEFT, os_specific_key(KC_LCTL, KC_LALT), KC_LSFT, is_pressed, 180); }
+        case MOD_RIGHT: { return if_held_add_mods(KC_RGHT, os_specific_key(KC_LCTL, KC_LALT), KC_LSFT, is_pressed, 180); }
+        case MOD_UP: { return if_held_add_mods(KC_UP, os_specific_key(KC_LCTL, KC_LALT), KC_LSFT, is_pressed, 180); }
+        case MOD_DOWN: { return if_held_add_mods(KC_DOWN, os_specific_key(KC_LCTL, KC_LALT), KC_LSFT, is_pressed, 180); }
 
         case KC_1: { return if_held_replace_180(KC_1, KC_1, KC_NO, is_pressed); } // disable key repeat
         case KC_2: { return if_held_replace_180(KC_2, KC_9, KC_LSFT, is_pressed); }
