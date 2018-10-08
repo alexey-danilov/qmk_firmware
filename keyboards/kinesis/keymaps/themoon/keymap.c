@@ -27,7 +27,6 @@ enum kinesis_keycodes {
   CMD_ESC = MO(_COMMAND_ESCAPE),
   CMD_SPACE = LT(_COMMAND_SPACE, KC_SPC),
   ALT_SHIFT_BS = MO(_ALT_SHIFT_BS),
-  ALT_SHIFT_DEL = MT(MOD_RALT | MOD_RSFT, KC_DEL),
   CTRL_CMD_BS = MO(_CTRL_CMD_BS),
   CTRL_F15 = LT(_CTRL_CMD_BS, KC_F15),
 
@@ -36,7 +35,6 @@ enum kinesis_keycodes {
   CTRL_ESC = MO(_CONTROL_ESCAPE),
   CTRL_SPACE = LT(_CONTROL_SPACE, KC_SPC),
   CTRL_SHIFT_BS = MO(_CTRL_SHIFT_BS),
-  CTRL_SHIFT_DEL = MT(MOD_RCTL | MOD_RSFT, KC_DEL),
   SHIFT_ALT_DEL = MO(_SHIFT_ALT_DEL),
 
   // common
@@ -90,6 +88,7 @@ enum holding_keycodes {
 enum {
     MAIL = 0,
     CLOSE_APP,
+    LANG,
     POS_LEFT,
     POS_RIGHT,
     POS_CENTER,
@@ -462,6 +461,17 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
                 }
            }
 
+           case LANG: {
+                if (is_pressed) {
+                   if (isMac) {
+                     SEND_STRING(SS_UP(X_LGUI) SS_DOWN(X_LALT) SS_TAP(X_SPACE) SS_UP(X_LALT) SS_DOWN(X_LGUI));
+                   } else if (isWin) {
+                     SEND_STRING(SS_UP(X_LCTRL) SS_DOWN(X_LGUI) SS_TAP(X_SPACE) SS_UP(X_LGUI) SS_DOWN(X_LCTRL));
+                   }
+                   return false;
+                }
+           }
+
            case MAIL: {
                 if (is_pressed) {
                     SEND_STRING("oleksii.danilov@gmail.com");
@@ -604,7 +614,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	KC_N, KC_M, KC_UP, KC_DOT, KC_QUOT, __________,
 	KC_LEFT, KC_DOWN, KC_RGHT, __________,
            // right thumb keys
-           TD(TAP_MACRO2), ALT_SHIFT_DEL,
+           TD(TAP_MACRO2), KC_CAPS,
            ALT_BSLASH,
            CTRL_F15, SFT_T(KC_TAB), CMD_SPACE,
                                     // right palm key
@@ -629,9 +639,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          CTRL_H,  MOD_J,  MOD_K,  MOD_L,  __________,  __________,
          MOD_N,  CTRL_M,  MOD_UP,  CTRL_DOT ,  __________,  __________,
                    MOD_LEFT,  MOD_DOWN,  MOD_RIGHT, __________,
-         KC_F2,  KC_DEL,
+         KC_F2,  __________,
          MOD_BSLS,
-         KC_F15,  LANG_CAPS,  MOD_SPACE,
+         KC_F15,  M(LANG),  MOD_SPACE,
                              __________
     ),
 
@@ -727,7 +737,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	KC_N, KC_M, KC_UP, KC_DOT, KC_QUOT, __________,
 	KC_LEFT, KC_DOWN, KC_RGHT, __________,
            // right thumb keys
-           TD(TAP_MACRO2), CTRL_SHIFT_DEL,
+           TD(TAP_MACRO2), KC_CAPS,
            ALT_BSLASH,
            KC_RGUI, SFT_T(KC_TAB), CTRL_SPACE,
                                     // right palm key
@@ -753,9 +763,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
            MOD_H,  MOD_J,  MOD_K,  MOD_L,  __________,  __________,
            MOD_N,  MOD_M,  MOD_UP,  MOD_DOT ,  __________,  __________,
                      MOD_LEFT,  MOD_DOWN,  MOD_RIGHT, __________,
-         KC_F2,  KC_DEL,
+         KC_F2,  __________,
          MOD_BSLS,
-         KC_F15,  LANG_CAPS,  MOD_SPACE,
+         KC_F15,  M(LANG),  MOD_SPACE,
                              __________
     ),
 
@@ -882,9 +892,9 @@ __________,  __________,  __________,  __________,  __________,  SET_LAYER_MAC, 
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
                    __________, __________, __________, __________,
-                             __________,  __________,
-                                     __________,
-                      M(CLOSE_APP), __________,  __________,
+                             M(CLOSE_APP),  KC_1,
+                                     KC_2,
+                      KC_3, KC_4,  KC_5,
                                      __________,
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
          __________,  __________,  __________,  __________,  __________,  __________,
@@ -1090,7 +1100,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case KC_RGHT: { return following_custom_leader_key(KC_END, KC_LCTL, KC_NO, KC_NO, &esc_timer, is_pressed, 220); }
 
         // CUSTOM KEYCODES
-        case LANG_CAPS: { return replace_mods_if_held_add_mods(KC_SPC, os_specific_key(KC_LGUI, KC_LCTL), KC_NO, os_specific_key(KC_LALT, KC_LGUI), KC_NO, os_specific_key(KC_LOCKING_CAPS, KC_CAPS), KC_NO, KC_NO, is_pressed, 180); }
         case ENTER_MENU: { return replace_mods_if_held_add_mods(KC_ENTER, os_specific_key(KC_LGUI, KC_LCTL), KC_NO, os_specific_key(KC_LGUI, KC_LCTL), KC_NO, os_specific_key(KC_F16, KC_APP), KC_NO, KC_NO, is_pressed, 180); }
 
         // mac-only overrides
