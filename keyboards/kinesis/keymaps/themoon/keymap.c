@@ -442,7 +442,7 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
            case POS_FULL: {
                 if (is_pressed) {
                    if (isMac) {
-                     SEND_STRING(SS_TAP(X_SPACE));
+                     SEND_STRING(SS_TAP(X_K));
                    } else if (isWin) {
                      SEND_STRING(SS_UP(X_LSHIFT) SS_UP(X_LALT) SS_UP(X_LCTRL) SS_DOWN(X_LGUI) SS_TAP(X_UP) SS_UP(X_LGUI) SS_DOWN(X_LSHIFT) SS_DOWN(X_LALT) SS_DOWN(X_LCTRL));
                    }
@@ -453,7 +453,7 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
            case POS_CENTER: {
                 if (is_pressed) {
                    if (isMac) {
-                     SEND_STRING(SS_TAP(X_K));
+                     SEND_STRING(SS_TAP(X_SPACE));
                    } else if (isWin) {
                      SEND_STRING(SS_UP(X_LSHIFT) SS_UP(X_LALT) SS_UP(X_LCTRL) SS_DOWN(X_LGUI) SS_TAP(X_DOWN) SS_UP(X_LGUI) SS_DOWN(X_LSHIFT) SS_DOWN(X_LALT) SS_DOWN(X_LCTRL));
                    }
