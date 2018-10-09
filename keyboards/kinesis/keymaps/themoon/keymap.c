@@ -9,14 +9,13 @@
 #define _COMMAND_SPACE 2
 #define _ALT_SHIFT_BS 3
 #define _CTRL_CMD_BS 4
-
 // win layers
 #define _WIN 5
 #define _CONTROL_ESCAPE 6
 #define _CONTROL_SPACE 7
 #define _CTRL_SHIFT_BS 8
 #define _CTRL_ALT_DEL 9
-
+// common layers
 #define _PALM_L 10
 #define _PALM_R 11
 #define _ALT 12
@@ -29,20 +28,17 @@ enum kinesis_keycodes {
   ALT_SHIFT_BS = MO(_ALT_SHIFT_BS),
   CTRL_CMD_BS = MO(_CTRL_CMD_BS),
   CTRL_F15 = LT(_CTRL_CMD_BS, KC_F15),
-
   // win
   SET_LAYER_WIN,
   CTRL_ESC = MO(_CONTROL_ESCAPE),
   CTRL_SPACE = LT(_CONTROL_SPACE, KC_SPC),
   CTRL_SHIFT_BS = MO(_CTRL_SHIFT_BS),
   CTRL_ALT_DEL = MO(_CTRL_ALT_DEL),
-
   // common
   ALT_SLASH = MO(_ALT),
   MEH_F14 = MO(_PALM_L),
   MEH_LAST_APP = MO(_PALM_R),
   ALT_BSLASH = MT(MOD_LALT, KC_BSLS),
-
   // media
   VOL_UP,
   VOL_DOWN,
@@ -50,59 +46,24 @@ enum kinesis_keycodes {
 };
 
 enum holding_keycodes {
-  MOD_ESC = SAFE_RANGE,
-  MOD_W, MOD_E, MOD_R, MOD_T,
-  MOD_S, MOD_D, MOD_F, MOD_G,
-  MOD_X, MOD_C, MOD_V, MOD_B,
-  MOD_LBRC, MOD_COMMA, MOD_RBRC,
+  MOD_ESC = SAFE_RANGE, MOD_W, MOD_E, MOD_R, MOD_T, MOD_S, MOD_D, MOD_F, MOD_G, MOD_X, MOD_C, MOD_V, MOD_B, MOD_LBRC, MOD_COMMA, MOD_RBRC,
 
-  MOD_SPACE,
-  MOD_Y, MOD_U, MOD_I, MOD_O,
-  MOD_H, MOD_J, MOD_K, MOD_L,
-  MOD_N, MOD_M, MOD_UP, MOD_DOT,
-  MOD_LEFT, MOD_DOWN, MOD_RIGHT,
-  MOD_BSLS,
+  MOD_SPACE, MOD_Y, MOD_U, MOD_I, MOD_O, MOD_H, MOD_J, MOD_K, MOD_L, MOD_N, MOD_M, MOD_UP, MOD_DOT, MOD_LEFT, MOD_DOWN, MOD_RIGHT, MOD_BSLS,
 
-  ENTER_MENU,
-  LANG_CAPS,
+  ENTER_MENU, LANG_CAPS,
 
   // mac-specific overrides
-  CTRL_COMMA, CTRL_DOT, CTRL_H, CTRL_M,
-  CMD_M,
-  ALT_BSPC,
+  CTRL_COMMA, CTRL_DOT, CTRL_H, CTRL_M, CMD_M, ALT_BSPC,
 
   // LWin + key overrides
-  W_F9, W_F10, W_F11, W_F12,
-  W_6, W_7, W_8, W_9, W_0,
-  W_Y, W_U, W_I, W_O, W_P,
-  W_H, W_J, W_K, W_L, W_SCLN,
-  W_N, W_M, W_DOT, W_QUOT,
+  W_F9, W_F10, W_F11, W_F12, W_6, W_7, W_8, W_9, W_0, W_Y, W_U, W_I, W_O, W_P, W_H, W_J, W_K, W_L, W_SCLN, W_N, W_M, W_DOT, W_QUOT,
 
   // required for dynamic macros
   DYNAMIC_MACRO_RANGE
 };
-
 #include "dynamic_macro.h"
 
-// macros
-enum {
-    MAIL = 0,
-    CLOSE_APP,
-    LANG,
-    POS_LEFT,
-    POS_RIGHT,
-    POS_CENTER,
-    POS_FULL,
-    SLEEP,
-    SHUTDOWN_WIN,
-    DEL_WORD_WIN,
-    DIR_UP,
-    TERMINAL_CLEAR,
-    DOCKER_LIST,
-    DOCKER_LOGS,
-    VIM_SAVE_QUIT,
-    VIM_QUIT
-};
+enum macros { MAIL = 0, CLOSE_APP, LANG, POS_LEFT, POS_RIGHT, POS_CENTER, POS_FULL, SLEEP, SHUTDOWN_WIN, DEL_WORD_WIN, DIR_UP, TERMINAL_CLEAR, DOCKER_LIST, DOCKER_LOGS, VIM_SAVE_QUIT, VIM_QUIT };
 
 // HELPER FUNCTIONS
 // switch mac <-> win
@@ -110,10 +71,8 @@ static bool isMac = false;
 static bool isWin = false;
 void matrix_init_user(void) {
     switch (biton32(eeconfig_read_default_layer())) {
-      case _MAC:
-        isMac = true; isWin = false; break;
-      case _WIN:
-        isWin = true; isMac = false; break;
+      case _MAC: isMac = true; isWin = false; break;
+      case _WIN: isWin = true; isMac = false; break;
       default: break;
   }
 }
@@ -124,43 +83,14 @@ uint16_t os_specific_key(uint16_t mac_key, uint16_t win_key) {
   return KC_NO;
 }
 
-// sugar: for more clarity
-void down(uint16_t key) {
-  register_code(key);
-}
-
-void up(uint16_t key) {
-  unregister_code(key);
-}
-
-
-void key_code(uint16_t key) {
-            down(key);
-            up(key);
-}
-
-void with_1_mod(uint16_t key, uint16_t mod1) {
-            down(mod1);
-            key_code(key);
-            up(mod1);
-}
-
-void with_2_mods(uint16_t key, uint16_t mod1, uint16_t mod2) {
-            down(mod2);
-            with_1_mod(key, mod1);
-            up(mod2);
-}
-
-void with_3_mods(uint16_t key, uint16_t mod1, uint16_t mod2, uint16_t mod3) {
-            down(mod3);
-            with_2_mods(key, mod1, mod2);
-            up(mod3);
-}
-
+void down(uint16_t key) { register_code(key); }
+void up(uint16_t key) { unregister_code(key); }
+void key_code(uint16_t key) { down(key); up(key); }
+void with_1_mod(uint16_t key, uint16_t mod1) { down(mod1); key_code(key); up(mod1); }
+void with_2_mods(uint16_t key, uint16_t mod1, uint16_t mod2) { down(mod2); with_1_mod(key, mod1); up(mod2); }
+void with_3_mods(uint16_t key, uint16_t mod1, uint16_t mod2, uint16_t mod3) { down(mod3); with_2_mods(key, mod1, mod2); up(mod3); }
 // defines whether keycode was held or not
-bool not_held(uint16_t hold_timer, uint16_t hold_duration) {
-    return timer_elapsed(hold_timer) < hold_duration;
-}
+bool is_not_held(uint16_t hold_timer, uint16_t hold_duration) { return timer_elapsed(hold_timer) < hold_duration; }
 
 // replaces mods of keycode, adds additional mods if it was held for at least provided duration
 bool replace_mods_if_held_add_mods(uint16_t code, uint16_t mod1_to_be_replaced, uint16_t mod2_to_be_replaced, uint16_t replacement_mod1, uint16_t replacement_mod2, uint16_t held_code, uint16_t held_mod1, uint16_t held_mod2, bool pressed, uint8_t hold_duration) {
@@ -172,7 +102,7 @@ bool replace_mods_if_held_add_mods(uint16_t code, uint16_t mod1_to_be_replaced, 
       up(mod1_to_be_replaced);
       up(mod2_to_be_replaced);
 
-      if (not_held(hold_timer, hold_duration)){
+      if (is_not_held(hold_timer, hold_duration)){
           with_2_mods(code, replacement_mod1, replacement_mod2);
 
       } else {
@@ -200,7 +130,7 @@ bool if_held_replace(uint16_t code, uint16_t held_code, bool pressed, uint8_t ho
   if(pressed) {
       hold_timer= timer_read();
   } else {
-      if (not_held(hold_timer, hold_duration)){
+      if (is_not_held(hold_timer, hold_duration)){
           key_code(code);
       } else {
           key_code(held_code);
@@ -215,7 +145,7 @@ bool if_held_add_mods(uint16_t code, uint16_t held_mod1, uint16_t held_mod2, boo
   if(pressed) {
       hold_timer= timer_read();
   } else {
-      if (not_held(hold_timer, hold_duration)){
+      if (is_not_held(hold_timer, hold_duration)){
           key_code(code);
       } else {
           with_2_mods(code, held_mod1, held_mod2);
@@ -240,7 +170,7 @@ bool replace_if_held_add_mods(uint16_t code, uint16_t mod, uint16_t held_code, u
   if(pressed) {
       hold_timer= timer_read();
   } else {
-      if (not_held(hold_timer, hold_duration)){
+      if (is_not_held(hold_timer, hold_duration)){
           with_1_mod(code, mod);
       } else {
           with_2_mods(held_code, held_mod1, held_mod2);
@@ -250,42 +180,38 @@ bool replace_if_held_add_mods(uint16_t code, uint16_t mod, uint16_t held_code, u
 }
 
 // replaces keycode and adds mod to it if it was held for at least provided duration
-bool if_held_replace_180(uint16_t code, uint16_t held_code, uint16_t held_mod, bool pressed) {
+bool if_held_180_replace(uint16_t code, uint16_t held_code, uint16_t held_mod, bool pressed) {
   return replace_if_held_add_mods(code, KC_NO, held_code, held_mod, KC_NO, pressed, 180);
 }
 
-// strips mods from keycode - without putting them back
-bool remove_mods(uint16_t code, uint16_t mod1, uint16_t mod2, uint16_t mod3, uint16_t mod4) {
-   up(mod1); up(mod2); up(mod3); up(mod4);
-   key_code(code);
-   return false;
+void remove_mods(uint16_t mod1, uint16_t mod2, uint16_t mod3, uint16_t mod4) { up(mod1); up(mod2); up(mod3); up(mod4); }
+void insert_mods(uint16_t mod1, uint16_t mod2, uint16_t mod3, uint16_t mod4) { down(mod1); down(mod2); down(mod3); down(mod4); }
+void remove_MEH(void) { return remove_mods(KC_LCTL, KC_LALT, KC_LSFT, KC_NO); }
+void add_MEH(void) { return insert_mods(KC_LCTL, KC_LALT, KC_LSFT, KC_NO); }
+
+void without_MEH(uint16_t code) {
+  remove_MEH();
+  key_code(code);
+  add_MEH();
 }
 
-// strips MEH from keycode - without putting it back
-bool remove_meh(uint16_t code) {
-  return remove_mods(code, KC_LCTL, KC_LALT, KC_LSFT, KC_NO);
-}
-
-// strips mods from keycode - and puts them back
-bool remove_mods_for_single_press(uint16_t code, uint16_t mod1, uint16_t mod2, uint16_t mod3, uint16_t mod4, bool is_pressed) {
-   if (is_pressed) {
-     remove_mods(code, mod1, mod2, mod3, mod4);
-     down(mod1); down(mod2); down(mod3); down(mod4);
+bool press_without_MEH(uint16_t code, bool pressed) {
+   if (pressed) {
+       without_MEH(code);
+       return true;
    }
-
-   return false;
+  return false;
 }
 
-// handles repeat functionality (now only for palm keys)
+// handles repeat functionality (only for palm keys)
 static uint16_t palm_repeat_code;
 static uint16_t palm_repeat_timer;
 static uint8_t first_repeat_delay;
 bool repeat_without_meh(uint16_t code, bool pressed) {
-   if (pressed) {
-       remove_meh(code);
-       palm_repeat_code = code;
-       palm_repeat_timer = timer_read();
-       first_repeat_delay = 250;
+   if (press_without_MEH(code, pressed)) {
+     palm_repeat_code = code;
+     palm_repeat_timer = timer_read();
+     first_repeat_delay = 250;
    } else {
        palm_repeat_code = 0;
    }
@@ -300,14 +226,11 @@ bool momentary_layer_tap(uint16_t tap_key, uint16_t tap_mod, uint16_t layer_mod1
     *interrupted_flag = false;
     *layer_timer = timer_read();
   } else {
-    if (not_held(*layer_timer, hold_duration)) {
+    if (is_not_held(*layer_timer, hold_duration)) {
       if (!*interrupted_flag) {
-        // unregister mods associated with the layer, so that they don't intefere with the tap key
-        up(layer_mod1); up(layer_mod2); up(layer_mod3); up(layer_mod4);
-
-        // register tap key and its mod
-        with_1_mod(tap_key, tap_mod);
-
+        up(layer_mod1); up(layer_mod2); up(layer_mod3); up(layer_mod4); // unregister mods associated with the layer, so that they don't intefere with the tap key
+        with_1_mod(tap_key, tap_mod); // register tap key and its mod
+        down(layer_mod1); down(layer_mod2); down(layer_mod3); down(layer_mod4); // bring mods back
         return true;
       }
     }
@@ -316,8 +239,8 @@ bool momentary_layer_tap(uint16_t tap_key, uint16_t tap_mod, uint16_t layer_mod1
 }
 
 // provides functionality similar to "leader key", except that it works for non-dedicated key (currently, only escape)
-bool following_custom_leader_key(uint16_t key, uint16_t mod1, uint16_t mod2, uint16_t mod3, uint16_t *leader_timer, bool is_pressed, uint16_t esc_last_pressed_timeout) {
-  if (*leader_timer && not_held(*leader_timer, esc_last_pressed_timeout)) {
+bool following_custom_leader_key(uint16_t key, uint16_t mod1, uint16_t mod2, uint16_t mod3, uint16_t *leader_timer, bool is_pressed, uint16_t leader_last_pressed_timeout) {
+  if (*leader_timer && is_not_held(*leader_timer, leader_last_pressed_timeout)) {
     if (is_pressed) {
       *leader_timer = 0;
       with_3_mods(key, mod1, mod2, mod3);
@@ -398,174 +321,77 @@ qk_tap_dance_action_t tap_dance_actions[] = {
 };
 
 // NON-TAP MACROS
+void window_positioning(uint16_t mac_key, uint16_t win_key) {
+  if (isMac) { key_code(mac_key); }
+  else if (isWin) { remove_MEH(); with_1_mod(win_key, KC_LGUI); add_MEH(); }
+}
 const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
     bool is_pressed = record->event.pressed;
         switch(id) {
 
+           case POS_LEFT: { if (is_pressed) { window_positioning(KC_J, KC_LEFT); return false; } }
+           case POS_RIGHT: { if (is_pressed) { window_positioning(KC_L, KC_RGHT); return false; } }
+           case POS_FULL: { if (is_pressed) { window_positioning(KC_K, KC_UP); return false; } }
+           case POS_CENTER: { if (is_pressed) { window_positioning(KC_SPC, KC_DOWN); return false; } }
+
+           case DEL_WORD_WIN: { if (is_pressed) { with_1_mod(KC_LEFT, KC_LSFT); key_code(KC_DEL); return false; } }
+           case DIR_UP: { if (is_pressed) { remove_MEH(); SEND_STRING("cd .. && ls"); key_code(KC_ENTER); add_MEH(); return false; } }
+
+           case DOCKER_LOGS: { if (is_pressed) { remove_MEH(); SEND_STRING("docker logs -f --tail=1000 $(docker ps -a -q | head -1)"); key_code(KC_ENTER); add_MEH(); return false; } }
+           case DOCKER_LIST: { if (is_pressed) { remove_MEH(); SEND_STRING("docker ps -a"); key_code(KC_ENTER); add_MEH(); return false; } }
+
+           case VIM_SAVE_QUIT: { if (is_pressed) { remove_MEH(); key_code(KC_ESC); _delay_ms(100); SEND_STRING(":wq!"); key_code(KC_ENTER); add_MEH(); return false; } }
+           case VIM_QUIT: { if (is_pressed) { remove_MEH(); key_code(KC_ESC); _delay_ms(100); SEND_STRING(":q!"); key_code(KC_ENTER); add_MEH(); return false; } }
+
+           case MAIL: { if (is_pressed) { SEND_STRING("oleksii.danilov@gmail.com"); return false; } }
+
            case CLOSE_APP: {
                 if (is_pressed) {
-                   SEND_STRING(SS_UP(X_LSHIFT) SS_UP(X_LALT) SS_UP(X_LCTRL)); // remove meh
-
-                   if (isMac) {
-                     SEND_STRING(SS_DOWN(X_LGUI) SS_TAP(X_Q) SS_UP(X_LGUI));
-                   } else if (isWin) {
-                     SEND_STRING(SS_DOWN(X_LALT)); _delay_ms(100); SEND_STRING(SS_TAP(X_F4) SS_UP(X_LALT));
-                   }
-
-                   SEND_STRING(SS_DOWN(X_LSHIFT) SS_DOWN(X_LALT) SS_DOWN(X_LCTRL)); // add meh
-                   return false;
-                }
-           }
-
-           case POS_LEFT: {
-                if (is_pressed) {
-                   if (isMac) {
-                     SEND_STRING(SS_TAP(X_J));
-                   } else if (isWin) {
-                     SEND_STRING(SS_UP(X_LSHIFT) SS_UP(X_LALT) SS_UP(X_LCTRL) SS_DOWN(X_LGUI) SS_TAP(X_LEFT) SS_UP(X_LGUI) SS_DOWN(X_LSHIFT) SS_DOWN(X_LALT) SS_DOWN(X_LCTRL));
-                   }
-                   return false;
-                }
-           }
-
-           case POS_RIGHT: {
-                if (is_pressed) {
-                   if (isMac) {
-                     SEND_STRING(SS_TAP(X_L));
-                   } else if (isWin) {
-                     SEND_STRING(SS_UP(X_LSHIFT) SS_UP(X_LALT) SS_UP(X_LCTRL) SS_DOWN(X_LGUI) SS_TAP(X_RIGHT) SS_UP(X_LGUI) SS_DOWN(X_LSHIFT) SS_DOWN(X_LALT) SS_DOWN(X_LCTRL));
-                   }
-                   return false;
-                }
-           }
-
-           case POS_FULL: {
-                if (is_pressed) {
-                   if (isMac) {
-                     SEND_STRING(SS_TAP(X_K));
-                   } else if (isWin) {
-                     SEND_STRING(SS_UP(X_LSHIFT) SS_UP(X_LALT) SS_UP(X_LCTRL) SS_DOWN(X_LGUI) SS_TAP(X_UP) SS_UP(X_LGUI) SS_DOWN(X_LSHIFT) SS_DOWN(X_LALT) SS_DOWN(X_LCTRL));
-                   }
-                   return false;
-                }
-           }
-
-           case POS_CENTER: {
-                if (is_pressed) {
-                   if (isMac) {
-                     SEND_STRING(SS_TAP(X_SPACE));
-                   } else if (isWin) {
-                     SEND_STRING(SS_UP(X_LSHIFT) SS_UP(X_LALT) SS_UP(X_LCTRL) SS_DOWN(X_LGUI) SS_TAP(X_DOWN) SS_UP(X_LGUI) SS_DOWN(X_LSHIFT) SS_DOWN(X_LALT) SS_DOWN(X_LCTRL));
-                   }
+                   remove_MEH();
+                   if (isMac) { with_1_mod(KC_Q, KC_LGUI); }
+                   else if (isWin) { down(KC_LALT); _delay_ms(100); key_code(KC_F4); up(KC_LALT); }
+                   add_MEH();
                    return false;
                 }
            }
 
            case LANG: {
                 if (is_pressed) {
-                   if (isMac) {
-                     SEND_STRING(SS_UP(X_LGUI) SS_DOWN(X_LALT) SS_TAP(X_SPACE) SS_UP(X_LALT) SS_DOWN(X_LGUI));
-                   } else if (isWin) {
-                     SEND_STRING(SS_UP(X_LCTRL) SS_DOWN(X_LGUI) SS_TAP(X_SPACE) SS_UP(X_LGUI) SS_DOWN(X_LCTRL));
-                   }
+                   if (isMac) { up(KC_LGUI); with_1_mod(KC_SPC, KC_LALT); down(KC_LGUI); }
+                   else if (isWin) { up(KC_LCTL); with_1_mod(KC_SPC, KC_LGUI); down(KC_LCTL); }
                    return false;
                 }
-           }
-
-           case MAIL: {
-                if (is_pressed) {
-                    SEND_STRING("oleksii.danilov@gmail.com");
-                    return false;
-                }
-           }
-
-           case SLEEP: {
-                if (is_pressed) {
-                   if (isMac) {
-                     SEND_STRING(SS_DOWN(X_LCTRL) SS_DOWN(X_LSHIFT) SS_DOWN(X_POWER) SS_UP(X_POWER) SS_UP(X_LSHIFT) SS_UP(X_LCTRL));
-                   } else if (isWin) {
-                     SEND_STRING(SS_LGUI("d")); _delay_ms(100); SEND_STRING(SS_DOWN(X_LALT)); _delay_ms(100); SEND_STRING(SS_TAP(X_F4)); SEND_STRING(SS_UP(X_LALT)); _delay_ms(100); SEND_STRING(SS_TAP(X_UP)); SEND_STRING(SS_TAP(X_ENTER));
-                   }
-                   return false;
-                }
-           }
-
-           case SHUTDOWN_WIN: {
-               if (is_pressed) {
-                   SEND_STRING(SS_LGUI("d")); _delay_ms(100); SEND_STRING(SS_DOWN(X_LALT)); _delay_ms(100); SEND_STRING(SS_TAP(X_F4)); SEND_STRING(SS_UP(X_LALT)); _delay_ms(100); SEND_STRING(SS_TAP(X_ENTER));
-                   return false;
-               }
-           }
-
-           case DEL_WORD_WIN: {
-               if (is_pressed) {
-                   SEND_STRING(SS_DOWN(X_LSHIFT) SS_TAP(X_LEFT) SS_UP(X_LSHIFT) SS_TAP(X_DELETE));
-                   return false;
-               }
-           }
-
-           case DIR_UP: {
-               if (is_pressed) {
-                   SEND_STRING(SS_UP(X_LSHIFT) SS_UP(X_LALT) SS_UP(X_LCTRL)); // remove meh
-                   SEND_STRING("cd .. && ls"); SEND_STRING(SS_TAP(X_ENTER));
-                   return false;
-               }
            }
 
            case TERMINAL_CLEAR: {
                if (is_pressed) {
-                   SEND_STRING(SS_UP(X_LSHIFT) SS_UP(X_LALT) SS_UP(X_LCTRL)); // remove meh
+                   remove_MEH();
                    if (isMac) {
                      SEND_STRING("printf \'\\e]50;ClearScrollback\\a\'"); // works in iterm2
                    } else if (isWin) {
                      SEND_STRING("clear"); // works in conemu/msys64
                    }
-                   SEND_STRING(SS_TAP(X_ENTER));
+                   key_code(KC_ENTER);
+                   add_MEH();
                    return false;
                }
            }
 
-           case DOCKER_LOGS: {
-               if (is_pressed) {
-                   SEND_STRING(SS_UP(X_LSHIFT) SS_UP(X_LALT) SS_UP(X_LCTRL)); // remove meh
-                   SEND_STRING("docker logs -f --tail=1000 $(docker ps -a -q | head -1)"); SEND_STRING(SS_TAP(X_ENTER));
+           case SLEEP: {
+                if (is_pressed) {
+                   if (isMac) { down(KC_LCTL); down(KC_LSFT); SEND_STRING(SS_DOWN(X_POWER) SS_UP(X_POWER)); up(KC_LSFT); up(KC_LCTL); }
+                    else if (isWin) { with_1_mod(KC_D, KC_LGUI); _delay_ms(100); down(KC_LALT); _delay_ms(100); key_code(KC_F4); up(KC_LALT); _delay_ms(100); key_code(KC_UP); key_code(KC_ENTER); }
                    return false;
-               }
+                }
            }
 
-           case DOCKER_LIST: {
-               if (is_pressed) {
-                   SEND_STRING(SS_UP(X_LSHIFT) SS_UP(X_LALT) SS_UP(X_LCTRL)); // remove meh
-                   SEND_STRING("docker ps -a"); SEND_STRING(SS_TAP(X_ENTER));
-                   return false;
-               }
-           }
-
-           case VIM_SAVE_QUIT: {
-               if (is_pressed) {
-                   SEND_STRING(SS_UP(X_LSHIFT) SS_UP(X_LALT) SS_UP(X_LCTRL));  // remove meh
-                   SEND_STRING(SS_TAP(X_ESCAPE)); _delay_ms(100);
-                   SEND_STRING(":wq!"); SEND_STRING(SS_TAP(X_ENTER));
-                   return false;
-               }
-           }
-
-           case VIM_QUIT: {
-               if (is_pressed) {
-                   SEND_STRING(SS_UP(X_LSHIFT) SS_UP(X_LALT) SS_UP(X_LCTRL)); // remove meh
-                   SEND_STRING(SS_TAP(X_ESCAPE)); _delay_ms(100);
-                   SEND_STRING(":q!"); SEND_STRING(SS_TAP(X_ENTER));
-                   return false;
-               }
-           }
+           case SHUTDOWN_WIN: { if (is_pressed) { with_1_mod(KC_D, KC_LGUI); _delay_ms(100); down(KC_LALT); _delay_ms(100); key_code(KC_F4); up(KC_LALT); _delay_ms(100); key_code(KC_ENTER); return false; } }
          }
+
     return MACRO_NONE;
 };
 
-/****************************************************************************************************
-*
-* Keymap: Default Mac Layer in Qwerty
-*
+/*
 * ,-------------------------------------------------------------------------------------------------------------------.
 * | SLEEP  |  F1  |  F2  |  F3  |  F4  |  F5  |  F6  |  F8  |  F9  |  F10 |  F12 | PSCR | SLCK | PAUS |Program| Power |
 * |--------+------+------+------+------+------+---------------------------+------+------+------+------+------+--------|
@@ -686,9 +512,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________,  __________,  __________,  __________ ,  __________,  __________,
                    __________,  __________, __________, __________,
          __________,  KC_F4,
-         __________,
-         KC_F15,  __________,  __________,
-                             __________
+         KC_F5,
+         KC_F6,  KC_F7,  KC_F8,
+                             KC_F9
     ),
 
 [_CTRL_CMD_BS] = LAYOUT(
@@ -709,9 +535,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________,  __________,  __________,  __________ ,  __________,  __________,
                    __________,  __________, __________, __________,
          __________,  KC_F2,
-         __________,
-         KC_F15,  __________,  __________,
-                             __________
+         KC_F5,
+         KC_F6,  KC_F7,  KC_F8,
+                             KC_F9
     ),
 
 // base win layer
@@ -812,7 +638,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________,  KC_F4,
          KC_F5,
          KC_F6,  KC_F7,  KC_F8,
-         __________
+                             KC_F9
     ),
 
 [_CTRL_ALT_DEL] = LAYOUT(
@@ -835,7 +661,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________,  KC_F2,
          KC_F5,
          KC_F6,  KC_F7,  KC_F8,
-                             __________
+                             KC_F9
     ),
 
 // common layers
@@ -858,8 +684,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                    __________,  __________,  __________, __________,
          __________,  KC_F3,
          KC_F5,
-         KC_F6,  KC_F7,  KC_F8, // replace alt+win, alt+tab, alt+space combinations
-                             __________
+         KC_F6,  KC_F7,  KC_F8,
+                             KC_F9
     ),
 
 [_PALM_L] = LAYOUT(
@@ -909,19 +735,18 @@ __________,  __________,  __________,  __________,  __________,  SET_LAYER_MAC, 
     ),
 };
 
-// support for repeat keycodes (now only for palm layer keys)
+// support for repeat keycodes (only for palm layer keys)
 void matrix_scan_user(void) {
    if (palm_repeat_code) {
       if (timer_elapsed(palm_repeat_timer) > (10 + first_repeat_delay)) {
-         remove_meh(palm_repeat_code);
+         without_MEH(palm_repeat_code);
          palm_repeat_timer = timer_read();
          first_repeat_delay = 0;
       }
    }
 }
 
-
-// support for "mo layer tap" functionality: activate mod as soon as layer is activated
+// support for "mo layer tap" functionality: activate mod as soon as layer is activated -> to allow key + mouse combination without delay
 uint32_t layer_state_set_user(uint32_t state) {
     switch (biton32(state)) {
     // mac-specific
@@ -1092,7 +917,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case VOL_UP: { return repeat_without_meh(os_specific_key(KC__VOLUP, KC_F20), is_pressed); }
         case VOL_DOWN: { return repeat_without_meh(os_specific_key(KC__VOLDOWN, KC_F21), is_pressed); }
 
-        case MUTE: { return remove_mods_for_single_press(os_specific_key(KC__MUTE, KC_F22), KC_LCTL, KC_LALT, KC_LSFT, KC_NO, is_pressed); }
+        case MUTE: { return press_without_MEH(os_specific_key(KC__MUTE, KC_F22), is_pressed); }
 
         // ESCAPE AS LEADER KEY
         // ctrl home/end
@@ -1146,16 +971,16 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case MOD_UP: { return if_held_add_mods(KC_UP, os_specific_key(KC_LCTL, KC_LALT), KC_LSFT, is_pressed, 180); }
         case MOD_DOWN: { return if_held_add_mods(KC_DOWN, os_specific_key(KC_LCTL, KC_LALT), KC_LSFT, is_pressed, 180); }
 
-        case KC_1: { return if_held_replace_180(KC_1, KC_1, KC_NO, is_pressed); } // disable key repeat
-        case KC_2: { return if_held_replace_180(KC_2, KC_9, KC_LSFT, is_pressed); }
-        case KC_3: { return if_held_replace_180(KC_3, KC_MINS, KC_LSFT, is_pressed); }
-        case KC_4: { return if_held_replace_180(KC_4, KC_0, KC_LSFT, is_pressed); }
-        case KC_5: { return if_held_replace_180(KC_5, KC_EQL, KC_NO, is_pressed); }
-        case KC_6: { return if_held_replace_180(KC_6, KC_EQL, KC_LSFT, is_pressed); }
-        case KC_7: { return if_held_replace_180(KC_7, KC_1, KC_LSFT, is_pressed); }
-        case KC_8: { return if_held_replace_180(KC_8, KC_MINS, KC_NO, is_pressed); }
-        case KC_9: { return if_held_replace_180(KC_9, KC_SLSH, KC_LSFT, is_pressed); }
-        case KC_0: { return if_held_replace_180(KC_0, KC_0, KC_NO, is_pressed); } // disable key repeat
+        case KC_1: { return if_held_180_replace(KC_1, KC_1, KC_NO, is_pressed); } // disable key repeat
+        case KC_2: { return if_held_180_replace(KC_2, KC_9, KC_LSFT, is_pressed); }
+        case KC_3: { return if_held_180_replace(KC_3, KC_MINS, KC_LSFT, is_pressed); }
+        case KC_4: { return if_held_180_replace(KC_4, KC_0, KC_LSFT, is_pressed); }
+        case KC_5: { return if_held_180_replace(KC_5, KC_EQL, KC_NO, is_pressed); }
+        case KC_6: { return if_held_180_replace(KC_6, KC_EQL, KC_LSFT, is_pressed); }
+        case KC_7: { return if_held_180_replace(KC_7, KC_1, KC_LSFT, is_pressed); }
+        case KC_8: { return if_held_180_replace(KC_8, KC_MINS, KC_NO, is_pressed); }
+        case KC_9: { return if_held_180_replace(KC_9, KC_SLSH, KC_LSFT, is_pressed); }
+        case KC_0: { return if_held_180_replace(KC_0, KC_0, KC_NO, is_pressed); } // disable key repeat
 
         case KC_F1: { return if_held_180_add_shift(KC_F1, is_pressed); }
         case KC_F2: { return if_held_180_add_shift(KC_F2, is_pressed); }
