@@ -85,11 +85,25 @@ uint16_t os_specific_key(uint16_t mac_key, uint16_t win_key) {
 
 void down(uint16_t key) { register_code(key); }
 void up(uint16_t key) { unregister_code(key); }
+
 void key_code(uint16_t key) { down(key); up(key); }
-void with_1_mod(uint16_t key, uint16_t mod1) { down(mod1); key_code(key); up(mod1); }
-void with_2_mods(uint16_t key, uint16_t mod1, uint16_t mod2) { down(mod2); with_1_mod(key, mod1); up(mod2); }
-void with_3_mods(uint16_t key, uint16_t mod1, uint16_t mod2, uint16_t mod3) { down(mod3); with_2_mods(key, mod1, mod2); up(mod3); }
-// defines whether keycode was held or not
+
+void with_1_mod(uint16_t key, uint16_t mod1) {
+  uint8_t old_mods = get_mods();
+  down(mod1); key_code(key); up(mod1);
+  if (old_mods) { register_mods(old_mods); }
+}
+void with_2_mods(uint16_t key, uint16_t mod1, uint16_t mod2) {
+  uint8_t old_mods = get_mods();
+  down(mod2); down(mod1); key_code(key); up(mod1); up(mod2);
+  if (old_mods) { register_mods(old_mods); }
+}
+void with_3_mods(uint16_t key, uint16_t mod1, uint16_t mod2, uint16_t mod3) {
+  uint8_t old_mods = get_mods();
+  down(mod3); down(mod2); down(mod1); key_code(key); up(mod1); up(mod2); up(mod3);
+  if (old_mods) { register_mods(old_mods); }
+}
+
 bool is_not_held(uint16_t hold_timer, uint16_t hold_duration) { return timer_elapsed(hold_timer) < hold_duration; }
 
 // replaces mods of keycode, adds additional mods if it was held for at least provided duration
