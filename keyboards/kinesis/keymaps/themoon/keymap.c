@@ -55,7 +55,7 @@ enum holding_keycodes {
   K_CAPS,
 
   // mac-specific overrides
-  ALT_TAB, CTRL_COMMA, CTRL_DOT, CTRL_H, CTRL_M, CMD_M, ALT_BSPC,
+  CTRL_TAB, CTRL_COMMA, CTRL_DOT, CTRL_H, CTRL_M, CMD_M, ALT_BSPC,
 
   // LWin + key overrides
   W_F9, W_F10, W_F11, W_F12, W_6, W_7, W_8, W_9, W_0, W_Y, W_U, W_I, W_O, W_P, W_H, W_J, W_K, W_L, W_SCLN, W_N, W_M, W_DOT, W_QUOT,
@@ -535,8 +535,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                    MOD_LEFT,  MOD_DOWN,  MOD_RIGHT, __________,
          __________,  __________,
          MOD_BSLS,
-         KC_F16,  ALT_TAB,  MOD_SPACE,
-                             KC_F15
+         KC_F16,  CTRL_TAB,  MOD_SPACE,
+                                KC_F15
     ),
 
 [_COMMAND_SPACE] = LAYOUT(
@@ -581,8 +581,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                    __________,  __________, __________, __________,
          __________,  __________,
          KC_BSLS,
-         KC_F16,  KC_F3,  KC_F4,
-                       KC_F15
+         KC_F16,  KC_F1,  KC_F2,
+                          KC_F15
     ),
 
 [_CTRL_CMD_BS] = LAYOUT(
@@ -604,8 +604,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                    __________,  __________, __________, __________,
          __________,  __________,
          KC_BSLS,
-         KC_F16,  KC_TAB,  KC_SPC,
-                         KC_F15
+         KC_F16,  KC_F13,  KC_F14,
+                            KC_F15
     ),
 
 // base win layer
@@ -660,7 +660,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________,  __________,
          MOD_BSLS,
          KC_F16,  MOD_TAB,  MOD_SPACE,
-                             KC_F15
+                                KC_F15
     ),
 
 [_CONTROL_SPACE] = LAYOUT(
@@ -705,8 +705,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                    __________,  __________, __________, __________,
          __________,  __________,
          KC_BSLS,
-         KC_F16,  KC_F3,  KC_F4,
-                       KC_F15
+         KC_F16,  KC_F1,  KC_F2,
+                          KC_F15
     ),
 
 [_CTRL_ALT_DEL] = LAYOUT(
@@ -728,8 +728,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                    __________,  __________, __________, __________,
          __________,  __________,
          KC_BSLS,
-         KC_F16,  KC_F1,  KC_F2,
-                         KC_F15
+         KC_F16,  KC_F13,  KC_F14,
+                           KC_F15
     ),
 
 // common layers
@@ -752,8 +752,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                    __________,  __________,  __________, __________,
          __________,  __________,
          KC_BSLS,
-         KC_F16,  KC_F1,  KC_F2,
-                         KC_F15
+         KC_F16,  KC_F13,  KC_F14,
+                           KC_F15
     ),
 
 [_PALM_R] = LAYOUT(
@@ -765,8 +765,8 @@ __________,  __________,  __________,  __________,  __________,  SET_LAYER_MAC, 
                    __________, __________, __________, __________,
                                  KC_BSPC, __________,
                                      KC_SLSH,
-                    KC_ESC, KC_ENTER, KC_DEL,
-                                       KC_F14,
+                    KC_0, KC_1, KC_DEL,
+                                KC_F14,
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
@@ -798,8 +798,8 @@ __________,  __________,  __________,  __________,  __________,  SET_LAYER_MAC, 
                                 KC_HOME,  KC_PGDN, KC_END, __________,
          __________,  __________,
          M(DOCKER_LIST),
-         M(DOCKER_LOGS),  KC_TAB,  KC_SPC,
-                                    KC_F15
+         M(DOCKER_LOGS),  KC_F1,  KC_F2,
+                                  KC_F15
     ),
 };
 
@@ -994,8 +994,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
         // CUSTOM KEYCODES
         // mac-only overrides
-        case ALT_TAB: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_TAB, KC_LGUI, KC_NO, KC_LALT, KC_NO, KC_TAB, KC_LALT, KC_LSFT, is_pressed, 140); }
         case ALT_BSPC: { return replace_cmd_if_held_add_cmd_shift(KC_BSPC, KC_LALT, is_pressed, 170); }
+        case CTRL_TAB: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_TAB, KC_LGUI, KC_NO, KC_LCTL, KC_NO, KC_TAB, KC_LCTL, KC_LSFT, is_pressed, 140); }
         case CTRL_COMMA: { return replace_cmd_if_held_add_cmd_shift(KC_COMM, KC_LCTL, is_pressed, 170); }
         case CTRL_DOT: { return replace_cmd_if_held_add_cmd_shift(KC_DOT, KC_LCTL, is_pressed, 170); }
         case CTRL_H: { return replace_cmd_if_held_add_cmd_shift(KC_H, KC_LCTL, is_pressed, 170); }
