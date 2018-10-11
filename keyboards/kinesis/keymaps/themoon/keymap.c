@@ -65,7 +65,7 @@ enum holding_keycodes {
 };
 #include "dynamic_macro.h"
 
-enum macros { MAIL = 0, CLOSE_APP, POS_LEFT, POS_RIGHT, POS_CENTER, POS_FULL, SLEEP, SHUTDOWN_WIN, DEL_WORD_WIN, DIR_UP, TERMINAL_CLEAR, DOCKER_LIST, DOCKER_LOGS, VIM_SAVE_QUIT, VIM_QUIT };
+enum macros { MAIL = 0, CLOSE_APP, POS_LEFT, POS_RIGHT, POS_MINIMIZE, POS_FULL, SLEEP, SHUTDOWN_WIN, DEL_WORD_WIN, DIR_UP, TERMINAL_CLEAR, DOCKER_LIST, DOCKER_LOGS, VIM_SAVE_QUIT, VIM_QUIT };
 
 // HELPER FUNCTIONS
 // switch mac <-> win
@@ -405,10 +405,17 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
     bool is_pressed = record->event.pressed;
         switch(id) {
 
-           case POS_LEFT: { if (is_pressed) { window_positioning(KC_U, KC_LEFT); return false; } }
-           case POS_RIGHT: { if (is_pressed) { window_positioning(KC_O, KC_RGHT); return false; } }
-           case POS_FULL: { if (is_pressed) { window_positioning(KC_8, KC_UP); return false; } }
-           case POS_CENTER: { if (is_pressed) { window_positioning(KC_I, KC_DOWN); return false; } }
+           case POS_LEFT: { if (is_pressed) { window_positioning(KC_M, KC_LEFT); return false; } }
+           case POS_RIGHT: { if (is_pressed) { window_positioning(KC_DOT, KC_RGHT); return false; } }
+           case POS_FULL: { if (is_pressed) { window_positioning(KC_F1, KC_UP); return false; } }
+           case POS_MINIMIZE: {
+             if (is_pressed) {
+                remove_MEH();
+                if (isMac) { with_1_mod(KC_M, KC_LGUI); }
+                else if (isWin) { with_1_mod(KC_DOWN, KC_LGUI); }
+                add_MEH();
+             }
+           }
 
            case DEL_WORD_WIN: { if (is_pressed) { with_1_mod(KC_LEFT, KC_LSFT); key_code(KC_DEL); return false; } }
            case DIR_UP: { if (is_pressed) { remove_MEH(); SEND_STRING("cd .. && ls"); key_code(KC_ENTER); add_MEH(); return false; } }
@@ -581,7 +588,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                    __________,  __________, __________, __________,
          __________,  __________,
          KC_BSLS,
-         KC_F16,  KC_F1,  KC_F2,
+         KC_F16,  KC_0,  KC_1,
                           KC_F15
     ),
 
@@ -604,7 +611,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                    __________,  __________, __________, __________,
          __________,  __________,
          KC_BSLS,
-         KC_F16,  KC_F13,  KC_F14,
+         KC_F16,  KC_F1,  KC_F2,
                             KC_F15
     ),
 
@@ -705,7 +712,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                    __________,  __________, __________, __________,
          __________,  __________,
          KC_BSLS,
-         KC_F16,  KC_F1,  KC_F2,
+         KC_F16,  KC_0,  KC_1,
                           KC_F15
     ),
 
@@ -728,7 +735,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                    __________,  __________, __________, __________,
          __________,  __________,
          KC_BSLS,
-         KC_F16,  KC_F13,  KC_F14,
+         KC_F16,  KC_F1,  KC_F2,
                            KC_F15
     ),
 
@@ -752,7 +759,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                    __________,  __________,  __________, __________,
          __________,  __________,
          KC_BSLS,
-         KC_F16,  KC_F13,  KC_F14,
+         KC_F16,  KC_F1,  KC_F2,
                            KC_F15
     ),
 
@@ -791,14 +798,14 @@ __________,  __________,  __________,  __________,  __________,  SET_LAYER_MAC, 
                       __________, __________,  __________,
                                      MEH_F14,
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
-         __________,  M(VIM_SAVE_QUIT),  M(POS_FULL),  M(VIM_QUIT),  __________,  __________,
-         __________,  M(POS_LEFT),  M(POS_CENTER),  M(POS_RIGHT),  __________,  __________,
+         __________,  M(VIM_SAVE_QUIT),  __________,  M(VIM_QUIT),  __________,  __________,
+         __________,  __________,  M(DIR_UP),  M(TERMINAL_CLEAR),  __________,  __________,
          __________,  __________,  M(CLOSE_APP),  __________,  __________,  __________,
-         __________,  M(TERMINAL_CLEAR),  KC_PGUP,  M(DIR_UP),  __________,  __________,
+         __________,  M(POS_LEFT),  KC_PGUP,  M(POS_RIGHT),  __________,  __________,
                                 KC_HOME,  KC_PGDN, KC_END, __________,
          __________,  __________,
          M(DOCKER_LIST),
-         M(DOCKER_LOGS),  KC_F1,  KC_F2,
+         M(DOCKER_LOGS),  M(POS_FULL),  M(POS_MINIMIZE),
                                   KC_F15
     ),
 };
