@@ -137,7 +137,7 @@ bool replace_cmd_if_held_add_cmd_shift(uint16_t code, uint16_t replacement_mod, 
 }
 
 bool replace_ctrl_alt_with_lgui(uint16_t code, bool pressed) {
-  return replace_key_and_mods_if_held_replace_key_and_mods(code, KC_LCTL, KC_LALT, KC_LGUI, KC_NO, code, KC_LGUI, KC_NO, pressed, 170);
+  return replace_key_and_mods_if_held_replace_key_and_mods(code, KC_LCTL, KC_LALT, KC_LGUI, KC_NO, code, KC_LGUI, KC_NO, pressed, 180);
 }
 
 // replaces keycode if it was held for at least provided duration
@@ -175,9 +175,9 @@ bool if_held_140_add_shift(uint16_t code, bool pressed) {
   return if_held_add_mods(code, KC_LSFT, KC_NO, pressed, 140);
 }
 
-// adds shift to keycode if it was held for at 170 ms
-bool if_held_170_add_shift(uint16_t code, bool pressed) {
-  return if_held_add_mods(code, KC_LSFT, KC_NO, pressed, 170);
+// adds shift to keycode if it was held for at 180 ms
+bool if_held_180_add_shift(uint16_t code, bool pressed) {
+  return if_held_add_mods(code, KC_LSFT, KC_NO, pressed, 180);
 }
 
 // replaces keycode and adds mod to it if it was held for at least provided duration
@@ -196,8 +196,8 @@ bool replace_if_held_add_mods(uint16_t code, uint16_t mod, uint16_t held_code, u
 }
 
 // replaces keycode and adds mod to it if it was held for at least provided duration
-bool if_held_170_replace(uint16_t code, uint16_t held_code, uint16_t held_mod, bool pressed) {
-  return replace_if_held_add_mods(code, KC_NO, held_code, held_mod, KC_NO, pressed, 170);
+bool if_held_180_replace(uint16_t code, uint16_t held_code, uint16_t held_mod, bool pressed) {
+  return replace_if_held_add_mods(code, KC_NO, held_code, held_mod, KC_NO, pressed, 180);
 }
 
 void remove_mods(uint16_t mod1, uint16_t mod2, uint16_t mod3, uint16_t mod4) { up(mod1); up(mod2); up(mod3); up(mod4); }
@@ -900,7 +900,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         // mac-specific layers
         case CMD_ESC: {
          static uint16_t cmd_esc_layer_timer;
-         if (momentary_layer_tap(KC_ESC, KC_NO, KC_LGUI, KC_NO, KC_NO, KC_NO, &cmd_esc_layer_timer, &cmd_esc_interrupted, is_pressed, 170)) {
+         if (momentary_layer_tap(KC_ESC, KC_NO, KC_LGUI, KC_NO, KC_NO, KC_NO, &cmd_esc_layer_timer, &cmd_esc_interrupted, is_pressed, 180)) {
            esc_timer = timer_read();
          }
          return true;
@@ -908,32 +908,32 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
         case ALT_SHIFT_BS: {
           static uint16_t alt_shift_layer_timer;
-          momentary_layer_tap(KC_BSPC, KC_NO, KC_LSFT, KC_LALT, KC_NO, KC_NO, &alt_shift_layer_timer, &alt_shift_interrupted, is_pressed, 170);
+          momentary_layer_tap(KC_BSPC, KC_NO, KC_LSFT, KC_LALT, KC_NO, KC_NO, &alt_shift_layer_timer, &alt_shift_interrupted, is_pressed, 180);
           return true;
         }
 
         case CTRL_CMD_BS: {
           static uint16_t ctrl_cmd_bs_layer_timer;
-          momentary_layer_tap(KC_BSPC, KC_LGUI, KC_LCTL, KC_NO, KC_NO, KC_NO, &ctrl_cmd_bs_layer_timer, &ctrl_cmd_bs_interrupted, is_pressed, 170);
+          momentary_layer_tap(KC_BSPC, KC_LGUI, KC_LCTL, KC_NO, KC_NO, KC_NO, &ctrl_cmd_bs_layer_timer, &ctrl_cmd_bs_interrupted, is_pressed, 180);
           return true;
         }
 
         case CTRL_ALT_DEL: {
           static uint16_t ctrl_alt_del_layer_timer;
-          momentary_layer_tap(KC_DEL, KC_NO, KC_LALT, KC_LCTL, KC_NO, KC_NO, &ctrl_alt_del_layer_timer, &ctrl_alt_del_interrupted, is_pressed, 170);
+          momentary_layer_tap(KC_DEL, KC_NO, KC_LALT, KC_LCTL, KC_NO, KC_NO, &ctrl_alt_del_layer_timer, &ctrl_alt_del_interrupted, is_pressed, 180);
           return true;
         }
 
         case ALT_SLASH: {
           static uint16_t alt_layer_timer;
-          momentary_layer_tap(KC_SLSH, KC_NO, KC_LALT, KC_NO, KC_NO, KC_NO, &alt_layer_timer, &alt_interrupted, is_pressed, 170);
+          momentary_layer_tap(KC_SLSH, KC_NO, KC_LALT, KC_NO, KC_NO, KC_NO, &alt_layer_timer, &alt_interrupted, is_pressed, 180);
           return true;
         }
 
         // win-specific layers
         case CTRL_ESC: {
          static uint16_t ctrl_esc_layer_timer;
-         if (momentary_layer_tap(KC_ESC, KC_NO, KC_LCTL, KC_NO, KC_NO, KC_NO, &ctrl_esc_layer_timer, &ctrl_esc_interrupted, is_pressed, 170)) {
+         if (momentary_layer_tap(KC_ESC, KC_NO, KC_LCTL, KC_NO, KC_NO, KC_NO, &ctrl_esc_layer_timer, &ctrl_esc_interrupted, is_pressed, 180)) {
            esc_timer = timer_read();
          }
          return true;
@@ -941,7 +941,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
         case CTRL_SHIFT_BS: {
           static uint16_t ctrl_shift_layer_timer;
-          momentary_layer_tap(KC_BSPC, KC_NO, KC_LSFT, KC_LCTL, KC_NO, KC_NO, &ctrl_shift_layer_timer, &ctrl_shift_interrupted, is_pressed, 170);
+          momentary_layer_tap(KC_BSPC, KC_NO, KC_LSFT, KC_LCTL, KC_NO, KC_NO, &ctrl_shift_layer_timer, &ctrl_shift_interrupted, is_pressed, 180);
           return true;
         }
 
@@ -1001,79 +1001,79 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
         // CUSTOM KEYCODES
         // mac-only overrides
-        case ALT_BSPC: { return replace_cmd_if_held_add_cmd_shift(KC_BSPC, KC_LALT, is_pressed, 170); }
+        case ALT_BSPC: { return replace_cmd_if_held_add_cmd_shift(KC_BSPC, KC_LALT, is_pressed, 180); }
         case CTRL_TAB: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_TAB, KC_LGUI, KC_NO, KC_LCTL, KC_NO, KC_TAB, KC_LCTL, KC_LSFT, is_pressed, 140); }
-        case CTRL_COMMA: { return replace_cmd_if_held_add_cmd_shift(KC_COMM, KC_LCTL, is_pressed, 170); }
-        case CTRL_DOT: { return replace_cmd_if_held_add_cmd_shift(KC_DOT, KC_LCTL, is_pressed, 170); }
-        case CTRL_H: { return replace_cmd_if_held_add_cmd_shift(KC_H, KC_LCTL, is_pressed, 170); }
-        case CTRL_M: { return replace_cmd_if_held_add_cmd_shift(KC_M, KC_LCTL, is_pressed, 170); }
+        case CTRL_COMMA: { return replace_cmd_if_held_add_cmd_shift(KC_COMM, KC_LCTL, is_pressed, 180); }
+        case CTRL_DOT: { return replace_cmd_if_held_add_cmd_shift(KC_DOT, KC_LCTL, is_pressed, 180); }
+        case CTRL_H: { return replace_cmd_if_held_add_cmd_shift(KC_H, KC_LCTL, is_pressed, 180); }
+        case CTRL_M: { return replace_cmd_if_held_add_cmd_shift(KC_M, KC_LCTL, is_pressed, 180); }
 
         case MOD_ENTER: { return if_held_140_add_shift(KC_ENTER, is_pressed); }
         case MOD_TAB: { return if_held_140_add_shift(KC_TAB, is_pressed); }
         case MOD_SPACE: { return if_held_140_add_shift(KC_SPC, is_pressed); }
         case MOD_ESC: { return if_held_140_add_shift(os_specific_key(KC_ESC, KC_BSPC), is_pressed); }
 
-        case K_CAPS: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_K, os_specific_key(KC_LGUI, KC_LCTL), KC_NO, os_specific_key(KC_LGUI, KC_LCTL), KC_NO, os_specific_key(KC_LOCKING_CAPS, KC_CAPS), KC_NO, KC_NO, is_pressed, 170); }
+        case K_CAPS: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_K, os_specific_key(KC_LGUI, KC_LCTL), KC_NO, os_specific_key(KC_LGUI, KC_LCTL), KC_NO, os_specific_key(KC_LOCKING_CAPS, KC_CAPS), KC_NO, KC_NO, is_pressed, 180); }
 
-        case MOD_W: { return if_held_170_add_shift(KC_W, is_pressed); }
-        case MOD_E: { return if_held_170_add_shift(KC_E, is_pressed); }
-        case MOD_R: { return if_held_170_add_shift(KC_R, is_pressed); }
-        case MOD_T: { return if_held_170_add_shift(KC_T, is_pressed); }
-        case MOD_S: { return if_held_170_add_shift(KC_S, is_pressed); }
-        case MOD_D: { return if_held_170_add_shift(KC_D, is_pressed); }
-        case MOD_F: { return if_held_170_add_shift(KC_F, is_pressed); }
-        case MOD_G: { return if_held_170_add_shift(KC_G, is_pressed); }
-        case MOD_X: { return if_held_170_add_shift(KC_X, is_pressed); }
-        case MOD_C: { return if_held_170_add_shift(KC_C, is_pressed); }
-        case MOD_V: { return if_held_170_add_shift(KC_V, is_pressed); }
-        case MOD_B: { return if_held_170_add_shift(KC_B, is_pressed); }
-        case MOD_COMMA: { return if_held_170_add_shift(KC_COMM, is_pressed); }
-        case MOD_LBRC: { return if_held_170_add_shift(KC_LBRC, is_pressed); }
-        case MOD_RBRC: { return if_held_170_add_shift(KC_RBRC, is_pressed); }
+        case MOD_W: { return if_held_180_add_shift(KC_W, is_pressed); }
+        case MOD_E: { return if_held_180_add_shift(KC_E, is_pressed); }
+        case MOD_R: { return if_held_180_add_shift(KC_R, is_pressed); }
+        case MOD_T: { return if_held_180_add_shift(KC_T, is_pressed); }
+        case MOD_S: { return if_held_180_add_shift(KC_S, is_pressed); }
+        case MOD_D: { return if_held_180_add_shift(KC_D, is_pressed); }
+        case MOD_F: { return if_held_180_add_shift(KC_F, is_pressed); }
+        case MOD_G: { return if_held_180_add_shift(KC_G, is_pressed); }
+        case MOD_X: { return if_held_180_add_shift(KC_X, is_pressed); }
+        case MOD_C: { return if_held_180_add_shift(KC_C, is_pressed); }
+        case MOD_V: { return if_held_180_add_shift(KC_V, is_pressed); }
+        case MOD_B: { return if_held_180_add_shift(KC_B, is_pressed); }
+        case MOD_COMMA: { return if_held_180_add_shift(KC_COMM, is_pressed); }
+        case MOD_LBRC: { return if_held_180_add_shift(KC_LBRC, is_pressed); }
+        case MOD_RBRC: { return if_held_180_add_shift(KC_RBRC, is_pressed); }
 
-        case MOD_Y: { return if_held_170_add_shift(KC_Y, is_pressed); }
-        case MOD_U: { return if_held_170_add_shift(KC_U, is_pressed); }
-        case MOD_I: { return if_held_170_add_shift(KC_I, is_pressed); }
-        case MOD_O: { return if_held_170_add_shift(KC_O, is_pressed); }
-        case MOD_H: { return if_held_170_add_shift(KC_H, is_pressed); }
-        case MOD_J: { return if_held_170_add_shift(KC_J, is_pressed); }
-        case MOD_L: { return if_held_170_add_shift(KC_L, is_pressed); }
-        case MOD_N: { return if_held_170_add_shift(KC_N, is_pressed); }
-        case MOD_M: { return if_held_170_add_shift(KC_M, is_pressed); }
-        case MOD_DOT: { return if_held_170_add_shift(KC_DOT, is_pressed); }
-        case MOD_BSLS: { return if_held_170_add_shift(KC_BSLS, is_pressed); }
+        case MOD_Y: { return if_held_180_add_shift(KC_Y, is_pressed); }
+        case MOD_U: { return if_held_180_add_shift(KC_U, is_pressed); }
+        case MOD_I: { return if_held_180_add_shift(KC_I, is_pressed); }
+        case MOD_O: { return if_held_180_add_shift(KC_O, is_pressed); }
+        case MOD_H: { return if_held_180_add_shift(KC_H, is_pressed); }
+        case MOD_J: { return if_held_180_add_shift(KC_J, is_pressed); }
+        case MOD_L: { return if_held_180_add_shift(KC_L, is_pressed); }
+        case MOD_N: { return if_held_180_add_shift(KC_N, is_pressed); }
+        case MOD_M: { return if_held_180_add_shift(KC_M, is_pressed); }
+        case MOD_DOT: { return if_held_180_add_shift(KC_DOT, is_pressed); }
+        case MOD_BSLS: { return if_held_180_add_shift(KC_BSLS, is_pressed); }
 
-        case MOD_LEFT: { return if_held_add_mods(KC_LEFT, os_specific_key(KC_LCTL, KC_LALT), KC_LSFT, is_pressed, 170); }
-        case MOD_RIGHT: { return if_held_add_mods(KC_RGHT, os_specific_key(KC_LCTL, KC_LALT), KC_LSFT, is_pressed, 170); }
-        case MOD_UP: { return if_held_add_mods(KC_UP, os_specific_key(KC_LCTL, KC_LALT), KC_LSFT, is_pressed, 170); }
-        case MOD_DOWN: { return if_held_add_mods(KC_DOWN, os_specific_key(KC_LCTL, KC_LALT), KC_LSFT, is_pressed, 170); }
+        case MOD_LEFT: { return if_held_add_mods(KC_LEFT, os_specific_key(KC_LCTL, KC_LALT), KC_LSFT, is_pressed, 180); }
+        case MOD_RIGHT: { return if_held_add_mods(KC_RGHT, os_specific_key(KC_LCTL, KC_LALT), KC_LSFT, is_pressed, 180); }
+        case MOD_UP: { return if_held_add_mods(KC_UP, os_specific_key(KC_LCTL, KC_LALT), KC_LSFT, is_pressed, 180); }
+        case MOD_DOWN: { return if_held_add_mods(KC_DOWN, os_specific_key(KC_LCTL, KC_LALT), KC_LSFT, is_pressed, 180); }
 
-        case KC_1: { return if_held_170_replace(KC_1, KC_1, KC_NO, is_pressed); } // disable key repeat
-        case KC_2: { return if_held_170_replace(KC_2, KC_9, KC_LSFT, is_pressed); }
-        case KC_3: { return if_held_170_replace(KC_3, KC_MINS, KC_LSFT, is_pressed); }
-        case KC_4: { return if_held_170_replace(KC_4, KC_0, KC_LSFT, is_pressed); }
-        case KC_5: { return if_held_170_replace(KC_5, KC_EQL, KC_NO, is_pressed); }
-        case KC_6: { return if_held_170_replace(KC_6, KC_EQL, KC_LSFT, is_pressed); }
-        case KC_7: { return if_held_170_replace(KC_7, KC_1, KC_LSFT, is_pressed); }
-        case KC_8: { return if_held_170_replace(KC_8, KC_MINS, KC_NO, is_pressed); }
-        case KC_9: { return if_held_170_replace(KC_9, KC_SLSH, KC_LSFT, is_pressed); }
-        case KC_0: { return if_held_170_replace(KC_0, KC_0, KC_NO, is_pressed); } // disable key repeat
+        case KC_1: { return if_held_180_replace(KC_1, KC_1, KC_NO, is_pressed); } // disable key repeat
+        case KC_2: { return if_held_180_replace(KC_2, KC_9, KC_LSFT, is_pressed); }
+        case KC_3: { return if_held_180_replace(KC_3, KC_MINS, KC_LSFT, is_pressed); }
+        case KC_4: { return if_held_180_replace(KC_4, KC_0, KC_LSFT, is_pressed); }
+        case KC_5: { return if_held_180_replace(KC_5, KC_EQL, KC_NO, is_pressed); }
+        case KC_6: { return if_held_180_replace(KC_6, KC_EQL, KC_LSFT, is_pressed); }
+        case KC_7: { return if_held_180_replace(KC_7, KC_1, KC_LSFT, is_pressed); }
+        case KC_8: { return if_held_180_replace(KC_8, KC_MINS, KC_NO, is_pressed); }
+        case KC_9: { return if_held_180_replace(KC_9, KC_SLSH, KC_LSFT, is_pressed); }
+        case KC_0: { return if_held_180_replace(KC_0, KC_0, KC_NO, is_pressed); } // disable key repeat
 
-        case KC_F1: { return if_held_170_add_shift(KC_F1, is_pressed); }
-        case KC_F2: { return if_held_170_add_shift(KC_F2, is_pressed); }
-        case KC_F3: { return if_held_170_add_shift(KC_F3, is_pressed); }
-        case KC_F4: { return if_held_170_add_shift(KC_F4, is_pressed); }
-        case KC_F5: { return if_held_170_add_shift(KC_F5, is_pressed); }
-        case KC_F6: { return if_held_170_add_shift(KC_F6, is_pressed); }
-        case KC_F7: { return if_held_170_add_shift(KC_F7, is_pressed); }
-        case KC_F8: { return if_held_170_add_shift(KC_F8, is_pressed); }
-        case KC_F9: { return if_held_170_add_shift(KC_F9, is_pressed); }
-        case KC_F10: { return if_held_170_add_shift(KC_F10, is_pressed); }
-        case KC_F11: { return if_held_170_add_shift(KC_F11, is_pressed); }
-        case KC_F12: { return if_held_170_add_shift(KC_F12, is_pressed); }
-        case KC_F13: { return if_held_170_add_shift(KC_F13, is_pressed); }
-        case KC_F14: { return if_held_170_add_shift(KC_F14, is_pressed); }
-        case KC_F16: { return if_held_170_add_shift(KC_F16, is_pressed); }
+        case KC_F1: { return if_held_180_add_shift(KC_F1, is_pressed); }
+        case KC_F2: { return if_held_180_add_shift(KC_F2, is_pressed); }
+        case KC_F3: { return if_held_180_add_shift(KC_F3, is_pressed); }
+        case KC_F4: { return if_held_180_add_shift(KC_F4, is_pressed); }
+        case KC_F5: { return if_held_180_add_shift(KC_F5, is_pressed); }
+        case KC_F6: { return if_held_180_add_shift(KC_F6, is_pressed); }
+        case KC_F7: { return if_held_180_add_shift(KC_F7, is_pressed); }
+        case KC_F8: { return if_held_180_add_shift(KC_F8, is_pressed); }
+        case KC_F9: { return if_held_180_add_shift(KC_F9, is_pressed); }
+        case KC_F10: { return if_held_180_add_shift(KC_F10, is_pressed); }
+        case KC_F11: { return if_held_180_add_shift(KC_F11, is_pressed); }
+        case KC_F12: { return if_held_180_add_shift(KC_F12, is_pressed); }
+        case KC_F13: { return if_held_180_add_shift(KC_F13, is_pressed); }
+        case KC_F14: { return if_held_180_add_shift(KC_F14, is_pressed); }
+        case KC_F16: { return if_held_180_add_shift(KC_F16, is_pressed); }
 
         default: {
           return true;
