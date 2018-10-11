@@ -46,16 +46,54 @@ enum kinesis_keycodes {
 };
 
 enum holding_keycodes {
-  MOD_ESC = SAFE_RANGE, MOD_W, MOD_E, MOD_R, MOD_T, MOD_S, MOD_D, MOD_F, MOD_G, MOD_X, MOD_C, MOD_V, MOD_B, MOD_LBRC, MOD_COMMA, MOD_RBRC,
+   MOD_ESC = SAFE_RANGE,
+   MOD_W,
+   MOD_E,
+   MOD_R,
+   MOD_T,
+   MOD_S,
+   MOD_D,
+   MOD_F,
+   MOD_G,
+   MOD_X,
+   MOD_C,
+   MOD_V,
+   MOD_B,
+   MOD_LBRC,
+   MOD_COMMA,
+   MOD_RBRC,
 
-  MOD_SPACE, MOD_Y, MOD_U, MOD_I, MOD_O, MOD_H, MOD_J, MOD_K, MOD_L, MOD_N, MOD_M, MOD_UP, MOD_DOT, MOD_LEFT, MOD_DOWN, MOD_RIGHT, MOD_BSLS,
+   MOD_SPACE,
+   MOD_Y,
+   MOD_U,
+   MOD_I,
+   MOD_O,
+   MOD_H,
+   MOD_J,
+   MOD_K,
+   MOD_L,
+   MOD_N,
+   MOD_M,
+   MOD_UP,
+   MOD_DOT,
+   MOD_LEFT,
+   MOD_DOWN,
+   MOD_RIGHT,
+   MOD_BSLS,
 
-  MOD_ENTER, MOD_TAB,
+  MOD_ENTER,
+  MOD_TAB,
 
   K_CAPS,
 
   // mac-specific overrides
-  CTRL_TAB, CTRL_COMMA, CTRL_DOT, CTRL_H, CTRL_M, CMD_M, ALT_BSPC,
+  CTRL_TAB,
+  CTRL_COMMA,
+  CTRL_DOT,
+  CTRL_H,
+  CTRL_M,
+  CMD_M,
+  ALT_BSPC,
 
   // LWin + key overrides
   W_F9, W_F10, W_F11, W_F12, W_6, W_7, W_8, W_9, W_0, W_Y, W_U, W_I, W_O, W_P, W_H, W_J, W_K, W_L, W_SCLN, W_N, W_M, W_DOT, W_QUOT,
@@ -65,7 +103,25 @@ enum holding_keycodes {
 };
 #include "dynamic_macro.h"
 
-enum macros { MAIL = 0, CLOSE_APP, POS_LEFT, POS_RIGHT, POS_MINIMIZE, POS_FULL, SLEEP, SHUTDOWN_WIN, DEL_WORD_WIN, DIR_UP, TERMINAL_CLEAR, DOCKER_LIST, DOCKER_LOGS, VIM_SAVE_QUIT, VIM_QUIT };
+enum macros {
+  MAIL = 0,
+  CLOSE_APP,
+  NEXT_APP,
+  PREV_APP,
+  POS_LEFT,
+  POS_RIGHT,
+  POS_MINIMIZE,
+  POS_FULL,
+  SLEEP,
+  SHUTDOWN_WIN,
+  DEL_WORD_WIN,
+  DIR_UP,
+  TERMINAL_CLEAR,
+  DOCKER_LIST,
+  DOCKER_LOGS,
+  VIM_SAVE_QUIT,
+  VIM_QUIT
+};
 
 // HELPER FUNCTIONS
 // switch mac <-> win
@@ -405,9 +461,9 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
     bool is_pressed = record->event.pressed;
         switch(id) {
 
-           case POS_LEFT: { if (is_pressed) { window_positioning(KC_M, KC_LEFT); return false; } }
-           case POS_RIGHT: { if (is_pressed) { window_positioning(KC_DOT, KC_RGHT); return false; } }
-           case POS_FULL: { if (is_pressed) { window_positioning(KC_F1, KC_UP); return false; } }
+           case POS_LEFT: { if (is_pressed) { window_positioning(KC_U, KC_LEFT); return false; } }
+           case POS_RIGHT: { if (is_pressed) { window_positioning(KC_O, KC_RGHT); return false; } }
+           case POS_FULL: { if (is_pressed) { window_positioning(KC_I, KC_UP); return false; } }
            case POS_MINIMIZE: {
              if (is_pressed) {
                 remove_MEH();
@@ -427,6 +483,22 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
            case VIM_QUIT: { if (is_pressed) { remove_MEH(); key_code(KC_ESC); _delay_ms(100); SEND_STRING(":q!"); key_code(KC_ENTER); add_MEH(); return false; } }
 
            case MAIL: { if (is_pressed) { SEND_STRING("oleksii.danilov@gmail.com"); return false; } }
+
+           case NEXT_APP: {
+                if (is_pressed) {
+                   if (isMac) { remove_MEH(); with_1_mod(KC_TAB, KC_LGUI); add_MEH(); }
+                   else if (isWin) { up(KC_LSFT); up(KC_LCTL); key_code(KC_TAB); down(KC_LCTL); down(KC_LSFT); }
+                   return false;
+                }
+           }
+
+           case PREV_APP: {
+                if (is_pressed) {
+                   if (isMac) { up(KC_LALT); up(KC_LCTL); with_1_mod(KC_TAB, KC_LGUI); down(KC_LCTL); down(KC_LALT); }
+                   else if (isWin) { up(KC_LCTL); key_code(KC_TAB); down(KC_LCTL); }
+                   return false;
+                }
+           }
 
            case CLOSE_APP: {
                 if (is_pressed) {
@@ -798,14 +870,14 @@ __________,  __________,  __________,  __________,  __________,  SET_LAYER_MAC, 
                       __________, __________,  __________,
                                      MEH_F14,
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
-         __________,  M(VIM_SAVE_QUIT),  __________,  M(VIM_QUIT),  __________,  __________,
-         __________,  __________,  M(DIR_UP),  M(TERMINAL_CLEAR),  __________,  __________,
-         __________,  __________,  M(CLOSE_APP),  __________,  __________,  __________,
-         __________,  M(POS_LEFT),  KC_PGUP,  M(POS_RIGHT),  __________,  __________,
+         __________,  __________,  __________,  __________,  __________,  __________,
+         __________,  M(POS_RIGHT), M(POS_FULL),  M(POS_LEFT),  __________,  __________,
+         __________,  M(PREV_APP),  M(CLOSE_APP),  M(NEXT_APP),  __________,  __________,
+         __________,  M(TERMINAL_CLEAR),  KC_PGUP,  M(DIR_UP),  __________,  __________,
                                 KC_HOME,  KC_PGDN, KC_END, __________,
-         __________,  __________,
+         __________,  M(VIM_QUIT),
          M(DOCKER_LIST),
-         M(DOCKER_LOGS),  M(POS_FULL),  M(POS_MINIMIZE),
+         M(DOCKER_LOGS),  M(VIM_SAVE_QUIT),  M(POS_MINIMIZE),
                                   KC_F15
     ),
 };
