@@ -854,7 +854,7 @@ __________,  __________,  __________,  __________,  __________,  SET_LAYER_MAC, 
                    __________, VOL_DOWN, MUTE, VOL_UP,
                                  KC_BSPC, __________,
                                      KC_SLSH,
-                    KC_0, KC_1, KC_DEL,
+                    KC_F1, KC_F2, KC_DEL,
                                 KC_F14,
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
          __________,  __________,  __________,  __________,  __________,  __________,
@@ -1129,7 +1129,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case MOD_UP: { return if_held_add_mods(KC_UP, os_specific_key(KC_LCTL, KC_LALT), KC_LSFT, is_pressed, 180); }
         case MOD_DOWN: { return if_held_add_mods(KC_DOWN, os_specific_key(KC_LCTL, KC_LALT), KC_LSFT, is_pressed, 180); }
 
-        case KC_1: { return if_held_180_replace(KC_1, KC_1, KC_LALT, is_pressed); }
+        case KC_1: { return if_held_180_replace(KC_1, KC_1, os_specific_key(KC_LGUI, KC_LCTL), is_pressed); }
         case KC_2: { return if_held_180_replace(KC_2, KC_9, KC_LSFT, is_pressed); }
         case KC_3: { return if_held_180_replace(KC_3, KC_MINS, KC_LSFT, is_pressed); }
         case KC_4: { return if_held_180_replace(KC_4, KC_0, KC_LSFT, is_pressed); }
