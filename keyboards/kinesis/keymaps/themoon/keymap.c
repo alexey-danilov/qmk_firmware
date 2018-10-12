@@ -611,7 +611,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________,   __________, __________,
          __________,  __________,  __________,  __________,  __________,  __________,
-                   __________,  KC_F1,  __________,  KC_F2,
+                   __________,  __________,  __________,  __________,
                              __________,  __________,
                                        __________,
                     CMD_ESC, __________,  __________,
@@ -734,7 +734,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________,   __________, __________,
          __________,  __________,  __________,  __________,  __________,  __________,
-                   __________,  KC_F1,  HYPR(KC_COMM),  KC_F2,
+                   __________,  __________,  HYPR(KC_COMM),  __________,
                              __________,  __________,
                                        __________,
                     CTRL_ESC, __________,  __________,
@@ -1129,7 +1129,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case MOD_UP: { return if_held_add_mods(KC_UP, os_specific_key(KC_LCTL, KC_LALT), KC_LSFT, is_pressed, 180); }
         case MOD_DOWN: { return if_held_add_mods(KC_DOWN, os_specific_key(KC_LCTL, KC_LALT), KC_LSFT, is_pressed, 180); }
 
-        case KC_1: { return if_held_180_replace(KC_1, KC_1, KC_NO, is_pressed); } // disable key repeat
+        case KC_1: { return if_held_180_replace(KC_1, KC_1, KC_LALT, is_pressed); }
         case KC_2: { return if_held_180_replace(KC_2, KC_9, KC_LSFT, is_pressed); }
         case KC_3: { return if_held_180_replace(KC_3, KC_MINS, KC_LSFT, is_pressed); }
         case KC_4: { return if_held_180_replace(KC_4, KC_0, KC_LSFT, is_pressed); }
