@@ -1113,8 +1113,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
         // ESCAPE AS LEADER KEY
         // ctrl home/end
-        case KC_LEFT: { return following_custom_leader_key(KC_HOME, KC_NO, KC_NO, KC_NO, &esc_timer, is_pressed, 220); }
-        case KC_RGHT: { return following_custom_leader_key(KC_END, KC_NO, KC_NO, KC_NO, &esc_timer, is_pressed, 220); }
+        case KC_LEFT: { return following_custom_leader_key(KC_LEFT, KC_LSFT, os_specific_key(KC_LCTL, KC_LALT), KC_NO, &esc_timer, is_pressed, 250); }
+        case KC_RGHT: { return following_custom_leader_key(KC_RGHT, KC_LSFT, os_specific_key(KC_LCTL, KC_LALT), KC_NO, &esc_timer, is_pressed, 250); }
 
         // CUSTOM KEYCODES
         // mac-only overrides
