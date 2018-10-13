@@ -373,7 +373,7 @@ void k_finished (qk_tap_dance_state_t *state, void *user_data) {
     case SINGLE_TAP: down(KC_K); break;
     case SINGLE_HOLD: down(KC_LSFT); key_code(KC_K); break;
     default:
-      if (isMac) { down(KC_LALT); key_code(KC_SPC); break; }
+      if (isMac) { down(KC_LCTL); down(KC_LALT); key_code(KC_SPC); up(KC_LCTL); break; }
       else if (isWin) { down(KC_LGUI); key_code(KC_SPC); break; }
     }
   }
