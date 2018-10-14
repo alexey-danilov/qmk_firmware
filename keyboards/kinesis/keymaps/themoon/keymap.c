@@ -284,7 +284,7 @@ bool momentary_layer_tap(uint16_t tap_key, uint16_t tap_mod, uint16_t layer_mod1
       if (!*interrupted_flag) {
         up(layer_mod1); up(layer_mod2); up(layer_mod3); up(layer_mod4); // unregister mods associated with the layer, so that they don't intefere with the tap key
         with_1_mod(tap_key, tap_mod); // register tap key and its mod
-        down(layer_mod1); down(layer_mod2); down(layer_mod3); down(layer_mod4); // bring mods back
+        // down(layer_mod1); down(layer_mod2); down(layer_mod3); down(layer_mod4); // bring mods back
         return true;
       }
     }
