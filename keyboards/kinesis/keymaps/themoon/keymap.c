@@ -42,7 +42,12 @@ enum kinesis_keycodes {
   HYPR_F14 = MO(_PALM_L),
   HYPR_F15 = MO(_PALM_R),
   ALT_BSLASH = MT(MOD_LALT, KC_BSLS),
+
   // media
+  PLAY_NEXT,
+  PLAY_PREV,
+  PLAY_PAUSE,
+
   VOL_UP,
   VOL_DOWN,
   MUTE
@@ -806,9 +811,9 @@ __________,  __________,  __________,  __________,  __________,  SET_LAYER_MAC, 
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
                    __________, VOL_DOWN, MUTE, VOL_UP,
-                                 KC_F1, __________,
-                                     KC_F2,
-                    KC_0, KC_1, KC_DEL,
+                                 KC_0, __________,
+                                     KC_1,
+                    PLAY_PAUSE, PLAY_NEXT, PLAY_PREV,
                                 KC_F14,
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
          __________,  __________,  __________,  __________,  __________,  __________,
@@ -1037,6 +1042,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case VOL_UP: { return repeat_without_hypr(os_specific_key(KC__VOLUP, KC_VOLU), is_pressed); }
         case VOL_DOWN: { return repeat_without_hypr(os_specific_key(KC__VOLDOWN, KC_VOLD), is_pressed); }
         case MUTE: { return press_without_hypr(os_specific_key(KC__MUTE, KC_MUTE), is_pressed); }
+
+        case PLAY_PAUSE: { return press_without_hypr(KC_MPLY, is_pressed); }
+        case PLAY_NEXT: { return press_without_hypr(os_specific_key(KC_MFFD, KC_MNXT), is_pressed); }
+        case PLAY_PREV: { return press_without_hypr(os_specific_key(KC_MRWD, KC_MPRV), is_pressed); }
 
         // ESCAPE AS LEADER KEY
         // ctrl home/end
