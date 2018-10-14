@@ -394,9 +394,9 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
     bool is_pressed = record->event.pressed;
         switch(id) {
 
-           case POS_LEFT: { if (is_pressed) { window_positioning(KC_7, KC_LEFT); return false; } }
-           case POS_RIGHT: { if (is_pressed) { window_positioning(KC_9, KC_RGHT); return false; } }
-           case POS_FULL: { if (is_pressed) { window_positioning(KC_8, KC_UP); return false; } }
+           case POS_LEFT: { if (is_pressed) { window_positioning(KC_J, KC_LEFT); return false; } }
+           case POS_RIGHT: { if (is_pressed) { window_positioning(KC_L, KC_RGHT); return false; } }
+           case POS_FULL: { if (is_pressed) { window_positioning(KC_I, KC_UP); return false; } }
            case POS_MINIMIZE: {
              if (is_pressed) {
                 remove_meh();
@@ -834,8 +834,8 @@ __________,  __________,  __________,  __________,  __________,  SET_LAYER_MAC, 
                       __________, __________,  __________,
                                      HYPR_F14,
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
-         __________,  M(POS_LEFT),  M(POS_FULL),  M(POS_RIGHT),  __________,  __________,
-         __________,  __________, __________,  __________,  __________,  __________,
+         __________,  __________,  __________,  __________,  __________,  __________,
+         __________,  M(POS_LEFT), M(POS_FULL),  M(POS_RIGHT),  __________,  __________,
          __________,  M(PREV_APP),  M(CLOSE_APP),  M(NEXT_APP),  __________,  __________,
          __________,  M(TERMINAL_CLEAR),  KC_PGUP,  M(DIR_UP),  __________,  __________,
                                 KC_HOME,  KC_PGDN, KC_END, __________,
