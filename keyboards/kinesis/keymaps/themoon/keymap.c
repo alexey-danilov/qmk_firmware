@@ -39,8 +39,8 @@ enum kinesis_keycodes {
   ALT_WIN = MO(_ALT_WIN),
   CTRL_ALT_DEL = MO(_CTRL_ALT_DEL),
   // common
-  MEH_F14 = MO(_PALM_L),
-  MEH_F15 = MO(_PALM_R),
+  HYPR_F14 = MO(_PALM_L),
+  HYPR_F15 = MO(_PALM_R),
   ALT_BSLASH = MT(MOD_LALT, KC_BSLS),
   // media
   VOL_UP,
@@ -49,57 +49,31 @@ enum kinesis_keycodes {
 };
 
 enum holding_keycodes {
-   MOD_ESC = SAFE_RANGE,
-   MOD_W,
-   MOD_E,
-   MOD_R,
-   MOD_T,
-   MOD_S,
-   MOD_D,
-   MOD_F,
-   MOD_G,
-   MOD_X,
-   MOD_C,
-   MOD_V,
-   MOD_B,
-   MOD_LBRC,
-   MOD_COMMA,
-   MOD_RBRC,
+  MOD_W = SAFE_RANGE, MOD_E, MOD_R, MOD_T,
+  MOD_S, MOD_D, MOD_F, MOD_G,
+  MOD_X, MOD_C, MOD_V, MOD_B,
+  MOD_LBRC, MOD_COMMA, MOD_RBRC,
+  MOD_ESC,
+  MOD_ENTER,
+  MOD_Y, MOD_U, MOD_I, MOD_O, MOD_H,
+  MOD_J, K_CAPS, MOD_L,
+  MOD_N, MOD_M, MOD_UP, MOD_DOT,
+  MOD_LEFT, MOD_DOWN, MOD_RIGHT,
+  MOD_DELETE,
+  MOD_BSLS,
+  MOD_TAB,
+  MOD_SPACE,
+  // mac-specific overrides
+  CTRL_COMMA,
 
-   MOD_SPACE,
-   MOD_Y,
-   MOD_U,
-   MOD_I,
-   MOD_O,
-   MOD_H,
-   MOD_J,
-   MOD_K,
-   MOD_L,
-   MOD_N,
-   MOD_M,
-   MOD_UP,
-   MOD_DOT,
-   MOD_LEFT,
-   MOD_DOWN,
-   MOD_RIGHT,
-   MOD_BSLS,
-
-   MOD_ENTER,
-   MOD_TAB,
-   MOD_DELETE,
-
-   K_CAPS,
-
-   // mac-specific overrides
-   CTRL_TAB,
-   CTRL_COMMA,
-   CTRL_DOT,
-   CTRL_H,
-   CTRL_M,
-   CMD_M,
-
+  CTRL_H, CTRL_M, CTRL_DOT,
+  CTRL_TAB,
   // LWin + key overrides
-  W_F9, W_F10, W_F11, W_F12, W_6, W_7, W_8, W_9, W_0, W_Y, W_U, W_I, W_O, W_P, W_H, W_J, W_K, W_L, W_SCLN, W_N, W_M, W_DOT, W_QUOT,
+  W_F9, W_F10, W_F11, W_F12,
+  W_6, W_7, W_8, W_9, W_0,
+  W_Y, W_U, W_I, W_O, W_P,
+  W_H, W_J, W_K, W_L, W_SCLN,
+  W_N, W_M, W_DOT, W_QUOT,
 
   // required for dynamic macros
   DYNAMIC_MACRO_RANGE
@@ -146,7 +120,6 @@ uint16_t os_specific_key(uint16_t mac_key, uint16_t win_key) {
 
 void down(uint16_t key) { register_code(key); }
 void up(uint16_t key) { unregister_code(key); }
-
 void key_code(uint16_t key) { down(key); up(key); }
 
 void with_1_mod(uint16_t key, uint16_t mod1) {
@@ -156,30 +129,41 @@ void with_1_mod(uint16_t key, uint16_t mod1) {
 }
 void with_2_mods(uint16_t key, uint16_t mod1, uint16_t mod2) {
   uint8_t old_mods = get_mods();
-  down(mod2); down(mod1); key_code(key); up(mod1); up(mod2);
+  down(mod2); down(mod1);
+  key_code(key);
+  up(mod1); up(mod2);
   if (old_mods) { register_mods(old_mods); }
 }
 void with_3_mods(uint16_t key, uint16_t mod1, uint16_t mod2, uint16_t mod3) {
   uint8_t old_mods = get_mods();
-  down(mod3); down(mod2); down(mod1); key_code(key); up(mod1); up(mod2); up(mod3);
+  down(mod3); down(mod2); down(mod1);
+  key_code(key);
+  up(mod1); up(mod2); up(mod3);
   if (old_mods) { register_mods(old_mods); }
 }
 
-bool is_not_held(uint16_t hold_timer, uint16_t hold_duration) { return timer_elapsed(hold_timer) < hold_duration; }
+void remove_mods(uint16_t mod1, uint16_t mod2, uint16_t mod3, uint16_t mod4) { up(mod1); up(mod2); up(mod3); up(mod4); }
+void insert_mods(uint16_t mod1, uint16_t mod2, uint16_t mod3, uint16_t mod4) { down(mod1); down(mod2); down(mod3); down(mod4); }
+void remove_meh(void) { return remove_mods(KC_LCTL, KC_LALT, KC_LSFT, KC_NO); }
+void add_meh(void) { return insert_mods(KC_LCTL, KC_LALT, KC_LSFT, KC_NO); }
+void remove_hypr(void) { up(KC_LGUI); remove_meh(); }
+void add_hypr(void) { down(KC_LGUI); add_meh(); }
+
+bool is_not_held(uint16_t hold_timer, uint16_t hold_duration) {
+ return timer_elapsed(hold_timer) < hold_duration;
+}
 
 // replaces mods of keycode, adds additional mods if it was held for at least provided duration
 bool replace_key_and_mods_if_held_replace_key_and_mods(uint16_t code, uint16_t mod1_to_be_replaced, uint16_t mod2_to_be_replaced, uint16_t replacement_mod1, uint16_t replacement_mod2, uint16_t held_code, uint16_t held_mod1, uint16_t held_mod2, bool pressed, uint8_t hold_duration) {
   static uint16_t hold_timer;
   if(pressed) {
       hold_timer= timer_read();
-
   } else {
       up(mod1_to_be_replaced);
       up(mod2_to_be_replaced);
 
       if (is_not_held(hold_timer, hold_duration)){
           with_2_mods(code, replacement_mod1, replacement_mod2);
-
       } else {
           with_2_mods(held_code, held_mod1, held_mod2);
       }
@@ -190,7 +174,7 @@ bool replace_key_and_mods_if_held_replace_key_and_mods(uint16_t code, uint16_t m
   return false;
 }
 
-// replaced command, if held adds shift to keycode
+// replaces command, if held - adds shift to keycode
 bool replace_cmd_if_held_add_cmd_shift(uint16_t code, uint16_t replacement_mod, bool pressed, uint8_t hold_duration) {
   return replace_key_and_mods_if_held_replace_key_and_mods(code, KC_LGUI, KC_NO, replacement_mod, KC_NO, code, KC_LGUI, KC_LSFT, pressed, hold_duration);
 }
@@ -259,20 +243,15 @@ bool if_held_180_replace(uint16_t code, uint16_t held_code, uint16_t held_mod, b
   return replace_if_held_add_mods(code, KC_NO, held_code, held_mod, KC_NO, pressed, 180);
 }
 
-void remove_mods(uint16_t mod1, uint16_t mod2, uint16_t mod3, uint16_t mod4) { up(mod1); up(mod2); up(mod3); up(mod4); }
-void insert_mods(uint16_t mod1, uint16_t mod2, uint16_t mod3, uint16_t mod4) { down(mod1); down(mod2); down(mod3); down(mod4); }
-void remove_MEH(void) { return remove_mods(KC_LCTL, KC_LALT, KC_LSFT, KC_NO); }
-void add_MEH(void) { return insert_mods(KC_LCTL, KC_LALT, KC_LSFT, KC_NO); }
-
-void without_MEH(uint16_t code) {
-  remove_MEH();
+void without_hypr(uint16_t code) {
+  remove_hypr();
   key_code(code);
-  add_MEH();
+  add_hypr();
 }
 
-bool press_without_MEH(uint16_t code, bool pressed) {
+bool press_without_hypr(uint16_t code, bool pressed) {
    if (pressed) {
-       without_MEH(code);
+       without_hypr(code);
        return true;
    }
   return false;
@@ -282,8 +261,8 @@ bool press_without_MEH(uint16_t code, bool pressed) {
 static uint16_t palm_repeat_code;
 static uint16_t palm_repeat_timer;
 static uint8_t first_repeat_delay;
-bool repeat_without_meh(uint16_t code, bool pressed) {
-   if (press_without_MEH(code, pressed)) {
+bool repeat_without_hypr(uint16_t code, bool pressed) {
+   if (press_without_hypr(code, pressed)) {
      palm_repeat_code = code;
      palm_repeat_timer = timer_read();
      first_repeat_delay = 250;
@@ -331,7 +310,6 @@ enum {
   K_TD = 2
 };
 
-
 enum {
   SINGLE_TAP = 1,
   SINGLE_HOLD = 2,
@@ -340,32 +318,20 @@ enum {
   DOUBLE_SINGLE_TAP = 5
 };
 
-typedef struct {
-  bool is_press_action;
-  int state;
-} tap;
+typedef struct { bool is_press_action; int state; } tap;
 
 int cur_dance (qk_tap_dance_state_t *state) {
-  if (state->count == 1) {
-    //If count = 1, and it has been interrupted - it doesn't matter if it is pressed or not: Send SINGLE_TAP
-    if (state->interrupted || state->pressed==0) return SINGLE_TAP;
-    else return SINGLE_HOLD;
-  }
-  //If count = 2, and it has been interrupted - assume that user is trying to type the letter associated
-  //with single tap. In example below, that means to send `xx` instead of `Escape`.
+  if (state->count == 1) { if (state->interrupted || state->pressed==0) return SINGLE_TAP; else return SINGLE_HOLD; }
   else if (state->count == 2) {
     if (state->interrupted) return DOUBLE_SINGLE_TAP;
     else if (state->pressed) return DOUBLE_HOLD;
     else return DOUBLE_TAP;
   }
-  else return 6; //magic number. At some point this method will expand to work for more presses
+  else return 6;
 }
 
 //**************** K TAP *********************//
-static tap k_tap_state = {
-  .is_press_action = true,
-  .state = 0
-};
+static tap k_tap_state = { .is_press_action = true, .state = 0 };
 
 void k_finished (qk_tap_dance_state_t *state, void *user_data) {
   k_tap_state.state = cur_dance(state);
@@ -390,61 +356,25 @@ void k_reset (qk_tap_dance_state_t *state, void *user_data) {
 }
 
 // dynamic macro1
-// Whether the macro 1 is currently being recorded.
 static bool is_macro1_recording = false;
-
-// The current set of active layers (as a bitmask).
-// There is a global 'layer_state' variable but it is set after the call
-// to layer_state_set_user().
 static uint32_t current_layer_state = 0;
 uint32_t layer_state_set_user(uint32_t state);
-
-// Method called at the end of the tap dance on the TAP_MACRO1 key. That key is
-// used to start recording a macro (double tap or more), to stop recording (any
-// number of tap), or to play the recorded macro (1 tap).
 void macro1_tapdance_fn(qk_tap_dance_state_t *state, void *user_data) {
-  uint16_t keycode;
-  keyrecord_t record;
-  if (is_macro1_recording) {
-    keycode = DYN_REC_STOP;
-    is_macro1_recording = false;
-    layer_state_set_user(current_layer_state);
-  } else if (state->count == 1) {
-    keycode = DYN_MACRO_PLAY1;
-  } else {
-    keycode = DYN_REC_START1;
-    is_macro1_recording = true;
-    layer_state_set_user(current_layer_state);
-  }
-
-  record.event.pressed = true;
-  process_record_dynamic_macro(keycode, &record);
-  record.event.pressed = false;
-  process_record_dynamic_macro(keycode, &record);
+  uint16_t keycode; keyrecord_t record;
+  if (is_macro1_recording) { keycode = DYN_REC_STOP; is_macro1_recording = false; layer_state_set_user(current_layer_state); }
+  else if (state->count == 1) { keycode = DYN_MACRO_PLAY1; }
+  else { keycode = DYN_REC_START1; is_macro1_recording = true; layer_state_set_user(current_layer_state); }
+  record.event.pressed = true; process_record_dynamic_macro(keycode, &record); record.event.pressed = false; process_record_dynamic_macro(keycode, &record);
 }
 
 // dynamic macro 2
 static bool is_macro2_recording = false;
-
 void macro2_tapdance_fn(qk_tap_dance_state_t *state, void *user_data) {
-  uint16_t keycode;
-  keyrecord_t record;
-  if (is_macro2_recording) {
-    keycode = DYN_REC_STOP;
-    is_macro2_recording = false;
-    layer_state_set_user(current_layer_state);
-  } else if (state->count == 1) {
-    keycode = DYN_MACRO_PLAY2;
-  } else {
-    keycode = DYN_REC_START2;
-    is_macro2_recording = true;
-    layer_state_set_user(current_layer_state);
-  }
-
-  record.event.pressed = true;
-  process_record_dynamic_macro(keycode, &record);
-  record.event.pressed = false;
-  process_record_dynamic_macro(keycode, &record);
+  uint16_t keycode; keyrecord_t record;
+  if (is_macro2_recording) { keycode = DYN_REC_STOP; is_macro2_recording = false; layer_state_set_user(current_layer_state); }
+  else if (state->count == 1) { keycode = DYN_MACRO_PLAY2; }
+  else { keycode = DYN_REC_START2; is_macro2_recording = true; layer_state_set_user(current_layer_state); }
+  record.event.pressed = true; process_record_dynamic_macro(keycode, &record); record.event.pressed = false; process_record_dynamic_macro(keycode, &record);
 }
 
 // all tap macros
@@ -458,21 +388,21 @@ qk_tap_dance_action_t tap_dance_actions[] = {
 // NON-TAP MACROS
 void window_positioning(uint16_t mac_key, uint16_t win_key) {
   if (isMac) { key_code(mac_key); }
-  else if (isWin) { remove_MEH(); with_1_mod(win_key, KC_LGUI); add_MEH(); }
+  else if (isWin) { remove_meh(); key_code(win_key); add_meh(); }
 }
 const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
     bool is_pressed = record->event.pressed;
         switch(id) {
 
-           case POS_LEFT: { if (is_pressed) { window_positioning(KC_U, KC_LEFT); return false; } }
-           case POS_RIGHT: { if (is_pressed) { window_positioning(KC_O, KC_RGHT); return false; } }
-           case POS_FULL: { if (is_pressed) { window_positioning(KC_I, KC_UP); return false; } }
+           case POS_LEFT: { if (is_pressed) { window_positioning(KC_7, KC_LEFT); return false; } }
+           case POS_RIGHT: { if (is_pressed) { window_positioning(KC_9, KC_RGHT); return false; } }
+           case POS_FULL: { if (is_pressed) { window_positioning(KC_8, KC_UP); return false; } }
            case POS_MINIMIZE: {
              if (is_pressed) {
-                remove_MEH();
-                if (isMac) { with_1_mod(KC_M, KC_LGUI); }
-                else if (isWin) { with_1_mod(KC_DOWN, KC_LGUI); }
-                add_MEH();
+                remove_meh();
+                if (isMac) { key_code(KC_M); }
+                else if (isWin) { key_code(KC_DOWN); }
+                add_meh();
                 return false;
              }
            }
@@ -487,52 +417,52 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
               return false;
            }}
 
-           case DIR_UP: { if (is_pressed) { remove_MEH(); SEND_STRING("cd .. && ls"); key_code(KC_ENTER); add_MEH(); return false; } }
+           case DIR_UP: { if (is_pressed) { remove_hypr(); SEND_STRING("cd .. && ls"); key_code(KC_ENTER); add_hypr(); return false; } }
 
-           case DOCKER_LOGS: { if (is_pressed) { remove_MEH(); SEND_STRING("docker logs -f --tail=1000 $(docker ps -a -q | head -1)"); key_code(KC_ENTER); add_MEH(); return false; } }
-           case DOCKER_LIST: { if (is_pressed) { remove_MEH(); SEND_STRING("docker ps -a"); key_code(KC_ENTER); add_MEH(); return false; } }
+           case DOCKER_LOGS: { if (is_pressed) { remove_hypr(); SEND_STRING("docker logs -f --tail=1000 $(docker ps -a -q | head -1)"); key_code(KC_ENTER); add_hypr(); return false; } }
+           case DOCKER_LIST: { if (is_pressed) { remove_hypr(); SEND_STRING("docker ps -a"); key_code(KC_ENTER); add_hypr(); return false; } }
 
-           case VIM_SAVE_QUIT: { if (is_pressed) { remove_MEH(); key_code(KC_ESC); _delay_ms(100); SEND_STRING(":wq!"); key_code(KC_ENTER); add_MEH(); return false; } }
-           case VIM_QUIT: { if (is_pressed) { remove_MEH(); key_code(KC_ESC); _delay_ms(100); SEND_STRING(":q!"); key_code(KC_ENTER); add_MEH(); return false; } }
+           case VIM_SAVE_QUIT: { if (is_pressed) { remove_hypr(); key_code(KC_ESC); _delay_ms(100); SEND_STRING(":wq!"); key_code(KC_ENTER); add_hypr(); return false; } }
+           case VIM_QUIT: { if (is_pressed) { remove_hypr(); key_code(KC_ESC); _delay_ms(100); SEND_STRING(":q!"); key_code(KC_ENTER); add_hypr(); return false; } }
 
            case MAIL: { if (is_pressed) { SEND_STRING("oleksii.danilov@gmail.com"); return false; } }
 
            case NEXT_APP: {
                 if (is_pressed) {
-                   if (isMac) { key_code(KC_L); }
-                   else if (isWin) { up(KC_LSFT); up(KC_LCTL); key_code(KC_TAB); down(KC_LCTL); down(KC_LSFT); }
+                   if (isMac) { remove_meh(); key_code(KC_TAB); add_meh(); }
+                   else if (isWin) { remove_mods(KC_LGUI, KC_LSFT, KC_LCTL, KC_NO); key_code(KC_TAB); insert_mods(KC_LGUI, KC_LSFT, KC_LCTL, KC_NO); }
                    return false;
                 }
            }
 
            case PREV_APP: {
                 if (is_pressed) {
-                   if (isMac) { key_code(KC_J); }
-                   else if (isWin) { up(KC_LCTL); key_code(KC_TAB); down(KC_LCTL); }
+                   if (isMac) { remove_mods(KC_LALT, KC_LCTL, KC_NO, KC_NO); key_code(KC_TAB); insert_mods(KC_LALT, KC_LCTL, KC_NO, KC_NO); }
+                   else if (isWin) { remove_mods(KC_LGUI, KC_LCTL, KC_NO, KC_NO); key_code(KC_TAB); insert_mods(KC_LGUI, KC_LCTL, KC_NO, KC_NO); }
                    return false;
                 }
            }
 
            case CLOSE_APP: {
                 if (is_pressed) {
-                   remove_MEH();
-                   if (isMac) { with_1_mod(KC_Q, KC_LGUI); }
-                   else if (isWin) { down(KC_LALT); _delay_ms(100); key_code(KC_F4); up(KC_LALT); }
-                   add_MEH();
+                   remove_hypr();
+                   if (isMac) { remove_meh(); key_code(KC_Q); add_meh(); }
+                   else if (isWin) { remove_mods(KC_LGUI, KC_LCTL, KC_LSFT, KC_NO); key_code(KC_F4); insert_mods(KC_LGUI, KC_LCTL, KC_LSFT, KC_NO); }
+                   add_hypr();
                    return false;
                 }
            }
 
            case TERMINAL_CLEAR: {
                if (is_pressed) {
-                   remove_MEH();
+                   remove_hypr();
                    if (isMac) {
                      SEND_STRING("printf \'\\e]50;ClearScrollback\\a\'"); // works in iterm2
                    } else if (isWin) {
                      SEND_STRING("clear"); // works in conemu/msys64
                    }
                    key_code(KC_ENTER);
-                   add_MEH();
+                   add_hypr();
                    return false;
                }
            }
@@ -591,7 +521,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                    ALT_MAC,
                            CMD_ESC, KC_SFTENT, CTRL_CMD_BS,
                                      // left palm key
-			                         MEH_F14,
+			                         HYPR_F14,
     // right side
     KC_F9  ,KC_F10 ,KC_F11 ,KC_F12 ,KC_PSCR ,KC_SLCK  ,KC_PAUS, RESET, KC_POWER,
 	KC_6, KC_7, KC_8, KC_9, KC_0, __________,
@@ -604,7 +534,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
            ALT_BSLASH,
            CTRL_F16, SFT_T(KC_TAB), CMD_SPACE,
                                     // right palm key
-                                    MEH_F15
+                                    HYPR_F15
     ),
 
 // mac-specific layers
@@ -737,7 +667,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                    ALT_WIN,
                            CTRL_ESC, KC_SFTENT, CTRL_ALT_DEL,
                                      // left palm key
-			                         MEH_F14,
+			                         HYPR_F14,
     // right side
     KC_F9  ,KC_F10 ,KC_F11 ,KC_F12 ,KC_PSCR ,KC_SLCK  ,KC_PAUS, RESET, M(SHUTDOWN_WIN),
 	KC_6, KC_7, KC_8, KC_9, KC_0, __________,
@@ -750,7 +680,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
            ALT_BSLASH,
            KC_RGUI, SFT_T(KC_TAB), CTRL_SPACE,
                                     // right palm key
-                                    MEH_F15
+                                    HYPR_F15
     ),
 
 // win-specific layers
@@ -891,7 +821,7 @@ __________,  __________,  __________,  __________,  __________,  SET_LAYER_MAC, 
          __________,  __________,
          __________,
          __________,  __________,  __________,
-                             MEH_F15
+                             HYPR_F15
     ),
 
 [_PALM_L] = LAYOUT(
@@ -904,10 +834,10 @@ __________,  __________,  __________,  __________,  __________,  SET_LAYER_MAC, 
                              __________,  __________,
                                      __________,
                       __________, __________,  __________,
-                                     MEH_F14,
+                                     HYPR_F14,
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
-         __________,  __________,  __________,  __________,  __________,  __________,
-         __________,  M(POS_LEFT), M(POS_FULL),  M(POS_RIGHT),  __________,  __________,
+         __________,  M(POS_LEFT),  M(POS_FULL),  M(POS_RIGHT),  __________,  __________,
+         __________,  __________, __________,  __________,  __________,  __________,
          __________,  M(PREV_APP),  M(CLOSE_APP),  M(NEXT_APP),  __________,  __________,
          __________,  M(TERMINAL_CLEAR),  KC_PGUP,  M(DIR_UP),  __________,  __________,
                                 KC_HOME,  KC_PGDN, KC_END, __________,
@@ -922,7 +852,7 @@ __________,  __________,  __________,  __________,  __________,  SET_LAYER_MAC, 
 void matrix_scan_user(void) {
    if (palm_repeat_code) {
       if (timer_elapsed(palm_repeat_timer) > (10 + first_repeat_delay)) {
-         without_MEH(palm_repeat_code);
+         without_hypr(palm_repeat_code);
          palm_repeat_timer = timer_read();
          first_repeat_delay = 0;
       }
@@ -947,8 +877,8 @@ uint32_t layer_state_set_user(uint32_t state) {
     case _CTRL_ALT_DEL: down(KC_LCTL); down(KC_LALT); break;
 
     // common
-    case _PALM_L: down(KC_LSFT); down(KC_LALT); down(KC_LCTL); break;
-    case _PALM_R: down(KC_LSFT); down(KC_LALT); down(KC_LCTL); break;
+    case _PALM_L: down(KC_LGUI); down(KC_LSFT); down(KC_LALT); down(KC_LCTL); break;
+    case _PALM_R: down(KC_LGUI); down(KC_LSFT); down(KC_LALT); down(KC_LCTL); break;
 
     // unregister everything (even if it was not pressed - no big deal; this works faster than getting pressed mods)
     default: up(KC_LGUI); up(KC_LCTL); up(KC_LALT); up(KC_LSFT); break;
@@ -958,8 +888,8 @@ return state;
 
 // support for "mo layer tap" functionality
 bool cmd_esc_interrupted = true;
-bool meh_f14_interrupted = true;
-bool meh_f15_interrupted = true;
+bool hypr_f14_interrupted = true;
+bool hypr_f15_interrupted = true;
 bool alt_mac_interrupted = true;
 bool alt_win_interrupted = true;
 bool ctrl_cmd_bs_interrupted = true;
@@ -982,8 +912,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
     // support for "mo layer tap" functionality
     if (keycode != CMD_ESC) { cmd_esc_interrupted = true; }
-    if (keycode != MEH_F14) { meh_f14_interrupted = true; }
-    if (keycode != MEH_F15) { meh_f15_interrupted = true; }
+    if (keycode != HYPR_F14) { hypr_f14_interrupted = true; }
+    if (keycode != HYPR_F15) { hypr_f15_interrupted = true; }
     if (keycode != ALT_MAC) { alt_mac_interrupted = true; }
     if (keycode != ALT_WIN) { alt_win_interrupted = true; }
     if (keycode != CTRL_CMD_BS) { ctrl_cmd_bs_interrupted = true; }
@@ -1063,15 +993,15 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
 
         // common layers
-        case MEH_F14: {
-          static uint16_t meh_f14_layer_timer;
-          momentary_layer_tap(KC_F14, KC_NO, KC_LCTL, KC_LALT, KC_LSFT, KC_NO, &meh_f14_layer_timer, &meh_f14_interrupted, is_pressed, 300);
+        case HYPR_F14: {
+          static uint16_t hypr_f14_layer_timer;
+          momentary_layer_tap(KC_F14, KC_NO, KC_LCTL, KC_LALT, KC_LSFT, KC_LGUI, &hypr_f14_layer_timer, &hypr_f14_interrupted, is_pressed, 300);
           return true;
         }
 
-        case MEH_F15: {
-          static uint16_t meh_f15_layer_timer;
-          momentary_layer_tap(KC_F15, KC_NO, KC_LCTL, KC_LALT, KC_LSFT, KC_NO, &meh_f15_layer_timer, &meh_f15_interrupted, is_pressed, 300);
+        case HYPR_F15: {
+          static uint16_t hypr_f15_layer_timer;
+          momentary_layer_tap(KC_F15, KC_NO, KC_LCTL, KC_LALT, KC_LSFT, KC_LGUI, &hypr_f15_layer_timer, &hypr_f15_interrupted, is_pressed, 300);
           return true;
         }
 
@@ -1101,15 +1031,14 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case W_SCLN: { return replace_ctrl_alt_with_lgui(KC_SCLN, is_pressed); }
 
         // REPEATING KEYCODES
-        case KC_HOME: { return repeat_without_meh(KC_HOME, is_pressed); }
-        case KC_END: { return repeat_without_meh(KC_END, is_pressed); }
-        case KC_PGUP: { return repeat_without_meh(KC_PGUP, is_pressed); }
-        case KC_PGDN: { return repeat_without_meh(KC_PGDN, is_pressed); }
+        case KC_HOME: { return repeat_without_hypr(KC_HOME, is_pressed); }
+        case KC_END: { return repeat_without_hypr(KC_END, is_pressed); }
+        case KC_PGUP: { return repeat_without_hypr(KC_PGUP, is_pressed); }
+        case KC_PGDN: { return repeat_without_hypr(KC_PGDN, is_pressed); }
 
-        case VOL_UP: { return repeat_without_meh(os_specific_key(KC__VOLUP, KC_F20), is_pressed); }
-        case VOL_DOWN: { return repeat_without_meh(os_specific_key(KC__VOLDOWN, KC_F21), is_pressed); }
-
-        case MUTE: { return press_without_MEH(os_specific_key(KC__MUTE, KC_F22), is_pressed); }
+        case VOL_UP: { return repeat_without_hypr(os_specific_key(KC__VOLUP, KC_VOLU), is_pressed); }
+        case VOL_DOWN: { return repeat_without_hypr(os_specific_key(KC__VOLDOWN, KC_VOLD), is_pressed); }
+        case MUTE: { return press_without_hypr(os_specific_key(KC__MUTE, KC_MUTE), is_pressed); }
 
         // ESCAPE AS LEADER KEY
         // ctrl home/end
