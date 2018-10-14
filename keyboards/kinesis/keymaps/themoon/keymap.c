@@ -445,10 +445,8 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
 
            case CLOSE_APP: {
                 if (is_pressed) {
-                   remove_hypr();
                    if (isMac) { remove_meh(); key_code(KC_Q); add_meh(); }
                    else if (isWin) { remove_mods(KC_LGUI, KC_LCTL, KC_LSFT, KC_NO); key_code(KC_F4); insert_mods(KC_LGUI, KC_LCTL, KC_LSFT, KC_NO); }
-                   add_hypr();
                    return false;
                 }
            }
@@ -808,9 +806,9 @@ __________,  __________,  __________,  __________,  __________,  SET_LAYER_MAC, 
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
                    __________, VOL_DOWN, MUTE, VOL_UP,
-                                 KC_BSPC, __________,
-                                     KC_SLSH,
-                    KC_F1, KC_F2, KC_DEL,
+                                 KC_F1, __________,
+                                     KC_F2,
+                    KC_0, KC_1, KC_DEL,
                                 KC_F14,
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
          __________,  __________,  __________,  __________,  __________,  __________,
