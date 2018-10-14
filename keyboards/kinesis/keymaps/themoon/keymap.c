@@ -394,8 +394,8 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
     bool is_pressed = record->event.pressed;
         switch(id) {
 
-           case POS_LEFT: { if (is_pressed) { window_positioning(KC_J, KC_LEFT); return false; } }
-           case POS_RIGHT: { if (is_pressed) { window_positioning(KC_L, KC_RGHT); return false; } }
+           case POS_LEFT: { if (is_pressed) { window_positioning(KC_U, KC_LEFT); return false; } }
+           case POS_RIGHT: { if (is_pressed) { window_positioning(KC_O, KC_RGHT); return false; } }
            case POS_FULL: { if (is_pressed) { window_positioning(KC_I, KC_UP); return false; } }
            case POS_MINIMIZE: {
              if (is_pressed) {
