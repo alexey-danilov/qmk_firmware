@@ -43,14 +43,8 @@ enum kinesis_keycodes {
   HYPR_F15 = MO(_PALM_R),
   ALT_BSLASH = MT(MOD_LALT, KC_BSLS),
 
-  // media
-  PLAY_NEXT,
-  PLAY_PREV,
-  PLAY_PAUSE,
-
   VOL_UP,
   VOL_DOWN,
-  MUTE
 };
 
 enum holding_keycodes {
@@ -102,7 +96,11 @@ enum macros {
   DOCKER_LIST,
   DOCKER_LOGS,
   VIM_SAVE_QUIT,
-  VIM_QUIT
+  VIM_QUIT,
+  MUTE,
+  PLAY_NEXT,
+  PLAY_PREV,
+  PLAY_PAUSE
 };
 
 // HELPER FUNCTIONS
@@ -254,20 +252,13 @@ void without_hypr(uint16_t code) {
   add_hypr();
 }
 
-bool press_without_hypr(uint16_t code, bool pressed) {
-   if (pressed) {
-       without_hypr(code);
-       return true;
-   }
-  return false;
-}
-
 // handles repeat functionality (only for palm keys)
 static uint16_t palm_repeat_code;
 static uint16_t palm_repeat_timer;
 static uint8_t first_repeat_delay;
 bool repeat_without_hypr(uint16_t code, bool pressed) {
-   if (press_without_hypr(code, pressed)) {
+   if (pressed) {
+     without_hypr(code);
      palm_repeat_code = code;
      palm_repeat_timer = timer_read();
      first_repeat_delay = 250;
@@ -280,7 +271,7 @@ bool repeat_without_hypr(uint16_t code, bool pressed) {
 
 // provides functionality similar to MT - except that layer with mod is triggered immediately: this is useful when such mod is used with mouse;
 // returns true if tap was triggered and false otherwise
-bool momentary_layer_tap(uint16_t tap_key, uint16_t tap_mod, uint16_t layer_mod1, uint16_t layer_mod2, uint16_t layer_mod3, uint16_t layer_mod4, uint16_t *layer_timer, bool *interrupted_flag, bool is_pressed, uint16_t hold_duration) {
+bool momentary_layer_tap(uint16_t tap_key, uint16_t tap_mod, uint16_t layer_mod1, uint16_t layer_mod2, uint16_t layer_mod3, uint16_t layer_mod4, uint16_t *layer_timer, bool *interrupted_flag, bool is_pressed, uint16_t hold_duration, bool bring_mods_back) {
   if (is_pressed) {
     *interrupted_flag = false;
     *layer_timer = timer_read();
@@ -289,7 +280,9 @@ bool momentary_layer_tap(uint16_t tap_key, uint16_t tap_mod, uint16_t layer_mod1
       if (!*interrupted_flag) {
         up(layer_mod1); up(layer_mod2); up(layer_mod3); up(layer_mod4); // unregister mods associated with the layer, so that they don't intefere with the tap key
         with_1_mod(tap_key, tap_mod); // register tap key and its mod
-        // down(layer_mod1); down(layer_mod2); down(layer_mod3); down(layer_mod4); // bring mods back
+        if (bring_mods_back) {
+          down(layer_mod1); down(layer_mod2); down(layer_mod3); down(layer_mod4); // bring mods back
+        }
         return true;
       }
     }
@@ -395,9 +388,21 @@ void window_positioning(uint16_t mac_key, uint16_t win_key) {
   if (isMac) { key_code(mac_key); }
   else if (isWin) { remove_meh(); key_code(win_key); add_meh(); }
 }
+
+void media_control(uint16_t mac_key, uint16_t win_key) {
+  // media control keys for mac work only when iTunes is active, so lets send unique key and use it in custom media app
+  if (isMac) { key_code(mac_key); }
+  else if (isWin) { remove_hypr(); key_code(win_key); add_hypr(); }
+}
+
 const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
     bool is_pressed = record->event.pressed;
         switch(id) {
+           case MUTE: { if (is_pressed) { remove_hypr(); key_code(os_specific_key(KC__MUTE, KC_MUTE)); add_hypr(); return false; }}
+
+           case PLAY_PREV: { if (is_pressed) { media_control(KC_F1, KC_MPRV); return false; } }
+           case PLAY_PAUSE: { if (is_pressed) { media_control(KC_F2, KC_MPLY); return false; } }
+           case PLAY_NEXT: { if (is_pressed) { media_control(KC_F3, KC_MNXT); return false; } }
 
            case POS_LEFT: { if (is_pressed) { window_positioning(KC_U, KC_LEFT); return false; } }
            case POS_RIGHT: { if (is_pressed) { window_positioning(KC_O, KC_RGHT); return false; } }
@@ -810,10 +815,10 @@ __________,  __________,  __________,  __________,  __________,  SET_LAYER_MAC, 
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
-                   __________, VOL_DOWN, MUTE, VOL_UP,
-                                 KC_BSPC, __________,
-                                     PLAY_PREV,
-                    PLAY_PAUSE, PLAY_NEXT, KC_DEL,
+                   __________, VOL_DOWN, M(MUTE), VOL_UP,
+                                 KC_1, __________,
+                                     M(PLAY_PREV),
+                    M(PLAY_PAUSE), M(PLAY_NEXT), KC_0,
                                 KC_F14,
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
          __________,  __________,  __________,  __________,  __________,  __________,
@@ -833,10 +838,10 @@ __________,  __________,  __________,  __________,  __________,  SET_LAYER_MAC, 
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
-                   __________, __________, __________, __________,
+                   __________, VOL_DOWN, M(MUTE), VOL_UP,
                              __________,  __________,
                                      __________,
-                      __________, __________,  __________,
+                      M(PLAY_PAUSE), __________,  __________,
                                      HYPR_F14,
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
          __________,  __________,  __________,  __________,  __________,  __________,
@@ -944,7 +949,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         // mac-specific layers
         case CMD_ESC: {
          static uint16_t cmd_esc_layer_timer;
-         if (momentary_layer_tap(KC_ESC, KC_NO, KC_LGUI, KC_NO, KC_NO, KC_NO, &cmd_esc_layer_timer, &cmd_esc_interrupted, is_pressed, 180)) {
+         if (momentary_layer_tap(KC_ESC, KC_NO, KC_LGUI, KC_NO, KC_NO, KC_NO, &cmd_esc_layer_timer, &cmd_esc_interrupted, is_pressed, 180, true)) {
            esc_timer = timer_read();
          }
          return true;
@@ -952,38 +957,38 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
         case ALT_SHIFT_BS: {
           static uint16_t alt_shift_layer_timer;
-          momentary_layer_tap(KC_BSPC, KC_NO, KC_LSFT, KC_LALT, KC_NO, KC_NO, &alt_shift_layer_timer, &alt_shift_interrupted, is_pressed, 180);
+          momentary_layer_tap(KC_BSPC, KC_NO, KC_LSFT, KC_LALT, KC_NO, KC_NO, &alt_shift_layer_timer, &alt_shift_interrupted, is_pressed, 180, true);
           return true;
         }
 
         case CTRL_CMD_BS: {
           static uint16_t ctrl_cmd_bs_layer_timer;
-          momentary_layer_tap(KC_BSPC, KC_LGUI, KC_LCTL, KC_NO, KC_NO, KC_NO, &ctrl_cmd_bs_layer_timer, &ctrl_cmd_bs_interrupted, is_pressed, 180);
+          momentary_layer_tap(KC_BSPC, KC_LGUI, KC_LCTL, KC_NO, KC_NO, KC_NO, &ctrl_cmd_bs_layer_timer, &ctrl_cmd_bs_interrupted, is_pressed, 180, true);
           return true;
         }
 
         case CTRL_ALT_DEL: {
           static uint16_t ctrl_alt_del_layer_timer;
-          momentary_layer_tap(KC_DEL, KC_NO, KC_LALT, KC_LCTL, KC_NO, KC_NO, &ctrl_alt_del_layer_timer, &ctrl_alt_del_interrupted, is_pressed, 180);
+          momentary_layer_tap(KC_DEL, KC_NO, KC_LALT, KC_LCTL, KC_NO, KC_NO, &ctrl_alt_del_layer_timer, &ctrl_alt_del_interrupted, is_pressed, 180, false);
           return true;
         }
 
         case ALT_MAC: {
           static uint16_t alt_mac_layer_timer;
-          momentary_layer_tap(KC_SLSH, KC_NO, KC_LALT, KC_NO, KC_NO, KC_NO, &alt_mac_layer_timer, &alt_mac_interrupted, is_pressed, 180);
+          momentary_layer_tap(KC_SLSH, KC_NO, KC_LALT, KC_NO, KC_NO, KC_NO, &alt_mac_layer_timer, &alt_mac_interrupted, is_pressed, 180, true);
           return true;
         }
 
         case ALT_WIN: {
           static uint16_t alt_win_layer_timer;
-          momentary_layer_tap(KC_SLSH, KC_NO, KC_LALT, KC_NO, KC_NO, KC_NO, &alt_win_layer_timer, &alt_win_interrupted, is_pressed, 180);
+          momentary_layer_tap(KC_SLSH, KC_NO, KC_LALT, KC_NO, KC_NO, KC_NO, &alt_win_layer_timer, &alt_win_interrupted, is_pressed, 180, false);
           return true;
         }
 
         // win-specific layers
         case CTRL_ESC: {
          static uint16_t ctrl_esc_layer_timer;
-         if (momentary_layer_tap(KC_ESC, KC_NO, KC_LCTL, KC_NO, KC_NO, KC_NO, &ctrl_esc_layer_timer, &ctrl_esc_interrupted, is_pressed, 180)) {
+         if (momentary_layer_tap(KC_ESC, KC_NO, KC_LCTL, KC_NO, KC_NO, KC_NO, &ctrl_esc_layer_timer, &ctrl_esc_interrupted, is_pressed, 180, true)) {
            esc_timer = timer_read();
          }
          return true;
@@ -991,20 +996,20 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
         case CTRL_SHIFT_BS: {
           static uint16_t ctrl_shift_layer_timer;
-          momentary_layer_tap(KC_BSPC, KC_NO, KC_LSFT, KC_LCTL, KC_NO, KC_NO, &ctrl_shift_layer_timer, &ctrl_shift_interrupted, is_pressed, 180);
+          momentary_layer_tap(KC_BSPC, KC_NO, KC_LSFT, KC_LCTL, KC_NO, KC_NO, &ctrl_shift_layer_timer, &ctrl_shift_interrupted, is_pressed, 180, true);
           return true;
         }
 
         // common layers
         case HYPR_F14: {
           static uint16_t hypr_f14_layer_timer;
-          momentary_layer_tap(KC_F14, KC_NO, KC_LCTL, KC_LALT, KC_LSFT, KC_LGUI, &hypr_f14_layer_timer, &hypr_f14_interrupted, is_pressed, 300);
+          momentary_layer_tap(KC_F14, KC_NO, KC_LCTL, KC_LALT, KC_LSFT, KC_LGUI, &hypr_f14_layer_timer, &hypr_f14_interrupted, is_pressed, 300, isMac ? true : false);
           return true;
         }
 
         case HYPR_F15: {
           static uint16_t hypr_f15_layer_timer;
-          momentary_layer_tap(KC_F15, KC_NO, KC_LCTL, KC_LALT, KC_LSFT, KC_LGUI, &hypr_f15_layer_timer, &hypr_f15_interrupted, is_pressed, 300);
+          momentary_layer_tap(KC_F15, KC_NO, KC_LCTL, KC_LALT, KC_LSFT, KC_LGUI, &hypr_f15_layer_timer, &hypr_f15_interrupted, is_pressed, 300, isMac ? true : false);
           return true;
         }
 
@@ -1041,11 +1046,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
         case VOL_UP: { return repeat_without_hypr(os_specific_key(KC__VOLUP, KC_VOLU), is_pressed); }
         case VOL_DOWN: { return repeat_without_hypr(os_specific_key(KC__VOLDOWN, KC_VOLD), is_pressed); }
-        case MUTE: { return press_without_hypr(os_specific_key(KC__MUTE, KC_MUTE), is_pressed); }
-
-        case PLAY_PAUSE: { return press_without_hypr(KC_MPLY, is_pressed); }
-        case PLAY_NEXT: { return press_without_hypr(os_specific_key(KC_MFFD, KC_MNXT), is_pressed); }
-        case PLAY_PREV: { return press_without_hypr(os_specific_key(KC_MRWD, KC_MPRV), is_pressed); }
 
         // ESCAPE AS LEADER KEY
         // ctrl home/end
