@@ -315,7 +315,8 @@ bool following_custom_leader_key(uint16_t key, uint16_t mod1, uint16_t mod2, uin
 enum {
   TAP_MACRO1 = 0,
   TAP_MACRO2 = 1,
-  K_TD = 2
+  K_TD = 2,
+  COMMA_TD = 3
 };
 
 enum {
@@ -363,6 +364,31 @@ void k_reset (qk_tap_dance_state_t *state, void *user_data) {
   k_tap_state.state = 0;
 }
 
+//**************** COMMA TAP *********************//
+static tap comma_tap_state = { .is_press_action = true, .state = 0 };
+
+void comma_finished (qk_tap_dance_state_t *state, void *user_data) {
+  comma_tap_state.state = cur_dance(state);
+  switch (comma_tap_state.state) {
+    case SINGLE_TAP: down(KC_COMMA); break;
+    case SINGLE_HOLD: down(KC_LSFT); key_code(KC_COMMA); break;
+    default:
+      if (isMac) { down(KC_LOCKING_CAPS); break; }
+      else if (isWin) { down(KC_CAPS); break; }
+    }
+  }
+
+void comma_reset (qk_tap_dance_state_t *state, void *user_data) {
+  switch (comma_tap_state.state) {
+    case SINGLE_TAP: up(KC_COMMA); break;
+    case SINGLE_HOLD: up(KC_LSFT); break;
+    default:
+      if (isMac) { up(KC_LOCKING_CAPS); break; }
+      else if (isWin) { up(KC_CAPS); break; }
+    }
+  comma_tap_state.state = 0;
+}
+
 // dynamic macro1
 static bool is_macro1_recording = false;
 static uint32_t current_layer_state = 0;
@@ -390,7 +416,8 @@ qk_tap_dance_action_t tap_dance_actions[] = {
   // This Tap dance plays the macro 1 on TAP and records it on double tap.
   [TAP_MACRO1] = ACTION_TAP_DANCE_FN(macro1_tapdance_fn),
   [TAP_MACRO2] = ACTION_TAP_DANCE_FN(macro2_tapdance_fn),
-  [K_TD] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, k_finished, k_reset)
+  [K_TD] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, k_finished, k_reset),
+  [COMMA_TD] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, comma_finished, comma_reset)
 };
 
 // NON-TAP MACROS
@@ -529,7 +556,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
            KC_GRV, KC_Q, KC_W, KC_E, KC_R, KC_T,
            KC_INS,KC_A, KC_S, KC_D, KC_F, KC_G,
            M(MAIL), KC_Z, KC_X, KC_C, KC_V, KC_B,
-                 __________, KC_LBRC, KC_COMM, KC_RBRC,
+                 __________, KC_LBRC, M(COMMA_TD), KC_RBRC,
                                            // left thumb keys
 			                                    ALT_SHIFT_BS,TD(TAP_MACRO1),
                                                    ALT_SLASH_MAC,
@@ -544,7 +571,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	KC_N, KC_M, KC_UP, KC_DOT, KC_QUOT, __________,
 	KC_LEFT, KC_DOWN, KC_RGHT, __________,
            // right thumb keys
-           TD(TAP_MACRO2), KC_CAPS,
+           TD(TAP_MACRO2), KC_DEL,
            ALT_BSLASH,
            CTRL_F16, SHIFT_TAB, CMD_SPACE,
                                     // right palm key
@@ -569,7 +596,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          CTRL_H,  MOD_J,  MOD_K,  MOD_L,  __________,  __________,
          MOD_N,  CTRL_M,  MOD_UP,  CTRL_DOT ,  __________,  __________,
                    MOD_LEFT,  MOD_DOWN,  MOD_RIGHT, __________,
-         __________,  KC_DEL,
+         __________,  __________,
          PIPE_MOD,
          KC_F16, SHIFT_TAB_CTRL, MOD_SPACE,
                                      KC_F15
@@ -615,10 +642,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________ ,  __________,  __________,
                    __________,  __________, __________, __________,
-         __________,  KC_DEL,
+         __________,  __________,
          KC_BSLS,
          KC_F16,  KC_F1,  KC_F2,
-                          KC_NO
+                           KC_NO
     ),
 
 [_ALT_SLASH_MAC] = LAYOUT(
@@ -638,7 +665,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________ ,  __________,  __________,
                    __________,  __________,  __________, __________,
-         __________,  KC_DEL,
+         __________,  __________,
          KC_BSLS,
          KC_F16,  KC_TAB,  KC_SPC,
                            KC_NO
@@ -661,7 +688,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________ ,  __________,  __________,
                    __________,  __________, __________, __________,
-         __________,  KC_DEL,
+         __________,  __________,
          KC_BSLS,
          KC_F16,  KC_TAB,  KC_SPC,
                             KC_NO
@@ -675,7 +702,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
            KC_GRV, KC_Q, KC_W, KC_E, KC_R, KC_T,
            KC_INS, KC_A, KC_S, KC_D, KC_F, KC_G,
            M(MAIL), KC_Z, KC_X, KC_C, KC_V, KC_B,
-                 __________, KC_LBRC, KC_COMM, KC_RBRC,
+                 __________, KC_LBRC, M(COMMA_TD), KC_RBRC,
                                            // left thumb keys
 			                                    CTRL_SHIFT_BS,TD(TAP_MACRO1),
                                                    ALT_SLASH_WIN,
@@ -690,7 +717,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	KC_N, KC_M, KC_UP, KC_DOT, KC_QUOT, __________,
 	KC_LEFT, KC_DOWN, KC_RGHT, __________,
            // right thumb keys
-           TD(TAP_MACRO2), KC_CAPS,
+           TD(TAP_MACRO2), KC_DEL,
            ALT_BSLASH,
            KC_RGUI, SHIFT_TAB, CTRL_SPACE,
                                     // right palm key
@@ -716,7 +743,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
            MOD_H,  MOD_J,  MOD_K,  MOD_L,  __________,  __________,
            MOD_N,  MOD_M,  MOD_UP,  MOD_DOT ,  __________,  __________,
                      MOD_LEFT,  MOD_DOWN,  MOD_RIGHT, __________,
-         __________,  KC_DEL,
+         __________,  __________,
          PIPE_MOD,
          KC_F16, SHIFT_TAB_CTRL, MOD_SPACE,
                                      KC_F15
@@ -762,7 +789,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________ ,  __________,  __________,
                    __________,  __________, __________, __________,
-         __________,  KC_DEL,
+         __________,  __________,
          KC_BSLS,
          KC_F16,  KC_F1,  KC_F2,
                           KC_NO
@@ -785,10 +812,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________ ,  __________,  __________,
                    __________,  __________,  __________, __________,
-         __________,  KC_DEL,
+         __________,  __________,
          KC_BSLS,
          KC_F16,  KC_0,  KC_1,
-                           KC_NO
+                         KC_NO
     ),
 
 [_CTRL_ALT_DEL] = LAYOUT(
@@ -808,7 +835,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          W_H,  W_J,  W_K, W_L,  W_QUOT,  __________,
          W_N, W_M, __________, W_DOT, W_SCLN,  __________,
                    __________,  __________, __________, __________,
-         __________,  KC_DEL,
+         __________,  __________,
          KC_BSLS,
          KC_F16, KC_0, KC_1,
                       KC_NO
@@ -832,10 +859,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________ ,  __________,  __________,
                    __________,  __________,  __________, __________,
-         __________,  KC_DEL,
+         __________,  __________,
          MEH(KC_BSLS),
-         KC_F16,  MEH(KC_F13), __________,
-         __________
+         KC_F16,  MEH(KC_F13), KC_SPC,
+         KC_NO
     ),
 
 // common layers
