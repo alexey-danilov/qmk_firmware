@@ -370,8 +370,8 @@ static tap comma_tap_state = { .is_press_action = true, .state = 0 };
 void comma_finished (qk_tap_dance_state_t *state, void *user_data) {
   comma_tap_state.state = cur_dance(state);
   switch (comma_tap_state.state) {
-    case SINGLE_TAP: down(KC_COMMA); break;
-    case SINGLE_HOLD: down(KC_LSFT); key_code(KC_COMMA); break;
+    case SINGLE_TAP: down(KC_COMM); break;
+    case SINGLE_HOLD: down(KC_LSFT); key_code(KC_COMM); break;
     default:
       if (isMac) { down(KC_LOCKING_CAPS); break; }
       else if (isWin) { down(KC_CAPS); break; }
@@ -380,7 +380,7 @@ void comma_finished (qk_tap_dance_state_t *state, void *user_data) {
 
 void comma_reset (qk_tap_dance_state_t *state, void *user_data) {
   switch (comma_tap_state.state) {
-    case SINGLE_TAP: up(KC_COMMA); break;
+    case SINGLE_TAP: up(KC_COMM); break;
     case SINGLE_HOLD: up(KC_LSFT); break;
     default:
       if (isMac) { up(KC_LOCKING_CAPS); break; }
@@ -556,7 +556,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
            KC_GRV, KC_Q, KC_W, KC_E, KC_R, KC_T,
            KC_INS,KC_A, KC_S, KC_D, KC_F, KC_G,
            M(MAIL), KC_Z, KC_X, KC_C, KC_V, KC_B,
-                 __________, KC_LBRC, M(COMMA_TD), KC_RBRC,
+                 __________, KC_LBRC, TD(COMMA_TD), KC_RBRC,
                                            // left thumb keys
 			                                    ALT_SHIFT_BS,TD(TAP_MACRO1),
                                                    ALT_SLASH_MAC,
@@ -702,7 +702,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
            KC_GRV, KC_Q, KC_W, KC_E, KC_R, KC_T,
            KC_INS, KC_A, KC_S, KC_D, KC_F, KC_G,
            M(MAIL), KC_Z, KC_X, KC_C, KC_V, KC_B,
-                 __________, KC_LBRC, M(COMMA_TD), KC_RBRC,
+                 __________, KC_LBRC, TD(COMMA_TD), KC_RBRC,
                                            // left thumb keys
 			                                    CTRL_SHIFT_BS,TD(TAP_MACRO1),
                                                    ALT_SLASH_WIN,
