@@ -529,7 +529,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
            KC_GRV, KC_Q, KC_W, KC_E, KC_R, KC_T,
            KC_INS,KC_A, KC_S, KC_D, KC_F, KC_G,
            M(MAIL), KC_Z, KC_X, KC_C, KC_V, KC_B,
-                 KC_DEL, KC_LBRC, KC_COMM, KC_RBRC,
+                 __________, KC_LBRC, KC_COMM, KC_RBRC,
                                            // left thumb keys
 			                                    ALT_SHIFT_BS,TD(TAP_MACRO1),
                                                    ALT_MAC,
@@ -542,7 +542,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	KC_Y, KC_U, KC_I, KC_O, KC_P, __________,
 	KC_H, KC_J, TD(K_TD), KC_L, KC_SCLN, __________,
 	KC_N, KC_M, KC_UP, KC_DOT, KC_QUOT, __________,
-	KC_LEFT, KC_DOWN, KC_RGHT, KC_F3,
+	KC_LEFT, KC_DOWN, KC_RGHT, __________,
            // right thumb keys
            TD(TAP_MACRO2), KC_CAPS,
            ALT_BSLASH,
@@ -675,7 +675,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
            KC_GRV, KC_Q, KC_W, KC_E, KC_R, KC_T,
            KC_INS, KC_A, KC_S, KC_D, KC_F, KC_G,
            M(MAIL), KC_Z, KC_X, KC_C, KC_V, KC_B,
-                 KC_DEL, KC_LBRC, KC_COMM, KC_RBRC,
+                 __________, KC_LBRC, KC_COMM, KC_RBRC,
                                            // left thumb keys
 			                                    CTRL_SHIFT_BS,TD(TAP_MACRO1),
                                                    ALT_WIN,
@@ -688,7 +688,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	KC_Y, KC_U, KC_I, KC_O, KC_P, __________,
 	KC_H, KC_J, TD(K_TD), KC_L, KC_SCLN, __________,
 	KC_N, KC_M, KC_UP, KC_DOT, KC_QUOT, __________,
-	KC_LEFT, KC_DOWN, KC_RGHT, KC_F3,
+	KC_LEFT, KC_DOWN, KC_RGHT, __________,
            // right thumb keys
            TD(TAP_MACRO2), KC_CAPS,
            ALT_BSLASH,
