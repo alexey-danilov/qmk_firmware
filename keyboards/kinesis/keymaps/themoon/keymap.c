@@ -529,7 +529,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
            KC_GRV, KC_Q, KC_W, KC_E, KC_R, KC_T,
            KC_INS,KC_A, KC_S, KC_D, KC_F, KC_G,
            M(MAIL), KC_Z, KC_X, KC_C, KC_V, KC_B,
-                 __________, KC_LBRC, KC_COMM, KC_RBRC,
+                 KC_DEL, KC_LBRC, KC_COMM, KC_RBRC,
                                            // left thumb keys
 			                                    ALT_SHIFT_BS,TD(TAP_MACRO1),
                                                    ALT_MAC,
@@ -542,9 +542,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	KC_Y, KC_U, KC_I, KC_O, KC_P, __________,
 	KC_H, KC_J, TD(K_TD), KC_L, KC_SCLN, __________,
 	KC_N, KC_M, KC_UP, KC_DOT, KC_QUOT, __________,
-	KC_LEFT, KC_DOWN, KC_RGHT, __________,
+	KC_LEFT, KC_DOWN, KC_RGHT, KC_F3,
            // right thumb keys
-           TD(TAP_MACRO2), MOD_DELETE,
+           TD(TAP_MACRO2), KC_CAPS,
            ALT_BSLASH,
            CTRL_F16, SHIFT_TAB, CMD_SPACE,
                                     // right palm key
@@ -675,7 +675,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
            KC_GRV, KC_Q, KC_W, KC_E, KC_R, KC_T,
            KC_INS, KC_A, KC_S, KC_D, KC_F, KC_G,
            M(MAIL), KC_Z, KC_X, KC_C, KC_V, KC_B,
-                 __________, KC_LBRC, KC_COMM, KC_RBRC,
+                 KC_DEL, KC_LBRC, KC_COMM, KC_RBRC,
                                            // left thumb keys
 			                                    CTRL_SHIFT_BS,TD(TAP_MACRO1),
                                                    ALT_WIN,
@@ -688,9 +688,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	KC_Y, KC_U, KC_I, KC_O, KC_P, __________,
 	KC_H, KC_J, TD(K_TD), KC_L, KC_SCLN, __________,
 	KC_N, KC_M, KC_UP, KC_DOT, KC_QUOT, __________,
-	KC_LEFT, KC_DOWN, KC_RGHT, __________,
+	KC_LEFT, KC_DOWN, KC_RGHT, KC_F3,
            // right thumb keys
-           TD(TAP_MACRO2), MOD_DELETE,
+           TD(TAP_MACRO2), KC_CAPS,
            ALT_BSLASH,
            KC_RGUI, SHIFT_TAB, CTRL_SPACE,
                                     // right palm key
@@ -832,9 +832,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________ ,  __________,  __________,
                    __________,  __________,  __________, __________,
-         __________,  KC_F14,
-         KC_F15,
-         KC_F16,  KC_CAPS, KC_F17,
+         __________,  MEH(KC_1),
+         MEH(KC_2),
+         KC_F16,  MEH(KC_3), __________,
          __________
     ),
 
@@ -846,8 +846,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
                    __________,  __________,  __________,  __________,
-                             __________,  __________,
-                                       KC_BSPC,
+                             KC_BSPC,  __________,
+                                       MEH(KC_0),
                     KC_ESC, KC_ENTER,  __________,
                                      __________,
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
@@ -869,9 +869,9 @@ __________,  __________,  __________,  __________,  __________,  SET_LAYER_MAC, 
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
                    __________, VOL_DOWN, M(MUTE), VOL_UP,
-                                 KC_1, __________,
+                                 KC_F1, __________,
                                      M(PLAY_PREV),
-                    M(PLAY_PAUSE), M(PLAY_NEXT), KC_0,
+                    M(PLAY_PAUSE), M(PLAY_NEXT), KC_F2,
                                 KC_NO,
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
          __________,  __________,  __________,  __________,  __________,  __________,
@@ -1135,7 +1135,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case MOD_TAB: { return if_held_140_add_shift(KC_TAB, is_pressed); }
         case MOD_SPACE: { return if_held_140_add_shift(KC_SPC, is_pressed); }
         case MOD_ESC: { return if_held_140_add_shift(os_specific_key(KC_ESC, KC_BSPC), is_pressed); }
-        case MOD_DELETE: { return if_held_140_add_shift(KC_DEL, is_pressed); }
 
         case MOD_W: { return if_held_180_add_shift(KC_W, is_pressed); }
         case MOD_E: { return if_held_180_add_shift(KC_E, is_pressed); }
