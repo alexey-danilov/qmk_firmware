@@ -100,7 +100,7 @@ enum macros {
   POS_MINIMIZE,
   POS_FULL,
   SLEEP,
-  SHUTDOWN_WIN,
+  SHUTDOWN,
   DEL_WORD,
   DIR_UP,
   TERMINAL_CLEAR,
@@ -514,12 +514,18 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
            case SLEEP: {
                 if (is_pressed) {
                    if (isMac) { down(KC_LCTL); down(KC_LSFT); SEND_STRING(SS_DOWN(X_POWER) SS_UP(X_POWER)); up(KC_LSFT); up(KC_LCTL); }
-                    else if (isWin) { with_1_mod(KC_D, KC_LGUI); _delay_ms(100); down(KC_LALT); _delay_ms(100); key_code(KC_F4); up(KC_LALT); _delay_ms(100); key_code(KC_UP); key_code(KC_ENTER); }
+                    else if (isWin) { with_1_mod(KC_D, KC_LGUI); _delay_ms(200); down(KC_LALT); _delay_ms(200); key_code(KC_F4); up(KC_LALT); _delay_ms(200); key_code(KC_UP); key_code(KC_ENTER); }
                    return false;
                 }
            }
 
-           case SHUTDOWN_WIN: { if (is_pressed) { with_1_mod(KC_D, KC_LGUI); _delay_ms(100); down(KC_LALT); _delay_ms(100); key_code(KC_F4); up(KC_LALT); _delay_ms(100); key_code(KC_ENTER); return false; } }
+           case SHUTDOWN: {
+            if (is_pressed) {
+              if (isMac) { up(KC_LSFT); SEND_STRING(SS_DOWN(X_POWER) SS_UP(X_POWER)); down(KC_LSFT); }
+              else if (isWin) { remove_hypr(); with_1_mod(KC_D, KC_LGUI); _delay_ms(200); down(KC_LALT); _delay_ms(200); key_code(KC_F4); up(KC_LALT); _delay_ms(200); key_code(KC_ENTER); add_meh(); }
+              return false;
+              }
+           }
          }
 
     return MACRO_NONE;
@@ -527,7 +533,7 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
 
 /*
 * ,-------------------------------------------------------------------------------------------------------------------.
-* | SLEEP  |  F1  |  F2  |  F3  |  F4  |  F5  |  F6  |  F8  |  F9  |  F10 |  F12 | PSCR | SLCK | PAUS |Program| Power |
+* | SLEEP  |  F1  |  F2  |  F3  |  F4  |  F5  |  F6  |  F8  |  F9  |  F10 |  F12 | PSCR | SLCK | PAUS |      |Program |
 * |--------+------+------+------+------+------+---------------------------+------+------+------+------+------+--------|
 * | F13    |  1!  |  2@  |  3#  |  4$  |  5%  |                           |  6^  |  7&  |  8*  |  9(  |  0)  |        |
 * |--------+------+------+------+------+------|                           +------+------+------+------+------+--------|
@@ -537,7 +543,7 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
 * |--------+------+------+------+------+------|                           |------+------+------+------+------+--------|
 * | Mail   |   Z  |   X  |   C  |   V  |   B  |                           |   N  |   M  |  Up  |  .>  |  '"  |        |
 * `--------+------+------+------+------+-------                           `------+------+------+------+------+--------'
-*          |      |  [{  |  ,<  |  ]}  |                                         | Left | Down | Right|      |
+*          |  F17 |  [{  |  ,<  |  ]}  |                                         | Left | Down | Right|  F18 |
 *          `---------------------------'                                         `---------------------------'
 *                            .-------------------------.         ,---------------------------.
 *                            | LShift+RAlt/BkSp |Macro1|         |Macro2| LShift+RAlt/Del    |
@@ -559,7 +565,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
            KC_GRV, KC_Q, KC_W, KC_E, KC_R, KC_T,
            KC_INS,KC_A, KC_S, KC_D, KC_F, KC_G,
            M(MAIL), KC_Z, KC_X, KC_C, KC_V, KC_B,
-                 __________, KC_LBRC, TD(COMMA_TD), KC_RBRC,
+                 KC_F17, KC_LBRC, TD(COMMA_TD), KC_RBRC,
                                            // left thumb keys
 			                                    ALT_SHIFT_BS,TD(TAP_MACRO1),
                                                    ALT_SLASH_MAC,
@@ -567,12 +573,12 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                      // left palm key
 			                         HYPR_F14,
     // right side
-    KC_F9  ,KC_F10 ,KC_F11 ,KC_F12 ,KC_PSCR ,KC_SLCK  ,KC_PAUS, RESET, KC_POWER,
-	KC_6, KC_7, KC_8, KC_9, KC_0, __________,
-	KC_Y, KC_U, KC_I, KC_O, KC_P, __________,
-	KC_H, KC_J, TD(K_TD), KC_L, KC_SCLN, __________,
-	KC_N, KC_M, KC_UP, KC_DOT, KC_QUOT, __________,
-	KC_LEFT, KC_DOWN, KC_RGHT, KC_F17,
+    KC_F9  ,KC_F10 ,KC_F11 ,KC_F12 ,KC_NO ,KC_NO  ,KC_NO, KC_NO, RESET,
+	KC_6, KC_7, KC_8, KC_9, KC_0, KC_NO,
+	KC_Y, KC_U, KC_I, KC_O, KC_P, KC_NO,
+	KC_H, KC_J, TD(K_TD), KC_L, KC_SCLN, KC_NO,
+	KC_N, KC_M, KC_UP, KC_DOT, KC_QUOT, KC_NO,
+	KC_LEFT, KC_DOWN, KC_RGHT, KC_F18,
            // right thumb keys
            TD(TAP_MACRO2), KC_DEL,
            ALT_BSLASH_MAC,
@@ -728,7 +734,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
            KC_GRV, KC_Q, KC_W, KC_E, KC_R, KC_T,
            KC_INS, KC_A, KC_S, KC_D, KC_F, KC_G,
            M(MAIL), KC_Z, KC_X, KC_C, KC_V, KC_B,
-                 __________, KC_LBRC, TD(COMMA_TD), KC_RBRC,
+                 KC_F17, KC_LBRC, TD(COMMA_TD), KC_RBRC,
                                            // left thumb keys
 			                                    CTRL_SHIFT_BS,TD(TAP_MACRO1),
                                                    ALT_SLASH_WIN,
@@ -736,11 +742,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                      // left palm key
 			                         HYPR_F14,
     // right side
-    KC_F9  ,KC_F10 ,KC_F11 ,KC_F12 ,KC_PSCR ,KC_SLCK  ,KC_PAUS, RESET, M(SHUTDOWN_WIN),
-	KC_6, KC_7, KC_8, KC_9, KC_0, __________,
-	KC_Y, KC_U, KC_I, KC_O, KC_P, __________,
-	KC_H, KC_J, TD(K_TD), KC_L, KC_SCLN, __________,
-	KC_N, KC_M, KC_UP, KC_DOT, KC_QUOT, __________,
+    KC_F9  ,KC_F10 ,KC_F11 ,KC_F12 ,KC_PSCR ,KC_SLCK  ,KC_PAUS, KC_NO, RESET,
+	KC_6, KC_7, KC_8, KC_9, KC_0, KC_NO,
+	KC_Y, KC_U, KC_I, KC_O, KC_P, KC_NO,
+	KC_H, KC_J, TD(K_TD), KC_L, KC_SCLN, KC_NO,
+	KC_N, KC_M, KC_UP, KC_DOT, KC_QUOT, KC_NO,
 	KC_LEFT, KC_DOWN, KC_RGHT, KC_APP,
            // right thumb keys
            TD(TAP_MACRO2), KC_DEL,
@@ -939,7 +945,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
 
 [_PALM_R] = LAYOUT(
-__________,  __________,  __________,  __________,  __________,  SET_LAYER_MAC, __________, SET_LAYER_WIN, __________,
+M(SHUTDOWN),  __________,  __________,  __________,  __________,  SET_LAYER_MAC, __________, SET_LAYER_WIN, __________,
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
@@ -976,7 +982,7 @@ __________,  __________,  __________,  __________,  __________,  SET_LAYER_MAC, 
          __________,  M(VIM_SAVE_QUIT),  __________,  M(VIM_QUIT),  __________,  __________,
          __________,  M(POS_LEFT), M(POS_FULL),  M(POS_RIGHT),  __________,  __________,
          __________,  M(PREV_APP),  M(CLOSE_APP),  M(NEXT_APP),  __________,  __________,
-         __________,  KC_F17,  KC_PGUP,  KC_F18,  __________,  __________,
+         __________,  KC_0,  KC_PGUP,  KC_1,  __________,  __________,
                                 KC_HOME,  KC_PGDN, KC_END, __________,
          __________,  M(TERMINAL_CLEAR),
          M(DOCKER_LIST),
