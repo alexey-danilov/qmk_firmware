@@ -574,10 +574,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 			                         HYPR_F14,
     // right side
     KC_F9  ,KC_F10 ,KC_F11 ,KC_F12 ,KC_NO ,KC_NO  ,KC_NO, KC_NO, RESET,
-	KC_6, KC_7, KC_8, KC_9, KC_0, KC_NO,
-	KC_Y, KC_U, KC_I, KC_O, KC_P, KC_NO,
-	KC_H, KC_J, TD(K_TD), KC_L, KC_SCLN, KC_NO,
-	KC_N, KC_M, KC_UP, KC_DOT, KC_QUOT, KC_NO,
+	KC_6, KC_7, KC_8, KC_9, KC_0, HYPR(KC_F19),
+	KC_Y, KC_U, KC_I, KC_O, KC_P, HYPR(KC_F20),
+	KC_H, KC_J, TD(K_TD), KC_L, KC_SCLN, HYPR(KC_F21),
+	KC_N, KC_M, KC_UP, KC_DOT, KC_QUOT, HYPR(KC_F22),
 	KC_LEFT, KC_DOWN, KC_RGHT, KC_F18,
            // right thumb keys
            TD(TAP_MACRO2), KC_DEL,
@@ -743,10 +743,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 			                         HYPR_F14,
     // right side
     KC_F9  ,KC_F10 ,KC_F11 ,KC_F12 ,KC_PSCR ,KC_SLCK  ,KC_PAUS, KC_NO, RESET,
-	KC_6, KC_7, KC_8, KC_9, KC_0, KC_NO,
-	KC_Y, KC_U, KC_I, KC_O, KC_P, KC_NO,
-	KC_H, KC_J, TD(K_TD), KC_L, KC_SCLN, KC_NO,
-	KC_N, KC_M, KC_UP, KC_DOT, KC_QUOT, KC_NO,
+	KC_6, KC_7, KC_8, KC_9, KC_0, HYPR(KC_F19),
+	KC_Y, KC_U, KC_I, KC_O, KC_P, HYPR(KC_F20),
+	KC_H, KC_J, TD(K_TD), KC_L, KC_SCLN, HYPR(KC_F21),
+	KC_N, KC_M, KC_UP, KC_DOT, KC_QUOT, HYPR(KC_F22),
 	KC_LEFT, KC_DOWN, KC_RGHT, KC_APP,
            // right thumb keys
            TD(TAP_MACRO2), KC_DEL,
