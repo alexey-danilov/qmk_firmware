@@ -92,9 +92,6 @@ enum holding_keycodes {
   _8_DASH,
   _9_QUEST,
 
-  LANG_CAPS_MAC,
-  LANG_CAPS_WIN,
-
   CMD_TAB,
   CMD_SHIFT_TAB,
 
@@ -404,7 +401,8 @@ bool delete_word_line(uint16_t code, uint16_t mod_to_remove, uint16_t mod_to_add
 
 // quad tap dance
 enum {
-  POWER_TD = 1
+  K_TD = 1,
+  POWER_TD = 2
 };
 
 enum {
@@ -425,6 +423,39 @@ int cur_dance (qk_tap_dance_state_t *state) {
     else return DOUBLE_TAP;
   }
   else return 6;
+}
+
+//**************** K TAP *********************//
+static tap k_tap_state = { .is_press_action = true, .state = 0 };
+
+void k_finished (qk_tap_dance_state_t *state, void *user_data) {
+  k_tap_state.state = cur_dance(state);
+  switch (k_tap_state.state) {
+    case SINGLE_TAP: down(KC_K); break;
+    case DOUBLE_SINGLE_TAP: key_code(KC_K), down(KC_K); break;
+    case SINGLE_HOLD: down(KC_LSFT); key_code(KC_K); break;
+    case DOUBLE_HOLD:
+      if (isMac) { down(KC_LOCKING_CAPS); break; }
+      if (isWin) { down(KC_CAPS); break; }
+    default:
+      if (isMac) { down(KC_LALT); key_code(KC_SPC); break; }
+      if (isWin) { down(KC_LGUI); key_code(KC_SPC); break; }
+    }
+  }
+
+void k_reset (qk_tap_dance_state_t *state, void *user_data) {
+  switch (k_tap_state.state) {
+    case SINGLE_TAP: up(KC_K); break;
+    case DOUBLE_SINGLE_TAP: up(KC_K); break;
+    case SINGLE_HOLD: up(KC_LSFT); break;
+    case DOUBLE_HOLD:
+      if (isMac) { up(KC_LOCKING_CAPS); break; }
+      if (isWin) { up(KC_CAPS); break; }
+    default:
+      if (isMac) { up(KC_LALT); break; }
+      if (isWin) { up(KC_LGUI); break; }
+    }
+  k_tap_state.state = 0;
 }
 
 //**************** POWER TAP *********************//
@@ -456,6 +487,7 @@ void power_reset (qk_tap_dance_state_t *state, void *user_data) {
 
 // all tap macros
 qk_tap_dance_action_t tap_dance_actions[] = {
+  [K_TD] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, k_finished, k_reset),
   [POWER_TD] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, power_finished, power_reset)
 };
 
@@ -526,7 +558,7 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
 * |--------+------+------+------+------+------|                           +------+------+------+------+------+--------|
 * |  F18   |   Q  |   W  |   E  |   R  |   T  |                           |   Y  |   U  |   I  |   O  |   P  |   F22  |
 * |--------+------+------+------+------+------|                           |------+------+------+------+------+--------|
-* |  F19   |   A  |   S  |   D  |   F  |   G  |                           |   H  |   J  |   K  |   L  |  ;:  |   F23  |
+* |  F19   |   A  |   S  |   D  |   F  |   G  |                           |   H  | J | K/Lang/Caps | L | ;:  |   F23  |
 * |--------+------+------+------+------+------|                           |------+------+------+------+------+--------|
 * |  F20   |   Z  |   X  |   C  |   V  |   B  |                           |   N  |   M  |  Up  |  .>  |  '"  |   F24  |
 * `--------+------+------+------+------+-------                           `------+------+------+------+------+--------'
@@ -566,7 +598,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   KC_F9, KC_F10, KC_F11, KC_F12, KC_NO, KC_NO, KC_NO, KEYB_CONTROL, KC_NO,
 	_6_PLUS, _7_BANG, _8_DASH, _9_QUEST, _0, KC_F21,
 	KC_Y, KC_U, KC_I, KC_O, KC_P, KC_F22,
-	KC_H, KC_J, KC_K, KC_L, KC_SCLN, KC_F23,
+	KC_H, KC_J, TD(K_TD), KC_L, KC_SCLN, KC_F23,
 	KC_N, KC_M, KC_UP, KC_DOT, KC_QUOT, KC_F24,
 	KC_LEFT, KC_DOWN, KC_RGHT, KC_GRV,
            // right thumb keys
@@ -592,12 +624,12 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
 	     KC_6, KC_7, KC_8, KC_9, KC_0, __________,
          __________,  __________,  __________,  __________,  __________,  __________,
-         CTRL_H,  __________,  __________,  __________,  __________,  __________,
+         CTRL_H,  __________,  KC_K,  __________,  __________,  __________,
          __________,  CTRL_M,  MOD_UP_MAC,  CTRL_DOT ,  __________,  __________,
                    MOD_LEFT_MAC,  MOD_DOWN_MAC,  MOD_RIGHT_MAC, __________,
          __________,  DEL_LEFT_MAC,
          KC_BSLS,
-         KC_NUBS, LANG_CAPS_MAC, MOD_SPACE,
+         DEL_RIGHT_MAC, KC_F2, MOD_SPACE,
                                      KC_F15
     ),
 
@@ -638,7 +670,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
 	     KC_6, KC_7, KC_8, KC_9, KC_0, __________,
          __________,  __________,  __________,  __________,  __________,  __________,
-         __________,  __________,  __________,  __________,  __________,  __________,
+         __________,  __________,  KC_K,  __________,  __________,  __________,
          __________,  __________,  __________,  __________ ,  __________,  __________,
                    __________,  __________, __________, __________,
          KC_F16,  __________,
@@ -661,7 +693,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
 	     KC_6, KC_7, KC_8, KC_9, KC_0, __________,
          __________,  __________,  __________,  __________,  __________,  __________,
-         __________,  __________,  __________,  __________,  __________,  __________,
+         __________,  __________,  KC_K,  __________,  __________,  __________,
          __________,  __________,  __________,  __________ ,  __________,  __________,
                    __________,  __________,  __________, __________,
          __________,  LCTL(KC_BSPC),
@@ -730,12 +762,12 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
 	     KC_6, KC_7, KC_8, KC_9, KC_0, __________,
          __________,  __________,  __________,  __________,  __________,  __________,
-         __________,  __________,  __________,  __________,  __________,  __________,
+         __________,  __________,  KC_K,  __________,  __________,  __________,
          __________,  __________,  __________,  __________ ,  __________,  __________,
                    __________,  __________, __________, __________,
          __________,  __________,
          KC_BSLS,
-         LALT(KC_NUBS),  MOD_TAB,  MOD_SPACE,
+         KC_NUBS,  MOD_TAB,  MOD_SPACE,
                             KC_F15
     ),
 
@@ -753,7 +785,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
 	     KC_6, KC_7, KC_8, KC_9, KC_0, __________,
          __________,  __________,  __________,  __________,  __________,  __________,
-         __________,  __________,  __________,  __________,  __________,  __________,
+         __________,  __________,  KC_K,  __________,  __________,  __________,
          __________,  __________,  __________,  __________ ,  __________,  __________,
                    __________,  __________,  __________, __________,
          HYPR(KC_F16), __________,
@@ -850,7 +882,7 @@ __________,  __________,  __________,  __________,  __________,  __________, ___
     KC_F9, KC_F10, KC_F11, KC_F12, KC_NO, KC_NO, KC_NO, KEYB_CONTROL, KC_NO,
   	_6_PLUS, _7_BANG, _8_DASH, _9_QUEST, _0, KC_F21,
   	KC_Y, KC_U, KC_I, KC_O, KC_P, KC_F22,
-  	KC_H, KC_J, KC_K, KC_L, KC_SCLN, KC_F23,
+  	KC_H, KC_J, TD(K_TD), KC_L, KC_SCLN, KC_F23,
   	KC_N, KC_M, KC_UP, KC_DOT, KC_QUOT, KC_F24,
   	KC_LEFT, KC_DOWN, KC_RGHT, KC_GRV,
            // right thumb keys
@@ -877,12 +909,12 @@ __________,  __________,  __________,  __________,  __________,  __________, ___
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
 	     KC_6, KC_7, KC_8, KC_9, KC_0, __________,
            __________,  __________,  __________,  __________,  __________,  __________,
-           __________,  __________,  __________,  __________,  __________,  __________,
+           __________,  __________,  KC_K,  __________,  __________,  __________,
            __________,  __________,  MOD_UP_WIN,  __________ ,  __________,  __________,
                      MOD_LEFT_WIN,  MOD_DOWN_WIN,  MOD_RIGHT_WIN, __________,
          __________,  DEL_LEFT_WIN,
          KC_BSLS,
-         KC_PAUS, LANG_CAPS_WIN, MOD_SPACE,
+         DEL_RIGHT_WIN, MOD_TAB, MOD_SPACE,
                                      KC_F15
     ),
 
@@ -923,7 +955,7 @@ __________,  __________,  __________,  __________,  __________,  __________, ___
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
 	     KC_6, KC_7, KC_8, KC_9, KC_0, __________,
          __________,  __________,  __________,  __________,  __________,  __________,
-         __________,  __________,  __________,  __________,  __________,  __________,
+         __________,  __________,  KC_K,  __________,  __________,  __________,
          __________,  __________,  __________,  __________ ,  __________,  __________,
                    __________,  __________, __________, __________,
          KC_F16,  __________,
@@ -946,7 +978,7 @@ __________,  __________,  __________,  __________,  __________,  __________, ___
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
 	     KC_6, KC_7, KC_8, KC_9, KC_0, __________,
          __________,  __________,  __________,  __________,  __________,  __________,
-         __________,  __________,  __________,  __________,  __________,  __________,
+         __________,  __________,  KC_K,  __________,  __________,  __________,
          __________,  __________,  __________,  __________ ,  __________,  __________,
                    __________,  __________,  __________, __________,
          __________,  __________,
@@ -1015,7 +1047,7 @@ __________,  __________,  __________,  __________,  __________,  __________, ___
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
 	     KC_6, KC_7, KC_8, KC_9, KC_0, __________,
          __________,  __________,  __________,  __________,  __________,  __________,
-         __________,  __________,  __________,  __________,  __________,  __________,
+         __________,  __________,  KC_K,  __________,  __________,  __________,
          __________,  __________,  __________,  __________ ,  __________,  __________,
                    __________,  __________,  __________, __________,
          HYPR(KC_F16), __________,
@@ -1254,7 +1286,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
         case CTRL_NUBS: {
           static uint16_t ctrl_nubs_layer_timer;
-          momentary_layer_tap(KC_NUBS, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, &ctrl_nubs_layer_timer, &ctrl_nubs_interrupted, is_pressed, 180, true);
+          momentary_layer_tap(KC_NUBS, KC_LGUI, KC_LCTL, KC_NO, KC_NO, KC_NO, &ctrl_nubs_layer_timer, &ctrl_nubs_interrupted, is_pressed, 180, true);
           return true;
         }
 
@@ -1400,9 +1432,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
         case CTRL_HOME_ALT_HOME: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_HOME, KC_LGUI, KC_LCTL, KC_LALT, KC_LSFT, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_HOME, KC_LALT, KC_NO, KC_NO, KC_NO, is_pressed, 250, false); }
         case CTRL_END_ALT_END: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_END, KC_LGUI, KC_LCTL, KC_LALT, KC_LSFT, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_END, KC_LALT, KC_NO, KC_NO, KC_NO, is_pressed, 250, false); }
-
-        case LANG_CAPS_MAC: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_SPC, KC_LGUI, KC_NO, KC_NO, KC_NO, KC_LALT, KC_NO, KC_NO, KC_NO, KC_LOCKING_CAPS, KC_NO, KC_NO, KC_NO, KC_NO, is_pressed, 180, true); }
-        case LANG_CAPS_WIN: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_SPC, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_LGUI, KC_NO, KC_NO, KC_NO, KC_CAPS, KC_NO, KC_NO, KC_NO, KC_NO, is_pressed, 180, true); }
 
         // ESCAPE AS LEADER KEY
         // cmd/ctrl home/end
