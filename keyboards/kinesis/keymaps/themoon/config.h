@@ -5,13 +5,9 @@
 
 #define IGNORE_MOD_TAP_INTERRUPT
 #define PERMISSIVE_HOLD
-#define TAPPING_FORCE_HOLD
 
-#define TAPPING_TERM 300
-
+#define TAPPING_TERM 250
 #define TAPPING_TOGGLE  1
 
 #include "../../config.h"
-
-// place overrides here
 #endif
