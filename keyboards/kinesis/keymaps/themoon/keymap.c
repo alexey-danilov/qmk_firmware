@@ -104,6 +104,9 @@ enum holding_keycodes {
   CMD_Q,
   ALT_F4,
 
+  MAIL_SLEEP,
+  RESTART_POWER,
+
   HOME_ALT_HOME,
   END_ALT_END,
 
@@ -309,6 +312,37 @@ bool following_custom_leader_key(uint16_t key, uint16_t mod1, uint16_t mod2, uin
   return true;
 }
 
+bool mail_sleep(bool pressed, uint16_t hold_duration) {
+  static uint16_t hold_timer;
+  if(pressed) {
+      hold_timer= timer_read();
+  } else {
+      if (is_not_held(hold_timer, hold_duration)){
+          SEND_STRING("oleksii.danilov@gmail.com");
+      } else {
+          if (isMac) { down(KC_LCTL); down(KC_LSFT); SEND_STRING(SS_DOWN(X_POWER) SS_UP(X_POWER)); up(KC_LSFT); up(KC_LCTL); }
+          if (isWin) { with_1_mod(KC_X, KC_LGUI); _delay_ms(100); key_code(KC_U); _delay_ms(100); down(KC_S); up(KC_S); }
+      }
+  }
+  return false;
+}
+
+bool restart_power(bool pressed, uint16_t hold_duration) {
+  static uint16_t hold_timer;
+  if(pressed) {
+      hold_timer= timer_read();
+  } else {
+      if (is_not_held(hold_timer, hold_duration)){
+        if (isMac) { down(KC_LGUI); down(KC_LCTL); SEND_STRING(SS_DOWN(X_POWER) SS_UP(X_POWER)); up(KC_LCTL); up(KC_LGUI); }
+        if (isWin) { with_1_mod(KC_X, KC_LGUI); _delay_ms(100); key_code(KC_U); _delay_ms(100); down(KC_R); up(KC_R); }
+      } else {
+         if (isMac) { down(KC_LGUI); down(KC_LCTL); down(KC_LALT); SEND_STRING(SS_DOWN(X_POWER) SS_UP(X_POWER)); up(KC_LALT); up(KC_LCTL); up(KC_LGUI); up(KC_LGUI); }
+          if (isWin) { with_1_mod(KC_X, KC_LGUI); _delay_ms(100); key_code(KC_U); _delay_ms(100); down(KC_U); up(KC_U); }
+      }
+  }
+  return false;
+}
+
 // handles repeat functionality (only for palm keys)
 static uint16_t repeat_code;
 static uint16_t repeat_mod;
@@ -394,71 +428,6 @@ bool delete_word_line(uint16_t code, uint16_t mod_to_remove, uint16_t mod_to_add
   return false;
 }
 
-// quad tap dance
-enum {
-  POWER_TD = 1
-};
-
-enum {
-  SINGLE_TAP = 1,
-  SINGLE_HOLD = 2,
-  DOUBLE_TAP = 3,
-  DOUBLE_HOLD = 4,
-  DOUBLE_SINGLE_TAP = 5
-};
-
-typedef struct { bool is_press_action; int state; } tap;
-
-int cur_dance (qk_tap_dance_state_t *state) {
-  if (state->count == 1) { if (state->interrupted || state->pressed==0) return SINGLE_TAP; else return SINGLE_HOLD; }
-  else if (state->count == 2) {
-    if (state->interrupted) return DOUBLE_SINGLE_TAP;
-    else if (state->pressed) return DOUBLE_HOLD;
-    else return DOUBLE_TAP;
-  }
-  else return 6;
-}
-
-//**************** POWER TAP *********************//
-static tap power_tap_state = { .is_press_action = true, .state = 0 };
-
-void power_finished (qk_tap_dance_state_t *state, void *user_data) {
-  power_tap_state.state = cur_dance(state);
-  switch (power_tap_state.state) {
-    case SINGLE_TAP: { SEND_STRING("oleksii.danilov@gmail.com"); break; }
-    case SINGLE_HOLD: // sleep
-      if (isMac) { down(KC_LCTL); down(KC_LSFT); SEND_STRING(SS_DOWN(X_POWER) SS_UP(X_POWER)); up(KC_LSFT); break; }
-      if (isWin) { with_1_mod(KC_X, KC_LGUI); _delay_ms(100); key_code(KC_U); _delay_ms(100); down(KC_S); break; }
-    case DOUBLE_TAP: // restart
-      if (isMac) { down(KC_LGUI); down(KC_LCTL); SEND_STRING(SS_DOWN(X_POWER) SS_UP(X_POWER)); up(KC_LCTL);; break; }
-      if (isWin) { with_1_mod(KC_X, KC_LGUI); _delay_ms(100); key_code(KC_U); _delay_ms(100); down(KC_R); break; }
-    case DOUBLE_HOLD: // shutdown
-      if (isMac) { down(KC_LGUI); down(KC_LCTL); down(KC_LALT); SEND_STRING(SS_DOWN(X_POWER) SS_UP(X_POWER)); up(KC_LALT); up(KC_LCTL); up(KC_LGUI); break; }
-      if (isWin) { with_1_mod(KC_X, KC_LGUI); _delay_ms(100); key_code(KC_U); _delay_ms(100); down(KC_U); break; }
-    }
-  }
-
-void power_reset (qk_tap_dance_state_t *state, void *user_data) {
-  switch (power_tap_state.state) {
-    case SINGLE_TAP: { break; }
-    case SINGLE_HOLD: // sleep
-      if (isMac) { up(KC_LCTL); break; }
-      if (isWin) { up(KC_S); break; }
-    case DOUBLE_TAP: // restart
-      if (isMac) { up(KC_LGUI); break; }
-      if (isWin) { up(KC_R); break; }
-    case DOUBLE_HOLD: // shutdown
-      if (isMac) { up(KC_LGUI); break; }
-      if (isWin) { up(KC_U); break; }
-    }
-  power_tap_state.state = 0;
-}
-
-// all tap macros
-qk_tap_dance_action_t tap_dance_actions[] = {
-  [POWER_TD] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, power_finished, power_reset)
-};
-
 const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
     bool is_pressed = record->event.pressed;
         switch(id) {
@@ -523,7 +492,7 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [_MAC] = LAYOUT(
            // left side
-           TD(POWER_TD), KC_F1, KC_F2, KC_F3, KC_F4, KC_F5, KC_F6, KC_F7, KC_F8,
+           MAIL_SLEEP, KC_F1, KC_F2, KC_F3, KC_F4, KC_F5, KC_F6, KC_F7, KC_F8,
            KC_F17, _1, _2_PLEFT, _3_SLASH, _4_PRGHT, _5_EQL,
            KC_F18, KC_Q, KC_W, KC_E, KC_R, KC_T,
            KC_F19,KC_A, KC_S, KC_D, KC_F, KC_G,
@@ -536,7 +505,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                      // left palm key
 			                         HYPR_F14_MAC,
     // right side
-  KC_F9, KC_F10, KC_F11, KC_F12, KC_NO, KC_NO, KC_NO, KEYB_CONTROL, KC_NO,
+  KC_F9, KC_F10, KC_F11, KC_F12, KC_NO, KC_NO, KC_NO, KEYB_CONTROL, RESTART_POWER,
 	_6_PLUS, _7_BANG, _8_DASH, _9_QUEST, _0, KC_F21,
 	KC_Y, KC_U, KC_I, KC_O, KC_P, KC_F22,
 	KC_H, KC_J, KC_K, KC_L, KC_SCLN, KC_F23,
@@ -807,7 +776,7 @@ __________,  __________,  __________,  __________,  __________,  __________, ___
 // base win layer
 [_WIN] = LAYOUT(
            // left side
-           TD(POWER_TD), KC_F1, KC_F2, KC_F3, KC_F4, KC_F5, KC_F6, KC_F7, KC_F8,
+           MAIL_SLEEP, KC_F1, KC_F2, KC_F3, KC_F4, KC_F5, KC_F6, KC_F7, KC_F8,
            KC_F17, _1, _2_PLEFT, _3_SLASH, _4_PRGHT, _5_EQL,
            KC_F18, KC_Q, KC_W, KC_E, KC_R, KC_T,
            KC_F19, KC_A, KC_S, KC_D, KC_F, KC_G,
@@ -820,7 +789,7 @@ __________,  __________,  __________,  __________,  __________,  __________, ___
                                      // left palm key
 			                         HYPR_F14_WIN,
     // right side
-    KC_F9, KC_F10, KC_F11, KC_F12, KC_NO, KC_NO, KC_NO, KEYB_CONTROL, KC_NO,
+    KC_F9, KC_F10, KC_F11, KC_F12, KC_NO, KC_NO, KC_NO, KEYB_CONTROL, RESTART_POWER,
   	_6_PLUS, _7_BANG, _8_DASH, _9_QUEST, _0, KC_F21,
   	KC_Y, KC_U, KC_I, KC_O, KC_P, KC_F22,
   	KC_H, KC_J, KC_K, KC_L, KC_SCLN, KC_F23,
@@ -1421,6 +1390,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case HIDE_FOCUS_MAC: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_H, KC_LALT, KC_LSFT, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_H, KC_LALT, KC_NO, KC_NO, KC_NO, is_pressed, 300, true); }
         // hypr + down / hypr + up
         case HIDE_FOCUS_WIN: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_DOWN, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_UP, KC_NO, KC_NO, KC_NO, KC_NO, is_pressed, 300, true); }
+
+        case MAIL_SLEEP: { return mail_sleep(is_pressed, 1000); }
+        case RESTART_POWER: { return restart_power(is_pressed, 2000); }
 
         case KC_F1: { return if_held_180_add_shift(KC_F1, is_pressed); }
         case KC_F2: { return if_held_180_add_shift(KC_F2, is_pressed); }

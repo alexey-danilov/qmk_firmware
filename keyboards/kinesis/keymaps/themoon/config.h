@@ -2,12 +2,9 @@
 #define CONFIG_USER_H
 
 #define AUTO_SHIFT_TIMEOUT 180
-
-#define IGNORE_MOD_TAP_INTERRUPT
-#define PERMISSIVE_HOLD
-
-#define TAPPING_TERM 200
-#define TAPPING_TOGGLE  1
+#define TAPPING_TERM 180
+#define TAPPING_FORCE_HOLD
+#define RETRO_TAPPING
 
 #include "../../config.h"
 #endif
