@@ -237,7 +237,7 @@ bool replace_cmd_if_held_add_cmd_shift(uint16_t code, uint16_t replacement_mod, 
 }
 
 bool replace_ctrl_alt_with_lgui(uint16_t code, bool pressed) {
-  return replace_key_and_mods_if_held_replace_key_and_mods(code, KC_LCTL, KC_LALT, KC_NO, KC_NO, KC_LGUI, KC_NO, KC_NO, KC_NO, code, KC_LGUI, KC_NO, KC_NO, KC_NO, pressed, 180, true);
+  return replace_key_and_mods_if_held_replace_key_and_mods(code, KC_LCTL, KC_LALT, KC_NO, KC_NO, KC_LGUI, KC_NO, KC_NO, KC_NO, code, KC_LGUI, KC_NO, KC_NO, KC_NO, pressed, 175, true);
 }
 
 // replaces keycode if it was held for at least provided duration
@@ -270,14 +270,14 @@ bool if_held_add_mods(uint16_t code, uint16_t held_mod1, uint16_t held_mod2, boo
   return false;
 }
 
+// adds shift to keycode if it was held for at 170 ms
+bool if_held_170_add_shift(uint16_t code, bool pressed) {
+  return if_held_add_mods(code, KC_LSFT, KC_NO, pressed, 170);
+}
+
 // adds shift to keycode if it was held for at 175 ms
 bool if_held_175_add_shift(uint16_t code, bool pressed) {
   return if_held_add_mods(code, KC_LSFT, KC_NO, pressed, 175);
-}
-
-// adds shift to keycode if it was held for at 180 ms
-bool if_held_180_add_shift(uint16_t code, bool pressed) {
-  return if_held_add_mods(code, KC_LSFT, KC_NO, pressed, 180);
 }
 
 // replaces keycode and adds mod to it if it was held for at least provided duration
@@ -296,8 +296,8 @@ bool replace_if_held_add_mods(uint16_t code, uint16_t mod, uint16_t held_code, u
 }
 
 // replaces keycode and adds mod to it if it was held for at least provided duration
-bool if_held_180_replace(uint16_t code, uint16_t held_code, uint16_t held_mod, bool pressed) {
-  return replace_if_held_add_mods(code, KC_NO, held_code, held_mod, KC_NO, pressed, 180);
+bool if_held_175_replace(uint16_t code, uint16_t held_code, uint16_t held_mod, bool pressed) {
+  return replace_if_held_add_mods(code, KC_NO, held_code, held_mod, KC_NO, pressed, 175);
 }
 
 // provides functionality similar to "leader key", except that it works for non-dedicated key (currently, only escape)
@@ -1176,7 +1176,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         // mac layers
         case CMD_ESC: {
          static uint16_t cmd_esc_layer_timer;
-         if( momentary_layer_tap(KC_ESC, KC_NO, KC_LGUI, KC_NO, KC_NO, KC_NO, &cmd_esc_layer_timer, &cmd_esc_interrupted, is_pressed, 180, true)) {
+         if( momentary_layer_tap(KC_ESC, KC_NO, KC_LGUI, KC_NO, KC_NO, KC_NO, &cmd_esc_layer_timer, &cmd_esc_interrupted, is_pressed, 175, true)) {
            esc_timer = timer_read();
          }
          return true;
@@ -1184,31 +1184,31 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
         case ALT_SHIFT_BS: {
           static uint16_t alt_shift_layer_timer;
-          momentary_layer_tap(KC_BSPC, KC_NO, KC_LSFT, KC_LALT, KC_NO, KC_NO, &alt_shift_layer_timer, &alt_shift_interrupted, is_pressed, 180, true);
+          momentary_layer_tap(KC_BSPC, KC_NO, KC_LSFT, KC_LALT, KC_NO, KC_NO, &alt_shift_layer_timer, &alt_shift_interrupted, is_pressed, 175, true);
           return true;
         }
 
         case CTRL_DEL: {
           static uint16_t ctrl_del_layer_timer;
-          momentary_layer_tap(KC_DEL, KC_NO, KC_LCTL, KC_NO, KC_NO, KC_NO, &ctrl_del_layer_timer, &ctrl_del_interrupted, is_pressed, 180, true);
+          momentary_layer_tap(KC_DEL, KC_NO, KC_LCTL, KC_NO, KC_NO, KC_NO, &ctrl_del_layer_timer, &ctrl_del_interrupted, is_pressed, 175, true);
           return true;
         }
 
         case CTRL_NUBS: {
           static uint16_t ctrl_nubs_layer_timer;
-          momentary_layer_tap(KC_NUBS, KC_LGUI, KC_LCTL, KC_NO, KC_NO, KC_NO, &ctrl_nubs_layer_timer, &ctrl_nubs_interrupted, is_pressed, 180, true);
+          momentary_layer_tap(KC_NUBS, KC_LGUI, KC_LCTL, KC_NO, KC_NO, KC_NO, &ctrl_nubs_layer_timer, &ctrl_nubs_interrupted, is_pressed, 175, true);
           return true;
         }
 
         case ALT_SLASH_MAC: {
           static uint16_t alt_slash_mac_layer_timer;
-          momentary_layer_tap(KC_SLSH, KC_NO, KC_LALT, KC_NO, KC_NO, KC_NO, &alt_slash_mac_layer_timer, &alt_slash_mac_interrupted, is_pressed, 180, true);
+          momentary_layer_tap(KC_SLSH, KC_NO, KC_LALT, KC_NO, KC_NO, KC_NO, &alt_slash_mac_layer_timer, &alt_slash_mac_interrupted, is_pressed, 175, true);
           return true;
         }
 
         case ALT_BSLASH_MAC: {
           static uint16_t alt_bslash_mac_layer_timer;
-          momentary_layer_tap(KC_BSLS, KC_NO, KC_LALT, KC_NO, KC_NO, KC_NO, &alt_bslash_mac_layer_timer, &alt_bslash_mac_interrupted, is_pressed, 180, true);
+          momentary_layer_tap(KC_BSLS, KC_NO, KC_LALT, KC_NO, KC_NO, KC_NO, &alt_bslash_mac_layer_timer, &alt_bslash_mac_interrupted, is_pressed, 175, true);
           return true;
         }
 
@@ -1239,7 +1239,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         // win layers
         case CTRL_ESC: {
          static uint16_t ctrl_esc_layer_timer;
-         if (momentary_layer_tap(KC_ESC, KC_NO, KC_LCTL, KC_NO, KC_NO, KC_NO, &ctrl_esc_layer_timer, &ctrl_esc_interrupted, is_pressed, 180, true)) {
+         if (momentary_layer_tap(KC_ESC, KC_NO, KC_LCTL, KC_NO, KC_NO, KC_NO, &ctrl_esc_layer_timer, &ctrl_esc_interrupted, is_pressed, 175, true)) {
            esc_timer = timer_read();
          }
          return true;
@@ -1247,19 +1247,19 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
         case CTRL_SHIFT_BS: {
           static uint16_t ctrl_shift_layer_timer;
-          momentary_layer_tap(KC_BSPC, KC_NO, KC_LSFT, KC_LCTL, KC_NO, KC_NO, &ctrl_shift_layer_timer, &ctrl_shift_interrupted, is_pressed, 180, true);
+          momentary_layer_tap(KC_BSPC, KC_NO, KC_LSFT, KC_LCTL, KC_NO, KC_NO, &ctrl_shift_layer_timer, &ctrl_shift_interrupted, is_pressed, 175, true);
           return true;
         }
 
         case CTRL_ALT_DEL: {
           static uint16_t ctrl_alt_del_layer_timer;
-          momentary_layer_tap(KC_DEL, KC_NO, KC_LALT, KC_LCTL, KC_NO, KC_NO, &ctrl_alt_del_layer_timer, &ctrl_alt_del_interrupted, is_pressed, 180, false);
+          momentary_layer_tap(KC_DEL, KC_NO, KC_LALT, KC_LCTL, KC_NO, KC_NO, &ctrl_alt_del_layer_timer, &ctrl_alt_del_interrupted, is_pressed, 175, false);
           return true;
         }
 
         case ALT_SLASH_WIN: {
           static uint16_t alt_slash_win_layer_timer;
-          momentary_layer_tap(KC_SLSH, KC_NO, KC_LALT, KC_NO, KC_NO, KC_NO, &alt_slash_win_layer_timer, &alt_slash_win_interrupted, is_pressed, 180, false);
+          momentary_layer_tap(KC_SLSH, KC_NO, KC_LALT, KC_NO, KC_NO, KC_NO, &alt_slash_win_layer_timer, &alt_slash_win_interrupted, is_pressed, 175, false);
           return true;
         }
 
@@ -1277,7 +1277,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
         case ALT_BSLASH_WIN: {
           static uint16_t alt_bslash_win_layer_timer;
-          momentary_layer_tap(KC_BSLS, KC_NO, KC_LALT, KC_NO, KC_NO, KC_NO, &alt_bslash_win_layer_timer, &alt_bslash_win_interrupted, is_pressed, 180, false);
+          momentary_layer_tap(KC_BSLS, KC_NO, KC_LALT, KC_NO, KC_NO, KC_NO, &alt_bslash_win_layer_timer, &alt_bslash_win_interrupted, is_pressed, 175, false);
           return true;
         }
 
@@ -1319,22 +1319,22 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case W_SCLN: { return replace_ctrl_alt_with_lgui(KC_SCLN, is_pressed); }
 
         // Deleting words / lines
-        case DEL_LEFT_MAC: { return delete_word_line(KC_BSPC, KC_LGUI, KC_LALT, KC_LEFT, KC_LGUI, KC_LSFT, is_pressed, 180); }
-        case DEL_RIGHT_MAC: { return delete_word_line(KC_DEL, KC_LGUI, KC_LALT, KC_RGHT, KC_LGUI, KC_LSFT, is_pressed, 180); }
+        case DEL_LEFT_MAC: { return delete_word_line(KC_BSPC, KC_LGUI, KC_LALT, KC_LEFT, KC_LGUI, KC_LSFT, is_pressed, 175); }
+        case DEL_RIGHT_MAC: { return delete_word_line(KC_DEL, KC_LGUI, KC_LALT, KC_RGHT, KC_LGUI, KC_LSFT, is_pressed, 175); }
 
-        case DEL_LEFT_WIN: { return delete_word_line(KC_BSPC, KC_LCTL, KC_LCTL, KC_HOME, KC_LSFT, KC_NO, is_pressed, 180); }
-        case DEL_RIGHT_WIN: { return delete_word_line(KC_DEL, KC_LCTL, KC_LCTL, KC_END, KC_LSFT, KC_NO, is_pressed, 180); }
+        case DEL_LEFT_WIN: { return delete_word_line(KC_BSPC, KC_LCTL, KC_LCTL, KC_HOME, KC_LSFT, KC_NO, is_pressed, 175); }
+        case DEL_RIGHT_WIN: { return delete_word_line(KC_DEL, KC_LCTL, KC_LCTL, KC_END, KC_LSFT, KC_NO, is_pressed, 175); }
 
         // REPEATING KEYCODES
         case KC_PGUP: { return repeat(KC_PGUP, KC_NO, KC_LGUI, KC_LSFT, KC_LALT, KC_LCTL, is_pressed, 25); }
         case KC_PGDN: { return repeat(KC_PGDN, KC_NO, KC_LGUI, KC_LSFT, KC_LALT, KC_LCTL, is_pressed, 25); }
 
         // app switch
-        case CMD_TAB: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_TAB, KC_LALT, KC_LCTL, KC_LSFT, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_TAB, KC_LGUI, KC_NO, KC_NO, KC_NO, is_pressed, 180, true); }
-        case CMD_SHIFT_TAB: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_TAB, KC_LALT, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_TAB, KC_LGUI, KC_LSFT, KC_NO, KC_NO, is_pressed, 180, true); }
+        case CMD_TAB: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_TAB, KC_LALT, KC_LCTL, KC_LSFT, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_TAB, KC_LGUI, KC_NO, KC_NO, KC_NO, is_pressed, 175, true); }
+        case CMD_SHIFT_TAB: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_TAB, KC_LALT, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_TAB, KC_LGUI, KC_LSFT, KC_NO, KC_NO, is_pressed, 175, true); }
 
-        case ALT_TAB: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_TAB, KC_LGUI, KC_LCTL, KC_LSFT, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_TAB, KC_LALT, KC_NO, KC_NO, KC_NO, is_pressed, 180, true); }
-        case ALT_SHIFT_TAB: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_TAB, KC_LGUI, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_TAB, KC_LALT, KC_LSFT, KC_NO, KC_NO, is_pressed, 180, true); }
+        case ALT_TAB: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_TAB, KC_LGUI, KC_LCTL, KC_LSFT, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_TAB, KC_LALT, KC_NO, KC_NO, KC_NO, is_pressed, 175, true); }
+        case ALT_SHIFT_TAB: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_TAB, KC_LGUI, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_TAB, KC_LALT, KC_LSFT, KC_NO, KC_NO, is_pressed, 175, true); }
 
         // home/end
         case HOME_ALT_HOME: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_HOME, KC_LGUI, KC_LCTL, KC_LALT, KC_LSFT, KC_NO, KC_NO, KC_NO, KC_NO, KC_HOME, KC_LALT, KC_NO, KC_NO, KC_NO, is_pressed, 250, false); }
@@ -1343,26 +1343,26 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case CTRL_HOME_ALT_HOME: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_HOME, KC_LGUI, KC_LCTL, KC_LALT, KC_LSFT, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_HOME, KC_LALT, KC_NO, KC_NO, KC_NO, is_pressed, 250, false); }
         case CTRL_END_ALT_END: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_END, KC_LGUI, KC_LCTL, KC_LALT, KC_LSFT, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_END, KC_LALT, KC_NO, KC_NO, KC_NO, is_pressed, 250, false); }
 
-        case LANG_CAPS_MAC: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_SPC, KC_LGUI, KC_NO, KC_NO, KC_NO, KC_LALT, KC_NO, KC_NO, KC_NO, KC_LOCKING_CAPS, KC_NO, KC_NO, KC_NO, KC_NO, is_pressed, 180, true); }
-        case LANG_CAPS_WIN: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_SPC, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_LGUI, KC_NO, KC_NO, KC_NO, KC_CAPS, KC_NO, KC_NO, KC_NO, KC_NO, is_pressed, 180, true); }
+        case LANG_CAPS_MAC: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_SPC, KC_LGUI, KC_NO, KC_NO, KC_NO, KC_LALT, KC_NO, KC_NO, KC_NO, KC_LOCKING_CAPS, KC_NO, KC_NO, KC_NO, KC_NO, is_pressed, 175, true); }
+        case LANG_CAPS_WIN: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_SPC, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_LGUI, KC_NO, KC_NO, KC_NO, KC_CAPS, KC_NO, KC_NO, KC_NO, KC_NO, is_pressed, 175, true); }
 
         // ESCAPE AS LEADER KEY
         // cmd/ctrl home/end
         case KC_LEFT: { return following_custom_leader_key(KC_HOME, isMac ? KC_LGUI : KC_NO, KC_NO, KC_NO, &esc_timer, is_pressed, 250); }
         case KC_RGHT: { return following_custom_leader_key(KC_END, isMac ? KC_LGUI : KC_NO, KC_NO, KC_NO, &esc_timer, is_pressed, 250); }
 
-        case MOD_ENTER: { return if_held_175_add_shift(KC_ENTER, is_pressed); }
-        case MOD_TAB: { return if_held_175_add_shift(KC_TAB, is_pressed); }
-        case MOD_SPACE: { return if_held_175_add_shift(KC_SPC, is_pressed); }
-        case MOD_SHIFT_SPACE: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_SPC, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_SPC, KC_LCTL, KC_LALT, KC_NO, KC_NO, is_pressed, 175, true); }
-        case MOD_INS: { return if_held_180_add_shift(KC_INS, is_pressed); }
-        case MOD_DELETE: { return if_held_180_add_shift(KC_DEL, is_pressed); }
+        case MOD_ENTER: { return if_held_170_add_shift(KC_ENTER, is_pressed); }
+        case MOD_TAB: { return if_held_170_add_shift(KC_TAB, is_pressed); }
+        case MOD_SPACE: { return if_held_170_add_shift(KC_SPC, is_pressed); }
+        case MOD_SHIFT_SPACE: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_SPC, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_SPC, KC_LCTL, KC_LALT, KC_NO, KC_NO, is_pressed, 170, true); }
+        case MOD_INS: { return if_held_175_add_shift(KC_INS, is_pressed); }
+        case MOD_DELETE: { return if_held_175_add_shift(KC_DEL, is_pressed); }
 
-        case MOD_UP_MAC: { return if_held_180_add_shift(KC_UP, is_pressed); }
-        case MOD_DOWN_MAC: { return if_held_180_add_shift(KC_DOWN, is_pressed); }
+        case MOD_UP_MAC: { return if_held_175_add_shift(KC_UP, is_pressed); }
+        case MOD_DOWN_MAC: { return if_held_175_add_shift(KC_DOWN, is_pressed); }
 
-        case MOD_UP_WIN: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_UP, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_HOME, KC_LCTL, KC_LSFT, KC_NO, KC_NO, is_pressed, 180, false); }
-        case MOD_DOWN_WIN: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_DOWN, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_END, KC_LCTL, KC_LSFT, KC_NO, KC_NO, is_pressed, 180, false); }
+        case MOD_UP_WIN: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_UP, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_HOME, KC_LCTL, KC_LSFT, KC_NO, KC_NO, is_pressed, 175, false); }
+        case MOD_DOWN_WIN: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_DOWN, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_END, KC_LCTL, KC_LSFT, KC_NO, KC_NO, is_pressed, 175, false); }
 
         case MOD_LEFT_MAC: { return if_held_add_mods(KC_LEFT, KC_LSFT, KC_NO, is_pressed, 250); }
         case MOD_RIGHT_MAC: { return if_held_add_mods(KC_RGHT, KC_LSFT, KC_NO, is_pressed, 250); }
@@ -1370,20 +1370,20 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case MOD_LEFT_WIN: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_LEFT, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_HOME, KC_LSFT, KC_NO, KC_NO, KC_NO, is_pressed, 250, false); }
         case MOD_RIGHT_WIN: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_RGHT, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_END, KC_LSFT, KC_NO, KC_NO, KC_NO, is_pressed, 250, false); }
 
-        case _1: { return if_held_180_replace(KC_1, KC_1, KC_NO, is_pressed); } // disable key repeat
-        case _0: { return if_held_180_replace(KC_0, KC_0, KC_NO, is_pressed); } // disable key repeat
-        case _2_PLEFT: { return if_held_180_replace(KC_2, KC_9, KC_LSFT, is_pressed); }
-        case _3_SLASH: { return if_held_180_replace(KC_3, KC_MINS, KC_LSFT, is_pressed); }
-        case _4_PRGHT: { return if_held_180_replace(KC_4, KC_0, KC_LSFT, is_pressed); }
-        case _5_EQL: { return if_held_180_replace(KC_5, KC_EQL, KC_NO, is_pressed); }
-        case _6_PLUS: { return if_held_180_replace(KC_6, KC_EQL, KC_LSFT, is_pressed); }
-        case _7_BANG: { return if_held_180_replace(KC_7, KC_1, KC_LSFT, is_pressed); }
-        case _8_DASH: { return if_held_180_replace(KC_8, KC_MINS, KC_NO, is_pressed); }
-        case _9_QUEST: { return if_held_180_replace(KC_9, KC_SLSH, KC_LSFT, is_pressed); }
+        case _1: { return if_held_175_replace(KC_1, KC_1, KC_NO, is_pressed); } // disable key repeat
+        case _0: { return if_held_175_replace(KC_0, KC_0, KC_NO, is_pressed); } // disable key repeat
+        case _2_PLEFT: { return if_held_175_replace(KC_2, KC_9, KC_LSFT, is_pressed); }
+        case _3_SLASH: { return if_held_175_replace(KC_3, KC_MINS, KC_LSFT, is_pressed); }
+        case _4_PRGHT: { return if_held_175_replace(KC_4, KC_0, KC_LSFT, is_pressed); }
+        case _5_EQL: { return if_held_175_replace(KC_5, KC_EQL, KC_NO, is_pressed); }
+        case _6_PLUS: { return if_held_175_replace(KC_6, KC_EQL, KC_LSFT, is_pressed); }
+        case _7_BANG: { return if_held_175_replace(KC_7, KC_1, KC_LSFT, is_pressed); }
+        case _8_DASH: { return if_held_175_replace(KC_8, KC_MINS, KC_NO, is_pressed); }
+        case _9_QUEST: { return if_held_175_replace(KC_9, KC_SLSH, KC_LSFT, is_pressed); }
 
         // close app
-        case CMD_Q: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_Q, KC_LALT, KC_LSFT, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_Q, KC_LGUI, KC_NO, KC_NO, KC_NO, is_pressed, 180, true); }
-        case ALT_F4: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_F4, KC_LGUI, KC_LSFT, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_NO, KC_F4, KC_F4, KC_LALT, KC_NO, KC_NO, KC_NO, is_pressed, 180, true); }
+        case CMD_Q: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_Q, KC_LALT, KC_LSFT, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_Q, KC_LGUI, KC_NO, KC_NO, KC_NO, is_pressed, 175, true); }
+        case ALT_F4: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_F4, KC_LGUI, KC_LSFT, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_NO, KC_F4, KC_F4, KC_LALT, KC_NO, KC_NO, KC_NO, is_pressed, 175, true); }
 
         // minimize app / minimize others
         // cmd + H / cmd + opt + H
@@ -1392,37 +1392,37 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case HIDE_FOCUS_WIN: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_DOWN, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_UP, KC_NO, KC_NO, KC_NO, KC_NO, is_pressed, 300, true); }
 
         case MAIL_SLEEP: { return mail_sleep(is_pressed, 1000); }
-        case RESTART_POWER: { return restart_power(is_pressed, 2000); }
+        case RESTART_POWER: { return restart_power(is_pressed, 1000); }
 
-        case KC_F1: { return if_held_180_add_shift(KC_F1, is_pressed); }
-        case KC_F2: { return if_held_180_add_shift(KC_F2, is_pressed); }
-        case KC_F3: { return if_held_180_add_shift(KC_F3, is_pressed); }
-        case KC_F4: { return if_held_180_add_shift(KC_F4, is_pressed); }
-        case KC_F5: { return if_held_180_add_shift(KC_F5, is_pressed); }
-        case KC_F6: { return if_held_180_add_shift(KC_F6, is_pressed); }
-        case KC_F7: { return if_held_180_add_shift(KC_F7, is_pressed); }
-        case KC_F8: { return if_held_180_add_shift(KC_F8, is_pressed); }
-        case KC_F9: { return if_held_180_add_shift(KC_F9, is_pressed); }
-        case KC_F10: { return if_held_180_add_shift(KC_F10, is_pressed); }
-        case KC_F11: { return if_held_180_add_shift(KC_F11, is_pressed); }
-        case KC_F12: { return if_held_180_add_shift(KC_F12, is_pressed); }
-        case KC_F13: { return if_held_180_add_shift(KC_F13, is_pressed); }
-        case KC_F14: { return if_held_180_add_shift(KC_F14, is_pressed); }
-        case KC_F15: { return if_held_180_add_shift(KC_F15, is_pressed); }
-        case KC_F16: { return if_held_180_add_shift(KC_F16, is_pressed); }
-        case KC_F17: { return if_held_180_add_shift(KC_F17, is_pressed); }
-        case KC_F18: { return if_held_180_add_shift(KC_F18, is_pressed); }
-        case KC_F19: { return if_held_180_add_shift(KC_F19, is_pressed); }
-        case KC_F20: { return if_held_180_add_shift(KC_F20, is_pressed); }
-        case KC_F21: { return if_held_180_add_shift(KC_F21, is_pressed); }
-        case KC_F22: { return if_held_180_add_shift(KC_F22, is_pressed); }
-        case KC_F23: { return if_held_180_add_shift(KC_F23, is_pressed); }
-        case KC_F24: { return if_held_180_add_shift(KC_F24, is_pressed); }
+        case KC_F1: { return if_held_175_add_shift(KC_F1, is_pressed); }
+        case KC_F2: { return if_held_175_add_shift(KC_F2, is_pressed); }
+        case KC_F3: { return if_held_175_add_shift(KC_F3, is_pressed); }
+        case KC_F4: { return if_held_175_add_shift(KC_F4, is_pressed); }
+        case KC_F5: { return if_held_175_add_shift(KC_F5, is_pressed); }
+        case KC_F6: { return if_held_175_add_shift(KC_F6, is_pressed); }
+        case KC_F7: { return if_held_175_add_shift(KC_F7, is_pressed); }
+        case KC_F8: { return if_held_175_add_shift(KC_F8, is_pressed); }
+        case KC_F9: { return if_held_175_add_shift(KC_F9, is_pressed); }
+        case KC_F10: { return if_held_175_add_shift(KC_F10, is_pressed); }
+        case KC_F11: { return if_held_175_add_shift(KC_F11, is_pressed); }
+        case KC_F12: { return if_held_175_add_shift(KC_F12, is_pressed); }
+        case KC_F13: { return if_held_175_add_shift(KC_F13, is_pressed); }
+        case KC_F14: { return if_held_175_add_shift(KC_F14, is_pressed); }
+        case KC_F15: { return if_held_175_add_shift(KC_F15, is_pressed); }
+        case KC_F16: { return if_held_175_add_shift(KC_F16, is_pressed); }
+        case KC_F17: { return if_held_175_add_shift(KC_F17, is_pressed); }
+        case KC_F18: { return if_held_175_add_shift(KC_F18, is_pressed); }
+        case KC_F19: { return if_held_175_add_shift(KC_F19, is_pressed); }
+        case KC_F20: { return if_held_175_add_shift(KC_F20, is_pressed); }
+        case KC_F21: { return if_held_175_add_shift(KC_F21, is_pressed); }
+        case KC_F22: { return if_held_175_add_shift(KC_F22, is_pressed); }
+        case KC_F23: { return if_held_175_add_shift(KC_F23, is_pressed); }
+        case KC_F24: { return if_held_175_add_shift(KC_F24, is_pressed); }
 
         // mac-only overrides
-        case CTRL_DOT: { return replace_cmd_if_held_add_cmd_shift(KC_DOT, KC_LCTL, is_pressed, 180); }
-        case CTRL_H: { return replace_cmd_if_held_add_cmd_shift(KC_H, KC_LCTL, is_pressed, 180); }
-        case CTRL_M: { return replace_cmd_if_held_add_cmd_shift(KC_M, KC_LCTL, is_pressed, 180); }
+        case CTRL_DOT: { return replace_cmd_if_held_add_cmd_shift(KC_DOT, KC_LCTL, is_pressed, 175); }
+        case CTRL_H: { return replace_cmd_if_held_add_cmd_shift(KC_H, KC_LCTL, is_pressed, 175); }
+        case CTRL_M: { return replace_cmd_if_held_add_cmd_shift(KC_M, KC_LCTL, is_pressed, 175); }
 
         default: {
           return true;
