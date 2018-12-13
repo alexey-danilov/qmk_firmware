@@ -70,7 +70,10 @@ enum holding_keycodes {
   TAB_SHIFT,
   SPACE_SHIFT,
   INS_SHIFT,
+
+  SELECT_UP_MAC, SELECT_DOWN_MAC,
   SELECT_UP_WIN, SELECT_DOWN_WIN,
+
   SELECT_LEFT_MAC, SELECT_RIGHT_MAC,
   SELECT_LEFT_WIN, SELECT_RIGHT_WIN,
 
@@ -80,11 +83,6 @@ enum holding_keycodes {
   DEL_RIGHT_MAC,
   DEL_LEFT_WIN,
   DEL_RIGHT_WIN,
-
-  UP_SHIFT,
-  DOWN_SHIFT,
-  LEFT_SHIFT,
-  RIGHT_SHIFT,
 
   _0,
   _1,
@@ -535,8 +533,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	     KC_6, KC_7, KC_8, KC_9, KC_0, __________,
          __________,  __________,  __________,  __________,  __________,  __________,
          CTRL_H,  __________,  __________,  __________,  __________,  __________,
-         __________,  CTRL_M,  UP_SHIFT,  CTRL_DOT ,  __________,  __________,
-                   SELECT_LEFT_MAC,  DOWN_SHIFT,  SELECT_RIGHT_MAC, __________,
+         __________,  CTRL_M,  SELECT_UP_MAC,  CTRL_DOT ,  __________,  __________,
+                   SELECT_LEFT_MAC,  SELECT_DOWN_MAC,  SELECT_RIGHT_MAC, __________,
          __________,  _,
          KC_BSLS,
          KC_NUBS, KC_F2, SPACE_SHIFT,
@@ -581,8 +579,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	       _, _, _, _, _, _,
          _,  _,  _,  _,  _,  _,
          _,  _,  _,  _,  _,  _,
-         _,  _,  KC_UP,  _ ,  _,  _,
-         KC_LEFT, KC_DOWN, KC_RGHT, _,
+         _,  _,  __________,  _ ,  _,  _,
+         __________, __________, __________, _,
          _,  _,
          _,
          _,  MEH(KC_F2),  MEH(KC_F1),
@@ -604,8 +602,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	     KC_6, KC_7, KC_8, KC_9, KC_0, __________,
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
-         __________,  __________,  UP_SHIFT,  __________ ,  __________,  __________,
-                   LEFT_SHIFT,  DOWN_SHIFT,  RIGHT_SHIFT, __________,
+         __________,  __________,  __________,  __________ ,  __________,  __________,
+                   __________,  __________,  __________, __________,
          __________,  _,
          KC_BSLS,
          KC_NUBS,  TAB_SHIFT,  KC_F1,
@@ -673,8 +671,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	     KC_6, KC_7, KC_8, KC_9, KC_0, __________,
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
-         __________,  __________,  UP_SHIFT,  __________ ,  __________,  __________,
-                   LEFT_SHIFT,  DOWN_SHIFT, RIGHT_SHIFT, __________,
+         __________,  __________,  __________,  __________ ,  __________,  __________,
+                   __________,  __________, __________, __________,
          __________,  _,
          KC_BSLS,
          KC_NUBS,  TAB_SHIFT,  SPACE_SHIFT,
@@ -889,8 +887,8 @@ __________,  __________,  __________,  __________,  __________,  __________, ___
 	     KC_6, KC_7, KC_8, KC_9, KC_0, __________,
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
-         __________,  __________,  UP_SHIFT,  __________ ,  __________,  __________,
-                   LEFT_SHIFT,  DOWN_SHIFT,  RIGHT_SHIFT, __________,
+         __________,  __________,  __________,  __________ ,  __________,  __________,
+                   __________,  __________,  __________, __________,
          __________,  _,
          KC_BSLS,
          KC_PAUS,  KC_F2,  KC_F1,
@@ -935,8 +933,8 @@ __________,  __________,  __________,  __________,  __________,  __________, ___
          W_6,  W_7,  W_8,  W_9,  W_0,  __________,
          W_Y,  W_U,  W_I,  W_O,  W_P,  __________,
          W_H,  W_J,  W_K, W_L,  W_QUOT,  __________,
-         W_N, W_M, UP_SHIFT, W_DOT, W_SCLN,  __________,
-              LEFT_SHIFT,  DOWN_SHIFT, RIGHT_SHIFT, __________,
+         W_N, W_M, __________, W_DOT, W_SCLN,  __________,
+              __________,  __________, __________, __________,
          KC_F16,  _,
          KC_BSLS,
          KC_PAUS, KC_F2, KC_F1,
@@ -1356,12 +1354,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case SPACE_SHIFT: { return if_held_175_add_shift(KC_SPC, is_pressed); }
         case INS_SHIFT: { return if_held_175_add_shift(KC_INS, is_pressed); }
         case DELETE_SHIFT: { return if_held_175_add_shift(KC_DEL, is_pressed); }
-        case UP_SHIFT: { return if_held_175_add_shift(KC_UP, is_pressed); }
-        case DOWN_SHIFT: { return if_held_175_add_shift(KC_DOWN, is_pressed); }
-        case LEFT_SHIFT: { return if_held_175_add_shift(KC_LEFT, is_pressed); }
-        case RIGHT_SHIFT: { return if_held_175_add_shift(KC_RGHT, is_pressed); }
 
         case SPACE_MEH: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_SPC, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_SPC, KC_LCTL, KC_LALT, KC_NO, KC_NO, is_pressed, 175, true); }
+
+        case SELECT_UP_MAC: { return if_held_175_add_shift(KC_UP, is_pressed); }
+        case SELECT_DOWN_MAC: { return if_held_175_add_shift(KC_DOWN, is_pressed); }
 
         case SELECT_UP_WIN: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_UP, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_HOME, KC_LCTL, KC_LSFT, KC_NO, KC_NO, is_pressed, 175, false); }
         case SELECT_DOWN_WIN: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_DOWN, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_END, KC_LCTL, KC_LSFT, KC_NO, KC_NO, is_pressed, 175, false); }
