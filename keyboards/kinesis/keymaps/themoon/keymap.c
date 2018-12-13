@@ -539,7 +539,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                    SELECT_LEFT_MAC,  DOWN_SHIFT,  SELECT_RIGHT_MAC, __________,
          __________,  _,
          KC_BSLS,
-         KC_NUBS, KC_F1, SPACE_SHIFT,
+         KC_NUBS, KC_F2, SPACE_SHIFT,
                                      KC_F15
     ),
 
@@ -585,7 +585,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          KC_LEFT, KC_DOWN, KC_RGHT, _,
          _,  _,
          _,
-         _,  MEH(KC_F1),  MEH(KC_F2),
+         _,  MEH(KC_F2),  MEH(KC_F1),
                            MEH(KC_F15)
     ),
 
@@ -608,7 +608,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                    LEFT_SHIFT,  DOWN_SHIFT,  RIGHT_SHIFT, __________,
          __________,  _,
          KC_BSLS,
-         KC_NUBS,  TAB_SHIFT,  KC_F2,
+         KC_NUBS,  TAB_SHIFT,  KC_F1,
                            KC_F15
     ),
 
@@ -870,7 +870,7 @@ __________,  __________,  __________,  __________,  __________,  __________, ___
          KC_LEFT, KC_DOWN, KC_RGHT, _,
          _,  _,
          _,
-         _,  MEH(KC_F1),  MEH(KC_F2),
+         _,  MEH(KC_F2),  MEH(KC_F1),
                            MEH(KC_F15)
     ),
 
@@ -893,7 +893,7 @@ __________,  __________,  __________,  __________,  __________,  __________, ___
                    LEFT_SHIFT,  DOWN_SHIFT,  RIGHT_SHIFT, __________,
          __________,  _,
          KC_BSLS,
-         KC_PAUS,  KC_F1,  KC_F2,
+         KC_PAUS,  KC_F2,  KC_F1,
                          KC_F15
     ),
 
@@ -939,7 +939,7 @@ __________,  __________,  __________,  __________,  __________,  __________, ___
               LEFT_SHIFT,  DOWN_SHIFT, RIGHT_SHIFT, __________,
          KC_F16,  _,
          KC_BSLS,
-         KC_PAUS, KC_F1, KC_F2,
+         KC_PAUS, KC_F2, KC_F1,
                       KC_F15
     ),
 
@@ -1048,7 +1048,7 @@ __________,  __________,  __________,  __________,  __________,  __________, ___
                     _, _, _,
                                      _,
          _,  _,  _,  _,  _,  _, _, KEYB_CONTROL, RESET,
-	     _, _, _, _, _, _,// скорее все all will be отлично so true
+	     _, _, _, _, _, _,// seal
          _,  _,  _,  _,  _,  _,
          _,  _,  _,  _,  _,  _,
          _,  _,  _,  _ ,  _,  _,
