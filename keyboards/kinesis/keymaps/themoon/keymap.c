@@ -102,6 +102,9 @@ enum holding_keycodes {
 
   _INS,
 
+  FIND_NEXT,
+  FIND_PREV,
+
   LANG_CAPS_MAC,
   LANG_CAPS_WIN,
 
@@ -141,12 +144,6 @@ enum holding_keycodes {
   W_Y, W_U, W_I, W_O, W_P,
   W_H, W_J, W_K, W_L, W_SCLN,
   W_N, W_M, W_DOT, W_QUOT, W_GRV
-};
-
-enum macros {
-  FIND_PREV = 0,
-  FIND_NEXT,
-  WIN_POWER
 };
 
 static uint16_t esc_timer; // timer for leader key: esc
@@ -310,7 +307,7 @@ bool mail_sleep(bool pressed, uint16_t hold_duration) {
           SEND_STRING("oleksii.danilov@gmail.com");
       } else {
           if (isMac) { down(KC_LCTL); down(KC_LSFT); SEND_STRING(SS_DOWN(X_POWER) SS_UP(X_POWER)); up(KC_LSFT); up(KC_LCTL); }
-          if (isWin) { with_1_mod(KC_X, KC_LGUI); _delay_ms(100); key_code(KC_U); _delay_ms(100); down(KC_S); up(KC_S); }
+          if (isWin) { with_1_mod(KC_X, KC_LGUI); _delay_ms(300); key_code(KC_U); _delay_ms(300); down(KC_S); up(KC_S); }
       }
   }
   return false;
@@ -323,10 +320,10 @@ bool restart_power(bool pressed, uint16_t hold_duration) {
   } else {
       if (pressed_within(hold_timer, hold_duration)){
         if (isMac) { down(KC_LGUI); down(KC_LCTL); SEND_STRING(SS_DOWN(X_POWER) SS_UP(X_POWER)); up(KC_LCTL); up(KC_LGUI); }
-        if (isWin) { with_1_mod(KC_X, KC_LGUI); _delay_ms(100); key_code(KC_U); _delay_ms(100); down(KC_R); up(KC_R); }
+        if (isWin) { with_1_mod(KC_X, KC_LGUI); _delay_ms(300); key_code(KC_U); _delay_ms(300); down(KC_R); up(KC_R); }
       } else {
          if (isMac) { down(KC_LGUI); down(KC_LCTL); down(KC_LALT); SEND_STRING(SS_DOWN(X_POWER) SS_UP(X_POWER)); up(KC_LALT); up(KC_LCTL); up(KC_LGUI); up(KC_LGUI); }
-          if (isWin) { with_1_mod(KC_X, KC_LGUI); _delay_ms(100); key_code(KC_U); _delay_ms(100); down(KC_U); up(KC_U); }
+          if (isWin) { with_1_mod(KC_X, KC_LGUI); _delay_ms(300); key_code(KC_U); _delay_ms(300); down(KC_U); up(KC_U); }
       }
   }
   return false;
@@ -510,41 +507,9 @@ bool after_lead_f_key(uint16_t code, bool pressed) {
   return after_lead_replace_if_held_add_mods(code, KC_NO, code, KC_LSFT, KC_NO, &was_lead, pressed, 180);
 }
 
-const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
-    bool is_pressed = record->event.pressed;
-        switch(id) {
-
-           case FIND_NEXT: { // f3
-             if (is_pressed) {
-              clear_mods();
-              key_code(KC_F3);
-              return false;
-              }
-           }
-
-           case FIND_PREV: { // shift f3
-             if (is_pressed) {
-              clear_mods();
-              with_1_mod(KC_F3, KC_LSFT);
-              return false;
-              }
-           }
-
-           case WIN_POWER: {
-             if (is_pressed) {
-              with_1_mod(KC_X, KC_LGUI); _delay_ms(100); key_code(KC_U);
-              return false;
-             }
-           }
-
-         }
-
-    return MACRO_NONE;
-};
-
 /*
 * ,-------------------------------------------------------------------------------------------------------------------.
-* |PowerTap|  F1  |  F2  |  F3  |  F4  |  F5  |  F6  |  F8  |  F9  |  F10 |  F12 | ____ | ____ | ____ | Prog |Prog->FW|
+* | Mail/Sleep |  F1  |  F2  |  F3  |  F4  |  F5  |  F6  |  F8  |  F9  |  F10 |  F12 | _ | _ | _ | Prog | Restart/Off |
 * |--------+------+------+------+------+------+---------------------------+------+------+------+------+------+--------|
 * |  F17   |  1!  |  2@  |  3#  |  4$  |  5%  |                           |  6^  |  7&  |  8*  |  9(  |  0)  |   F21  |
 * |--------+------+------+------+------+------|                           +------+------+------+------+------+--------|
@@ -828,12 +793,12 @@ __________,  __________,  __________,  __________,  __________,  __________, ___
                       HOME_, KC_PGDN, END_, __________,
          __________, _,
          _BSLASH,
-         _NUBS, M(FIND_PREV), M(FIND_NEXT),
+         _NUBS, FIND_PREV, FIND_NEXT,
                                   HIDE_FOCUS_MAC
     ),
 
 [_PALM_R_MAC] = LAYOUT(
-         KC_POWER, HYPR(KC_F1), HYPR(KC_F2), HYPR(KC_F3), HYPR(KC_F4), HYPR(KC_F5), HYPR(KC_F6), HYPR(KC_F7), HYPR(KC_F8),
+         _, HYPR(KC_F1), HYPR(KC_F2), HYPR(KC_F3), HYPR(KC_F4), HYPR(KC_F5), HYPR(KC_F6), HYPR(KC_F7), HYPR(KC_F8),
          HYPR(KC_F17), HYPR(KC_1), KC__VOLDOWN, KC__MUTE, KC__VOLUP, HYPR(KC_5),
          HYPR(KC_F18), HYPR(KC_Q), HYPR(KC_W), HYPR(KC_E), HYPR(KC_R), HYPR(KC_T),
          HYPR(KC_F19), HYPR(KC_A), HYPR(KC_S), HYPR(KC_D), HYPR(KC_F), HYPR(KC_G),
@@ -1091,12 +1056,12 @@ __________,  __________,  __________,  __________,  __________,  __________, ___
                       CTRL_HOME, KC_PGDN, CTRL_END, __________,
          __________, _,
          _BSLASH,
-         _PAUS, M(FIND_PREV), M(FIND_NEXT),
+         _PAUS, FIND_PREV, FIND_NEXT,
                                HIDE_FOCUS_WIN
     ),
 
 [_PALM_R_WIN] = LAYOUT(
-         M(WIN_POWER), HYPR(KC_F1), HYPR(KC_F2), HYPR(KC_F3), HYPR(KC_F4), HYPR(KC_F5), HYPR(KC_F6), HYPR(KC_F7), HYPR(KC_F8),
+         _, HYPR(KC_F1), HYPR(KC_F2), HYPR(KC_F3), HYPR(KC_F4), HYPR(KC_F5), HYPR(KC_F6), HYPR(KC_F7), HYPR(KC_F8),
          HYPR(KC_F17), HYPR(KC_1), KC_VOLD, KC_MUTE, KC_VOLU, HYPR(KC_5),
          HYPR(KC_F18), HYPR(KC_Q), HYPR(KC_W), HYPR(KC_E), HYPR(KC_R), HYPR(KC_T),
          HYPR(KC_F19), HYPR(KC_A), HYPR(KC_S), HYPR(KC_D), HYPR(KC_F), HYPR(KC_G),
@@ -1576,6 +1541,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
         case SELECT_LEFT_WIN: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_LEFT, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_HOME, KC_LSFT, KC_NO, KC_NO, KC_NO, is_pressed, 250, false); }
         case SELECT_RIGHT_WIN: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_RGHT, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_END, KC_LSFT, KC_NO, KC_NO, KC_NO, is_pressed, 250, false); }
+
+        case FIND_NEXT: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_F3, KC_LALT, KC_LSFT, KC_LCTL, KC_LGUI, KC_NO, KC_NO, KC_NO, KC_NO, KC_F3, KC_NO, KC_NO, KC_NO, KC_NO, is_pressed, 180, true); }
+        case FIND_PREV: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_F3, KC_LALT, KC_LSFT, KC_LCTL, KC_LGUI, KC_LSFT, KC_NO, KC_NO, KC_NO, KC_F3, KC_LSFT, KC_NO, KC_NO, KC_NO, is_pressed, 180, true); }
 
         // close app
         case CMD_Q: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_Q, KC_LALT, KC_LSFT, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_Q, KC_LGUI, KC_NO, KC_NO, KC_NO, is_pressed, 180, true); }
