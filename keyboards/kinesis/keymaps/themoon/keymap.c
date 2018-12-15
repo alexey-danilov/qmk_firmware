@@ -81,7 +81,6 @@ enum holding_keycodes {
   SELECT_LEFT_MAC, SELECT_RIGHT_MAC,
   SELECT_LEFT_WIN, SELECT_RIGHT_WIN,
 
-  HOLD_SPACE,
   LEAD_SPACE,
 
   DEL_LEFT_MAC,
@@ -745,9 +744,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
                    __________,  __________,  __________, __________,
-         MEH(KC_F16), _,
+         MEH(KC_F16), LGUI(KC_F1),
          _BSLASH,
-         _NUBS, _TAB, HOLD_SPACE,
+         _NUBS, _TAB, KC_SPC,
          KC_F15
     ),
 
@@ -1007,9 +1006,9 @@ __________,  __________,  __________,  __________,  __________,  __________, ___
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________ ,  __________,  __________,
                    __________,  __________,  __________, __________,
-         MEH(KC_F16), _,
+         MEH(KC_F16), LCTL(KC_F1),
          _BSLASH,
-         _PAUS, _TAB, HOLD_SPACE,
+         _PAUS, _TAB, KC_SPC,
          KC_F15
     ),
 
@@ -1527,8 +1526,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case _ESC: { return if_held_180_add_shift(KC_ESC, is_pressed); }
         case _NUBS: { return if_held_180_add_shift(KC_NUBS, is_pressed); }
         case _PAUS: { return if_held_180_add_shift(KC_PAUS, is_pressed); }
-
-        case HOLD_SPACE: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_SPC, KC_LSFT, KC_NO, KC_NO, KC_NO, KC_LSFT, KC_NO, KC_NO, KC_NO, KC_SPC, isMac? KC_LGUI: KC_LCTL, KC_NO, KC_NO, KC_NO, is_pressed, 180, true); }
 
         case SELECT_UP_MAC: { return if_held_180_add_shift(KC_UP, is_pressed); }
         case SELECT_DOWN_MAC: { return if_held_180_add_shift(KC_DOWN, is_pressed); }
