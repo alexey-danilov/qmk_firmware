@@ -790,7 +790,7 @@ __________,  __________,  __________,  __________,  __________,  __________, ___
          __________,  CMD_SHIFT_TAB, CMD_Q, CMD_TAB,  __________,  __________,
          __________,  __________, KC_PGUP, KC_SPC,  __________,  __________,
                       HOME_, KC_PGDN, END_, __________,
-         __________, KC_4,
+         __________, KC_KP_ASTERISK,
          _BSLASH,
          _NUBS, FIND_PREV, FIND_NEXT,
                                   HIDE_FOCUS_MAC
@@ -1053,7 +1053,7 @@ __________,  __________,  __________,  __________,  __________,  __________, ___
          __________,  ALT_SHIFT_TAB, ALT_F4, ALT_TAB,  __________,  __________,
          __________,  __________, KC_PGUP, __________,  __________,  __________,
                       CTRL_HOME, KC_PGDN, CTRL_END, __________,
-         __________, KC_4,
+         __________, KC_KP_ASTERISK,
          _BSLASH,
          _PAUS, FIND_PREV, FIND_NEXT,
                                HIDE_FOCUS_WIN
@@ -1264,8 +1264,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
         case _INS: { return after_lead_replace(KC_INS, KC_INS, KC_LSFT, is_pressed); }
 
-        case LANG_CAPS_MAC: { return after_lead_replace_lead_code(KC_F1, KC_LALT, KC_SPC, KC_LALT, KC_LOCKING_CAPS, KC_NO, is_pressed); }
-        case LANG_CAPS_WIN: { return after_lead_replace_lead_code(KC_F1, KC_LALT, KC_SPC, KC_LGUI, KC_CAPS, KC_NO, is_pressed); }
+        case LANG_CAPS_MAC: { return after_lead_replace_lead_code(KC_KP_ASTERISK, KC_LALT, KC_SPC, KC_LALT, KC_LOCKING_CAPS, KC_NO, is_pressed); }
+        case LANG_CAPS_WIN: { return after_lead_replace_lead_code(KC_KP_ASTERISK, KC_LALT, KC_SPC, KC_LGUI, KC_CAPS, KC_NO, is_pressed); }
 
         // custom hold keys for numbers
         case _1_: { return after_lead_replace(KC_1, KC_1, KC_NO, is_pressed); } // disable key repeat
@@ -1350,7 +1350,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           if (is_lead(KC_NUBS, is_pressed)) { return false; }
           if (is_lead(KC_NUBS, is_pressed)) { return false; }
           static uint16_t ctrl_nubs_layer_timer;
-          momentary_layer_tap(KC_NUBS, KC_LGUI, KC_LCTL, KC_NO, KC_NO, KC_NO, &ctrl_nubs_layer_timer, &ctrl_nubs_interrupted, is_pressed, 180, true);
+          momentary_layer_tap(KC_NUBS, KC_LCTL, KC_LGUI, KC_NO, KC_NO, KC_NO, &ctrl_nubs_layer_timer, &ctrl_nubs_interrupted, is_pressed, 180, true);
           return true;
         }
 
