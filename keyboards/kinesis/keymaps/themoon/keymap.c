@@ -1324,7 +1324,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
 
         case CMD_ESC: {
-          if (is_lead(KC_ESC, is_pressed)) { return false; }
+          if (is_lead(KC_F3, is_pressed)) { return false; }
           static uint16_t cmd_esc_layer_timer;
           if (momentary_layer_tap(KC_ESC, KC_NO, KC_LGUI, KC_NO, KC_NO, KC_NO, &cmd_esc_layer_timer, &cmd_esc_interrupted, is_pressed, 180, true)) {
             esc_timer = timer_read();
