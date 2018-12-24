@@ -555,56 +555,6 @@ void k_reset (qk_tap_dance_state_t *state, void *user_data) {
   k_tap_state.state = 0;
 }
 
-//**************** COMMA TAP *********************//
-static tap comma_tap_state = { .is_press_action = true, .state = 0 };
-
-void comma_finished (qk_tap_dance_state_t *state, void *user_data) {
-  comma_tap_state.state = cur_dance(state);
-  if (!is_lead(KC_COMM, true)) {
-    switch (comma_tap_state.state) {
-      case SINGLE_TAP: down(KC_COMM); break;
-      case SINGLE_HOLD: down(KC_LSFT); key_code(KC_COMM); break;
-      case DOUBLE_TAP: down(KC_LSFT); down(KC_LALT); key_code(KC_COMM); up(KC_LALT); break;
-      case DOUBLE_HOLD: down(KC_LCTL); down(KC_LALT); key_code(KC_COMM); up(KC_LALT); break;
-    }
-  }
-}
-
-void comma_reset (qk_tap_dance_state_t *state, void *user_data) {
-  switch (comma_tap_state.state) {
-    case SINGLE_TAP: up(KC_COMM); break;
-    case SINGLE_HOLD: up(KC_LSFT); break;
-    case DOUBLE_TAP: up(KC_LSFT); break;
-    case DOUBLE_HOLD: up(KC_LCTL); break;
-  }
-  comma_tap_state.state = 0;
-}
-
-//**************** F5 TAP *********************//
-static tap f5_tap_state = { .is_press_action = true, .state = 0 };
-
-void f5_finished (qk_tap_dance_state_t *state, void *user_data) {
-  f5_tap_state.state = cur_dance(state);
-  if (!is_lead(KC_F5, true)) {
-    switch (f5_tap_state.state) {
-       case SINGLE_TAP: down(KC_F5); break;
-       case SINGLE_HOLD: down(KC_LSFT); key_code(KC_F5); break;
-       case DOUBLE_TAP: down(KC_LSFT); down(KC_LALT); key_code(KC_F5); up(KC_LALT); break;
-       case DOUBLE_HOLD: down(KC_LCTL); down(KC_LALT); key_code(KC_F5); up(KC_LALT); break;
-     }
-  }
-}
-
-void f5_reset (qk_tap_dance_state_t *state, void *user_data) {
-  switch (f5_tap_state.state) {
-    case SINGLE_TAP: up(KC_F5); break;
-    case SINGLE_HOLD: up(KC_LSFT); break;
-    case DOUBLE_TAP: up(KC_LSFT); break;
-    case DOUBLE_HOLD: up(KC_LCTL); break;
-  }
-  f5_tap_state.state = 0;
-}
-
 // dynamic macro1
 static bool is_macro1_recording = false;
 static uint32_t current_layer_state = 0;
@@ -632,14 +582,12 @@ qk_tap_dance_action_t tap_dance_actions[] = {
   // This Tap dance plays the macro 1 on TAP and records it on double tap.
   [TAP_MACRO1] = ACTION_TAP_DANCE_FN(macro1_tapdance_fn),
   [TAP_MACRO2] = ACTION_TAP_DANCE_FN(macro2_tapdance_fn),
-  [K_TD] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, k_finished, k_reset),
-  [COMMA_TD] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, comma_finished, comma_reset),
-  [F5_TD] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, f5_finished, f5_reset)
+  [K_TD] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, k_finished, k_reset)
 };
 
 /*
 * ,-------------------------------------------------------------------------------------------------------------------.
-* |  Esc   |  F1  |  F2  |  F3  |  F4  |quad_F5|  F6  |  F8  |  F9  |  F10 |  F12 |  _  |  _  |  _  | Prog | Sleep/Off|
+* |  Esc   |  F1  |  F2  |  F3  |  F4  |  F5  |  F6  |  F8  |  F9  |  F10 |  F12 |  _  |  _  |  _  | Prog | Sleep/Off |
 * |--------+------+------+------+------+------+---------------------------+------+------+------+------+------+--------|
 * |  `~    |  1!  |  2@  |  3#  |  4$  |  5%  |                           |  6^  |  7&  |  8*  |  9(  |  0)  |   _    |
 * |--------+------+------+------+------+------|                           +------+------+------+------+------+--------|
@@ -649,7 +597,7 @@ qk_tap_dance_action_t tap_dance_actions[] = {
 * |--------+------+------+------+------+------|                           |------+------+------+------+------+--------|
 * |  F16   |   Z  |   X  |   C  |   V  |   B  |                           |   N  |   M  |  Up  |  .>  |  '"  |   _    |
 * `--------+------+------+------+------+-------                           `------+------+------+------+------+--------'
-*          | Nubs |  [{  |quad_,|  ]}  |                                         | Left | Down | Right| Menu |
+*          | Nubs |  [{  |  ,<  |  ]}  |                                         | Left | Down | Right| Menu |
 *          `---------------------------'                                         `---------------------------'
 *                            .-------------------------.         ,---------------------------.
 *                            |    Select/Bspc   | DYN1 |         | DYN2 |       Bspc         |
@@ -669,12 +617,12 @@ qk_tap_dance_action_t tap_dance_actions[] = {
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [_MAC] = LAYOUT(
            // left side
-           KC_ESC, KC_F1, KC_F2, KC_F3, KC_F4, TD(F5_TD), KC_F6, KC_F7, KC_F8,
+           KC_ESC, KC_F1, KC_F2, KC_F3, KC_F4, KC_F5, KC_F6, KC_F7, KC_F8,
            KC_GRV, _1_, _2_PLEFT, _3_SLASH, _4_PRGHT, _5_EQL,
            _INS, KC_Q, KC_W, KC_E, KC_R, KC_T,
            KC_F15,KC_A, KC_S, KC_D, KC_F, KC_G,
            KC_F16, KC_Z, KC_X, KC_C, KC_V, KC_B,
-                 _NUBS, KC_LBRC, TD(COMMA_TD), KC_RBRC,
+                 _NUBS, KC_LBRC, KC_COMM, KC_RBRC,
                                                // left thumb keys
 			                            ALT_SHIFT_BS, TD(TAP_MACRO1),
                                                    ALT_SLASH_MAC,
@@ -703,7 +651,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
-               __________,  __________,  KC_COMM,  __________,
+               __________,  __________,  __________,  __________,
                              _,  __________,
                                        KC_LALT,
                     CMD_ESC, KC_LSFT, KC_LCTL,
@@ -721,7 +669,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
 
 [_COMMAND_SPACE] = LAYOUT(
-         __________,  __________,  __________,  __________,  __________,  KC_F5, __________, __________, __________,
+         __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
          __________, KC_1, KC_2, KC_3, KC_4, KC_5,
          __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
@@ -790,12 +738,12 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
 
 [_ALT_BSLASH_MAC] = LAYOUT(
-         __________,  __________,  __________,  __________,  __________,  KC_F5, __________, __________, __________,
+         __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
          __________, KC_1, KC_2, KC_3, KC_4, KC_5,
          __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
-               __________,  __________,  KC_COMM,  __________,
+               __________,  __________,  __________,  __________,
                              LCTL(KC_BSPC),  _,
                                        _SLASH,
                     _ESC, _ENTER,  _DEL,
@@ -813,12 +761,12 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
 
 [_CTRL_F17] = LAYOUT(
-         __________,  __________,  __________,  __________,  __________,  KC_F5, __________, __________, __________,
+         __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
          __________, KC_1, KC_2, KC_3, KC_4, KC_5,
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
-                  __________, __________,  KC_COMM, __________,
+                  __________, __________,  __________, __________,
                              KC_BSPC,  _,
                                        _SLASH,
                _ESC, _ENTER, _DEL,
@@ -882,12 +830,12 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
 
 [_SHIFT_TAB_MAC] = LAYOUT(
-         __________,  __________,  __________,  __________,  __________,  KC_F5, __________, __________, __________,
+         __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
          __________, KC_1, KC_2, KC_3, KC_4, KC_5,
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
-                   __________,  __________,  KC_COMM,  __________,
+                   __________,  __________,  __________,  __________,
                              KC_BSPC,  _,
                                        KC_BSLS,
                     KC_ESC, KC_ENTER,  KC_DEL,
@@ -953,12 +901,12 @@ __________,  __________,  __________,  __________,  __________,  __________, ___
 // base win layer
 [_WIN] = LAYOUT(
            // left side
-           KC_ESC, KC_F1, KC_F2, KC_F3, KC_F4, TD(F5_TD), KC_F6, KC_F7, KC_F8,
+           KC_ESC, KC_F1, KC_F2, KC_F3, KC_F4, KC_F5, KC_F6, KC_F7, KC_F8,
            KC_GRV, _1_, _2_PLEFT, _3_SLASH, _4_PRGHT, _5_EQL,
            _INS, KC_Q, KC_W, KC_E, KC_R, KC_T,
            KC_F15, KC_A, KC_S, KC_D, KC_F, KC_G,
            KC_F16, KC_Z, KC_X, KC_C, KC_V, KC_B,
-                _PAUS, KC_LBRC, TD(COMMA_TD), KC_RBRC,
+                _PAUS, KC_LBRC, KC_COMM, KC_RBRC,
                                                  // left thumb keys
 			                             CTRL_SHIFT_BS, TD(TAP_MACRO1),
                                                      ALT_SLASH_WIN,
@@ -987,7 +935,7 @@ __________,  __________,  __________,  __________,  __________,  __________, ___
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
-                  __________, __________,  KC_COMM, __________,
+                  __________, __________,  __________, __________,
                                          _,  _,
                                        KC_LALT,
                     CTRL_ESC, KC_LSFT, KC_LGUI,
@@ -1006,7 +954,7 @@ __________,  __________,  __________,  __________,  __________,  __________, ___
     ),
 
 [_CONTROL_SPACE] = LAYOUT(
-         __________,  __________,  __________,  __________,  __________,  KC_F5, __________, __________, __________,
+         __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
          __________, KC_1, KC_2, KC_3, KC_4, KC_5,
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
@@ -1075,12 +1023,12 @@ __________,  __________,  __________,  __________,  __________,  __________, ___
     ),
 
 [_ALT_BSLASH_WIN] = LAYOUT(
-         __________,  __________,  __________,  __________,  __________,  KC_F5, __________, __________, __________,
+         __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
          __________, KC_1, KC_2, KC_3, KC_4, KC_5,
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
-                  __________, __________,  KC_COMM, __________,
+                  __________, __________,  __________, __________,
                                    KC_BSPC, _,
                                        _SLASH,
                       _ESC, _ENTER, _DEL,
@@ -1145,12 +1093,12 @@ __________,  __________,  __________,  __________,  __________,  __________, ___
 
 
 [_SHIFT_TAB_WIN] = LAYOUT(
-         __________,  __________,  __________,  __________,  __________,  KC_F5, __________, __________, __________,
+         __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
          __________, KC_1, KC_2, KC_3, KC_4, KC_5,
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
-                   __________,  __________,  KC_COMM,  __________,
+                   __________,  __________,  __________,  __________,
                              KC_BSPC,  _,
                                        KC_BSLS,
                     KC_ESC, KC_ENTER,  KC_DEL,
