@@ -746,7 +746,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                __________,  __________,  __________,  __________,
                              LCTL(KC_BSPC),  _,
                                        _SLASH,
-                    _ESC, _ENTER,  _DEL,
+                    _ESC, _ENTER,  LCTL(KC_DEL),
                                      KC_F13,
          _,  _,  _,  _,  _,  _, _, _, _,
          _,  _,  _,  _,  _,  _,
