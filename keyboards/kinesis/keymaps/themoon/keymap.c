@@ -76,7 +76,7 @@ enum holding_keycodes {
   _NUBS,
   _PAUS,
   _BSPC,
-  _CTRL_F2,
+  _CTRL_F2_F3,
   _APP,
 
   SELECT_UP_MAC, SELECT_DOWN_MAC,
@@ -616,11 +616,11 @@ qk_tap_dance_action_t tap_dance_actions[] = {
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [_MAC] = LAYOUT(
            // left side
-           KC_ESC, KC_F1, KC_F2, KC_F3, KC_F4, KC_F5, KC_F6, KC_F7, KC_F8,
+           _INS, KC_F1, KC_F2, KC_F3, KC_F4, KC_F5, KC_F6, KC_F7, KC_F8,
            KC_GRV, _1_, _2_PLEFT, _3_SLASH, _4_PRGHT, _5_EQL,
-           _INS, KC_Q, KC_W, KC_E, KC_R, KC_T,
-           KC_F15,KC_A, KC_S, KC_D, KC_F, KC_G,
-           KC_F16, KC_Z, KC_X, KC_C, KC_V, KC_B,
+           KC_F15, KC_Q, KC_W, KC_E, KC_R, KC_T,
+           KC_F16,KC_A, KC_S, KC_D, KC_F, KC_G,
+           KC_F17, KC_Z, KC_X, KC_C, KC_V, KC_B,
                  _NUBS, KC_LBRC, KC_COMM, KC_RBRC,
                                                // left thumb keys
 			                            ALT_SHIFT_BS, TD(TAP_MACRO1),
@@ -634,7 +634,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	KC_Y, KC_U, KC_I, KC_O, KC_P, KC_NO,
 	KC_H, KC_J, TD(K_TD), KC_L, KC_SCLN, KC_NO,
 	KC_N, KC_M, KC_UP, KC_DOT, KC_QUOT, KC_NO,
-	KC_LEFT, KC_DOWN, KC_RGHT, _CTRL_F2,
+	KC_LEFT, KC_DOWN, KC_RGHT, _CTRL_F2_F3,
            // right thumb keys
            TD(TAP_MACRO2), _BSPC,
            ALT_BSLASH_MAC,
@@ -1349,7 +1349,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case _NUBS: { return after_lead_replace(KC_NUBS, KC_NUBS, KC_LSFT, is_pressed); }
         case _PAUS: { return after_lead_replace(KC_PAUS, KC_PAUS, KC_LSFT, is_pressed); }
         case _BSPC: { return after_lead_replace(KC_BSPC, KC_BSPC, KC_LSFT, is_pressed); }
-        case _CTRL_F2: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_F2, KC_NO, KC_NO, KC_NO, KC_NO, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_F2, KC_LCTL, KC_LSFT, KC_NO, KC_NO, is_pressed, 175, true); }
+        case _CTRL_F2_F3: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_F2, KC_NO, KC_NO, KC_NO, KC_NO, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_F3, KC_LCTL, KC_NO, KC_NO, KC_NO, is_pressed, 175, true); }
         case _APP: { return if_held_175_add_shift(KC_APP, is_pressed); }
 
         // custom hold keys for numbers
