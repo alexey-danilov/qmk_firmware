@@ -87,10 +87,10 @@ enum holding_keycodes {
   _GRV,
   _CMD_COMM,
   _CTRL_COMM,
-  _F13,
-  _F14,
-  _F15,
-  _F16,
+  _GRV_,
+  _INS_,
+  _EQL_,
+  _MINS_,
 
   _0_,
   _1_,
@@ -481,7 +481,7 @@ bool lead(bool pressed) {
 
 bool is_lead_additional_mod_impl(uint16_t code, uint16_t os_mod, uint16_t additional_mod, bool is_pressed) {
   if (lead_timer) {
-    if (pressed_within(lead_timer, 1000)) {
+    if (pressed_within(lead_timer, 2000)) {
       if (is_pressed) {
         lead_timer = 0; // means that led key was pressed
         with_3_mods(code, os_mod, KC_LSFT, additional_mod);
@@ -492,12 +492,12 @@ bool is_lead_additional_mod_impl(uint16_t code, uint16_t os_mod, uint16_t additi
   return false;
 }
 
-bool is_lead(uint16_t code, bool is_pressed) {
+bool is_lead_meh(uint16_t code, bool is_pressed) {
   return is_lead_additional_mod_impl(code, isMac ? KC_LGUI : KC_LCTL, KC_LALT, is_pressed);
 }
 
-bool after_lead(uint16_t code, bool pressed) {
-  if (is_lead(code, pressed)) {
+bool is_lead_shift(uint16_t code, bool pressed) {
+  if (is_lead_additional_mod_impl(code, isMac ? KC_LGUI : KC_LCTL, KC_NO, pressed)) {
      return false;
   };
   return true;
@@ -544,7 +544,7 @@ bool after_lead_replace(uint16_t code, uint16_t held_code, uint16_t held_mod, bo
 
 bool after_lead_f_key(uint16_t code, bool pressed) {
   static bool was_lead;
-  if (is_lead(code, pressed)) {
+  if (is_lead_meh(code, pressed)) {
      was_lead = true;
      return false;
   }
@@ -586,8 +586,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
            _CMD_COMM, KC_F1, KC_F2, KC_F3, KC_F4, KC_F5, KC_F6, KC_F7, KC_F8,
            _GRV, _1_, _2_PLEFT, _3_SLASH, _4_PRGHT, _5_EQL,
            _INS, KC_Q, KC_W, KC_E, KC_R, KC_T,
-           _F13,KC_A, KC_S, KC_D, KC_F, KC_G,
-           _F14, KC_Z, KC_X, KC_C, KC_V, KC_B,
+           _GRV_,KC_A, KC_S, KC_D, KC_F, KC_G,
+           _INS_, KC_Z, KC_X, KC_C, KC_V, KC_B,
                  _NUBS, _LBRC, _COMM, _RBRC,
                                                // left thumb keys
 			                            ALT_SHIFT_BS, KC_F15,
@@ -599,8 +599,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   KC_F9, KC_F10, KC_F11, KC_F12, KC_NO, KC_NO, KC_NO, KEYB_CONTROL, SLEEP_POWER,
 	_6_PLUS, _7_BANG, _8_DASH, _9_QUEST, _0_, KC_EQL,
 	KC_Y, KC_U, KC_I, KC_O, KC_P, KC_MINS,
-	KC_H, KC_J, KC_K, KC_L, _SCLN, _F15,
-	KC_N, KC_M, KC_UP, _DOT, _QUOT, _F16,
+	KC_H, KC_J, KC_K, KC_L, _SCLN, _EQL_,
+	KC_N, KC_M, KC_UP, _DOT, _QUOT, _MINS_,
 	KC_LEFT, KC_DOWN, KC_RGHT, _CTRL_F2_F3,
            // right thumb keys
            KC_F16, _BSPC,
@@ -624,7 +624,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                      __________,
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
          KC_6, KC_7, KC_8, KC_9, KC_0, __________,
-         y_, i_, o_, p_, __________, __________,
+         y_, u_ ,i_, o_, p_, __________,
          CTRL_H,   j_,  k_,  l_,  __________,  __________,
          n_,  CTRL_M,  SELECT_UP_MAC,  CTRL_DOT,  __________,  __________,
                    SELECT_LEFT_MAC,  SELECT_DOWN_MAC,  SELECT_RIGHT_MAC, __________,
@@ -693,7 +693,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                      _,
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
          KC_6, KC_7, KC_8, KC_9, KC_0, __________,
-         y_, i_, o_, p_, __________, __________,
+         y_, u_ ,i_, o_, p_, __________,
          h_, j_, k_, l_,  __________,  __________,
          n_,  m_,  __________,  __________,  __________,  __________,
                __________,  __________,  __________,  __________,
@@ -762,7 +762,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                      _,
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
          KC_6, KC_7, KC_8, KC_9, KC_0, __________,
-         y_, i_, o_, p_, __________, __________,
+         y_, u_ ,i_, o_, p_, __________,
          h_, j_, k_, l_,  __________,  __________,
          n_, m_, __________, __________, __________, __________,
                __________,  __________,  __________,  __________,
@@ -785,7 +785,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                      _,
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
 	       KC_6, KC_7, KC_8, KC_9, KC_0, __________,
-         y_, i_, o_, p_, __________, __________,
+         y_, u_ ,i_, o_, p_, __________,
          h_, j_, k_, l_,  __________,  __________,
          n_, m_, __________, __________, __________, __________,
                    __________,  __________,  __________, __________,
@@ -831,7 +831,7 @@ __________,  __________,  __________,  __________,  __________,  __________, ___
                                      HYPR_F13_MAC,
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
          KC_6, KC_7, KC_8, KC_9, KC_0, __________,
-         y_, i_, o_, p_, __________, __________,
+         y_, u_ ,i_, o_, p_, __________,
          h_,  CMD_SHIFT_TAB, CMD_Q, CMD_TAB,  __________,  __________,
          n_,  m_, KC_PGUP, KC_SPC,  __________,  __________,
            HOME_, KC_PGDN, END_, __________,
@@ -868,10 +868,10 @@ __________,  __________,  __________,  __________,  __________,  __________, ___
 [_WIN] = LAYOUT(
            // left side
            _CTRL_COMM, KC_F1, KC_F2, KC_F3, KC_F4, KC_F5, KC_F6, KC_F7, KC_F8,
-           KC_GRV, _1_, _2_PLEFT, _3_SLASH, _4_PRGHT, _5_EQL,
+           _GRV, _1_, _2_PLEFT, _3_SLASH, _4_PRGHT, _5_EQL,
            _INS, KC_Q, KC_W, KC_E, KC_R, KC_T,
-           _F13, KC_A, KC_S, KC_D, KC_F, KC_G,
-           _F14, KC_Z, KC_X, KC_C, KC_V, KC_B,
+           _GRV_, KC_A, KC_S, KC_D, KC_F, KC_G,
+           _INS_, KC_Z, KC_X, KC_C, KC_V, KC_B,
                 _PAUS, _LBRC, _COMM, _RBRC,
                                                  // left thumb keys
 			                             CTRL_SHIFT_BS, KC_F15,
@@ -883,8 +883,8 @@ __________,  __________,  __________,  __________,  __________,  __________, ___
     KC_F9, KC_F10, KC_F11, KC_F12, KC_NO, KC_NO, KC_NO, KEYB_CONTROL, SLEEP_POWER,
   	_6_PLUS, _7_BANG, _8_DASH, _9_QUEST, _0_, KC_EQL,
   	KC_Y, KC_U, KC_I, KC_O, KC_P, KC_MINS,
-  	KC_H, KC_J, KC_K, KC_L, _SCLN, _F15,
-  	KC_N, KC_M, KC_UP, _DOT, _QUOT, _F16,
+  	KC_H, KC_J, KC_K, KC_L, _SCLN, _EQL_,
+  	KC_N, KC_M, KC_UP, _DOT, _QUOT, _MINS_,
   	KC_LEFT, KC_DOWN, KC_RGHT, _APP,
            // right thumb keys
            KC_F16, _BSPC,
@@ -909,7 +909,7 @@ __________,  __________,  __________,  __________,  __________,  __________, ___
 
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
          KC_6, KC_7, KC_8, KC_9, KC_0, __________,
-         y_, i_, o_, p_, __________, __________,
+         y_, u_ ,i_, o_, p_, __________,
          h_, j_, k_, l_,  __________,  __________,
          n_,  m_,  SELECT_UP_WIN,  __________,  __________,  __________,
          SELECT_LEFT_WIN,  SELECT_DOWN_WIN,  SELECT_RIGHT_WIN, __________,
@@ -978,7 +978,7 @@ __________,  __________,  __________,  __________,  __________,  __________, ___
                                      _,
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
          KC_6, KC_7, KC_8, KC_9, KC_0, __________,
-         y_, i_, o_, p_, __________, __________,
+         y_, u_ ,i_, o_, p_, __________,
          h_, j_, k_, l_,  __________,  __________,
          n_,  m_,  __________,  __________,  __________,  __________,
                   __________, __________,  __________, __________,
@@ -1047,7 +1047,7 @@ __________,  __________,  __________,  __________,  __________,  __________, ___
                                      _,
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
 	       KC_6, KC_7, KC_8, KC_9, KC_0, __________,
-         y_, i_, o_, p_, __________, __________,
+         y_, u_ ,i_, o_, p_, __________,
          h_, j_, k_, l_,  __________,  __________,
          n_,  m_,  __________,  __________,  __________,  __________,
                    __________,  __________,  __________, __________,
@@ -1094,7 +1094,7 @@ __________,  __________,  __________,  __________,  __________,  __________, ___
                                      HYPR_F13_WIN,
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
          KC_6, KC_7, KC_8, KC_9, KC_0, __________,
-         y_, i_, o_, p_, __________, __________,
+         y_, u_ ,i_, o_, p_, __________,
          h_, ALT_SHIFT_TAB, ALT_F4, ALT_TAB,  __________,  __________,
          n_, m_, KC_PGUP, __________,  __________,  __________,
                       CTRL_HOME, KC_PGDN, CTRL_END, __________,
@@ -1279,32 +1279,32 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           return lead(is_pressed);
         }
 
-        case KC_Q: { return after_lead(KC_Q, is_pressed); }
-        case KC_W: { return after_lead(KC_W, is_pressed); }
-        case KC_E: { return after_lead(KC_E, is_pressed); }
-        case KC_R: { return after_lead(KC_R, is_pressed); }
-        case KC_T: { return after_lead(KC_T, is_pressed); }
-        case KC_Y: { return after_lead(KC_Y, is_pressed); }
-        case KC_U: { return after_lead(KC_U, is_pressed); }
-        case KC_I: { return after_lead(KC_I, is_pressed); }
-        case KC_O: { return after_lead(KC_O, is_pressed); }
-        case KC_P: { return after_lead(KC_P, is_pressed); }
-        case KC_A: { return after_lead(KC_A, is_pressed); }
-        case KC_S: { return after_lead(KC_S, is_pressed); }
-        case KC_D: { return after_lead(KC_D, is_pressed); }
-        case KC_F: { return after_lead(KC_F, is_pressed); }
-        case KC_G: { return after_lead(KC_G, is_pressed); }
-        case KC_H: { return after_lead(isWin? KC_H: KC_F16, is_pressed); }
-        case KC_J: { return after_lead(KC_J, is_pressed); }
-        case KC_K: { return after_lead(KC_K, is_pressed); }
-        case KC_L: { return after_lead(KC_L, is_pressed); }
-        case KC_Z: { return after_lead(KC_Z, is_pressed); }
-        case KC_X: { return after_lead(KC_X, is_pressed); }
-        case KC_C: { return after_lead(KC_C, is_pressed); }
-        case KC_V: { return after_lead(KC_V, is_pressed); }
-        case KC_B: { return after_lead(KC_B, is_pressed); }
-        case KC_N: { return after_lead(KC_N, is_pressed); }
-        case KC_M: { return after_lead(KC_M, is_pressed); }
+        case KC_Q: { return is_lead_shift(KC_Q, is_pressed); }
+        case KC_W: { return is_lead_shift(KC_W, is_pressed); }
+        case KC_E: { return is_lead_shift(KC_E, is_pressed); }
+        case KC_R: { return is_lead_shift(KC_R, is_pressed); }
+        case KC_T: { return is_lead_shift(KC_T, is_pressed); }
+        case KC_Y: { return is_lead_shift(KC_Y, is_pressed); }
+        case KC_U: { return is_lead_shift(KC_U, is_pressed); }
+        case KC_I: { return is_lead_shift(KC_I, is_pressed); }
+        case KC_O: { return is_lead_shift(KC_O, is_pressed); }
+        case KC_P: { return is_lead_shift(KC_P, is_pressed); }
+        case KC_A: { return is_lead_shift(KC_A, is_pressed); }
+        case KC_S: { return is_lead_shift(KC_S, is_pressed); }
+        case KC_D: { return is_lead_shift(KC_D, is_pressed); }
+        case KC_F: { return is_lead_shift(KC_F, is_pressed); }
+        case KC_G: { return is_lead_shift(KC_G, is_pressed); }
+        case KC_H: { return is_lead_shift(KC_H, is_pressed); }
+        case KC_J: { return is_lead_shift(KC_J, is_pressed); }
+        case KC_K: { return is_lead_shift(KC_K, is_pressed); }
+        case KC_L: { return is_lead_shift(KC_L, is_pressed); }
+        case KC_Z: { return is_lead_shift(KC_Z, is_pressed); }
+        case KC_X: { return is_lead_shift(KC_X, is_pressed); }
+        case KC_C: { return is_lead_shift(KC_C, is_pressed); }
+        case KC_V: { return is_lead_shift(KC_V, is_pressed); }
+        case KC_B: { return is_lead_shift(KC_B, is_pressed); }
+        case KC_N: { return is_lead_shift(KC_N, is_pressed); }
+        case KC_M: { return is_lead_shift(KC_M, is_pressed); }
 
         case q_: { return no_repeat(KC_Q, is_pressed); }
         case w_: { return no_repeat(KC_W, is_pressed); }
@@ -1349,10 +1349,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case _APP: { return if_held_170_add_shift(KC_APP, is_pressed); }
         case _CMD_COMM: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_COMM, KC_NO, KC_NO, KC_NO, KC_NO, KC_LGUI, KC_NO, KC_NO, KC_NO, KC_COMM, KC_LGUI, KC_LSFT, KC_NO, KC_NO, is_pressed, 170, true); }
         case _CTRL_COMM: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_COMM, KC_NO, KC_NO, KC_NO, KC_NO, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_COMM, KC_LCTL, KC_LSFT, KC_NO, KC_NO, is_pressed, 170, true); }
-        case _F13: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_F13, KC_NO, KC_NO, KC_NO, KC_NO, KC_LALT, KC_LSFT, KC_NO, KC_NO, KC_F13, KC_LALT, KC_LCTL, KC_NO, KC_NO, is_pressed, 170, true); }
-        case _F14: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_F14, KC_NO, KC_NO, KC_NO, KC_NO, KC_LALT, KC_LSFT, KC_NO, KC_NO, KC_F14, KC_LALT, KC_LCTL, KC_NO, KC_NO, is_pressed, 170, true); }
-        case _F15: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_F15, KC_NO, KC_NO, KC_NO, KC_NO, KC_LALT, KC_LSFT, KC_NO, KC_NO, KC_F15, KC_LALT, KC_LCTL, KC_NO, KC_NO, is_pressed, 170, true); }
-        case _F16: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_F16, KC_NO, KC_NO, KC_NO, KC_NO, KC_LALT, KC_LSFT, KC_NO, KC_NO, KC_F16, KC_LALT, KC_LCTL, KC_NO, KC_NO, is_pressed, 170, true); }
+        case _GRV_: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_GRV, KC_NO, KC_NO, KC_NO, KC_NO, KC_LALT, KC_LCTL, KC_NO, KC_NO, KC_GRV, KC_LSFT, KC_LALT, KC_LCTL, KC_NO, is_pressed, 170, true); }
+        case _INS_: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_INS, KC_NO, KC_NO, KC_NO, KC_NO, KC_LALT, KC_LCTL, KC_NO, KC_NO, KC_INS, KC_LSFT, KC_LALT, KC_LCTL, KC_NO, is_pressed, 170, true); }
+        case _EQL_: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_EQL, KC_NO, KC_NO, KC_NO, KC_NO, KC_LALT, KC_LCTL, KC_NO, KC_NO, KC_EQL, KC_LSFT, KC_LALT, KC_LCTL, KC_NO, is_pressed, 170, true); }
+        case _MINS_: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_MINS, KC_NO, KC_NO, KC_NO, KC_NO, KC_LALT, KC_LCTL, KC_NO, KC_NO, KC_MINS, KC_LSFT, KC_LALT, KC_LCTL, KC_NO, is_pressed, 170, true); }
 
         case _ENTER: { return if_held_170_add_shift(KC_ENTER, is_pressed); }
         case _TAB: { return if_held_170_add_shift(KC_TAB, is_pressed); }
@@ -1405,24 +1405,24 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         // ESCAPE AS LEADER KEY
         // cmd/ctrl home/end
         case KC_LEFT: {
-          if (is_lead(KC_LEFT, is_pressed)) { return false; }
+          if (is_lead_meh(KC_LEFT, is_pressed)) { return false; }
           return following_custom_leader_key(KC_HOME, isMac ? KC_LGUI : KC_NO, KC_NO, KC_NO, &esc_timer, is_pressed, 250);
         }
         case KC_RGHT: {
-          if (is_lead(KC_RGHT, is_pressed)) { return false; }
+          if (is_lead_meh(KC_RGHT, is_pressed)) { return false; }
           return following_custom_leader_key(KC_END, isMac ? KC_LGUI : KC_NO, KC_NO, KC_NO, &esc_timer, is_pressed, 250);
         }
 
-        case KC_UP: { if (is_lead(KC_UP, is_pressed)) { return false; } return true; }
-        case KC_DOWN: { if (is_lead(KC_DOWN, is_pressed)) { return false; } return true; }
+        case KC_UP: { if (is_lead_meh(KC_UP, is_pressed)) { return false; } return true; }
+        case KC_DOWN: { if (is_lead_meh(KC_DOWN, is_pressed)) { return false; } return true; }
 
         // mac layers
         case CMD_SPACE: {
-          if (is_lead(KC_SPC, is_pressed)) { return false; }; return true;
+          if (is_lead_meh(KC_SPC, is_pressed)) { return false; }; return true;
         }
 
         case CMD_ESC: {
-          if (is_lead(KC_F3, is_pressed)) { return false; }
+          if (is_lead_meh(KC_F3, is_pressed)) { return false; }
           static uint16_t cmd_esc_layer_timer;
           if (momentary_layer_tap(KC_ESC, KC_NO, KC_LGUI, KC_NO, KC_NO, KC_NO, &cmd_esc_layer_timer, &cmd_esc_interrupted, is_pressed, 170, true)) {
             esc_timer = timer_read();
@@ -1431,14 +1431,14 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
 
         case ALT_SHIFT_BS: {
-          if (is_lead(KC_BSPC, is_pressed)) { return false; }
+          if (is_lead_meh(KC_BSPC, is_pressed)) { return false; }
           static uint16_t alt_shift_layer_timer;
           momentary_layer_tap(KC_BSPC, KC_NO, KC_LSFT, KC_LALT, KC_NO, KC_NO, &alt_shift_layer_timer, &alt_shift_interrupted, is_pressed, 170, true);
           return true;
         }
 
         case CTRL_DEL: {
-          if (is_lead(KC_DEL, is_pressed)) { return false; }
+          if (is_lead_meh(KC_DEL, is_pressed)) { return false; }
           static uint16_t ctrl_del_layer_timer;
           momentary_layer_tap(KC_DEL, KC_NO, KC_LCTL, KC_NO, KC_NO, KC_NO, &ctrl_del_layer_timer, &ctrl_del_interrupted, is_pressed, 170, true);
           return true;
@@ -1451,42 +1451,42 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
 
         case ALT_SLASH_MAC: {
-          if (is_lead(KC_SLSH, is_pressed)) { return false; }
+          if (is_lead_meh(KC_SLSH, is_pressed)) { return false; }
           static uint16_t alt_slash_mac_layer_timer;
           momentary_layer_tap(KC_SLSH, KC_NO, KC_LALT, KC_NO, KC_NO, KC_NO, &alt_slash_mac_layer_timer, &alt_slash_mac_interrupted, is_pressed, 170, true);
           return true;
         }
 
         case ALT_BSLASH_MAC: {
-          if (is_lead(KC_BSLS, is_pressed)) { return false; }
+          if (is_lead_meh(KC_BSLS, is_pressed)) { return false; }
           static uint16_t alt_bslash_mac_layer_timer;
           momentary_layer_tap(KC_BSLS, KC_NO, KC_LALT, KC_NO, KC_NO, KC_NO, &alt_bslash_mac_layer_timer, &alt_bslash_mac_interrupted, is_pressed, 170, true);
           return true;
         }
 
         case SHIFT_ENTER_MAC: {
-          if (is_lead(KC_ENTER, is_pressed)) { return false; }
+          if (is_lead_meh(KC_ENTER, is_pressed)) { return false; }
           static uint16_t shift_enter_mac_layer_timer;
           momentary_layer_tap(KC_ENTER, KC_NO, KC_LSFT, KC_NO, KC_NO, KC_NO, &shift_enter_mac_layer_timer, &shift_enter_mac_interrupted, is_pressed, 300, true);
           return true;
         }
 
         case SHIFT_TAB_MAC: {
-          if (is_lead(KC_F2, is_pressed)) { return false; }
+          if (is_lead_meh(KC_F2, is_pressed)) { return false; }
           static uint16_t shift_tab_mac_layer_timer;
           momentary_layer_tap(KC_TAB, KC_NO, KC_LSFT, KC_NO, KC_NO, KC_NO, &shift_tab_mac_layer_timer, &shift_tab_mac_interrupted, is_pressed, 300, true);
           return true;
         }
 
         case HYPR_F13_MAC: {
-          if (is_lead(KC_F13, is_pressed)) { return false; }
+          if (is_lead_meh(KC_F13, is_pressed)) { return false; }
           static uint16_t hypr_f13_mac_layer_timer;
           momentary_layer_tap(KC_F13, KC_NO, KC_LCTL, KC_LALT, KC_LSFT, KC_LGUI, &hypr_f13_mac_layer_timer, &hypr_f13_mac_interrupted, is_pressed, 300, true);
           return true;
         }
 
         case PALM_F14_MAC: {
-          if (is_lead(KC_F14, is_pressed)) { return false; }
+          if (is_lead_meh(KC_F14, is_pressed)) { return false; }
           static uint16_t palm_f14_mac_layer_timer;
           momentary_layer_tap(KC_F14, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, &palm_f14_mac_layer_timer, &palm_f14_mac_interrupted, is_pressed, 300, false);
           return true;
@@ -1494,11 +1494,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
         // win layers
         case CTRL_SPACE: {
-          if (is_lead(KC_SPC, is_pressed)) { return false; }; return true;
+          if (is_lead_meh(KC_SPC, is_pressed)) { return false; }; return true;
         }
 
         case CTRL_ESC: {
-          if (is_lead(KC_F3, is_pressed)) { return false; }
+          if (is_lead_meh(KC_F3, is_pressed)) { return false; }
           static uint16_t ctrl_esc_layer_timer;
           if (momentary_layer_tap(KC_ESC, KC_NO, KC_LCTL, KC_NO, KC_NO, KC_NO, &ctrl_esc_layer_timer, &ctrl_esc_interrupted, is_pressed, 170, true)) {
             esc_timer = timer_read();
@@ -1507,56 +1507,56 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
 
         case CTRL_SHIFT_BS: {
-          if (is_lead(KC_BSPC, is_pressed)) { return false; }
+          if (is_lead_meh(KC_BSPC, is_pressed)) { return false; }
           static uint16_t ctrl_shift_layer_timer;
           momentary_layer_tap(KC_BSPC, KC_NO, KC_LSFT, KC_LCTL, KC_NO, KC_NO, &ctrl_shift_layer_timer, &ctrl_shift_interrupted, is_pressed, 170, true);
           return true;
         }
 
         case CTRL_ALT_DEL: {
-          if (is_lead(KC_DEL, is_pressed)) { return false; }
+          if (is_lead_meh(KC_DEL, is_pressed)) { return false; }
           static uint16_t ctrl_alt_del_layer_timer;
           momentary_layer_tap(KC_DEL, KC_NO, KC_LALT, KC_LCTL, KC_NO, KC_NO, &ctrl_alt_del_layer_timer, &ctrl_alt_del_interrupted, is_pressed, 170, false);
           return true;
         }
 
         case ALT_SLASH_WIN: {
-          if (is_lead(KC_SLSH, is_pressed)) { return false; }
+          if (is_lead_meh(KC_SLSH, is_pressed)) { return false; }
           static uint16_t alt_slash_win_layer_timer;
           momentary_layer_tap(KC_SLSH, KC_NO, KC_LALT, KC_NO, KC_NO, KC_NO, &alt_slash_win_layer_timer, &alt_slash_win_interrupted, is_pressed, 170, false);
           return true;
         }
 
         case SHIFT_ENTER_WIN: {
-          if (is_lead(KC_ENTER, is_pressed)) { return false; }
+          if (is_lead_meh(KC_ENTER, is_pressed)) { return false; }
           static uint16_t shift_enter_win_layer_timer;
           momentary_layer_tap(KC_ENTER, KC_NO, KC_LSFT, KC_NO, KC_NO, KC_NO, &shift_enter_win_layer_timer, &shift_enter_win_interrupted, is_pressed, 300, true);
           return true;
         }
 
         case SHIFT_TAB_WIN: {
-          if (is_lead(KC_F2, is_pressed)) { return false; }
+          if (is_lead_meh(KC_F2, is_pressed)) { return false; }
           static uint16_t shift_tab_win_layer_timer;
           momentary_layer_tap(KC_TAB, KC_NO, KC_LSFT, KC_NO, KC_NO, KC_NO, &shift_tab_win_layer_timer, &shift_tab_win_interrupted, is_pressed, 300, true);
           return true;
         }
 
         case ALT_BSLASH_WIN: {
-          if (is_lead(KC_BSLS, is_pressed)) { return false; }
+          if (is_lead_meh(KC_BSLS, is_pressed)) { return false; }
           static uint16_t alt_bslash_win_layer_timer;
           momentary_layer_tap(KC_BSLS, KC_NO, KC_LALT, KC_NO, KC_NO, KC_NO, &alt_bslash_win_layer_timer, &alt_bslash_win_interrupted, is_pressed, 170, false);
           return true;
         }
 
         case HYPR_F13_WIN: {
-          if (is_lead(KC_F13, is_pressed)) { return false; }
+          if (is_lead_meh(KC_F13, is_pressed)) { return false; }
           static uint16_t hypr_f13_win_layer_timer;
           momentary_layer_tap(KC_F13, KC_NO, KC_LCTL, KC_LALT, KC_LSFT, KC_LGUI, &hypr_f13_win_layer_timer, &hypr_f13_win_interrupted, is_pressed, 300, false);
           return true;
         }
 
         case PALM_F14_WIN: {
-          if (is_lead(KC_F14, is_pressed)) { return false; }
+          if (is_lead_meh(KC_F14, is_pressed)) { return false; }
           static uint16_t palm_f14_win_layer_timer;
           momentary_layer_tap(KC_F14, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, &palm_f14_win_layer_timer, &palm_f14_win_interrupted, is_pressed, 300, false);
           return true;
