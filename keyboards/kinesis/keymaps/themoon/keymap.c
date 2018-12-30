@@ -596,7 +596,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	KC_N, KC_M, KC_UP, _DOT, _QUOT, _,
 	KC_LEFT, KC_DOWN, KC_RGHT, _CTRL_F2_F3,
            // right thumb keys
-           KC_F16, _BSPC,
+           KC_F16, KC_BSPC,
            ALT_BSLASH_MAC,
            CTRL_F1, SHIFT_TAB_MAC, CMD_SPACE,
                                     // right palm key
@@ -880,7 +880,7 @@ __________,  __________,  __________,  __________,  __________,  __________, ___
   	KC_N, KC_M, KC_UP, _DOT, _QUOT, _,
   	KC_LEFT, KC_DOWN, KC_RGHT, _APP,
            // right thumb keys
-           _ALT_F6, _BSPC,
+           _ALT_F6, KC_BSPC,
            ALT_BSLASH_WIN,
            KC_RGUI, SHIFT_TAB_WIN, CTRL_SPACE,
                                     // right palm key
