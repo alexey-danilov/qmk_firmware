@@ -735,7 +735,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
                __________,  __________,  __________,  __________,
-                       _BSPC, MEH(KC_F15),
+                       _BSPC, MEH(KC_F13),
                                   KC_BSLS,
                        _ESC, _ENTER, _DEL,
                                    KC_F14,
@@ -1452,7 +1452,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
         // additional auto-shift keys
         case _ENTER: { return if_held_160_add_shift(KC_ENTER, pressed); }
-        case _ESC: { return if_held_160_add_shift(KC_ENTER, pressed); }
+        case _ESC: { return if_held_160_add_shift(KC_ESC, pressed); }
         case _TAB: { return if_held_160_add_shift(KC_TAB, pressed); }
         case _SPACE: { return if_held_160_add_shift(KC_SPC, pressed); }
         case _BSPC: { return if_held_160_add_shift(KC_BSPC, pressed); }
