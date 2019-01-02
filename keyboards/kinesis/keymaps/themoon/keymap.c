@@ -486,7 +486,7 @@ bool lead_f(uint16_t code, bool pressed) {
 
 /*
 * ,-------------------------------------------------------------------------------------------------------------------.
-* |  ESC   |  F1  |  F2  |  F3  |  F4  |  F5  |  F6  |  F8  |  F9  |  F10 |  F12 |      |  -_  |  =+  | Prog | Rest   |
+* |  Ins   |  F1  |  F2  |  F3  |  F4  |  F5  |  F6  |  F8  |  F9  |  F10 |  F12 | Nubs |  -_  |  =+  | Prog |  Rest  |
 * |--------+------+------+------+------+------+---------------------------+------+------+------+------+------+--------|
 * |  F17   |  1   |  2(  |  3_  |  4)  |  5=  |                           |  6+  |  7!  |  8-  |  9?  |  0)  |  F21   |
 * |--------+------+------+------+------+------|                           +------+------+------+------+------+--------|
@@ -499,7 +499,7 @@ bool lead_f(uint16_t code, bool pressed) {
 *          |  `~  |  [{  |  ,<  |  ]}  |                                         | Left | Down | Right| Menu |
 *          `---------------------------'                                         `---------------------------'
 *                            .-------------------------.         ,---------------------------.
-*                            |    Select/Bspc   | F13  |         | F16  |     Ins            |
+*                            |    Select/Bspc   | F13  |         | F16  |       Bspc         |
 *                            `-----------|------|------|         |------+------+-------------`
 *                                 |      |      | Alt//|         | Alt/\|      |      |
 *                                 | LCMD/|Shift/|------|         |------|Shift/|RCMD/ |
@@ -516,7 +516,7 @@ bool lead_f(uint16_t code, bool pressed) {
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [_MAC] = LAYOUT(
            // left side
-           _ESC, KC_F1, KC_F2, KC_F3, KC_F4, KC_F5, KC_F6, KC_F7, KC_F8,
+           _INS, KC_F1, KC_F2, KC_F3, KC_F4, KC_F5, KC_F6, KC_F7, KC_F8,
            KC_F17, _1_, _2_PLEFT, _3_SLASH, _4_PRGHT, _5_EQL,
            KC_F18, KC_Q, KC_W, KC_E, KC_R, KC_T,
            KC_F19,KC_A, KC_S, KC_D, KC_F, KC_G,
@@ -529,14 +529,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                  // left palm key
 			                                              HYPR_F14_MAC,
     // right side
-  KC_F9, KC_F10, KC_F11, KC_F12, KC_NO, KC_MINS, KC_EQL, KEYB_CONTROL, SLEEP_POWER,
+  KC_F9, KC_F10, KC_F11, KC_F12, _NUBS, KC_MINS, KC_EQL, KEYB_CONTROL, SLEEP_POWER,
 	_6_PLUS, _7_BANG, _8_DASH, _9_QUEST, _0_, KC_F21,
 	KC_Y, KC_U, KC_I, KC_O, KC_P, KC_F22,
 	KC_H, KC_J, KC_K, KC_L, KC_SCLN, KC_F23,
 	KC_N, KC_M, KC_UP, KC_DOT, KC_QUOT, KC_F24,
 	KC_LEFT, KC_DOWN, KC_RGHT, _CTRL_F2_F3,
            // right thumb keys
-           KC_F16, _INS,
+           KC_F16, KC_BSPC,
            ALT_BSLASH_MAC,
            CTRL_F1, SHIFT_TAB_MAC, CMD_SPACE,
            // right palm key
@@ -561,9 +561,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          CTRL_H, __________,  __________,  __________,  __________,  __________,
          __________, CTRL_M, SELECT_UP_MAC, CTRL_DOT, __________, __________,
                    SELECT_LEFT_MAC,  SELECT_DOWN_MAC,  SELECT_RIGHT_MAC, __________,
-         __________, __________,
+         __________, DEL_LEFT_MAC,
          KC_BSLS,
-         _NUBS, LANG_CAPS_MAC, LEAD_SPACE,
+         DEL_RIGHT_MAC, LANG_CAPS_MAC, LEAD_SPACE,
          KC_F15
     ),
 
@@ -630,9 +630,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
                __________,  __________,  __________,  __________,
-         __________, __________,
+         __________, LCTL(KC_BSPC),
          KC_BSLS,
-         _NUBS, _TAB, KC_F3,
+         LCTL(KC_DEL), _TAB, KC_F3,
          KC_F15
     ),
 
@@ -699,9 +699,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
                __________,  __________,  __________,  __________,
-         __________, __________,
+         __________, _BSPC,
          KC_BSLS,
-         _NUBS, _TAB, _SPACE,
+         _DEL, _TAB, _SPACE,
          KC_F15
     ),
 
@@ -722,9 +722,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
                    __________,  __________,  __________, __________,
-         MEH(KC_F16), MEH(KC_INS),
+         MEH(KC_F16), _BSPC,
          KC_BSLS,
-         _NUBS, _TAB, _SPACE,
+         _DEL, _TAB, _SPACE,
                  KC_F15
     ),
 
@@ -768,14 +768,14 @@ __________,  __________,  __________,  __________,  __________,  __________, ___
          __________,  CMD_SHIFT_TAB, CMD_Q, CMD_TAB,  __________,  __________,
          __________,  __________, KC_PGUP, KC_SPC,  __________,  __________,
             HOME_, KC_PGDN, END_, __________,
-         __________, __________,
+         __________, KC_LEFT,
          KC_BSLS,
-         KC_NUBS, FIND_PREV, FIND_NEXT,
+         KC_RGHT, FIND_PREV, FIND_NEXT,
          HIDE_FOCUS_MAC
     ),
 
 [_PALM_R_MAC] = LAYOUT(
-         HYPR(KC_ESC), HYPR(KC_F1), HYPR(KC_F2), HYPR(KC_F3), HYPR(KC_F4), HYPR(KC_F5), HYPR(KC_F6), HYPR(KC_F7), HYPR(KC_F8),
+         HYPR(KC_INS), HYPR(KC_F1), HYPR(KC_F2), HYPR(KC_F3), HYPR(KC_F4), HYPR(KC_F5), HYPR(KC_F6), HYPR(KC_F7), HYPR(KC_F8),
          HYPR(KC_F17), HYPR(KC_1), KC__VOLDOWN, KC__MUTE, KC__VOLUP, HYPR(KC_5),
          HYPR(KC_F18), HYPR(KC_Q), HYPR(KC_W), HYPR(KC_E), HYPR(KC_R), HYPR(KC_T),
          HYPR(KC_F19), HYPR(KC_A), HYPR(KC_S), HYPR(KC_D), HYPR(KC_F), HYPR(KC_G),
@@ -800,7 +800,7 @@ __________,  __________,  __________,  __________,  __________,  __________, ___
 // base win layer
 [_WIN] = LAYOUT(
            // left side
-           _ESC, KC_F1, KC_F2, KC_F3, KC_F4, KC_F5, KC_F6, KC_F7, KC_F8,
+           _INS, KC_F1, KC_F2, KC_F3, KC_F4, KC_F5, KC_F6, KC_F7, KC_F8,
            KC_F17, _1_, _2_PLEFT, _3_SLASH, _4_PRGHT, _5_EQL,
            KC_F18, KC_Q, KC_W, KC_E, KC_R, KC_T,
            KC_F19, KC_A, KC_S, KC_D, KC_F, KC_G,
@@ -813,14 +813,14 @@ __________,  __________,  __________,  __________,  __________,  __________, ___
                                                    // left palm key
 			                                                HYPR_F14_WIN,
     // right side
-    KC_F9, KC_F10, KC_F11, KC_F12, KC_NO, KC_MINS, KC_EQL, KEYB_CONTROL, SLEEP_POWER,
+    KC_F9, KC_F10, KC_F11, KC_F12, KC_PAUS, KC_MINS, KC_EQL, KEYB_CONTROL, SLEEP_POWER,
   	_6_PLUS, _7_BANG, _8_DASH, _9_QUEST, _0_, KC_F21,
   	KC_Y, KC_U, KC_I, KC_O, KC_P, KC_F22,
   	KC_H, KC_J, KC_K, KC_L, KC_SCLN, KC_F23,
   	KC_N, KC_M, KC_UP, KC_DOT, KC_QUOT, KC_F24,
   	KC_LEFT, KC_DOWN, KC_RGHT, _APP,
            // right thumb keys
-           KC_F16, _INS,
+           KC_F16, KC_BSPC,
            ALT_BSLASH_WIN,
            KC_RGUI, SHIFT_TAB_WIN, CTRL_SPACE,
            // right palm key
@@ -846,9 +846,9 @@ __________,  __________,  __________,  __________,  __________,  __________, ___
          __________, __________, __________, __________, __________, __________,
          __________,  __________,  SELECT_UP_WIN,  __________,  __________,  __________,
          SELECT_LEFT_WIN,  SELECT_DOWN_WIN,  SELECT_RIGHT_WIN, __________,
-         __________, __________,
+         __________, DEL_LEFT_WIN,
          KC_BSLS,
-         _PAUS, LANG_CAPS_WIN, LEAD_SPACE,
+         DEL_RIGHT_WIN, LANG_CAPS_WIN, LEAD_SPACE,
          KC_F15
     ),
 
@@ -915,9 +915,9 @@ __________,  __________,  __________,  __________,  __________,  __________, ___
          __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
                   __________, __________,  __________, __________,
-         __________, __________,
+         __________, _BSPC,
          KC_BSLS,
-         _PAUS, KC_F2, KC_F3,
+         _DEL, KC_F2, KC_F3,
                          KC_F15
     ),
 
@@ -961,9 +961,9 @@ __________,  __________,  __________,  __________,  __________,  __________, ___
          W_H,  W_J,  W_K, W_L,  W_QUOT,  __________,
          W_N, W_M, KC_UP, W_DOT, W_SCLN,  __________,
          KC_LEFT,  KC_DOWN, KC_RGHT, __________,
-         __________, __________,
+         __________, _BSPC,
          KC_BSLS,
-         _PAUS, KC_F2, KC_F3,
+         _DEL, KC_F2, KC_F3,
          KC_F15
     ),
 
@@ -984,9 +984,9 @@ __________,  __________,  __________,  __________,  __________,  __________, ___
          __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
                    __________,  __________,  __________, __________,
-         MEH(KC_F16), MEH(KC_INS),
+         MEH(KC_F16), _BSPC,
          KC_BSLS,
-         KC_PAUS, _TAB, _SPACE,
+         _DEL, _TAB, _SPACE,
          MEH(KC_F15)
     ),
 
@@ -1031,14 +1031,14 @@ __________,  __________,  __________,  __________,  __________,  __________, ___
          __________, ALT_SHIFT_TAB, ALT_F4, ALT_TAB,  __________,  __________,
          __________, __________, KC_PGUP, __________,  __________,  __________,
                       CTRL_HOME, KC_PGDN, CTRL_END, __________,
-         __________, __________,
+         __________, KC_LEFT,
          KC_BSLS,
-         KC_PAUS, FIND_PREV, FIND_NEXT,
+         KC_RGHT, FIND_PREV, FIND_NEXT,
          HIDE_FOCUS_WIN
     ),
 
 [_PALM_R_WIN] = LAYOUT(
-         HYPR(KC_ESC), HYPR(KC_F1), HYPR(KC_F2), HYPR(KC_F3), HYPR(KC_F4), HYPR(KC_F5), HYPR(KC_F6), HYPR(KC_F7), HYPR(KC_F8),
+         HYPR(KC_INS), HYPR(KC_F1), HYPR(KC_F2), HYPR(KC_F3), HYPR(KC_F4), HYPR(KC_F5), HYPR(KC_F6), HYPR(KC_F7), HYPR(KC_F8),
          HYPR(KC_F17), HYPR(KC_1), KC_VOLD, KC_MUTE, KC_VOLU, HYPR(KC_5),
          HYPR(KC_F18), HYPR(KC_Q), HYPR(KC_W), HYPR(KC_E), HYPR(KC_R), HYPR(KC_T),
          HYPR(KC_F19), HYPR(KC_A), HYPR(KC_S), HYPR(KC_D), HYPR(KC_F), HYPR(KC_G),
@@ -1244,10 +1244,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case KC_QUOT: { return lead_autoshifted(KC_QUOT, pressed); }
         case KC_GRV: { return lead_autoshifted(KC_GRV, pressed); }
         case KC_DOT: { return lead_autoshifted(KC_DOT, pressed); }
+        case KC_MINS: { return lead_autoshifted(KC_MINS, pressed); }
+        case KC_EQL: { return lead_autoshifted(KC_EQL, pressed); }
 
         // custom autoshifted keys
         case _INS: { return lead_custom_autoshifted(KC_INS, KC_INS, KC_LSFT, pressed); }
-        case _ESC: { return lead_custom_autoshifted(KC_ESC, KC_ESC, KC_LSFT, pressed); }
+        case _NUBS: { return lead_custom_autoshifted(KC_NUBS, KC_NUBS, KC_LSFT, pressed); }
+        case _PAUS: { return lead_custom_autoshifted(KC_PAUS, KC_PAUS, KC_LSFT, pressed); }
 
         case _0_: { return lead_custom_autoshifted(KC_0, KC_0, KC_NO, pressed); } // disable key repeat
         case _1_: { return lead_custom_autoshifted(KC_1, KC_1, KC_NO, pressed); } // disable key repeat
@@ -1449,14 +1452,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
         // additional auto-shift keys
         case _ENTER: { return if_held_160_add_shift(KC_ENTER, pressed); }
+        case _ESC: { return if_held_160_add_shift(KC_ENTER, pressed); }
         case _TAB: { return if_held_160_add_shift(KC_TAB, pressed); }
         case _SPACE: { return if_held_160_add_shift(KC_SPC, pressed); }
         case _BSPC: { return if_held_160_add_shift(KC_BSPC, pressed); }
         case _DEL: { return if_held_160_add_shift(KC_DEL, pressed); }
         case _CTRL_F2_F3: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_F2, KC_NO, KC_NO, KC_NO, KC_NO, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_F3, KC_LCTL, KC_NO, KC_NO, KC_NO, pressed, 160, true); }
         case _APP: { return if_held_160_add_shift(KC_APP, pressed); }
-        case _NUBS: { return if_held_160_add_shift(KC_NUBS, pressed); }
-        case _PAUS: { return if_held_160_add_shift(KC_PAUS, pressed); }
 
         // repeating keycodes
         case KC_PGUP: { return repeat(KC_PGUP, KC_NO, KC_LGUI, KC_LSFT, KC_LALT, KC_LCTL, pressed, 25); }
