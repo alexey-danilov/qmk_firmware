@@ -554,7 +554,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                        KC_LALT,
                      CMD_ESC, KC_LSFT, KC_LCTL,
                                     __________,
-         __________,  __________,  __________,  __________,  __________,  __________, __________, __________, KC_SPC,
+         __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
          KC_6, KC_7, KC_8, KC_9, KC_0, __________,
          __________, __________, __________, __________, __________, __________,
          CTRL_H, __________,  __________,  __________,  __________,  __________,
@@ -789,7 +789,7 @@ __________,  __________,  __________,  __________,  __________,  __________, ___
          _,  _,  _,  _,  _,  _,
          _,  _,  _,  _,  _,  _,
          _,  _,  _,  _,  _,  _,
-                   _,  _, _, _,
+                   LGUI(KC_HOME),  _, LGUI(KC_END), _,
          _,  _,
          _,
          _,  _,  _,
@@ -839,7 +839,7 @@ __________,  __________,  __________,  __________,  __________,  __________, ___
                     CTRL_ESC, KC_LSFT, KC_LGUI,
                                     __________,
 
-         __________,  __________,  __________,  __________,  __________,  __________, __________, __________, KC_SPC,
+         __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
          KC_6, KC_7, KC_8, KC_9, KC_0, __________,
          __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
@@ -1052,7 +1052,7 @@ __________,  __________,  __________,  __________,  __________,  __________, ___
          _,  _,  _,  _,  _,  _,
          _,  _,  _,  _,  _,  _,
          _,  _,  _,  _,  _,  _,
-                   _,  _, _, _,
+                   KC_HOME,  _, KC_END, _,
          _,  _,
          _,
          _,  _,  _,
@@ -1293,15 +1293,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case KC_DOWN: { if (is_after_lead(KC_DOWN, pressed)) { return false; } return true; }
 
         // >>>>>>> escape as additional leader key
-        case CMD_SPACE: {
-          if (is_after_lead(KC_SPC, pressed)) { return false; };
-          return following_custom_leader_key(KC_SPC, KC_LGUI, KC_NO, KC_NO, &esc_timer, pressed, 350);
-        }
-
-        case CTRL_SPACE: {
-          if (is_after_lead(KC_SPC, pressed)) { return false; };
-          return following_custom_leader_key(KC_SPC, KC_LCTL, KC_NO, KC_NO, &esc_timer, pressed, 350);
-        }
 
         case KC_LEFT: {
           if (is_after_lead(KC_LEFT, pressed)) { return false; }
@@ -1314,6 +1305,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         // <<<<<<< escape as additional leader key
 
         // >>>>>>> mac layers
+        case CMD_SPACE: {
+          if (is_after_lead(KC_SPC, pressed)) { return false; }; return true;
+        }
+
         case CMD_ESC: {
           if (is_after_lead(KC_F1, pressed)) { return false; }
           static uint16_t cmd_esc_layer_timer;
@@ -1386,6 +1381,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
 
         // >>>>>>> win layers
+        case CTRL_SPACE: {
+          if (is_after_lead(KC_SPC, pressed)) { return false; }; return true;
+        }
+
         case CTRL_ESC: {
           if (is_after_lead(KC_F1, pressed)) { return false; }
           static uint16_t ctrl_esc_layer_timer;
