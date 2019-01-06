@@ -35,27 +35,5 @@ void led_init_ports() {
 }
 
 void led_set_kb(uint8_t usb_led) {
-  if (usb_led & (1<<USB_LED_COMPOSE)) {
-      PORTF &= ~(1<<0);
-  } else {
-      PORTF |= (1<<0);
-  }
-
-  if (usb_led & (1<<USB_LED_SCROLL_LOCK)) {
-      PORTF &= ~(1<<1);
-  } else {
-      PORTF |= (1<<1);
-  }
-
-  if (usb_led & (1<<USB_LED_NUM_LOCK)) {
-      PORTF &= ~(1<<2);
-  } else {
-      PORTF |= (1<<2);
-  }
-
-  if (usb_led & (1<<USB_LED_CAPS_LOCK)) {
-      PORTF &= ~(1<<3);
-  } else {
-      PORTF |= (1<<3);
-  }
+	led_set_user(usb_led);
 }

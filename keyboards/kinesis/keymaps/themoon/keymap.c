@@ -143,16 +143,18 @@ enum holding_keycodes {
   W_EQL, W_MINS
 };
 
-static uint16_t esc_timer; // timer for leader key: esc
-static uint16_t lead_timer; // timer for leader key
+static uint16_t esc_timer = 0; // timer for leader key: esc
+static uint16_t lead_timer = 0; // timer for leader key
 static bool default_layer = true;
 
 // HELPER FUNCTIONS
 // switch mac <-> win
 static bool isMac = false;
 static bool isWin = false;
+static bool caps_led = false;
+static bool lead_led = true;
 void matrix_init_user(void) {
-    wait_ms(50);
+    wait_ms(500);
     switch (biton32(eeconfig_read_default_layer())) {
       case _MAC: isMac = true; isWin = false; break;
       case _WIN: isWin = true; isMac = false; break;
@@ -199,6 +201,56 @@ bool pressed_within(uint16_t hold_timer, uint16_t hold_duration) {
  return timer_elapsed(hold_timer) < hold_duration;
 }
 
+void led_red_on(void) {
+  PORTF &= ~(1<<3);
+}
+
+void led_red_off(void) {
+  PORTF |= (1<<3);
+}
+
+void led_yellow_on(void) {
+  PORTF &= ~(1<<2);
+}
+
+void led_yellow_off(void) {
+  PORTF |= (1<<2);
+}
+
+void led_green_on(void) {
+  PORTF &= ~(1<<1);
+}
+
+void led_green_off(void) {
+  PORTF |= (1<<1);
+}
+
+void led_blue_on(void) {
+  PORTF &= ~(1<<0);
+}
+
+void led_blue_off(void) {
+  PORTF |= (1<<0);
+}
+
+void switch_lead_led_on(void) {
+  if (!lead_led) {
+    led_red_on();
+    led_yellow_on();
+    led_green_on();
+    lead_led = true;
+  }
+}
+
+void switch_lead_led_off(void) {
+  if (lead_led) {
+    led_red_off();
+    led_yellow_off();
+    led_green_off();
+    lead_led = false;
+  }
+}
+
 // replaces mods of keycode, adds additional mods if it was held for at least provided duration
 bool replace_key_and_mods_if_held_replace_key_and_mods(
     uint16_t code,
@@ -233,6 +285,36 @@ bool replace_key_and_mods_if_held_replace_key_and_mods(
 
       if (revertInitialMods) {
          down(mod4_to_be_replaced); down(mod3_to_be_replaced); down(mod2_to_be_replaced); down(mod1_to_be_replaced);
+      }
+  }
+  return false;
+}
+
+// lang/caps, with led indication
+bool process_lang_caps(
+    uint16_t lang_switch_code,
+    uint16_t mod_to_be_replaced,
+    uint16_t lang_switch_mod1,
+    uint16_t lang_switch_mod2,
+    uint16_t caps_code,
+    bool pressed,
+    uint16_t hold_duration
+) {
+  static uint16_t hold_timer;
+  if(pressed) {
+      hold_timer= timer_read();
+  } else {
+      up(mod_to_be_replaced);
+
+      if (pressed_within(hold_timer, hold_duration)){
+          with_2_mods(lang_switch_code, lang_switch_mod1, lang_switch_mod2);
+      } else {
+          key_code(caps_code);
+          if (caps_led) {
+            caps_led = false;
+          } else {
+            caps_led = true;
+          }
       }
   }
   return false;
@@ -407,9 +489,11 @@ bool press_leader_key(bool pressed) {
       if (pressed_within(hold_timer, 160)){
           up(KC_LGUI); up(KC_LCTL);
           lead_timer = timer_read();
+          switch_lead_led_on();
       } else {
           with_1_mod(KC_SPC, KC_LSFT);
           lead_timer = 0;
+          switch_lead_led_off();
       }
   }
   return false;
@@ -528,7 +612,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                  // left palm key
 			                                              HYPR_F14_MAC,
     // right side
-  KC_F9, KC_F10, KC_F11, KC_F12, LCTL(KC_F17), KC_MINS, KC_EQL, KEYB_CONTROL, SLEEP_POWER,
+  KC_F9, KC_F10, KC_F11, KC_F12, LCTL(KC_F2), KC_MINS, KC_EQL, KEYB_CONTROL, SLEEP_POWER,
 	_6_PLUS, _7_BANG, _8_DASH, _9_QUEST, _0_, KC_F21,
 	KC_Y, KC_U, KC_I, KC_O, KC_P, KC_F22,
 	KC_H, KC_J, KC_K, KC_L, KC_SCLN, KC_F23,
@@ -1092,6 +1176,14 @@ void matrix_scan_user(void) {
          first_repeat_delay = 0;
       }
    }
+
+   if (lead_timer > 0) {
+     if (timer_elapsed(lead_timer) > 1000) {
+       switch_lead_led_off();
+     }
+   } else {
+     switch_lead_led_off();
+   }
 }
 
 // support for "mo layer tap" functionality: activate mod as soon as layer is activated -> to allow key + mouse combination without delay
@@ -1126,7 +1218,9 @@ uint32_t layer_state_set_user(uint32_t state) {
     case _KEYB_CONTROL: break;
 
     // unregister everything (even if it was not pressed - no big deal; this works faster than getting pressed mods)
-    default: remove_mods(); default_layer = true; break;
+    default:
+     remove_mods();
+     default_layer = true; break;
     }
 return state;
 }
@@ -1463,8 +1557,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case ALT_SHIFT_TAB: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_TAB, KC_LGUI, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_TAB, KC_LALT, KC_LSFT, KC_NO, KC_NO, pressed, 160, true); }
 
         // lang switch
-        case LANG_CAPS_MAC: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_SPC, KC_LGUI, KC_NO, KC_NO, KC_NO, KC_LALT, KC_NO, KC_NO, KC_NO, KC_LCAP, KC_NO, KC_NO, KC_NO, KC_NO, pressed, 160, true); }
-        case LANG_CAPS_WIN: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_SPC, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_LGUI, KC_NO, KC_NO, KC_NO, KC_CAPS, KC_NO, KC_NO, KC_NO, KC_NO, pressed, 160, true); }
+        case LANG_CAPS_MAC: { return process_lang_caps(KC_SPC, KC_LGUI, KC_LALT, KC_NO, KC_LCAP, pressed, 160); }
+        case LANG_CAPS_WIN: { return process_lang_caps(KC_SPC, KC_LCTL, KC_LGUI, KC_NO, KC_CAPS, pressed, 160); }
 
         // home/end
         case HOME_: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_HOME, KC_LGUI, KC_LCTL, KC_LALT, KC_LSFT, KC_NO, KC_NO, KC_NO, KC_NO, KC_HOME, KC_NO, KC_NO, KC_NO, KC_NO, pressed, 250, true); }
@@ -1539,4 +1633,18 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           return true;
         }
     }
+}
+
+void led_set_user(uint8_t usb_led) {
+  if (caps_led) {
+    led_blue_on();
+  } else {
+    led_blue_off();
+  }
+
+  if (lead_led) {
+    switch_lead_led_on();
+  } else {
+    switch_lead_led_off();
+  }
 }
