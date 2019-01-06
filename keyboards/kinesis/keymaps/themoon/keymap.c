@@ -152,6 +152,7 @@ static bool default_layer = true;
 static bool isMac;
 static bool isWin;
 static bool caps_led;
+static bool lang_switch_led;
 static bool lead_led;
 static bool init_complete;
 
@@ -318,6 +319,7 @@ bool process_lang_caps(
       up(mod_to_be_replaced);
 
       if (pressed_within(hold_timer, hold_duration)){
+          lang_switch_led = true;
           with_2_mods(lang_switch_code, lang_switch_mod1, lang_switch_mod2);
       } else {
           key_code(caps_code);
@@ -1219,6 +1221,15 @@ void matrix_scan_user(void) {
      }
    } else {
      switch_lead_led_off();
+   }
+
+   if (lang_switch_led) {
+     lang_switch_led = false;
+     led_red_on(); _delay_ms(25);
+     led_yellow_on(); _delay_ms(25); led_red_off();
+     led_green_on(); _delay_ms(25); led_yellow_off();
+     led_blue_on(); _delay_ms(25); led_green_off();
+     if (!caps_led) { _delay_ms(25); led_blue_off(); }
    }
 }
 
