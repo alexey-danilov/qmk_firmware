@@ -149,10 +149,11 @@ static bool default_layer = true;
 
 // HELPER FUNCTIONS
 // switch mac <-> win
-static bool isMac = false;
-static bool isWin = false;
-static bool caps_led = false;
-static bool lead_led = true;
+static bool isMac;
+static bool isWin;
+static bool caps_led;
+static bool lead_led;
+static bool init_complete;
 
 void down(uint16_t key) { register_code(key); }
 void up(uint16_t key) { unregister_code(key); }
@@ -1198,7 +1199,8 @@ void matrix_init_user(void) {
       case _MAC: isMac = true; isWin = false; break;
       case _WIN: isWin = true; isMac = false; break;
       default: break;
-  }
+    }
+    init_complete = true;
 }
 
 // support for repeat keycodes
@@ -1670,6 +1672,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 }
 
 void led_set_user(uint8_t usb_led) {
+  if (!init_complete) {
+    return;
+  }
   if (caps_led) {
     led_blue_on();
   } else {
