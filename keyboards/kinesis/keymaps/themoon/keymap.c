@@ -153,14 +153,6 @@ static bool isMac = false;
 static bool isWin = false;
 static bool caps_led = false;
 static bool lead_led = true;
-void matrix_init_user(void) {
-    wait_ms(500);
-    switch (biton32(eeconfig_read_default_layer())) {
-      case _MAC: isMac = true; isWin = false; break;
-      case _WIN: isWin = true; isMac = false; break;
-      default: break;
-  }
-}
 
 void down(uint16_t key) { register_code(key); }
 void up(uint16_t key) { unregister_code(key); }
@@ -248,6 +240,24 @@ void switch_lead_led_off(void) {
     led_yellow_off();
     led_green_off();
     lead_led = false;
+  }
+}
+
+void all_leds_on(void) {
+  led_red_on(); led_yellow_on(); led_green_on(); led_blue_on();
+}
+
+void all_leds_off(void) {
+  led_red_off(); led_yellow_off(); led_green_off(); led_blue_off();
+}
+
+void blink_each_led_in_turn(void) {
+  all_leds_off();
+  for (uint8_t i = 0; i < 5; i = i + 1) {
+    led_red_on(); _delay_ms(125); led_red_off();
+    led_yellow_on(); _delay_ms(125); led_yellow_off();
+    led_green_on(); _delay_ms(125); led_green_off();
+    led_blue_on(); _delay_ms(125); led_blue_off();
   }
 }
 
@@ -372,11 +382,25 @@ bool sleep_power(bool pressed, uint16_t hold_duration) {
       hold_timer= timer_read();
   } else {
       if (pressed_within(hold_timer, hold_duration)){
+          // sleep
+
+          // blink all leds twice
+          all_leds_on(); _delay_ms(250); all_leds_off(); _delay_ms(200); all_leds_on(); _delay_ms(250); all_leds_off();
           if (isMac) { down(KC_LCTL); down(KC_LSFT); SEND_STRING(SS_DOWN(X_POWER) SS_UP(X_POWER)); up(KC_LSFT); up(KC_LCTL); }
           if (isWin) { with_1_mod(KC_X, KC_LGUI); _delay_ms(300); key_code(KC_U); _delay_ms(300); down(KC_S); up(KC_S); }
       } else {
+
          if (isMac) { down(KC_LGUI); down(KC_LCTL); down(KC_LALT); SEND_STRING(SS_DOWN(X_POWER) SS_UP(X_POWER)); up(KC_LALT); up(KC_LCTL); up(KC_LGUI); up(KC_LGUI); }
           if (isWin) { with_1_mod(KC_X, KC_LGUI); _delay_ms(300); key_code(KC_U); _delay_ms(300); down(KC_U); up(KC_U); }
+          all_leds_off();
+          led_red_on(); _delay_ms(100); led_red_off();
+          led_yellow_on(); _delay_ms(100); led_yellow_off();
+          led_green_on(); _delay_ms(100); led_green_off();
+          led_blue_on(); _delay_ms(100); led_blue_off();
+          led_red_on(); _delay_ms(100); led_red_off();
+          led_yellow_on(); _delay_ms(100); led_yellow_off();
+          led_green_on(); _delay_ms(100); led_green_off();
+          led_blue_on(); _delay_ms(100); led_blue_off();
       }
   }
   return false;
@@ -1166,6 +1190,16 @@ __________,  __________,  __________,  __________,  __________,  __________, ___
          _
     ),
 };
+
+void matrix_init_user(void) {
+    wait_ms(500);
+    blink_each_led_in_turn();
+    switch (biton32(eeconfig_read_default_layer())) {
+      case _MAC: isMac = true; isWin = false; break;
+      case _WIN: isWin = true; isMac = false; break;
+      default: break;
+  }
+}
 
 // support for repeat keycodes
 void matrix_scan_user(void) {
