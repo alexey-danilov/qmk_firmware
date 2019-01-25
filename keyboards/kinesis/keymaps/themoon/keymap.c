@@ -320,6 +320,9 @@ bool process_lang_caps(
 
       if (pressed_within(hold_timer, hold_duration)){
           lang_switch_led = true;
+          if (isMac) {
+            caps_led = false; // on mac changing language resets caps lock
+          }
           with_2_mods(lang_switch_code, lang_switch_mod1, lang_switch_mod2);
       } else {
           key_code(caps_code);
