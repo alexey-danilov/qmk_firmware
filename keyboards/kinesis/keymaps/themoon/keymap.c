@@ -385,16 +385,16 @@ bool sleep_power(bool pressed, uint16_t hold_duration) {
   } else {
       if (pressed_within(hold_timer, hold_duration)){
           // sleep
-          // blink all leds twice
           all_leds_on(); _delay_ms(125); all_leds_off(); _delay_ms(200); all_leds_on(); _delay_ms(125); all_leds_off();
           if (isMac) { down(KC_LCTL); down(KC_LSFT); SEND_STRING(SS_DOWN(X_POWER) SS_UP(X_POWER)); up(KC_LSFT); up(KC_LCTL); }
           if (isWin) { with_1mod(KC_X, KC_LGUI); _delay_ms(125); key_code(KC_U); _delay_ms(125); down(KC_S); up(KC_S); }
       } else {
          // shutdown
-         all_leds_on(); _delay_ms(125);
-         led_blue_off(); _delay_ms(125);
-         led_green_off(); _delay_ms(125);
-         led_yellow_off(); _delay_ms(125);
+         all_leds_on(); _delay_ms(500);
+         led_blue_off(); _delay_ms(200);
+         led_green_off(); _delay_ms(200);
+         led_yellow_off(); _delay_ms(200);
+         led_red_off();
 
          if (isMac) { down(KC_LGUI); down(KC_LCTL); down(KC_LALT); SEND_STRING(SS_DOWN(X_POWER) SS_UP(X_POWER)); up(KC_LALT); up(KC_LCTL); up(KC_LGUI); up(KC_LGUI); }
          if (isWin) { with_1mod(KC_X, KC_LGUI); _delay_ms(125); key_code(KC_U); _delay_ms(125); down(KC_U); up(KC_U); }
