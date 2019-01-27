@@ -4,8 +4,6 @@
 #define AUTO_SHIFT_TIMEOUT 150
 #define TAPPING_TERM 150
 
-#define IGNORE_MOD_TAP_INTERRUPT
-#define PERMISSIVE_HOLD
 #define RETRO_TAPPING
 
 #include "../../config.h"
