@@ -1189,18 +1189,11 @@ __________,  __________,  __________,  __________,  __________,  __________, ___
 };
 
 void matrix_init_user(void) {
-    wait_ms(500);
-
     all_leds_off();
-    led_red_on(); _delay_ms(125); led_red_off();
-    led_yellow_on(); _delay_ms(125); led_yellow_off();
-    led_green_on(); _delay_ms(125); led_green_off();
-    led_blue_on(); _delay_ms(125); led_blue_off();
-
-    led_red_on(); _delay_ms(125);
-    led_yellow_on(); _delay_ms(125);
-    led_green_on(); _delay_ms(125);
-    led_blue_on(); _delay_ms(200);
+    led_red_on(); _delay_ms(200);
+    led_yellow_on(); _delay_ms(200);
+    led_green_on(); _delay_ms(200);
+    led_blue_on(); wait_ms(500);
     all_leds_off();
 
     switch (biton32(eeconfig_read_default_layer())) {
