@@ -148,6 +148,13 @@ enum holding_keycodes {
 };
 #include "dynamic_macro.h"
 
+enum {
+  TAP_MACRO = 0,
+  K_TD = 1,
+  COMMA_TD = 2,
+  F5_TD = 3,
+};
+
 static uint16_t esc_timer = 0; // timer for leader key: esc
 static uint16_t lead_timer = 0; // timer for leader key
 static bool default_layer = true;
@@ -160,6 +167,8 @@ static bool caps_led;
 static bool lang_switch_led;
 static bool lead_led;
 static bool init_complete;
+static bool is_macro1_recording = false;
+static bool is_macro2_recording = false;
 
 void down(uint16_t key) { register_code(key); }
 void up(uint16_t key) { unregister_code(key); }
@@ -243,9 +252,9 @@ void switch_lead_led_on(void) {
 
 void switch_lead_led_off(void) {
   if (lead_led) {
-    led_red_off();
+    if (!is_macro1_recording) { led_red_off(); }
+    if (!is_macro2_recording) { led_green_off(); }
     led_yellow_off();
-    led_green_off();
     lead_led = false;
   }
 }
@@ -553,14 +562,6 @@ bool lead_f(uint16_t code, bool pressed) {
   return lead_replace_if_held_add_mods(code, KC_NO, code, KC_LSFT, KC_NO, &was_lead, pressed, 150);
 }
 
-
-enum {
-  TAP_MACRO = 0,
-  K_TD = 1,
-  COMMA_TD = 2,
-  F5_TD = 3,
-};
-
 enum {
   SINGLE_TAP = 1,
   SINGLE_HOLD = 2,
@@ -693,9 +694,6 @@ void k_reset (qk_tap_dance_state_t *state, void *user_data) {
 
 // dynamic macro
 static tap dynamic_macro_state = { .is_press_action = true, .state = 0 };
-
-static bool is_macro1_recording = false;
-static bool is_macro2_recording = false;
 static uint32_t dynamic_layer_state = 0;
 uint32_t layer_state_set_user(uint32_t state);
 
@@ -734,7 +732,11 @@ void dynamic_macro_finished (qk_tap_dance_state_t *state, void *user_data) {
     switch (dynamic_control) {
       case DYN_REC_START1: led_red_on(); break;
       case DYN_REC_START2: led_green_on(); break;
-      case DYN_REC_STOP: led_red_off(); led_green_off(); break;
+      case DYN_REC_STOP:
+        if (!lead_led) {
+          led_red_off(); led_green_off();
+        };
+        break;
       case DYN_MACRO_PLAY1: led_red_on(); wait_ms(100); led_red_off(); break;
       case DYN_MACRO_PLAY2: led_green_on(); wait_ms(100); led_green_off(); break;
     }
@@ -750,10 +752,10 @@ void dynamic_macro_reset (qk_tap_dance_state_t *state, void *user_data) {
 // all tap macros
 qk_tap_dance_action_t tap_dance_actions[] = {
   // This Tap dance plays the macro 1 on TAP and records it on double tap.
-  [TAP_MACRO] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, dynamic_macro_finished, dynamic_macro_reset, 250),
+  [TAP_MACRO] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, dynamic_macro_finished, dynamic_macro_reset, 350),
   [K_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, k_finished, k_reset, 250),
-  [F5_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, f5_finished, f5_reset, 250),
-  [COMMA_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, comma_finished, comma_reset, 250)
+  [F5_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, f5_finished, f5_reset, 300),
+  [COMMA_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, comma_finished, comma_reset, 300)
 };
 
 /*
@@ -1008,7 +1010,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________, __________, __________, __________, __________, __________,
                __________,  __________,  KC_COMM,  __________,
                              _BSPC, _NUBS,
-                                        _,
+                                  KC_SLSH,
                        _ESC, _ENTER, _DEL,
                                    KC_F14,
          _,  _,  _,  _,  _,  _, _, _, _,
@@ -1271,7 +1273,7 @@ __________,  __________,  __________,  __________,  __________,  __________, ___
          __________, __________, __________, __________, __________, __________,
                __________,  __________,  KC_COMM,  __________,
                                     _BSPC, _PAUS,
-                                               _,
+                                         KC_SLSH,
                               _ESC, _ENTER, _DEL,
                                           KC_F14,
          _,  _,  _,  _,  _,  _, _, _, _,
@@ -1393,9 +1395,9 @@ void matrix_scan_user(void) {
    if (lang_switch_led) {
      lang_switch_led = false;
      led_red_on(); _delay_ms(25);
-     led_yellow_on(); _delay_ms(25); led_red_off();
+     led_yellow_on(); _delay_ms(25); if (!is_macro1_recording) { led_red_off(); }
      led_green_on(); _delay_ms(25); led_yellow_off();
-     led_blue_on(); _delay_ms(25); led_green_off();
+     led_blue_on(); _delay_ms(25);  if (!is_macro2_recording) { led_green_off(); }
      if (!caps_led) { _delay_ms(25); led_blue_off(); }
    }
 }
@@ -1860,8 +1862,23 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
 void led_set_user(uint8_t usb_led) {
   if (!init_complete) { return; }
+
   caps_led ? led_blue_on() : led_blue_off();
   lead_led ? switch_lead_led_on() : switch_lead_led_off();
-  is_macro1_recording ? led_red_on() : led_red_off();
-  is_macro2_recording ? led_green_on() : led_green_off();
+
+  if (is_macro1_recording) {
+    led_red_on();
+  } else {
+    if (!lead_led) {
+      led_red_off();
+    }
+  }
+
+  if (is_macro2_recording) {
+    led_green_on();
+  } else {
+    if (!lead_led) {
+      led_green_off();
+    }
+  }
 }
