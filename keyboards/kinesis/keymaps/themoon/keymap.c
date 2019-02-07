@@ -752,8 +752,8 @@ void dynamic_macro_reset (qk_tap_dance_state_t *state, void *user_data) {
 // all tap macros
 qk_tap_dance_action_t tap_dance_actions[] = {
   // This Tap dance plays the macro 1 on TAP and records it on double tap.
-  [TAP_MACRO] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, dynamic_macro_finished, dynamic_macro_reset, 350),
-  [K_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, k_finished, k_reset, 250),
+  [TAP_MACRO] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, dynamic_macro_finished, dynamic_macro_reset, 300),
+  [K_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, k_finished, k_reset, 200),
   [F5_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, f5_finished, f5_reset, 300),
   [COMMA_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, comma_finished, comma_reset, 300)
 };
