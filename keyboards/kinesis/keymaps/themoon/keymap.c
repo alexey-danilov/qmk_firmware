@@ -749,14 +749,14 @@ void dynamic_macro_reset (qk_tap_dance_state_t *state, void *user_data) {
 qk_tap_dance_action_t tap_dance_actions[] = {
   // This Tap dance plays the macro 1 on TAP and records it on double tap.
   [TAP_MACRO] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, dynamic_macro_finished, dynamic_macro_reset, 300),
-  [K_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, k_finished, k_reset, 200),
+  [K_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, k_finished, k_reset, 300),
   [F5_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, f5_finished, f5_reset, 300),
   [COMMA_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, comma_finished, comma_reset, 300)
 };
 
 /*
 * ,-------------------------------------------------------------------------------------------------------------------.
-* |  Ins   |  F1  |  F2  |  F3  |  F4  |  F5  |  F6  |  F8  |  F9  |  F10 |  F12 |  -_  |      |  =+  | Prog |  Rest  |
+* |  Ins   |  F1  |  F2  |  F3  |  F4  |  F5  |  F6  |  F8  |  F9  |  F10 |  F12 |      |      |      | Prog |  Rest  |
 * |--------+------+------+------+------+------+---------------------------+------+------+------+------+------+--------|
 * |  F17   |   1  |  2(  |  3_  |  4)  |  5=  |                           |  6+  |  7!  |  8-  |  9?  |  0)  |  F21   |
 * |--------+------+------+------+------+------|                           +------+------+------+------+------+--------|
@@ -769,12 +769,12 @@ qk_tap_dance_action_t tap_dance_actions[] = {
 *          |  F13 |  [{  |  ,<  |  ]}  |                                        | Left | Down | Right |  F16 |
 *          `---------------------------'                                         `---------------------------'
 *                            .-------------------------.         ,---------------------------.
-*                            |    Select/Bspc   | Dyn  |         | Menu |     Backspace      |
+*                            | Select word/Bspc | Macro|         |Insert|     Backspace      |
 *                            `-----------|------|------|         |------+------+-------------`
 *                                 |      |      | Alt//|         | Alt/\|      |      |
-*                                 | LCMD/|Shift/|------|         |------|Shift/|RCMD/ |
+*                                 | LGui/|Shift/|------|         |------|Shift/|RGui/ |
 *                                 | ESC  |Enter | Ctrl/|         | Ctrl/|Tab   |SPACE |
-*                                 |      |      | Del  |         |CtrlF1|      |      |
+*                                 |      |      | Del  |         | Apps |      |      |
 *                                  --------------------           --------------------
 *
 *                      ----------                                                        ----------
@@ -1038,7 +1038,7 @@ __________,  __________,  __________,  __________,  __________,  __________, ___
          __________,  CMD_SHIFT_TAB, CMD_Q, CMD_TAB,  __________,  __________,
          __________,  __________, KC_PGUP, KC_SPC,  __________,  __________,
             HOME_, KC_PGDN, END_, __________,
-         KC_EQL, KC_ESC,
+         KC_EQL, KC_BSPC,
          KC_BSLS,
          KC_MINS, FIND_PREV, FIND_NEXT,
          HIDE_FOCUS_MAC
@@ -1051,7 +1051,7 @@ __________,  __________,  __________,  __________,  __________,  __________, ___
          HYPR(KC_F19), HYPR(KC_A), HYPR(KC_S), HYPR(KC_D), HYPR(KC_F), HYPR(KC_G),
          HYPR(KC_F20), HYPR(KC_Z), HYPR(KC_X), HYPR(KC_C), HYPR(KC_V), HYPR(KC_B),
                  HYPR(KC_F13), KC_MRWD, KC_MPLY, KC_MFFD,
-                            HYPR(KC_BSPC), HYPR(KC_NUBS),
+                            HYPR(KC_ESC), HYPR(KC_NUBS),
                                            HYPR(KC_SLSH),
               LGUI(KC_Z), LGUI(LSFT(KC_Z)), HYPR(KC_DEL),
                                             HYPR(KC_F14),
@@ -1301,7 +1301,7 @@ __________,  __________,  __________,  __________,  __________,  __________, ___
          __________, ALT_SHIFT_TAB, ALT_F4, ALT_TAB,  __________,  __________,
          __________, __________, KC_PGUP, __________,  __________,  __________,
                       CTRL_HOME, KC_PGDN, CTRL_END, __________,
-         KC_EQL, KC_ESC,
+         KC_EQL, KC_BSPC,
          KC_BSLS,
          KC_MINS, FIND_PREV, FIND_NEXT,
          HIDE_FOCUS_WIN
@@ -1314,7 +1314,7 @@ __________,  __________,  __________,  __________,  __________,  __________, ___
          HYPR(KC_F19), HYPR(KC_A), HYPR(KC_S), HYPR(KC_D), HYPR(KC_F), HYPR(KC_G),
          HYPR(KC_F20), HYPR(KC_Z), HYPR(KC_X), HYPR(KC_C), HYPR(KC_V), HYPR(KC_B),
                  HYPR(KC_F13), KC_MPRV, KC_MPLY, KC_MNXT,
-                            HYPR(KC_BSPC), HYPR(KC_PAUS),
+                            HYPR(KC_ESC), HYPR(KC_PAUS),
                                            HYPR(KC_SLSH),
               LCTL(KC_Z), LCTL(LSFT(KC_Z)), HYPR(KC_DEL),
                                             HYPR(KC_F14),
@@ -1534,7 +1534,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case KC_D: { return lead_autoshifted(KC_D, pressed); }
         case KC_F: { return lead_autoshifted(KC_F, pressed); }
         case KC_G: { return lead_autoshifted(KC_G, pressed); }
-        case KC_H: { return lead_autoshifted(isWin? KC_H: KC_F2, pressed); }
+        case KC_H: { return lead_autoshifted(isWin? KC_H: KC_EQL, pressed); }
         case KC_J: { return lead_autoshifted(KC_J, pressed); }
         case KC_K: { return lead_autoshifted(KC_K, pressed); }
         case KC_L: { return lead_autoshifted(KC_L, pressed); }
@@ -1557,7 +1557,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
         // custom autoshifted keys
         case _INS: { return lead_custom_autoshifted(KC_INS, KC_INS, KC_LSFT, pressed); }
-        case _NUBS: { return lead_custom_autoshifted(KC_NUBS, KC_NUBS, KC_LSFT, pressed); }
 
         case _2_PLEFT: { return lead_custom_autoshifted(KC_2, KC_9, KC_LSFT, pressed); }
         case _3_SLASH: { return lead_custom_autoshifted(KC_3, KC_MINS, KC_LSFT, pressed); }
@@ -1605,7 +1604,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case KC_UP: { if (is_after_lead(KC_UP, pressed)) { return false; } return true; }
         case KC_DOWN: { if (is_after_lead(KC_DOWN, pressed)) { return false; } return true; }
 
-        case KC_BSPC: { if (is_after_lead(KC_ESC, pressed)) { return false; } return true; }
+        case KC_BSPC: { if (is_after_lead(KC_BSPC, pressed)) { return false; } return true; }
         case KC_RGUI: { if (is_after_lead(KC_MINS, pressed)) { return false; } return true; }
 
         // >>>>>>> escape as additional leader key
@@ -1625,7 +1624,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
 
         case ALT_SHIFT_BS: {
-          if (is_after_lead(KC_BSPC, pressed)) { return false; } return true;
+          if (is_after_lead(KC_ESC, pressed)) { return false; } return true;
         }
 
         case CMD_ESC: {
@@ -1698,7 +1697,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
 
         case CTRL_SHIFT_BS: {
-          if (is_after_lead(KC_BSPC, pressed)) { return false; } return true;
+          if (is_after_lead(KC_ESC, pressed)) { return false; } return true;
         }
 
         case CTRL_ESC: {
@@ -1769,7 +1768,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case _BSPC: { return if_held_150_add_shift(KC_BSPC, pressed); }
         case _DEL: { return if_held_150_add_shift(KC_DEL, pressed); }
         case _PAUS: { return if_held_150_add_shift(KC_PAUS, pressed); }
-
+        case _NUBS: { return if_held_150_add_shift(KC_NUBS, pressed); }
 
         // repeating keycodes
         case KC_PGUP: { return repeat(KC_PGUP, KC_NO, KC_LGUI, KC_LSFT, KC_LALT, KC_LCTL, pressed, 25); }
