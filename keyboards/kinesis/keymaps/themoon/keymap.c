@@ -1038,7 +1038,7 @@ __________,  __________,  __________,  __________,  __________,  __________, ___
          __________,  CMD_SHIFT_TAB, CMD_Q, CMD_TAB,  __________,  __________,
          __________,  __________, KC_PGUP, KC_SPC,  __________,  __________,
             HOME_, KC_PGDN, END_, __________,
-         KC_EQL, KC_ENTER,
+         KC_EQL, KC_ESC,
          KC_BSLS,
          KC_MINS, FIND_PREV, FIND_NEXT,
          HIDE_FOCUS_MAC
@@ -1301,7 +1301,7 @@ __________,  __________,  __________,  __________,  __________,  __________, ___
          __________, ALT_SHIFT_TAB, ALT_F4, ALT_TAB,  __________,  __________,
          __________, __________, KC_PGUP, __________,  __________,  __________,
                       CTRL_HOME, KC_PGDN, CTRL_END, __________,
-         KC_EQL, KC_ENTER,
+         KC_EQL, KC_ESC,
          KC_BSLS,
          KC_MINS, FIND_PREV, FIND_NEXT,
          HIDE_FOCUS_WIN
@@ -1605,7 +1605,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case KC_UP: { if (is_after_lead(KC_UP, pressed)) { return false; } return true; }
         case KC_DOWN: { if (is_after_lead(KC_DOWN, pressed)) { return false; } return true; }
 
-        case KC_BSPC: { if (is_after_lead(KC_BSPC, pressed)) { return false; } return true; }
+        case KC_BSPC: { if (is_after_lead(KC_ESC, pressed)) { return false; } return true; }
         case KC_RGUI: { if (is_after_lead(KC_MINS, pressed)) { return false; } return true; }
 
         // >>>>>>> escape as additional leader key
