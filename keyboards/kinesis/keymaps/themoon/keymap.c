@@ -626,9 +626,9 @@ void comma_finished (qk_tap_dance_state_t *state, void *user_data) {
       case SINGLE_HOLD: down(KC_LSFT); key_code(KC_COMM); break;
       case DOUBLE_TAP:
         if (isMac) { down(KC_LGUI); key_code(KC_COMM); break; }
-        else if (isWin) { down(KC_LCTL); key_code(KC_PAUS); break; }
+        else if (isWin) { down(KC_PAUS); break; }
       case DOUBLE_HOLD:
-        if (isMac) { down(KC_LGUI); key_code(KC_NUBS); break; }
+        if (isMac) { down(KC_LALT); key_code(KC_COMM); break; }
         else if (isWin) { down(KC_PSCR); break; }
       case DOUBLE_SINGLE_TAP: key_code(KC_COMM); down(KC_COMM); break;
     }
@@ -641,9 +641,9 @@ void comma_reset (qk_tap_dance_state_t *state, void *user_data) {
     case SINGLE_HOLD: up(KC_LSFT); break;
     case DOUBLE_TAP:
       if (isMac) { up(KC_LGUI); break; }
-      else if (isWin) { up(KC_LCTL); break; }
+      else if (isWin) { up(KC_PAUS); break; }
     case DOUBLE_HOLD:
-      if (isMac) { up(KC_LGUI); break; }
+      if (isMac) { up(KC_LALT); break; }
       else if (isWin) { up(KC_PSCR); break; }
     case DOUBLE_SINGLE_TAP: up(KC_COMM); break;
   }
