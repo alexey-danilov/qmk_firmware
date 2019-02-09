@@ -595,8 +595,7 @@ void f5_finished (qk_tap_dance_state_t *state, void *user_data) {
         if (isMac) { down(KC_LGUI); key_code(KC_F5); break; }
         else if (isWin) { down(KC_LCTL); key_code(KC_F5); break; }
       case DOUBLE_HOLD:
-        if (isMac) { down(KC_LGUI); down(KC_LSFT); key_code(KC_F5); up(KC_LSFT); break; }
-        else if (isWin) { down(KC_LCTL); down(KC_LSFT); key_code(KC_F5); up(KC_LSFT); break; }
+         down(KC_LALT); key_code(KC_F5); break;
       case DOUBLE_SINGLE_TAP: key_code(KC_F5); down(KC_F5); break;
     }
   }
@@ -610,8 +609,7 @@ void f5_reset (qk_tap_dance_state_t *state, void *user_data) {
       if (isMac) { up(KC_LGUI); break; }
       else if (isWin) { up(KC_LCTL); break; }
     case DOUBLE_HOLD:
-      if (isMac) { up(KC_LGUI); break; }
-      else if (isWin) { up(KC_LCTL); break; }
+      up(KC_LALT);
     case DOUBLE_SINGLE_TAP: up(KC_F5); break;
   }
   f5_tap_state.state = 0;
@@ -803,7 +801,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                  // left palm key
 			                                              PALM_L_MAC,
     // right side
-  KC_F9, KC_F10, KC_F11, KC_F12, KC_MINS, _, KC_EQL, KEYB_CONTROL, SLEEP_POWER,
+  KC_F9, KC_F10, KC_F11, KC_F12, _, _, _, KEYB_CONTROL, SLEEP_POWER,
 	_6_PLUS, _7_BANG, _8_DASH, _9_QUEST, _0, KC_F21,
 	KC_Y, KC_U, KC_I, KC_O, KC_P, KC_F22,
 	KC_H, KC_J, TD(K_TD), KC_L, KC_SCLN, KC_F23,
@@ -836,8 +834,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________, CTRL_M, SELECT_UP_MAC, CTRL_DOT, __________, __________,
                    SELECT_LEFT_MAC,  SELECT_DOWN_MAC,  SELECT_RIGHT_MAC, __________,
          __________, DEL_LEFT_MAC,
-         KC_BSLS,
-         DEL_RIGHT_MAC, KC_F2, LEAD_SPACE,
+         KC_EQL,
+         KC_MINS, KC_F2, LEAD_SPACE,
          KC_F15
     ),
 
@@ -905,8 +903,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________, __________, KC_K, __________, __________, __________,
                __________,  __________,  __________,  __________,
          __________, LCTL(KC_BSPC),
-         KC_BSLS,
-         LCTL(KC_DEL), _TAB, KC_F3,
+         KC_EQL,
+         KC_MINS, _TAB, KC_F3,
          KC_F15
     ),
 
@@ -974,8 +972,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________, __________, __________, __________, __________, __________,
                __________,  __________,  __________,  __________,
          __________, _BSPC,
-         KC_BSLS,
-         _DEL, _TAB, _SPACE,
+         KC_EQL,
+         KC_MINS, _TAB, _SPACE,
          KC_F15
     ),
 
@@ -998,7 +996,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                    __________,  __________,  __________, __________,
          __________, _BSPC,
          KC_BSLS,
-         _DEL, _TAB, _SPACE,
+         KC_MINS, _TAB, _SPACE,
          KC_F15
     ),
 
@@ -1043,8 +1041,8 @@ __________,  __________,  __________,  __________,  __________,  __________, ___
          __________,  __________, KC_PGUP, KC_SPC,  __________,  __________,
             HOME_, KC_PGDN, END_, __________,
          __________, KC_LEFT,
-         KC_BSLS,
-         KC_RGHT, FIND_PREV, FIND_NEXT,
+         KC_EQL,
+         KC_MINS, FIND_PREV, FIND_NEXT,
          HIDE_FOCUS_MAC
     ),
 
@@ -1087,10 +1085,10 @@ __________,  __________,  __________,  __________,  __________,  __________, ___
                                                    // left palm key
 			                                                PALM_L_WIN,
     // right side
-    KC_F9, KC_F10, KC_F11, KC_F12, KC_MINS, _, KC_EQL, KEYB_CONTROL, SLEEP_POWER,
+    KC_F9, KC_F10, KC_F11, KC_F12, _, _, _, KEYB_CONTROL, SLEEP_POWER,
   	_6_PLUS, _7_BANG, _8_DASH, _9_QUEST, _0, KC_F21,
   	KC_Y, KC_U, KC_I, KC_O, KC_P, KC_F22,
-  	KC_H, KC_J, KC_K, KC_L, KC_SCLN, KC_F23,
+  	KC_H, KC_J, TD(K_TD), KC_L, KC_SCLN, KC_F23,
   	KC_N, KC_M, KC_UP, KC_DOT, KC_QUOT, KC_F24,
   	KC_LEFT, KC_DOWN, KC_RGHT, KC_F16,
            // right thumb keys
@@ -1121,8 +1119,8 @@ __________,  __________,  __________,  __________,  __________,  __________, ___
          __________,  __________,  SELECT_UP_WIN,  __________,  __________,  __________,
          SELECT_LEFT_WIN,  SELECT_DOWN_WIN,  SELECT_RIGHT_WIN, __________,
          __________, DEL_LEFT_WIN,
-         KC_BSLS,
-         DEL_RIGHT_WIN, _TAB, LEAD_SPACE,
+         KC_EQL,
+         KC_MINS, _TAB, LEAD_SPACE,
          KC_F15
     ),
 
@@ -1190,8 +1188,8 @@ __________,  __________,  __________,  __________,  __________,  __________, ___
          __________, __________, __________, __________, __________, __________,
                   __________, __________,  __________, __________,
          __________, _BSPC,
-         KC_BSLS,
-         _DEL, KC_F2, KC_F3,
+         KC_EQL,
+         KC_MINS, KC_F2, KC_F3,
          KC_F15
     ),
 
@@ -1229,15 +1227,15 @@ __________,  __________,  __________,  __________,  __________,  __________, ___
                                KC_LALT,
        KC_LCTL, KC_LSFT,  CTRL_ALT_DEL,
                                      _,
-         W_F9,  W_F10,  W_F11,  W_F12,  W_MINS,  __________, W_EQL, __________, __________,
+         W_F9,  W_F10,  W_F11,  W_F12,  __________,  __________, __________, __________, __________,
          W_6,  W_7,  W_8,  W_9,  W_0,  __________,
          W_Y,  W_U,  W_I,  W_O,  W_P,  __________,
          W_H,  W_J,  W_K, W_L,  W_QUOT,  __________,
          W_N, W_M, KC_UP, W_DOT, W_SCLN,  __________,
          KC_LEFT,  KC_DOWN, KC_RGHT, __________,
          __________, _BSPC,
-         KC_BSLS,
-         _DEL, KC_F2, KC_F3,
+         W_EQL,
+         W_MINS, KC_F2, KC_F3,
          KC_F15
     ),
 
@@ -1259,8 +1257,8 @@ __________,  __________,  __________,  __________,  __________,  __________, ___
          __________, __________, __________, __________, __________, __________,
                    __________,  __________,  __________, __________,
          _INS, _BSPC,
-         KC_BSLS,
-         _DEL, _TAB, _SPACE,
+         KC_EQL,
+         KC_MINS, _TAB, _SPACE,
          KC_F15
     ),
 
@@ -1306,8 +1304,8 @@ __________,  __________,  __________,  __________,  __________,  __________, ___
          __________, __________, KC_PGUP, __________,  __________,  __________,
                       CTRL_HOME, KC_PGDN, CTRL_END, __________,
          __________, KC_LEFT,
-         KC_BSLS,
-         KC_RGHT, FIND_PREV, FIND_NEXT,
+         KC_EQL,
+         KC_MINS, FIND_PREV, FIND_NEXT,
          HIDE_FOCUS_WIN
     ),
 
