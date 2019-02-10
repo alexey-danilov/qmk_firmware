@@ -799,7 +799,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                  // left palm key
 			                                              PALM_L_MAC,
     // right side
-  KC_F9, KC_F10, KC_F11, KC_F12, KC_MINS, _, KC_EQL, KEYB_CONTROL, SLEEP_POWER,
+  KC_F9, KC_F10, KC_F11, KC_F12, KC__VOLDOWN, KC__MUTE, KC__VOLUP, KEYB_CONTROL, SLEEP_POWER,
 	_6_PLUS, _7_BANG, _8_DASH, _9_QUEST, _0, KC_F21,
 	KC_Y, KC_U, KC_I, KC_O, KC_P, KC_F22,
 	KC_H, KC_J, TD(K_TD), KC_L, KC_SCLN, KC_F23,
@@ -1046,14 +1046,14 @@ __________,  __________,  __________,  __________,  __________,  __________, ___
 
 [_PALM_R_MAC] = LAYOUT(
          HYPR(KC_GRV), HYPR(KC_F1), HYPR(KC_F2), HYPR(KC_F3), HYPR(KC_F4), HYPR(KC_F5), HYPR(KC_F6), HYPR(KC_F7), HYPR(KC_F8),
-         HYPR(KC_F17), HYPR(KC_1), KC__VOLDOWN, KC__MUTE, KC__VOLUP, HYPR(KC_5),
+         HYPR(KC_F17), HYPR(KC_1), HYPR(KC_2), HYPR(KC_3), HYPR(KC_4), HYPR(KC_5),
          HYPR(KC_F18), HYPR(KC_Q), HYPR(KC_W), HYPR(KC_E), HYPR(KC_R), HYPR(KC_T),
          HYPR(KC_F19), HYPR(KC_A), HYPR(KC_S), HYPR(KC_D), HYPR(KC_F), HYPR(KC_G),
          HYPR(KC_F20), HYPR(KC_Z), HYPR(KC_X), HYPR(KC_C), HYPR(KC_V), HYPR(KC_B),
-                 HYPR(KC_F13), KC_MRWD, KC_MPLY, KC_MFFD,
-                            HYPR(KC_ESC), HYPR(KC_NUBS),
-                                           HYPR(KC_SLSH),
-              LGUI(KC_Z), LGUI(LSFT(KC_Z)), HYPR(KC_DEL),
+                 HYPR(KC_F13), HYPR(KC_LBRC), HYPR(KC_COMM), HYPR(KC_RBRC),
+                                   HYPR(KC_ESC), KC_MRWD,
+                                                 KC_MPLY,
+                   LGUI(KC_Z), LGUI(LSFT(KC_Z)), KC_MPLY,
                                             HYPR(KC_F14),
          _,  _,  _,  _,  _,  _, _, _, _,
          _,  _,  _,  _,  _,  _,
@@ -1083,7 +1083,7 @@ __________,  __________,  __________,  __________,  __________,  __________, ___
                                                    // left palm key
 			                                                PALM_L_WIN,
     // right side
-    KC_F9, KC_F10, KC_F11, KC_F12, _, _, _, KEYB_CONTROL, SLEEP_POWER,
+    KC_F9, KC_F10, KC_F11, KC_F12, KC_MUTE, KC_VOLD, KC_VOLU, KEYB_CONTROL, SLEEP_POWER,
   	_6_PLUS, _7_BANG, _8_DASH, _9_QUEST, _0, KC_F21,
   	KC_Y, KC_U, KC_I, KC_O, KC_P, KC_F22,
   	KC_H, KC_J, TD(K_TD), KC_L, KC_SCLN, KC_F23,
@@ -1309,14 +1309,14 @@ __________,  __________,  __________,  __________,  __________,  __________, ___
 
 [_PALM_R_WIN] = LAYOUT(
          HYPR(KC_GRV), HYPR(KC_F1), HYPR(KC_F2), HYPR(KC_F3), HYPR(KC_F4), HYPR(KC_F5), HYPR(KC_F6), HYPR(KC_F7), HYPR(KC_F8),
-         HYPR(KC_F17), HYPR(KC_1), KC_VOLD, KC_MUTE, KC_VOLU, HYPR(KC_5),
+         HYPR(KC_F17), HYPR(KC_1), HYPR(KC_2), HYPR(KC_3), HYPR(KC_4), HYPR(KC_5),
          HYPR(KC_F18), HYPR(KC_Q), HYPR(KC_W), HYPR(KC_E), HYPR(KC_R), HYPR(KC_T),
          HYPR(KC_F19), HYPR(KC_A), HYPR(KC_S), HYPR(KC_D), HYPR(KC_F), HYPR(KC_G),
          HYPR(KC_F20), HYPR(KC_Z), HYPR(KC_X), HYPR(KC_C), HYPR(KC_V), HYPR(KC_B),
-                 HYPR(KC_F13), KC_MPRV, KC_MPLY, KC_MNXT,
-                            HYPR(KC_ESC), HYPR(KC_PAUS),
-                                           HYPR(KC_SLSH),
-              LCTL(KC_Z), LCTL(LSFT(KC_Z)), HYPR(KC_DEL),
+                 HYPR(KC_F13), HYPR(KC_LBRC), HYPR(KC_COMM), HYPR(KC_RBRC),
+                                   HYPR(KC_ESC), KC_MPRV,
+                                                 KC_MNXT,
+                   LCTL(KC_Z), LCTL(LSFT(KC_Z)), KC_MPLY,
                                             HYPR(KC_F14),
          _,  _,  _,  _,  _,  _, _, _, _,
          _,  _,  _,  _,  _,  _,
