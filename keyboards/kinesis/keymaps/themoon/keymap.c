@@ -662,8 +662,8 @@ void k_finished (qk_tap_dance_state_t *state, void *user_data) {
       case DOUBLE_TAP:
         lang_switch_led = true;
         if (isMac) {
-          down(KC_LALT); key_code(KC_SPC); break;
           caps_led = false; // on mac changing language resets caps lock
+          down(KC_LALT); key_code(KC_SPC); break;
         }
        else if (isWin) { down(KC_LGUI); key_code(KC_SPC); break; }
       case DOUBLE_HOLD:
@@ -1390,11 +1390,11 @@ void matrix_scan_user(void) {
 
    if (lang_switch_led) {
      lang_switch_led = false;
-     led_red_on(); _delay_ms(25);
-     led_yellow_on(); _delay_ms(25); if (!is_macro1_recording) { led_red_off(); }
-     led_green_on(); _delay_ms(25); led_yellow_off();
-     led_blue_on(); _delay_ms(25);  if (!is_macro2_recording) { led_green_off(); }
-     if (!caps_led) { _delay_ms(25); led_blue_off(); }
+     led_red_on(); _delay_ms(20);
+     led_yellow_on(); _delay_ms(20); if (!is_macro1_recording) { led_red_off(); }
+     led_green_on(); _delay_ms(20); led_yellow_off();
+     led_blue_on(); _delay_ms(20);  if (!is_macro2_recording) { led_green_off(); }
+     if (!caps_led) { _delay_ms(20); led_blue_off(); }
    }
 }
 
