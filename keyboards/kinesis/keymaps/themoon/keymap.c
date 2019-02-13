@@ -74,6 +74,7 @@ enum holding_keycodes {
   _NUBS,
   _APP,
 
+  _1_AT,
   _2_PLEFT,
   _3_SLASH,
   _4_PRGHT,
@@ -82,9 +83,8 @@ enum holding_keycodes {
   _7_BANG,
   _8_DASH,
   _9_QUEST,
+  _0_PIPE,
 
-  _1,
-  _0,
   _Z,
   _X,
   _C,
@@ -663,7 +663,7 @@ uint32_t layer_state_set_user(uint32_t state);
 void dynamic_macro_finished (qk_tap_dance_state_t *state, void *user_data) {
   uint16_t dynamic_control; keyrecord_t record;
   dynamic_macro_state.state = cur_dance(state);
-  if (!is_after_lead(KC_MINS, true)) {
+  if (!is_after_lead(isMac ? KC_NUBS : KC_APP, true)) {
 
     if (is_macro1_recording || is_macro2_recording) {
        dynamic_control = DYN_REC_STOP; is_macro1_recording = false; is_macro2_recording = false; layer_state_set_user(dynamic_layer_state);
@@ -750,7 +750,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [_MAC] = LAYOUT(
            // left side
            KC_GRV, KC_F1, KC_F2, KC_F3, KC_F4, TD(F5_TD), KC_F6, KC_F7, KC_F8,
-           KC_F17, _1, _2_PLEFT, _3_SLASH, _4_PRGHT, _5_DOLL,
+           KC_F17, _1_AT, _2_PLEFT, _3_SLASH, _4_PRGHT, _5_DOLL,
            KC_F18, KC_Q, KC_W, KC_E, KC_R, KC_T,
            KC_F19,KC_A, KC_S, KC_D, KC_F, KC_G,
            KC_F20, KC_Z, KC_X, KC_C, KC_V, KC_B,
@@ -763,7 +763,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 			                                              PALM_L_MAC,
     // right side
   KC_F9, KC_F10, KC_F11, KC_F12, KC__MUTE, KC__VOLDOWN, KC__VOLUP, KEYB_CONTROL, SLEEP_POWER,
-	_6_AND, _7_BANG, _8_DASH, _9_QUEST, _0, KC_F21,
+	_6_AND, _7_BANG, _8_DASH, _9_QUEST, _0_PIPE, KC_F21,
 	KC_Y, KC_U, KC_I, KC_O, KC_P, KC_F22,
 	KC_H, KC_J, TD(K_TD), KC_L, KC_SCLN, KC_F23,
 	KC_N, KC_M, KC_UP, KC_DOT, KC_QUOT, KC_F24,
@@ -807,7 +807,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
                __________,  __________,  CTRL_COMM,  __________,
-                              DEL_LEFT_MAC, _NUBS,
+                                DEL_LEFT_MAC, _NUBS,
                                             KC_SLSH,
                        KC_F1, _ENTER, DEL_RIGHT_MAC,
                                              KC_F14,
@@ -1034,7 +1034,7 @@ __________,  __________,  __________,  __________,  __________,  __________, ___
 [_WIN] = LAYOUT(
            // left side
            KC_GRV, KC_F1, KC_F2, KC_F3, KC_F4, TD(F5_TD), KC_F6, KC_F7, KC_F8,
-           KC_F17, _1, _2_PLEFT, _3_SLASH, _4_PRGHT, _5_DOLL,
+           KC_F17, _1_AT, _2_PLEFT, _3_SLASH, _4_PRGHT, _5_DOLL,
            KC_F18, KC_Q, KC_W, KC_E, KC_R, KC_T,
            KC_F19, KC_A, KC_S, KC_D, KC_F, KC_G,
            KC_F20, KC_Z, KC_X, KC_C, KC_V, KC_B,
@@ -1047,7 +1047,7 @@ __________,  __________,  __________,  __________,  __________,  __________, ___
 			                                                PALM_L_WIN,
     // right side
     KC_F9, KC_F10, KC_F11, KC_F12, KC_MUTE, KC_VOLD, KC_VOLU, KEYB_CONTROL, SLEEP_POWER,
-  	_6_AND, _7_BANG, _8_DASH, _9_QUEST, _0, KC_F21,
+  	_6_AND, _7_BANG, _8_DASH, _9_QUEST, _0_PIPE, KC_F21,
   	KC_Y, KC_U, KC_I, KC_O, KC_P, KC_F22,
   	KC_H, KC_J, TD(K_TD), KC_L, KC_SCLN, KC_F23,
   	KC_N, KC_M, KC_UP, KC_DOT, KC_QUOT, KC_F24,
@@ -1497,7 +1497,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case KC_D: { return lead_autoshifted(KC_D, pressed); }
         case KC_F: { return lead_autoshifted(KC_F, pressed); }
         case KC_G: { return lead_autoshifted(KC_G, pressed); }
-        case KC_H: { return lead_autoshifted(isWin? KC_H: KC_EQL, pressed); }
+        case KC_H: { return lead_autoshifted(isMac? KC_F4: KC_H, pressed); }
         case KC_J: { return lead_autoshifted(KC_J, pressed); }
         case KC_K: { return lead_autoshifted(KC_K, pressed); }
         case KC_L: { return lead_autoshifted(KC_L, pressed); }
@@ -1520,6 +1520,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
         // custom autoshifted keys
         case _INS: { return lead_custom_autoshifted(KC_INS, KC_INS, KC_LSFT, pressed); }
+        case _1_AT: { return lead_custom_autoshifted(KC_1, KC_2, KC_LSFT, pressed); }
         case _2_PLEFT: { return lead_custom_autoshifted(KC_2, KC_9, KC_LSFT, pressed); }
         case _3_SLASH: { return lead_custom_autoshifted(KC_3, KC_MINS, KC_LSFT, pressed); }
         case _4_PRGHT: { return lead_custom_autoshifted(KC_4, KC_0, KC_LSFT, pressed); }
@@ -1528,6 +1529,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case _7_BANG: { return lead_custom_autoshifted(KC_7, KC_1, KC_LSFT, pressed); }
         case _8_DASH: { return lead_custom_autoshifted(KC_8, KC_MINS, KC_NO, pressed); }
         case _9_QUEST: { return lead_custom_autoshifted(KC_9, KC_SLSH, KC_LSFT, pressed); }
+        case _0_PIPE: { return lead_custom_autoshifted(KC_0, KC_BSLS, KC_LSFT, pressed); }
 
         case KC_F1: { return lead_f(KC_F1, pressed); }
         case KC_F2: { return lead_f(KC_F2, pressed); }
@@ -1555,8 +1557,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case KC_F24: { return lead_f(KC_F24, pressed); }
 
         // non-shifted keys
-        case _0: { return lead_custom_autoshifted(KC_0, KC_0, KC_NO, pressed); }
-        case _1: { return lead_custom_autoshifted(KC_1, KC_1, KC_NO, pressed); }
         case _Z: { return lead_custom_autoshifted(KC_Z, KC_Z, KC_NO, pressed); }
         case _X: { return lead_custom_autoshifted(KC_X, KC_X, KC_NO, pressed); }
         case _C: { return lead_custom_autoshifted(KC_C, KC_C, KC_NO, pressed); }
@@ -1605,7 +1605,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
 
         case CTRL_F1: {
-          if (is_after_lead(KC_NUBS, pressed)) { return false; }
+          if (is_after_lead(KC_MINS, pressed)) { return false; }
           static uint16_t ctrl_f1_layer_timer;
           momentary_layer_tap(KC_F1, KC_LCTL, KC_LGUI, KC_NO, KC_NO, KC_NO, &ctrl_f1_layer_timer, &ctrl_f1_interrupted, pressed, 250, true);
           return true;
