@@ -122,8 +122,6 @@ enum holding_keycodes {
   CMD_Q,
   ALT_F4,
 
-  SLEEP_POWER,
-
   HIDE_FOCUS_MAC,
   HIDE_FOCUS_WIN,
 
@@ -146,12 +144,6 @@ enum holding_keycodes {
   DYNAMIC_MACRO_RANGE
 };
 #include "dynamic_macro.h"
-
-enum {
-  TAP_MACRO = 0,
-  K_TD = 1,
-  F5_TD = 2,
-};
 
 static uint16_t esc_timer = 0; // timer for leader key: esc
 static uint16_t lead_timer = 0; // timer for leader key
@@ -262,7 +254,10 @@ void all_leds_on(void) {
 }
 
 void all_leds_off(void) {
-  led_red_off(); led_yellow_off(); led_green_off(); led_blue_off();
+     if (!is_macro1_recording) { led_red_off(); }
+     led_yellow_off();
+     if (!is_macro2_recording) { led_green_off(); }
+     if(!caps_led) { led_blue_off(); }
 }
 
 // replaces mods of keycode, adds additional mods if it was held for at least provided duration
@@ -348,31 +343,6 @@ bool if_held_add_mods(uint16_t code, uint16_t held_mod1, uint16_t held_mod2, boo
 // adds shift to keycode if it was held for at least 150 ms
 bool if_held_150_add_shift(uint16_t code, bool pressed) {
   return if_held_add_mods(code, KC_LSFT, KC_NO, pressed, 150);
-}
-
-bool sleep_power(bool pressed, uint16_t hold_duration) {
-  static uint16_t hold_timer;
-  if(pressed) {
-      hold_timer= timer_read();
-  } else {
-      if (pressed_within(hold_timer, hold_duration)){
-          // sleep
-          all_leds_on(); _delay_ms(125); all_leds_off(); _delay_ms(200); all_leds_on(); _delay_ms(125); all_leds_off();
-          if (isMac) { down(KC_LCTL); down(KC_LSFT); SEND_STRING(SS_DOWN(X_POWER) SS_UP(X_POWER)); up(KC_LSFT); up(KC_LCTL); }
-          if (isWin) { with_1mod(KC_X, KC_LGUI); _delay_ms(125); key_code(KC_U); _delay_ms(125); down(KC_S); up(KC_S); }
-      } else {
-         // shutdown
-         all_leds_on(); _delay_ms(500);
-         led_blue_off(); _delay_ms(200);
-         led_green_off(); _delay_ms(200);
-         led_yellow_off(); _delay_ms(200);
-         led_red_off();
-
-         if (isMac) { down(KC_LGUI); down(KC_LCTL); down(KC_LALT); SEND_STRING(SS_DOWN(X_POWER) SS_UP(X_POWER)); up(KC_LALT); up(KC_LCTL); up(KC_LGUI); up(KC_LGUI); }
-         if (isWin) { with_1mod(KC_X, KC_LGUI); _delay_ms(125); key_code(KC_U); _delay_ms(125); down(KC_U); up(KC_U); }
-      }
-  }
-  return false;
 }
 
 // handles repeat functionality (only for palm keys)
@@ -561,6 +531,13 @@ bool lead_f(uint16_t code, bool pressed) {
 }
 
 enum {
+  TAP_MACRO = 0,
+  K_TD = 1,
+  F5_TD = 2,
+  REST_TD = 3
+};
+
+enum {
   SINGLE_TAP = 1,
   SINGLE_HOLD = 2,
   DOUBLE_TAP = 3,
@@ -613,6 +590,57 @@ void f5_reset (qk_tap_dance_state_t *state, void *user_data) {
     case DOUBLE_SINGLE_TAP: up(KC_F5); break;
   }
   f5_tap_state.state = 0;
+}
+
+//**************** GRV TAP *********************//
+static tap rest_tap_state = { .is_press_action = true, .state = 0 };
+
+void rest_finished (qk_tap_dance_state_t *state, void *user_data) {
+  rest_tap_state.state = cur_dance(state);
+  if (!is_after_lead(KC_GRV, true)) {
+    switch (rest_tap_state.state) {
+      case SINGLE_TAP: down(KC_GRV); break;
+      case SINGLE_HOLD: down(KC_LSFT); key_code(KC_GRV); break;
+      case DOUBLE_TAP:
+          // sleep
+          if (isMac) {
+            all_leds_on(); _delay_ms(125); all_leds_off(); _delay_ms(200); all_leds_on(); _delay_ms(125); all_leds_off();
+            down(KC_LCTL); down(KC_LSFT); SEND_STRING(SS_DOWN(X_POWER) SS_UP(X_POWER)); up(KC_LSFT); up(KC_LCTL); break;
+          }
+          if (isWin) {
+            with_1mod(KC_X, KC_LGUI); all_leds_on(); _delay_ms(125); all_leds_off(); key_code(KC_U); _delay_ms(200); all_leds_on(); _delay_ms(125); all_leds_off(); down(KC_S); up(KC_S); break;
+          }
+      case DOUBLE_HOLD:
+         // shutdown
+         all_leds_on(); _delay_ms(500);
+         if (isMac) {
+            led_blue_off(); _delay_ms(200);
+            led_green_off(); _delay_ms(200);
+            led_yellow_off(); _delay_ms(200);
+            led_red_off();
+            down(KC_LGUI); down(KC_LCTL); down(KC_LALT); SEND_STRING(SS_DOWN(X_POWER) SS_UP(X_POWER)); up(KC_LALT); up(KC_LCTL); up(KC_LGUI); up(KC_LGUI); break;
+         }
+         if (isWin) {
+            with_1mod(KC_X, KC_LGUI); led_blue_off(); _delay_ms(200); key_code(KC_U); led_green_off(); _delay_ms(200); led_yellow_off(); _delay_ms(200); led_red_off(); down(KC_U); up(KC_U); break;
+         }
+      case DOUBLE_SINGLE_TAP: key_code(KC_GRV); down(KC_GRV); break;
+    }
+  }
+}
+
+void rest_reset (qk_tap_dance_state_t *state, void *user_data) {
+  switch (rest_tap_state.state) {
+    case SINGLE_TAP: up(KC_GRV); break;
+    case SINGLE_HOLD: up(KC_LSFT); break;
+    case DOUBLE_TAP:
+      if (isMac) { up(KC_LGUI); break; }
+      else if (isWin) { up(KC_PAUS); break; }
+    case DOUBLE_HOLD:
+      if (isMac) { up(KC_LCTL); break; }
+      else if (isWin) { up(KC_PSCR); break; }
+    case DOUBLE_SINGLE_TAP: up(KC_GRV); break;
+  }
+  rest_tap_state.state = 0;
 }
 
 //**************** K TAP *********************//
@@ -713,19 +741,20 @@ void dynamic_macro_reset (qk_tap_dance_state_t *state, void *user_data) {
 // all tap macros
 qk_tap_dance_action_t tap_dance_actions[] = {
   [TAP_MACRO] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, dynamic_macro_finished, dynamic_macro_reset, 350),
-  [K_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, k_finished, k_reset, 350),
-  [F5_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, f5_finished, f5_reset, 350)
+  [K_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, k_finished, k_reset, 250),
+  [F5_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, f5_finished, f5_reset, 350),
+  [REST_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, rest_finished, rest_reset, 350)
 };
 
 /*
 * ,-------------------------------------------------------------------------------------------------------------------.
-* |  Ins   |  F1  |  F2  |  F3  |  F4  |  F5  |  F6  |  F8  |  F9  |  F10 |  F12 | Mute | Vol- | Vol+ | Prog |  Rest  |
+* | REST_TD | F1  |  F2  |  F3  |  F4  | F5_TD |  F6 |  F8  |  F9  |  F10 |  F12 | Mute | Vol- | Vol+ |      |  Prog  |
 * |--------+------+------+------+------+------+---------------------------+------+------+------+------+------+--------|
 * |  F17   |   1  |  2(  |  3_  |  4)  |  5=  |                           |  6+  |  7!  |  8-  |  9?  |  0)  |  F21   |
 * |--------+------+------+------+------+------|                           +------+------+------+------+------+--------|
 * |  F18   |   Q  |   W  |   E  |   R  |   T  |                           |   Y  |   U  |  I   |   O  |  P   |  F22   |
 * |--------+------+------+------+------+------|                           |------+------+------+------+------+--------|
-* |  F19   |   A  |   S  |   D  |   F  |   G  |                           |   H  |   J  |  K   |   L  |  ;:  |  F23   |
+* |  F19   |   A  |   S  |   D  |   F  |   G  |                           |   H  |   J  | K_TD |   L  |  ;:  |  F23   |
 * |--------+------+------+------+------+------|                           |------+------+------+------+------+--------|
 * |  F20   |   Z  |   X  |   C  |   V  |   B  |                           |   N  |   M  |  Up  |  .>  |  '"  |  F24   |
 * `--------+------+------+------+------+-------                           `------+------+------+------+------+--------'
@@ -740,16 +769,16 @@ qk_tap_dance_action_t tap_dance_actions[] = {
 *                                 |      |      | Del  |         | Apps |      |      |
 *                                  --------------------           --------------------
 *
-*                      ----------                                                        ----------
-*                     | PALM/F14 |                                                      | PALM/F15 |
-*                      ----------                                                        ----------
+*                      ----------                                                         ----------
+*                     | PALM/F14 |                                                       | PALM/F15 |
+*                      ----------                                                         ----------
 */
 
 // base mac layer
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [_MAC] = LAYOUT(
            // left side
-           KC_GRV, KC_F1, KC_F2, KC_F3, KC_F4, TD(F5_TD), KC_F6, KC_F7, KC_F8,
+           TD(REST_TD), KC_F1, KC_F2, KC_F3, KC_F4, TD(F5_TD), KC_F6, KC_F7, KC_F8,
            KC_F17, _1_AT, _2_PLEFT, _3_SLASH, _4_PRGHT, _5_DOLL,
            KC_F18, KC_Q, KC_W, KC_E, KC_R, KC_T,
            KC_F19,KC_A, KC_S, KC_D, KC_F, KC_G,
@@ -762,7 +791,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                  // left palm key
 			                                              PALM_L_MAC,
     // right side
-  KC_F9, KC_F10, KC_F11, KC_F12, KC__MUTE, KC__VOLDOWN, KC__VOLUP, KEYB_CONTROL, SLEEP_POWER,
+  KC_F9, KC_F10, KC_F11, KC_F12, KC__MUTE, KC__VOLDOWN, KC__VOLUP, _, KEYB_CONTROL,
 	_6_AND, _7_BANG, _8_DASH, _9_QUEST, _0_PIPE, KC_F21,
 	KC_Y, KC_U, KC_I, KC_O, KC_P, KC_F22,
 	KC_H, KC_J, TD(K_TD), KC_L, KC_SCLN, KC_F23,
@@ -1033,7 +1062,7 @@ __________,  __________,  __________,  __________,  __________,  __________, ___
 // base win layer
 [_WIN] = LAYOUT(
            // left side
-           KC_GRV, KC_F1, KC_F2, KC_F3, KC_F4, TD(F5_TD), KC_F6, KC_F7, KC_F8,
+           TD(REST_TD), KC_F1, KC_F2, KC_F3, KC_F4, TD(F5_TD), KC_F6, KC_F7, KC_F8,
            KC_F17, _1_AT, _2_PLEFT, _3_SLASH, _4_PRGHT, _5_DOLL,
            KC_F18, KC_Q, KC_W, KC_E, KC_R, KC_T,
            KC_F19, KC_A, KC_S, KC_D, KC_F, KC_G,
@@ -1046,7 +1075,7 @@ __________,  __________,  __________,  __________,  __________,  __________, ___
                                                    // left palm key
 			                                                PALM_L_WIN,
     // right side
-    KC_F9, KC_F10, KC_F11, KC_F12, KC_MUTE, KC_VOLD, KC_VOLU, KEYB_CONTROL, SLEEP_POWER,
+    KC_F9, KC_F10, KC_F11, KC_F12, KC_MUTE, KC_VOLD, KC_VOLU, _, KEYB_CONTROL,
   	_6_AND, _7_BANG, _8_DASH, _9_QUEST, _0_PIPE, KC_F21,
   	KC_Y, KC_U, KC_I, KC_O, KC_P, KC_F22,
   	KC_H, KC_J, TD(K_TD), KC_L, KC_SCLN, KC_F23,
@@ -1304,7 +1333,7 @@ __________,  __________,  __________,  __________,  __________,  __________, ___
                                  _,
                            _, _, _,
                                  _,
-         _,  _,  _,  _,  _,  _, _, KEYB_CONTROL, RESET,
+         _,  _,  _,  _,  _,  _, _, RESET, KEYB_CONTROL,
 	     _, _, _, _, _, _,
          _,  _,  _,  _,  _,  _,
          _,  _,  _,  _,  _,  _,
@@ -1353,11 +1382,9 @@ void matrix_scan_user(void) {
 
    if (lang_switch_led) {
      lang_switch_led = false;
-     led_red_on(); _delay_ms(20);
-     led_yellow_on(); _delay_ms(20); if (!is_macro1_recording) { led_red_off(); }
-     led_green_on(); _delay_ms(20); led_yellow_off();
-     led_blue_on(); _delay_ms(20);  if (!is_macro2_recording) { led_green_off(); }
-     if (!caps_led) { _delay_ms(20); led_blue_off(); }
+     all_leds_on();
+     _delay_ms(50);
+     all_leds_off();
    }
 }
 
@@ -1775,8 +1802,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         // minimize app / minimize others
         case HIDE_FOCUS_MAC: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_H, KC_LALT, KC_LSFT, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_H, KC_LALT, KC_NO, KC_NO, KC_NO, pressed, 300, true); }
         case HIDE_FOCUS_WIN: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_DOWN, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_UP, KC_NO, KC_NO, KC_NO, KC_NO, pressed, 300, true); }
-
-        case SLEEP_POWER: { return sleep_power(pressed, 250); }
 
         // mac overrides
         case CTRL_DOT: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_DOT, KC_LGUI, KC_NO, KC_NO, KC_NO, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_DOT, KC_LGUI, KC_LSFT, KC_NO, KC_NO, pressed, 150, true); }
