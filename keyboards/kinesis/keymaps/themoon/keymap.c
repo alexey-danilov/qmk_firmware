@@ -648,16 +648,18 @@ void rest_finished (qk_tap_dance_state_t *state, void *user_data) {
           }
       case SINGLE_HOLD:
          // shutdown
-         all_leds_on(); _delay_ms(500);
+         all_leds_on();
+
          if (isMac) {
-            led_blue_off(); _delay_ms(200);
-            led_green_off(); _delay_ms(200);
-            led_yellow_off(); _delay_ms(200);
+            _delay_ms(300);
+            led_blue_off(); _delay_ms(300);
+            led_green_off(); _delay_ms(300);
+            led_yellow_off(); _delay_ms(300);
             led_red_off();
             down(KC_LGUI); down(KC_LCTL); down(KC_LALT); SEND_STRING(SS_DOWN(X_POWER) SS_UP(X_POWER)); up(KC_LALT); up(KC_LCTL); up(KC_LGUI); break;
          }
          if (isWin) {
-            with_1mod(KC_X, KC_LGUI); led_blue_off(); _delay_ms(200); key_code(KC_U); led_green_off(); _delay_ms(200); led_yellow_off(); _delay_ms(200); led_red_off(); key_code(KC_U); break;
+            with_1mod(KC_X, KC_LGUI); _delay_ms(300); led_blue_off(); key_code(KC_U); _delay_ms(300); led_green_off(); _delay_ms(300); led_yellow_off(); _delay_ms(300); led_red_off(); _delay_ms(300); key_code(KC_U); _delay_ms(300); break;
          }
       default: break;
     }
