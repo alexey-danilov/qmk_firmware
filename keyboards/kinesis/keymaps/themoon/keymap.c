@@ -288,10 +288,11 @@ bool process_lang_caps(
           }
           with_2_mods(lang_switch_code, lang_switch_mod1, lang_switch_mod2);
       } else {
-          key_code(caps_code);
           if (caps_led) {
+            up(caps_code);
             caps_led = false;
           } else {
+            down(caps_code);
             caps_led = true;
           }
       }
@@ -637,8 +638,7 @@ void rest_finished (qk_tap_dance_state_t *state, void *user_data) {
   rest_tap_state.state = cur_dance(state);
   if (!is_after_lead(KC_GRV, true)) {
     switch (rest_tap_state.state) {
-      case SINGLE_TAP: caps_led = false; all_leds_off(); break;
-      case SINGLE_HOLD:
+      case SINGLE_TAP:
           // sleep
           if (isMac) {
             all_leds_on(); _delay_ms(125); all_leds_off(); _delay_ms(200); all_leds_on(); _delay_ms(125); all_leds_off();
@@ -647,7 +647,7 @@ void rest_finished (qk_tap_dance_state_t *state, void *user_data) {
           if (isWin) {
             with_1mod(KC_X, KC_LGUI); all_leds_on(); _delay_ms(125); all_leds_off(); key_code(KC_U); _delay_ms(200); all_leds_on(); _delay_ms(125); all_leds_off(); key_code(KC_S); break;
           }
-      case DOUBLE_HOLD:
+      case SINGLE_HOLD:
          // shutdown
          all_leds_on(); _delay_ms(500);
          if (isMac) {
@@ -728,7 +728,7 @@ void dynamic_macro_reset (qk_tap_dance_state_t *state, void *user_data) {
 qk_tap_dance_action_t tap_dance_actions[] = {
   [TAP_MACRO] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, dynamic_macro_finished, dynamic_macro_reset, 350),
   [F5_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, f5_finished, f5_reset, 350),
-  [REST_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, rest_finished, rest_reset, 500)
+  [REST_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, rest_finished, rest_reset, 1000)
 };
 
 /*
@@ -1367,11 +1367,11 @@ void matrix_scan_user(void) {
 
    if (lang_switch_led) {
      lang_switch_led = false;
-     led_red_on(); _delay_ms(50);
-     led_yellow_on(); _delay_ms(50); if (!is_macro1_recording) { led_red_off(); }
-     led_green_on(); _delay_ms(50); led_yellow_off();
-     led_blue_on(); _delay_ms(50);  if (!is_macro2_recording) { led_green_off(); }
-     if (!caps_led) { _delay_ms(50); led_blue_off(); }
+     led_red_on(); _delay_ms(10);
+     led_yellow_on(); _delay_ms(10); if (!is_macro1_recording) { led_red_off(); }
+     led_green_on(); _delay_ms(10); led_yellow_off();
+     led_blue_on(); _delay_ms(10);  if (!is_macro2_recording) { led_green_off(); }
+     if (!caps_led) { _delay_ms(10); led_blue_off(); }
    }
 }
 
@@ -1759,7 +1759,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case ALT_SHIFT_TAB: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_TAB, KC_LGUI, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_TAB, KC_LALT, KC_LSFT, KC_NO, KC_NO, pressed, 150, true); }
 
         // lang switch
-        case LANG_CAPS_MAC: { return process_lang_caps(KC_SPC, KC_LGUI, KC_LALT, KC_NO, KC_CAPS, pressed, 150); }
+        case LANG_CAPS_MAC: { return process_lang_caps(KC_SPC, KC_LGUI, KC_LALT, KC_NO, KC_LCAP, pressed, 150); }
         case LANG_CAPS_WIN: { return process_lang_caps(KC_SPC, KC_LCTL, KC_LGUI, KC_NO, KC_CAPS, pressed, 150); }
 
         // home/end
