@@ -271,7 +271,6 @@ bool process_lang_caps(
     uint16_t mod_to_be_replaced,
     uint16_t lang_switch_mod1,
     uint16_t lang_switch_mod2,
-    uint16_t caps_code,
     bool pressed,
     uint16_t hold_duration
 ) {
@@ -289,10 +288,10 @@ bool process_lang_caps(
           with_2_mods(lang_switch_code, lang_switch_mod1, lang_switch_mod2);
       } else {
           if (caps_led) {
-            up(caps_code);
+            up(KC_LCAP);
             caps_led = false;
           } else {
-            down(caps_code);
+            down(KC_LCAP);
             caps_led = true;
           }
       }
@@ -1759,8 +1758,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case ALT_SHIFT_TAB: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_TAB, KC_LGUI, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_TAB, KC_LALT, KC_LSFT, KC_NO, KC_NO, pressed, 150, true); }
 
         // lang switch
-        case LANG_CAPS_MAC: { return process_lang_caps(KC_SPC, KC_LGUI, KC_LALT, KC_NO, KC_LCAP, pressed, 150); }
-        case LANG_CAPS_WIN: { return process_lang_caps(KC_SPC, KC_LCTL, KC_LGUI, KC_NO, KC_CAPS, pressed, 150); }
+        case LANG_CAPS_MAC: { return process_lang_caps(KC_SPC, KC_LGUI, KC_LALT, KC_NO, pressed, 150); }
+        case LANG_CAPS_WIN: { return process_lang_caps(KC_SPC, KC_LCTL, KC_LGUI, KC_NO, pressed, 150); }
 
         // home/end
         case HOME_: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_HOME, KC_LGUI, KC_LCTL, KC_LALT, KC_LSFT, KC_NO, KC_NO, KC_NO, KC_NO, KC_HOME, KC_NO, KC_NO, KC_NO, KC_NO, pressed, 250, true); }
