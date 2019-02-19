@@ -646,7 +646,7 @@ void rest_finished (qk_tap_dance_state_t *state, void *user_data) {
           if (isWin) {
             with_1mod(KC_X, KC_LGUI); all_leds_on(); _delay_ms(125); all_leds_off(); key_code(KC_U); _delay_ms(200); all_leds_on(); _delay_ms(125); all_leds_off(); key_code(KC_S); break;
           }
-      case DOUBLE_SINGLE_TAP:
+      case DOUBLE_TAP:
          // shutdown
          all_leds_on();
 
