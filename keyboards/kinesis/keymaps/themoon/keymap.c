@@ -1057,7 +1057,7 @@ __________,  __________,  __________,  __________,  __________,  __________, ___
   	KC_N, KC_M, KC_UP, KC_DOT, KC_QUOT, KC_F24,
   	KC_LEFT, KC_DOWN, KC_RGHT, KC_F16,
            // right thumb keys
-           _INS, KC_BSPC,
+           _INS, KC_BSLS,
            ALT_EQL_WIN,
            KC_RGUI, SHIFT_TAB_WIN, CTRL_SPACE,
            // right palm key
@@ -1571,7 +1571,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case KC_DOWN: { if (is_after_lead(KC_DOWN, pressed)) { return false; } return true; }
 
         case KC_RGUI: { if (is_after_lead(KC_MINS, pressed)) { return false; } return true; }
-        case KC_BSPC: { if (is_after_lead(KC_BSPC, pressed)) { return false; } return true; }
+        case KC_BSLS: { if (is_after_lead(KC_BSLS, pressed)) { return false; } return true; }
 
         // >>>>>>> escape as additional leader key
         case KC_LEFT: {
