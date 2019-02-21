@@ -602,31 +602,20 @@ void f5_finished (qk_tap_dance_state_t *state, void *user_data) {
   f5_tap_state.state = cur_dance(state);
   if (!is_after_lead(KC_F5, true)) {
     switch (f5_tap_state.state) {
-      case SINGLE_TAP: down(KC_F5); break;
-      case SINGLE_HOLD: down(KC_LSFT); key_code(KC_F5); break;
+      case SINGLE_TAP: key_code(KC_F5); break;
+      case SINGLE_HOLD: down(KC_LSFT); key_code(KC_F5); up(KC_LSFT); break;
       case DOUBLE_TAP:
-        if (isMac) { down(KC_LGUI); key_code(KC_COMM); break; }
-        else if (isWin) { down(KC_PAUS); break; }
+        if (isMac) { down(KC_LGUI); key_code(KC_COMM); up(KC_LGUI); break; }
+        else if (isWin) { key_code(KC_PAUS); break; }
       case DOUBLE_HOLD:
-        if (isMac) { down(KC_LCTL); key_code(KC_F12); break; }
-        else if (isWin) { down(KC_PSCR); break; }
-      case DOUBLE_SINGLE_TAP: key_code(KC_F5); down(KC_F5); break;
+        if (isMac) { down(KC_LCTL); key_code(KC_F12); up(KC_LCTL); break; }
+        else if (isWin) { key_code(KC_PSCR); break; }
+      case DOUBLE_SINGLE_TAP: key_code(KC_F5); key_code(KC_F5); break;
     }
   }
 }
 
 void f5_reset (qk_tap_dance_state_t *state, void *user_data) {
-  switch (f5_tap_state.state) {
-    case SINGLE_TAP: up(KC_F5); break;
-    case SINGLE_HOLD: up(KC_LSFT); break;
-    case DOUBLE_TAP:
-      if (isMac) { up(KC_LGUI); break; }
-      else if (isWin) { up(KC_PAUS); break; }
-    case DOUBLE_HOLD:
-      if (isMac) { up(KC_LCTL); break; }
-      else if (isWin) { up(KC_PSCR); break; }
-    case DOUBLE_SINGLE_TAP: up(KC_F5); break;
-  }
   f5_tap_state.state = 0;
 }
 
