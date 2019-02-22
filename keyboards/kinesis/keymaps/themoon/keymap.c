@@ -75,16 +75,16 @@ enum holding_keycodes {
   _NUBS,
   _APP,
 
-  _1,
+  _1_AT,
   _2_PLEFT,
   _3_SLASH,
   _4_PRGHT,
-  _5_DOLL,
-  _6_BANG,
-  _7_AND,
+  _5_BANG,
+  _6_UPSIGN,
+  _7_DOLL,
   _8_DASH,
   _9_QUEST,
-  _0,
+  _0_AND,
 
   _Z,
   _X,
@@ -754,7 +754,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [_MAC] = LAYOUT(
            // left side
            KC_GRV, KC_F1, KC_F2, KC_F3, KC_F4, TD(F5_TD), KC_F6, KC_F7, KC_F8,
-           KC_F17, _1, _2_PLEFT, _3_SLASH, _4_PRGHT, _5_DOLL,
+           KC_F17, _1_AT, _2_PLEFT, _3_SLASH, _4_PRGHT, _5_BANG,
            KC_F18, KC_Q, KC_W, KC_E, KC_R, KC_T,
            KC_F19,KC_A, KC_S, KC_D, KC_F, KC_G,
            KC_F20, KC_Z, KC_X, KC_C, KC_V, KC_B,
@@ -767,7 +767,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 			                                              PALM_L_MAC,
     // right side
   KC_F9, KC_F10, KC_F11, KC_F12, KC__MUTE, KC__VOLDOWN, KC__VOLUP, KEYB_CONTROL, TD(REST_TD),
-	_6_BANG, _7_AND, _8_DASH, _9_QUEST, _0, KC_F21,
+	_6_UPSIGN, _7_DOLL, _8_DASH, _9_QUEST, _0_AND, KC_F21,
 	KC_Y, KC_U, KC_I, KC_O, KC_P, KC_F22,
 	KC_H, KC_J, KC_K, KC_L, KC_SCLN, KC_F23,
 	KC_N, KC_M, KC_UP, KC_DOT, KC_QUOT, KC_F24,
@@ -1038,7 +1038,7 @@ __________,  __________,  __________,  __________,  __________,  __________, ___
 [_WIN] = LAYOUT(
            // left side
            KC_GRV, KC_F1, KC_F2, KC_F3, KC_F4, TD(F5_TD), KC_F6, KC_F7, KC_F8,
-           KC_F17, _1, _2_PLEFT, _3_SLASH, _4_PRGHT, _5_DOLL,
+           KC_F17, _1_AT, _2_PLEFT, _3_SLASH, _4_PRGHT, _5_BANG,
            KC_F18, KC_Q, KC_W, KC_E, KC_R, KC_T,
            KC_F19, KC_A, KC_S, KC_D, KC_F, KC_G,
            KC_F20, KC_Z, KC_X, KC_C, KC_V, KC_B,
@@ -1051,7 +1051,7 @@ __________,  __________,  __________,  __________,  __________,  __________, ___
 			                                                PALM_L_WIN,
     // right side
     KC_F9, KC_F10, KC_F11, KC_F12, KC_MUTE, KC_VOLD, KC_VOLU, KEYB_CONTROL, TD(REST_TD),
-  	_6_BANG, _7_AND, _8_DASH, _9_QUEST, _0, KC_F21,
+  	_6_UPSIGN, _7_DOLL, _8_DASH, _9_QUEST, _0_AND, KC_F21,
   	KC_Y, KC_U, KC_I, KC_O, KC_P, KC_F22,
   	KC_H, KC_J, KC_K, KC_L, KC_SCLN, KC_F23,
   	KC_N, KC_M, KC_UP, KC_DOT, KC_QUOT, KC_F24,
@@ -1524,16 +1524,16 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
         // custom autoshifted keys
         case _INS: { return lead_custom_autoshifted(KC_INS, KC_INS, KC_LSFT, pressed); }
-        case _1: { return lead_custom_autoshifted(KC_1, KC_1, KC_NO, pressed); }
+        case _1_AT: { return lead_custom_autoshifted(KC_1, KC_2, KC_LSFT, pressed); }
         case _2_PLEFT: { return lead_custom_autoshifted(KC_2, KC_9, KC_LSFT, pressed); }
         case _3_SLASH: { return lead_custom_autoshifted(KC_3, KC_MINS, KC_LSFT, pressed); }
         case _4_PRGHT: { return lead_custom_autoshifted(KC_4, KC_0, KC_LSFT, pressed); }
-        case _5_DOLL: { return lead_custom_autoshifted(KC_5, KC_4, KC_LSFT, pressed); }
-        case _6_BANG: { return lead_custom_autoshifted(KC_6, KC_1, KC_LSFT, pressed); }
-        case _7_AND: { return lead_custom_autoshifted(KC_7, KC_7, KC_LSFT, pressed); }
+        case _5_BANG: { return lead_custom_autoshifted(KC_5, KC_1, KC_LSFT, pressed); }
+        case _6_UPSIGN: { return lead_custom_autoshifted(KC_6, KC_6, KC_LSFT, pressed); }
+        case _7_DOLL: { return lead_custom_autoshifted(KC_7, KC_4, KC_LSFT, pressed); }
         case _8_DASH: { return lead_custom_autoshifted(KC_8, KC_MINS, KC_NO, pressed); }
         case _9_QUEST: { return lead_custom_autoshifted(KC_9, KC_SLSH, KC_LSFT, pressed); }
-        case _0: { return lead_custom_autoshifted(KC_0, KC_0, KC_NO, pressed); }
+        case _0_AND: { return lead_custom_autoshifted(KC_0, KC_7, KC_LSFT, pressed); }
 
         case KC_F1: { return lead_f(KC_F1, pressed); }
         case KC_F2: { return lead_f(KC_F2, pressed); }
