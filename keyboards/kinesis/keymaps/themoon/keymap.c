@@ -91,6 +91,7 @@ enum holding_keycodes {
   _C,
   _V,
   _F,
+  _Q,
 
   HOME_,
   END_,
@@ -784,7 +785,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [_COMMAND_ESCAPE] = LAYOUT(
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
          __________, KC_1, KC_2, KC_3, KC_4, KC_5,
-         __________, __________, __________, __________, __________, __________,
+         __________, _Q, __________, __________, __________, __________,
          __________, __________, __________, __________, _F, __________,
          __________, _Z, _X, _C, _V, __________,
                __________,  __________,  __________,  __________,
@@ -1566,6 +1567,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case _C: { return lead_custom_autoshifted(KC_C, KC_C, KC_NO, pressed); }
         case _V: { return lead_custom_autoshifted(KC_V, KC_V, KC_NO, pressed); }
         case _F: { return lead_custom_autoshifted(KC_F, KC_F, KC_NO, pressed); }
+        case _Q: { return lead_custom_autoshifted(KC_Q, KC_Q, KC_NO, pressed); }
 
         case KC_UP: { if (is_after_lead(KC_UP, pressed)) { return false; } return true; }
         case KC_DOWN: { if (is_after_lead(KC_DOWN, pressed)) { return false; } return true; }
