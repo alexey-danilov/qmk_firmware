@@ -161,174 +161,179 @@ static bool lang_switch_led;
 static bool lead_led;
 static bool init_complete;
 
-static bool is_macro1_recording = false;
-static bool is_macro2_recording = false;
+static bool macro1_recording = false;
+static bool macro2_recording = false;
 
-static uint16_t m1[1024];
-static uint16_t m2[1024];
-static uint16_t pointer1 = 0;
-static uint16_t pointer2 = 0;
-static uint16_t down_ = 999;
-static uint16_t up_ = 1000;
+static uint16_t macro1Buffer[1024];
+static uint16_t macro2Buffer[1024];
+static uint16_t macroPointer1 = 0;
+static uint16_t macroPointer2 = 0;
+static uint16_t macro_key_down = 999;
+static uint16_t macro_key_up = 1000;
 
-void keyboard_post_init_user(void) {
-  debug_enable=true;
-}
+//void keyboard_post_init_user(void) {
+//  debug_enable=true;
+//}
 
 bool isMacroKey(uint16_t key) {
-    if (!is_macro1_recording && !is_macro2_recording) {
-      return false;
-    }
-    switch (key) {
-        case KC_Q:    { dprint("\nKC_Q");    return true; }
-        case KC_W:    { dprint("\nKC_W");    return true; }
-        case KC_E:    { dprint("\nKC_E");    return true; }
-        case KC_R:    { dprint("\nKC_R");    return true; }
-        case KC_T:    { dprint("\nKC_T");    return true; }
-        case KC_Y:    { dprint("\nKC_Y");    return true; }
-        case KC_U:    { dprint("\nKC_U");    return true; }
-        case KC_I:    { dprint("\nKC_I");    return true; }
-        case KC_O:    { dprint("\nKC_O");    return true; }
-        case KC_P:    { dprint("\nKC_P");    return true; }
-        case KC_A:    { dprint("\nKC_A");    return true; }
-        case KC_S:    { dprint("\nKC_S");    return true; }
-        case KC_D:    { dprint("\nKC_D");    return true; }
-        case KC_F:    { dprint("\nKC_F");    return true; }
-        case KC_G:    { dprint("\nKC_G");    return true; }
-        case KC_H:    { dprint("\nKC_H");    return true; }
-        case KC_J:    { dprint("\nKC_J");    return true; }
-        case KC_K:    { dprint("\nKC_K");    return true; }
-        case KC_L:    { dprint("\nKC_L");    return true; }
-        case KC_Z:    { dprint("\nKC_Z");    return true; }
-        case KC_X:    { dprint("\nKC_X");    return true; }
-        case KC_C:    { dprint("\nKC_C");    return true; }
-        case KC_V:    { dprint("\nKC_V");    return true; }
-        case KC_B:    { dprint("\nKC_B");    return true; }
-        case KC_N:    { dprint("\nKC_N");    return true; }
-        case KC_M:    { dprint("\nKC_M");    return true; }
-        case KC_LBRC: { dprint("\nKC_LBRC"); return true; }
-        case KC_RBRC: { dprint("\nKC_RBRC"); return true; }
-        case KC_COMM: { dprint("\nKC_COMM"); return true; }
-        case KC_SCLN: { dprint("\nKC_SCLN"); return true; }
-        case KC_QUOT: { dprint("\nKC_QUOT"); return true; }
-        case KC_GRV:  { dprint("\nKC_GRV");  return true; }
-        case KC_DOT:  { dprint("\nKC_DOT");  return true; }
-        case KC_MINS: { dprint("\nKC_MINS"); return true; }
-        case KC_EQL:  { dprint("\nKC_EQL");  return true; }
-        case KC_SLSH: { dprint("\nKC_SLSH"); return true; }
-        case KC_BSLS: { dprint("\nKC_BSLS"); return true; }
-        case KC_SPC:  { dprint("\nKC_SPC");  return true; }
-        case KC_BSPC: { dprint("\nKC_BSPC"); return true; }
-        case KC_ENTER:{ dprint("\nKC_ENTER");return true; }
-        case KC_TAB:  { dprint("\nKC_TAB");  return true; }
-        case KC_DEL:  { dprint("\nKC_DEL");  return true; }
-        case KC_1:    { dprint("\nKC_1");    return true; }
-        case KC_2:    { dprint("\nKC_2");    return true; }
-        case KC_3:    { dprint("\nKC_3");    return true; }
-        case KC_4:    { dprint("\nKC_4");    return true; }
-        case KC_5:    { dprint("\nKC_5");    return true; }
-        case KC_6:    { dprint("\nKC_6");    return true; }
-        case KC_7:    { dprint("\nKC_7");    return true; }
-        case KC_8:    { dprint("\nKC_8");    return true; }
-        case KC_9:    { dprint("\nKC_9");    return true; }
-        case KC_0:    { dprint("\nKC_0");    return true; }
-        case KC_LGUI: { dprint("\nKC_LGUI"); return true; }
-        case KC_RGUI: { dprint("\nKC_RGUI"); return true; }
-        case KC_LALT: { dprint("\nKC_LALT"); return true; }
-        case KC_RALT: { dprint("\nKC_RALT"); return true; }
-        case KC_LSFT: { dprint("\nKC_LSFT"); return true; }
-        case KC_RSFT: { dprint("\nKC_RSFT"); return true; }
-        case KC_LCTL: { dprint("\nKC_LCTL"); return true; }
-        case KC_RCTL: { dprint("\nKC_RCTL"); return true; }
-        case KC_F1:   { dprint("\nKC_F1");   return true; }
-        case KC_F2:   { dprint("\nKC_F2");   return true; }
-        case KC_F3:   { dprint("\nKC_F3");   return true; }
-        case KC_F4:   { dprint("\nKC_F4");   return true; }
-        case KC_F5:   { dprint("\nKC_F5");   return true; }
-        case KC_F6:   { dprint("\nKC_F6");   return true; }
-        case KC_F7:   { dprint("\nKC_F7");   return true; }
-        case KC_F8:   { dprint("\nKC_F8");   return true; }
-        case KC_F9:   { dprint("\nKC_F9");   return true; }
-        case KC_F10:  { dprint("\nKC_F10");  return true; }
-        case KC_F11:  { dprint("\nKC_F11");  return true; }
-        case KC_F12:  { dprint("\nKC_F12");  return true; }
-        case KC_ESC:  { dprint("\nKC_ESC");  return true; }
+  if (!macro1_recording && !macro2_recording) {
+    return false;
+  }
+  switch (key) {
+      case KC_Q:    { dprint("\nKC_Q");    return true; }
+      case KC_W:    { dprint("\nKC_W");    return true; }
+      case KC_E:    { dprint("\nKC_E");    return true; }
+      case KC_R:    { dprint("\nKC_R");    return true; }
+      case KC_T:    { dprint("\nKC_T");    return true; }
+      case KC_Y:    { dprint("\nKC_Y");    return true; }
+      case KC_U:    { dprint("\nKC_U");    return true; }
+      case KC_I:    { dprint("\nKC_I");    return true; }
+      case KC_O:    { dprint("\nKC_O");    return true; }
+      case KC_P:    { dprint("\nKC_P");    return true; }
+      case KC_A:    { dprint("\nKC_A");    return true; }
+      case KC_S:    { dprint("\nKC_S");    return true; }
+      case KC_D:    { dprint("\nKC_D");    return true; }
+      case KC_F:    { dprint("\nKC_F");    return true; }
+      case KC_G:    { dprint("\nKC_G");    return true; }
+      case KC_H:    { dprint("\nKC_H");    return true; }
+      case KC_J:    { dprint("\nKC_J");    return true; }
+      case KC_K:    { dprint("\nKC_K");    return true; }
+      case KC_L:    { dprint("\nKC_L");    return true; }
+      case KC_Z:    { dprint("\nKC_Z");    return true; }
+      case KC_X:    { dprint("\nKC_X");    return true; }
+      case KC_C:    { dprint("\nKC_C");    return true; }
+      case KC_V:    { dprint("\nKC_V");    return true; }
+      case KC_B:    { dprint("\nKC_B");    return true; }
+      case KC_N:    { dprint("\nKC_N");    return true; }
+      case KC_M:    { dprint("\nKC_M");    return true; }
 
-        case KC_NO:   { dprint("\nKC_NO");                return false; }
-        case 1000:    { dprint("\nKC_Event_UP");          return false; }
-        case 999:     { dprint("\nKC_Event_DOWN");        return false; }
-        default:      { dprintf("\nUnknown key %d", key); return false; }
-        }
-}
+      case KC_LBRC: { dprint("\nKC_LBRC"); return true; }
+      case KC_RBRC: { dprint("\nKC_RBRC"); return true; }
+      case KC_COMM: { dprint("\nKC_COMM"); return true; }
+      case KC_SCLN: { dprint("\nKC_SCLN"); return true; }
+      case KC_QUOT: { dprint("\nKC_QUOT"); return true; }
+      case KC_GRV:  { dprint("\nKC_GRV");  return true; }
+      case KC_DOT:  { dprint("\nKC_DOT");  return true; }
+      case KC_MINS: { dprint("\nKC_MINS"); return true; }
+      case KC_EQL:  { dprint("\nKC_EQL");  return true; }
+      case KC_INS:  { dprint("\nKC_INS");  return true; }
+      case KC_SLSH: { dprint("\nKC_SLSH"); return true; }
+      case KC_BSLS: { dprint("\nKC_BSLS"); return true; }
 
-void eraseM1(void) {
-  dprint("\n!!! Erasing macro buffer 1");
-  for (uint16_t i = 0; i < 1024; i++) {
-    m1[i] = 0;
-    pointer1 = 0;
+      case KC_1:    { dprint("\nKC_1");    return true; }
+      case KC_2:    { dprint("\nKC_2");    return true; }
+      case KC_3:    { dprint("\nKC_3");    return true; }
+      case KC_4:    { dprint("\nKC_4");    return true; }
+      case KC_5:    { dprint("\nKC_5");    return true; }
+      case KC_6:    { dprint("\nKC_6");    return true; }
+      case KC_7:    { dprint("\nKC_7");    return true; }
+      case KC_8:    { dprint("\nKC_8");    return true; }
+      case KC_9:    { dprint("\nKC_9");    return true; }
+      case KC_0:    { dprint("\nKC_0");    return true; }
+
+      case KC_F1:   { dprint("\nKC_F1");   return true; }
+      case KC_F2:   { dprint("\nKC_F2");   return true; }
+      case KC_F3:   { dprint("\nKC_F3");   return true; }
+      case KC_F4:   { dprint("\nKC_F4");   return true; }
+      case KC_F5:   { dprint("\nKC_F5");   return true; }
+      case KC_F6:   { dprint("\nKC_F6");   return true; }
+      case KC_F7:   { dprint("\nKC_F7");   return true; }
+      case KC_F8:   { dprint("\nKC_F8");   return true; }
+      case KC_F9:   { dprint("\nKC_F9");   return true; }
+      case KC_F10:  { dprint("\nKC_F10");  return true; }
+      case KC_F11:  { dprint("\nKC_F11");  return true; }
+      case KC_F12:  { dprint("\nKC_F12");  return true; }
+      case KC_F13:  { dprint("\nKC_F13");   return true; }
+      case KC_F14:  { dprint("\nKC_F14");   return true; }
+      case KC_F15:  { dprint("\nKC_F15");   return true; }
+      case KC_F16:  { dprint("\nKC_F16");   return true; }
+      case KC_F17:  { dprint("\nKC_F17");   return true; }
+      case KC_F18:  { dprint("\nKC_F18");   return true; }
+      case KC_F19:  { dprint("\nKC_F19");   return true; }
+      case KC_F20:  { dprint("\nKC_F20");   return true; }
+      case KC_F21:  { dprint("\nKC_F21");   return true; }
+      case KC_F22:  { dprint("\nKC_F22");   return true; }
+      case KC_F23:  { dprint("\nKC_F23");   return true; }
+      case KC_F24:  { dprint("\nKC_F24");   return true; }
+
+      case KC_ESC:  { dprint("\nKC_ESC");  return true; }
+      case KC_ENTER:{ dprint("\nKC_ENTER");return true; }
+      case KC_TAB:  { dprint("\nKC_TAB");  return true; }
+      case KC_DEL:  { dprint("\nKC_DEL");  return true; }
+
+      case KC_LGUI: { dprint("\nKC_LGUI"); return true; }
+      case KC_RGUI: { dprint("\nKC_RGUI"); return true; }
+      case KC_LALT: { dprint("\nKC_LALT"); return true; }
+      case KC_RALT: { dprint("\nKC_RALT"); return true; }
+      case KC_LSFT: { dprint("\nKC_LSFT"); return true; }
+      case KC_RSFT: { dprint("\nKC_RSFT"); return true; }
+      case KC_LCTL: { dprint("\nKC_LCTL"); return true; }
+      case KC_RCTL: { dprint("\nKC_RCTL"); return true; }
+
+      case KC_SPC:  { dprint("\nKC_SPC");  return true; }
+      case KC_BSPC: { dprint("\nKC_BSPC"); return true; }
+      case KC_LEFT: { dprint("\nKC_LEFT"); return true; }
+      case KC_RGHT: { dprint("\nKC_RGHT"); return true; }
+
+      case 999:     { dprint("\nKC_Event_DOWN");        return false; }
+      case 1000:    { dprint("\nKC_Event_UP");          return false; }
+      case KC_NO:   { dprint("\nKC_NO");                return false; }
+      default:      { dprintf("\nUnknown key %d", key); return false; }
   }
 }
 
-void eraseM2(void) {
-  dprint("\n!!! Erasing macro buffer 2");
-  for (uint16_t i = 0; i < 1024; i++) {
-    m2[i] = 0;
-    pointer2 = 0;
-  }
-}
-
-void playM1(void) {
+void playMacro1(void) {
    dprint("\n... Printing macro buffer 1: ");
-   for (uint16_t i = 0; i < 1024; ) {
-     uint16_t event = m1[i];
+   for (uint16_t i = 0; i <= macroPointer1; ) {
+     uint16_t event = macro1Buffer[i];
      if (event == KC_NO) { dprintf("\n >>> Reached end of macro 1 at %d", i); break; }
      i++;
-     if (i >= 1024) { dprintf("\n >>> Reached end of macro 1 at %d", i); break; }
-     uint16_t key = m1[i];
+     if (i >= macroPointer1) { dprintf("\n >>> Reached end of macro 1 at %d", i); break; }
+     uint16_t key = macro1Buffer[i];
      i++;
-     if (i >= 1024) { dprintf("\n >>> Reached end of macro 1 at %d", i); break; }
+     if (i >= macroPointer1) { dprintf("\n >>> Reached end of macro 1 at %d", i); break; }
      if (key == KC_NO) { dprintf("\n >>> Reached end of macro 1 at %d", i); break; }
 
-     if (event == down_) { register_code(key); } else { unregister_code(key); }
+     if (event == macro_key_down) { register_code(key); } else { unregister_code(key); }
    }
    clear_keyboard();
    layer_clear();
    dprint("\n... Done printing macro buffer 1\n");
 }
 
-void playM2(void) {
+void playMacro2(void) {
    dprint("\n... Printing macro buffer 2: ");
-   for (uint16_t i = 0; i < 1024; ) {
-     uint16_t event = m2[i];
+   for (uint16_t i = 0; i <= macroPointer2; ) {
+     uint16_t event = macro2Buffer[i];
      if (event == KC_NO) { dprintf("\n >>> Reached end of macro 2 at %d", i); break; }
      i++;
-     if (i >= 1024) { dprintf("\n >>> Reached end of macro 2 at %d", i); break; }
-     uint16_t key = m2[i];
+     if (i >= macroPointer2) { dprintf("\n >>> Reached end of macro 2 at %d", i); break; }
+     uint16_t key = macro2Buffer[i];
      i++;
-     if (i >= 1024) { dprintf("\n >>> Reached end of macro 2 at %d", i); break; }
+     if (i >= macroPointer2) { dprintf("\n >>> Reached end of macro 2 at %d", i); break; }
      if (key == KC_NO) { dprintf("\n >>> Reached end of macro 2 at %d", i); break; }
 
-     if (event == down_) { register_code(key); } else { unregister_code(key); }
+     if (event == macro_key_down) { register_code(key); } else { unregister_code(key); }
    }
    clear_keyboard();
    layer_clear();
    dprint("\n... Done printing macro buffer 2\n");
 }
 
-void printM1(void) {
-  for (uint16_t i = 0; i < 1024; i++) {
-    dprintf("\nmacro 1: %d == ", i); isMacroKey(m1[i]);
+void printMacro1(void) {
+  for (uint16_t i = 0; i < macroPointer1; i++) {
+    dprintf("\nmacro 1: %d == ", i); isMacroKey(macro1Buffer[i]);
   }
 }
 
-void printM2(void) {
-  for (uint16_t i = 0; i < 1024; i++) {
-    dprintf("\nmacro 2: %d == ", i); isMacroKey(m2[i]);
+void printMacro2(void) {
+  for (uint16_t i = 0; i < macroPointer2; i++) {
+    dprintf("\nmacro 2: %d == ", i); isMacroKey(macro2Buffer[i]);
   }
 }
 
-void addToMacro(uint16_t key, bool down) {
-  if (!is_macro1_recording && !is_macro2_recording) {
+void recordMacroKey(uint16_t key, bool down) {
+  if (!macro1_recording && !macro2_recording) {
     dprint("\nMacro is not recording, ignoring key\n");
     return;
   }
@@ -338,39 +343,42 @@ void addToMacro(uint16_t key, bool down) {
       return;
   }
 
-   dprintf("\nM1 recording: %d, pointer %d; M2 recording: %d, pointer %d", is_macro1_recording, pointer1, is_macro2_recording, pointer2);
-  if (is_macro1_recording) {
-    if ((pointer1 + 2) < 1024) {
+   dprintf("\nmacro1Buffer recording: %d, pointer %d; macro2Buffer recording: %d, pointer %d", macro1_recording, macroPointer1, macro2_recording, macroPointer2);
+  if (macro1_recording) {
+    if ((macroPointer1 + 2) < 1024) {
         dprint("\n >>> Adding macro 1 key");
-        if (down) { m1[pointer1] = down_; dprint("\n<<< Added macro 1 down_"); }
-        else { m1[pointer1] = up_; dprint("\n<<< Added macro 1 up_"); }
-        pointer1++;
-        m1[pointer1] = key;
+        if (down) { macro1Buffer[macroPointer1] = macro_key_down; dprint("\n<<< Added macro 1 macro_key_down"); }
+        else { macro1Buffer[macroPointer1] = macro_key_up; dprint("\n<<< Added macro 1 macro_key_up"); }
+        macroPointer1++;
+        macro1Buffer[macroPointer1] = key;
         dprint("\n<<< Added macro 1 key");
-        pointer1++;
+        macroPointer1++;
     } else {
       dprint("\n!!! Macro buffer 1 full");
+      //   dprint("\n??? Printing macro buffer 1");
+      //   printMacro1();
+      //   dprint("\n??? Printing macro buffer 1 done \n");
     }
-  } else if (is_macro2_recording) {
-    if ((pointer2 + 2) < 1024) {
+  } else if (macro2_recording) {
+    if ((macroPointer2 + 2) < 1024) {
         dprint("\n >>> Adding macro 2 key");
-        if (down) { m2[pointer2] = down_; dprint("\n<<< Added macro 2 down_"); }
-        else { m2[pointer2] = up_; dprint("\n<<< Added macro 2 up_"); }
-        pointer2++;
-        m2[pointer2] = key;
+        if (down) { macro2Buffer[macroPointer2] = macro_key_down; dprint("\n<<< Added macro 2 macro_key_down"); }
+        else { macro2Buffer[macroPointer2] = macro_key_up; dprint("\n<<< Added macro 2 macro_key_up"); }
+        macroPointer2++;
+        macro2Buffer[macroPointer2] = key;
         dprint("\n<<< Added macro 2 key");
-        pointer2++;
+        macroPointer2++;
     } else {
       dprint("\n!!! Macro buffer 2 full");
+      //   dprint("\n??? Printing macro buffer 2");
+      //   printMacro1();
+      //   dprint("\n??? Printing macro buffer 2 done \n");
     }
   }
-//   dprint("\n??? Printing macro buffer");
-//   printM1();
-//   dprint("\n??? Printing macro buffer done \n");
 }
 
-void down(uint16_t key) { register_code(key); addToMacro(key, true); }
-void up(uint16_t key) { unregister_code(key); addToMacro(key, false); }
+void down(uint16_t key) { register_code(key); recordMacroKey(key, true); }
+void up(uint16_t key) { unregister_code(key); recordMacroKey(key, false); }
 void key_code(uint16_t key) { down(key); up(key); }
 
 void with_1mod(uint16_t key, uint16_t mod1) {
@@ -459,8 +467,8 @@ void switch_lead_led_on(void) {
 
 void switch_lead_led_off(void) {
   if (lead_led) {
-    if (!is_macro1_recording) { led_red_off(); }
-    if (!is_macro2_recording) { led_green_off(); }
+    if (!macro1_recording) { led_red_off(); }
+    if (!macro2_recording) { led_green_off(); }
     led_yellow_off();
     lead_led = false;
   }
@@ -471,9 +479,9 @@ void all_leds_on(void) {
 }
 
 void all_leds_off(void) {
-     if (!is_macro1_recording) { led_red_off(); }
+     if (!macro1_recording) { led_red_off(); }
      led_yellow_off();
-     if (!is_macro2_recording) { led_green_off(); }
+     if (!macro2_recording) { led_green_off(); }
      if(!caps_led) { led_blue_off(); }
 }
 
@@ -873,28 +881,28 @@ void dynamic_macro_finished (qk_tap_dance_state_t *state, void *user_data) {
   dynamic_macro_state.state = cur_dance(state);
   if (!is_after_lead(isMac ? KC_NUBS : KC_APP, true)) {
 
-    if (is_macro1_recording || is_macro2_recording) {
+    if (macro1_recording || macro2_recording) {
        dprint("\nStopping record of macros");
-       is_macro1_recording = false;
-       is_macro2_recording = false;
+       macro1_recording = false;
+       macro2_recording = false;
        if (!lead_led) { led_red_off(); led_green_off(); };
 
     } else {
       switch (dynamic_macro_state.state) {
-          case SINGLE_TAP: playM1(); break;
-          case DOUBLE_TAP: playM2(); break;
+          case SINGLE_TAP: playMacro1(); break;
+          case DOUBLE_TAP: playMacro2(); break;
 
           case SINGLE_HOLD:
-              eraseM1();
-              is_macro1_recording = true;
-              dprint("\nStarting record of macro 1");
+              macroPointer1 = 0;
+              macro1_recording = true;
+              dprint("\nStarting recording of macro 1");
               led_red_on();
           break;
 
           default:
-              eraseM2();
-              is_macro2_recording = true;
-              dprint("\nStarting record of macro 2");
+              macroPointer2 = 0;
+              macro2_recording = true;
+              dprint("\nStarting recording of macro 2");
               led_green_on();
           break;
         }
@@ -908,9 +916,9 @@ void dynamic_macro_reset (qk_tap_dance_state_t *state, void *user_data) {
 
 // all tap macros
 qk_tap_dance_action_t tap_dance_actions[] = {
-  [TAP_MACRO] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, dynamic_macro_finished, dynamic_macro_reset, 350),
-  [F5_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, f5_finished, f5_reset, 350),
-  [REST_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, rest_finished, rest_reset, 350)
+  [TAP_MACRO] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, dynamic_macro_finished, dynamic_macro_reset, 300),
+  [F5_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, f5_finished, f5_reset, 300),
+  [REST_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, rest_finished, rest_reset, 300)
 };
 
 /*
@@ -1550,9 +1558,9 @@ void matrix_scan_user(void) {
    if (lang_switch_led) {
      lang_switch_led = false;
      led_red_on(); _delay_ms(10);
-     led_yellow_on(); _delay_ms(10); if (!is_macro1_recording) { led_red_off(); }
+     led_yellow_on(); _delay_ms(10); if (!macro1_recording) { led_red_off(); }
      led_green_on(); _delay_ms(10); led_yellow_off();
-     led_blue_on(); _delay_ms(10);  if (!is_macro2_recording) { led_green_off(); }
+     led_blue_on(); _delay_ms(10);  if (!macro2_recording) { led_green_off(); }
      if (!caps_led) { _delay_ms(10); led_blue_off(); }
    }
 }
@@ -1626,17 +1634,28 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
        remove_mods();
     }
 
-    if ((keycode == CTRL_SPACE || keycode == CMD_SPACE) && pressed) {
-      addToMacro(KC_SPC, true); addToMacro(KC_SPC, false);
-    }
-
-    if ((keycode == ALT_SHIFT_BS || keycode == CTRL_SHIFT_BS || keycode == KC_BSPC) && pressed) {
-      addToMacro(KC_BSPC, true); addToMacro(KC_BSPC, false);
-    }
-
     if (keycode != KC_LEFT && keycode != KC_RGHT) {
       if (keycode != CMD_SPACE && keycode != CTRL_SPACE) {
              esc_timer = 0;
+      }
+    }
+
+    // custom dynamic macros do no currently play nicely with standard LT functionality and repeating keycodes;
+    // following code disables those if any of the macros is being currently recorded
+    if (macro1_recording || macro2_recording) {
+      if ((keycode == CTRL_SPACE || keycode == CMD_SPACE) && pressed) {
+        key_code(KC_SPC);
+        return false;
+      }
+
+      if ((keycode == ALT_SHIFT_BS || keycode == CTRL_SHIFT_BS || keycode == KC_BSPC) && pressed) {
+        key_code(KC_BSPC);
+        return false;
+      }
+
+      if ((keycode == KC_LEFT || keycode == KC_RGHT) && pressed) {
+        key_code(keycode);
+        return false;
       }
     }
 
@@ -1932,10 +1951,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           momentary_layer_tap(KC_F15, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, &palm_r_win_layer_timer, &palm_r_win_interrupted, pressed, 300, false);
           return true;
         }
+
         // <<<<<<< layers
         // <<<<<<< KEYS, RESPONDING TO LEAD_SPACE SEQUENCE
 
-        // additional auto-shift keys
+        // additional auto-shifted keys
         case _ENTER: { return if_held_150_add_shift(KC_ENTER, pressed); }
         case _ESC: { return if_held_150_add_shift(KC_ESC, pressed); }
         case _TAB: { return if_held_150_add_shift(KC_TAB, pressed); }
@@ -2039,7 +2059,7 @@ void led_set_user(uint8_t usb_led) {
   caps_led ? led_blue_on() : led_blue_off();
   lead_led ? switch_lead_led_on() : switch_lead_led_off();
 
-  if (is_macro1_recording) {
+  if (macro1_recording) {
     led_red_on();
   } else {
     if (!lead_led) {
@@ -2047,7 +2067,7 @@ void led_set_user(uint8_t usb_led) {
     }
   }
 
-  if (is_macro2_recording) {
+  if (macro2_recording) {
     led_green_on();
   } else {
     if (!lead_led) {
