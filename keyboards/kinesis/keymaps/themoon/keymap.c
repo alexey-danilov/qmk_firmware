@@ -132,7 +132,6 @@ enum holding_keycodes {
 
   // mac-specific overrides
   CTRL_DOT,
-  CTRL_COMM,
   CTRL_H,
   CTRL_M,
 
@@ -148,7 +147,6 @@ enum holding_keycodes {
   W_EQL, W_MINS
 };
 
-static uint16_t esc_timer = 0; // timer for leader key: esc
 static uint16_t lead_timer = 0; // timer for leader key
 static bool default_layer = true;
 
@@ -689,19 +687,6 @@ bool delete_word_line(uint16_t code, uint16_t mod_to_remove, uint16_t mod_to_add
   return false;
 }
 
-// ESC AS A LEADER KEY
-// provides functionality similar to "leader key", except that it works for escape
-bool following_custom_leader_key(uint16_t code, uint16_t mod1, uint16_t mod2, uint16_t mod3, uint16_t *leader_timer, bool pressed, uint16_t leader_last_pressed_timeout) {
-  if (*leader_timer && pressed_within(*leader_timer, leader_last_pressed_timeout)) {
-    if (pressed) {
-      *leader_timer = 0;
-      with_3_mods(code, mod1, mod2, mod3);
-      return false;
-    }
-  }
-  return true;
-}
-
 // CMD/CTRL + SPACE AS A LEADER KEY
 bool press_leader_key(bool pressed) {
   static uint16_t hold_timer;
@@ -770,7 +755,7 @@ bool lead_custom_autoshifted(uint16_t code, uint16_t held_code, uint16_t held_mo
      was_lead = true;
      return false;
   };
-  return lead_replace_if_held_add_mods(code, KC_NO, held_code, held_mod, KC_NO, &was_lead, pressed, 150);
+  return lead_replace_if_held_add_mods(code, KC_NO, held_code, held_mod, KC_NO, &was_lead, pressed, 135);
 }
 
 bool lead_autoshifted_same_key(uint16_t code, bool pressed) {
@@ -1010,7 +995,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
-               __________,  __________,  CTRL_COMM,  __________,
+               __________,  __________,  _BSLS,  __________,
                                 DEL_LEFT_MAC, _NUBS,
                                             KC_SLSH,
                        KC_F1, _ENTER, DEL_RIGHT_MAC,
@@ -1227,7 +1212,7 @@ __________,  __________,  __________,  __________,  __________,  __________, ___
          _,  _,  _,  _,  _,  _,
          _,  _,  _,  _,  _,  _,
          _,  _,  _,  _,  _,  _,
-                   LGUI(KC_HOME),  _, LGUI(KC_END), _,
+                   _,  _, _, _,
          _,  _,
          _,
          _,  _,  _,
@@ -1295,7 +1280,7 @@ __________,  __________,  __________,  __________,  __________,  __________, ___
          __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
-               __________,  __________,  __________,  __________,
+               __________,  __________,  _BSLS,  __________,
                                DEL_LEFT_WIN, _APP,
                                           KC_SLSH,
                      KC_F1, _ENTER, DEL_RIGHT_WIN,
@@ -1305,7 +1290,7 @@ __________,  __________,  __________,  __________,  __________,  __________, ___
          _,  _,  _,  _,  _,  _,
          _,  _,  _,  _,  _,  _,
          _,  _,  _,  _,  _,  _,
-                   _,  _,  _,  _,
+         KC_LEFT,  _,  KC_RGHT,  _,
                              _,  _,
                            KC_LALT,
       KC_LGUI, KC_LSFT, CTRL_SPACE,
@@ -1490,7 +1475,7 @@ __________,  __________,  __________,  __________,  __________,  __________, ___
          _,  _,  _,  _,  _,  _,
          _,  _,  _,  _,  _,  _,
          _,  _,  _,  _,  _,  _,
-                   KC_HOME,  _, KC_END, _,
+                   _,  _, _, _,
          _,  _,
          _,
          _,  _,  _,
@@ -1632,12 +1617,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     if (default_layer) {
        // remove stuck modifiers
        remove_mods();
-    }
-
-    if (keycode != KC_LEFT && keycode != KC_RGHT) {
-      if (keycode != CMD_SPACE && keycode != CTRL_SPACE) {
-             esc_timer = 0;
-      }
     }
 
     // custom dynamic macros do no currently play nicely with standard LT functionality and repeating keycodes;
@@ -1800,16 +1779,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case KC_RGUI: { if (is_after_lead(KC_MINS, pressed)) { return false; } return true; }
         case KC_BSPC: { if (is_after_lead(KC_BSPC, pressed)) { return false; } return true; }
 
-        // >>>>>>> escape as additional leader key
-        case KC_LEFT: {
-          if (is_after_lead(KC_LEFT, pressed)) { return false; }
-          return following_custom_leader_key(KC_HOME, isMac ? KC_LGUI : KC_NO, KC_NO, KC_NO, &esc_timer, pressed, 250);
-        }
-        case KC_RGHT: {
-          if (is_after_lead(KC_RGHT, pressed)) { return false; }
-          return following_custom_leader_key(KC_END, isMac ? KC_LGUI : KC_NO, KC_NO, KC_NO, &esc_timer, pressed, 250);
-        }
-        // <<<<<<< escape as additional leader key
+        case KC_LEFT: { if (is_after_lead(KC_LEFT, pressed)) { return false; } return true; }
+        case KC_RGHT: { if (is_after_lead(KC_RGHT, pressed)) { return false; } return true; }
 
         // >>>>>>> mac layers
         case CMD_SPACE: {
@@ -1823,9 +1794,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case CMD_ESC: {
           if (is_after_lead(KC_F1, pressed)) { return false; }
           static uint16_t cmd_esc_layer_timer;
-          if (momentary_layer_tap(KC_ESC, KC_NO, KC_LGUI, KC_NO, KC_NO, KC_NO, &cmd_esc_layer_timer, &cmd_esc_interrupted, pressed, 250, true)) {
-            esc_timer = timer_read();
-          }
+          momentary_layer_tap(KC_ESC, KC_NO, KC_LGUI, KC_NO, KC_NO, KC_NO, &cmd_esc_layer_timer, &cmd_esc_interrupted, pressed, 250, true);
           return true;
         }
 
@@ -1897,9 +1866,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case CTRL_ESC: {
           if (is_after_lead(KC_F1, pressed)) { return false; }
           static uint16_t ctrl_esc_layer_timer;
-          if (momentary_layer_tap(KC_ESC, KC_NO, KC_LCTL, KC_NO, KC_NO, KC_NO, &ctrl_esc_layer_timer, &ctrl_esc_interrupted, pressed, 250, true)) {
-            esc_timer = timer_read();
-          }
+          momentary_layer_tap(KC_ESC, KC_NO, KC_LCTL, KC_NO, KC_NO, KC_NO, &ctrl_esc_layer_timer, &ctrl_esc_interrupted, pressed, 250, true);
           return true;
         }
 
@@ -1997,10 +1964,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case SELECT_DOWN_MAC: { return if_held_150_add_shift(KC_DOWN, pressed); }
         case SELECT_UP_WIN: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_UP, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_HOME, KC_LCTL, KC_LSFT, KC_NO, KC_NO, pressed, 150, true); }
         case SELECT_DOWN_WIN: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_DOWN, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_END, KC_LCTL, KC_LSFT, KC_NO, KC_NO, pressed, 150, false); }
-        case SELECT_LEFT_MAC: { return if_held_add_mods(KC_LEFT, KC_LSFT, KC_NO, pressed, 250); }
-        case SELECT_RIGHT_MAC: { return if_held_add_mods(KC_RGHT, KC_LSFT, KC_NO, pressed, 250); }
-        case SELECT_LEFT_WIN: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_LEFT, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_HOME, KC_LSFT, KC_NO, KC_NO, KC_NO, pressed, 250, true); }
-        case SELECT_RIGHT_WIN: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_RGHT, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_END, KC_LSFT, KC_NO, KC_NO, KC_NO, pressed, 250, true); }
+        case SELECT_LEFT_MAC: { return if_held_add_mods(KC_LEFT, KC_LSFT, KC_NO, pressed, 200); }
+        case SELECT_RIGHT_MAC: { return if_held_add_mods(KC_RGHT, KC_LSFT, KC_NO, pressed, 200); }
+        case SELECT_LEFT_WIN: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_HOME, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_HOME, KC_LSFT, KC_NO, KC_NO, KC_NO, pressed, 200, true); }
+        case SELECT_RIGHT_WIN: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_END, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_END, KC_LSFT, KC_NO, KC_NO, KC_NO, pressed, 200, true); }
 
         // f3 / shift + f3
         case FIND_NEXT: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_F3, KC_LALT, KC_LSFT, KC_LCTL, KC_LGUI, KC_NO, KC_NO, KC_NO, KC_NO, KC_F3, KC_NO, KC_NO, KC_NO, KC_NO, pressed, 150, false); }
@@ -2016,7 +1983,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
         // mac overrides
         case CTRL_DOT: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_DOT, KC_LGUI, KC_NO, KC_NO, KC_NO, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_DOT, KC_LGUI, KC_LSFT, KC_NO, KC_NO, pressed, 150, true); }
-        case CTRL_COMM: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_COMM, KC_LGUI, KC_NO, KC_NO, KC_NO, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_COMM, KC_LGUI, KC_LSFT, KC_NO, KC_NO, pressed, 150, true); }
         case CTRL_H: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_H, KC_LGUI, KC_NO, KC_NO, KC_NO, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_H, KC_LGUI, KC_LSFT, KC_NO, KC_NO, pressed, 150, true); }
         case CTRL_M: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_M, KC_LGUI, KC_NO, KC_NO, KC_NO, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_M, KC_LGUI, KC_LSFT, KC_NO, KC_NO, pressed, 150, true); }
 
