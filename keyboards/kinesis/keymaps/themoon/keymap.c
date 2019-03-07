@@ -1277,8 +1277,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________, __________, __________, __________, __________, __________,
          __________,  __________,  SELECT_UP_WIN,  __________,  __________,  __________,
          SELECT_LEFT_WIN,  SELECT_DOWN_WIN,  SELECT_RIGHT_WIN, __________,
-         _MINS, DEL_LEFT_WIN,
-         _EQL,
+         _EQL, DEL_LEFT_WIN,
+         _BSLS,
          _APP, LANG_CAPS_WIN, LEAD_SPACE,
          KC_F15
     ),
