@@ -4,6 +4,7 @@
 #define TAPPING_TERM 160
 #define AUTOSHIFT_KEYS_TERM 160
 #define AUTOSHIFT_NUMBERS_TERM 135
+#define MACRO_BUFFER 1024
 
 #include "../../config.h"
 #endif

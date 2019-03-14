@@ -158,8 +158,8 @@ static bool init_complete;
 static bool macro1_recording = false;
 static bool macro2_recording = false;
 
-static uint16_t macro1Buffer[1024];
-static uint16_t macro2Buffer[1024];
+static uint16_t macro1Buffer[MACRO_BUFFER];
+static uint16_t macro2Buffer[MACRO_BUFFER];
 static uint16_t macroPointer1 = 0;
 static uint16_t macroPointer2 = 0;
 static uint16_t macro_key_down = 999;
@@ -339,7 +339,7 @@ void recordMacroKey(uint16_t key, bool down) {
 
    dprintf("\nmacro1Buffer recording: %d, pointer %d; macro2Buffer recording: %d, pointer %d", macro1_recording, macroPointer1, macro2_recording, macroPointer2);
   if (macro1_recording) {
-    if ((macroPointer1 + 2) < 1024) {
+    if ((macroPointer1 + 2) < MACRO_BUFFER) {
         dprint("\n >>> Adding macro 1 key");
         if (down) { macro1Buffer[macroPointer1] = macro_key_down; dprint("\n<<< Added macro 1 macro_key_down"); }
         else { macro1Buffer[macroPointer1] = macro_key_up; dprint("\n<<< Added macro 1 macro_key_up"); }
@@ -354,7 +354,7 @@ void recordMacroKey(uint16_t key, bool down) {
       //   dprint("\n??? Printing macro buffer 1 done \n");
     }
   } else if (macro2_recording) {
-    if ((macroPointer2 + 2) < 1024) {
+    if ((macroPointer2 + 2) < MACRO_BUFFER) {
         dprint("\n >>> Adding macro 2 key");
         if (down) { macro2Buffer[macroPointer2] = macro_key_down; dprint("\n<<< Added macro 2 macro_key_down"); }
         else { macro2Buffer[macroPointer2] = macro_key_up; dprint("\n<<< Added macro 2 macro_key_up"); }
@@ -765,6 +765,10 @@ bool lead_custom_autoshifted(uint16_t code, uint16_t held_code, uint16_t held_mo
      return false;
   };
   return lead_replace_if_held_add_mods(code, KC_NO, held_code, held_mod, KC_NO, &was_lead, pressed, hold_duration);
+}
+
+bool lead_autoshifted_numbers(uint16_t code, uint16_t held_code, uint16_t held_mod, bool pressed) {
+  return lead_custom_autoshifted(code, code, KC_LSFT, pressed, AUTOSHIFT_NUMBERS_TERM);
 }
 
 bool lead_autoshifted_same_key(uint16_t code, bool pressed) {
@@ -1767,16 +1771,16 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case KC_INS: { return lead_autoshifted_same_key(KC_INS, pressed); }
 
         // custom autoshifted keys - when pressed, other key + shift is sent
-        case _1: { return lead_custom_autoshifted(KC_1, KC_1, KC_NO, pressed, AUTOSHIFT_NUMBERS_TERM); }
-        case _2_PLEFT: { return lead_custom_autoshifted(KC_2, KC_9, KC_LSFT, pressed, AUTOSHIFT_NUMBERS_TERM); }
-        case _3_SLASH: { return lead_custom_autoshifted(KC_3, KC_MINS, KC_LSFT, pressed, AUTOSHIFT_NUMBERS_TERM); }
-        case _4_PRGHT: { return lead_custom_autoshifted(KC_4, KC_0, KC_LSFT, pressed, AUTOSHIFT_NUMBERS_TERM); }
-        case _5_EQL: { return lead_custom_autoshifted(KC_5, KC_EQL, KC_NO, pressed, AUTOSHIFT_NUMBERS_TERM); }
-        case _6_PLUS: { return lead_custom_autoshifted(KC_6, KC_EQL, KC_LSFT, pressed, AUTOSHIFT_NUMBERS_TERM); }
-        case _7_BANG: { return lead_custom_autoshifted(KC_7, KC_1, KC_LSFT, pressed, AUTOSHIFT_NUMBERS_TERM); }
-        case _8_DASH: { return lead_custom_autoshifted(KC_8, KC_MINS, KC_NO, pressed, AUTOSHIFT_NUMBERS_TERM); }
-        case _9_QUEST: { return lead_custom_autoshifted(KC_9, KC_SLSH, KC_LSFT, pressed, AUTOSHIFT_NUMBERS_TERM); }
-        case _0: { return lead_custom_autoshifted(KC_0, KC_0, KC_NO, pressed, AUTOSHIFT_NUMBERS_TERM); }
+        case _1: { return lead_autoshifted_numbers(KC_1, KC_1, KC_NO, pressed); }
+        case _2_PLEFT: { return lead_autoshifted_numbers(KC_2, KC_9, KC_LSFT, pressed); }
+        case _3_SLASH: { return lead_autoshifted_numbers(KC_3, KC_MINS, KC_LSFT, pressed); }
+        case _4_PRGHT: { return lead_autoshifted_numbers(KC_4, KC_0, KC_LSFT, pressed); }
+        case _5_EQL: { return lead_autoshifted_numbers(KC_5, KC_EQL, KC_NO, pressed); }
+        case _6_PLUS: { return lead_autoshifted_numbers(KC_6, KC_EQL, KC_LSFT, pressed); }
+        case _7_BANG: { return lead_autoshifted_numbers(KC_7, KC_1, KC_LSFT, pressed); }
+        case _8_DASH: { return lead_autoshifted_numbers(KC_8, KC_MINS, KC_NO, pressed); }
+        case _9_QUEST: { return lead_autoshifted_numbers(KC_9, KC_SLSH, KC_LSFT, pressed); }
+        case _0: { return lead_autoshifted_numbers(KC_0, KC_0, KC_NO, pressed); }
 
         case KC_UP: { if (is_after_lead(KC_UP, pressed)) { return false; } return true; }
         case KC_DOWN: { if (is_after_lead(KC_DOWN, pressed)) { return false; } return true; }
