@@ -768,7 +768,7 @@ bool lead_custom_autoshifted(uint16_t code, uint16_t held_code, uint16_t held_mo
 }
 
 bool lead_autoshifted_numbers(uint16_t code, uint16_t held_code, uint16_t held_mod, bool pressed) {
-  return lead_custom_autoshifted(code, held_code, KC_LSFT, pressed, AUTOSHIFT_NUMBERS_TERM);
+  return lead_custom_autoshifted(code, held_code, held_mod, pressed, AUTOSHIFT_NUMBERS_TERM);
 }
 
 bool lead_autoshifted_same_key(uint16_t code, bool pressed) {
