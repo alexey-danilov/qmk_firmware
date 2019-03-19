@@ -1825,7 +1825,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
 
         case CTRL_F1: {
-          if (is_after_lead(KC_NUBS, pressed)) { return false; }
+          if (is_after_lead(KC_EQL, pressed)) { return false; }
           static uint16_t ctrl_f1_layer_timer;
           momentary_layer_tap(KC_F1, KC_LCTL, KC_LGUI, KC_NO, KC_NO, KC_NO, &ctrl_f1_layer_timer, &ctrl_f1_interrupted, pressed, 250, true);
           return true;
