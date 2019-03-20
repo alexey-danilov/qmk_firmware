@@ -1009,7 +1009,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
                __________,  __________,  KC_F4,  __________,
-                                DEL_LEFT_MAC, _MINS,
+                                DEL_LEFT_MAC, _NUBS,
                                               _SLSH,
                        KC_F1, _ENTER, DEL_RIGHT_MAC,
                                              KC_F14,
@@ -1019,7 +1019,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          _,  _,  _,  _,  _,  _,
          _,  _,  _,  _,  _,  _,
                    _,  _,  _,  _,
-                             _, _NUBS,
+                             _, _,
                              KC_LALT,
                              KC_LCTL, KC_LSFT, CMD_SPACE,
                              _
