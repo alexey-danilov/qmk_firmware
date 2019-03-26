@@ -1866,14 +1866,14 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case PALM_L_MAC: {
           if (is_after_lead(KC_F14, pressed)) { return false; }
           static uint16_t palm_l_mac_layer_timer;
-          momentary_layer_tap(KC_F14, KC_NO, KC_LCTL, KC_LALT, KC_LSFT, KC_LGUI, &palm_l_mac_layer_timer, &palm_l_mac_interrupted, pressed, 300, true);
+          momentary_layer_tap(KC_F14, KC_NO, KC_LCTL, KC_LALT, KC_LSFT, KC_LGUI, &palm_l_mac_layer_timer, &palm_l_mac_interrupted, pressed, 500, true);
           return true;
         }
 
         case PALM_R_MAC: {
           if (is_after_lead(KC_F15, pressed)) { return false; }
           static uint16_t palm_r_mac_layer_timer;
-          momentary_layer_tap(KC_F15, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, &palm_r_mac_layer_timer, &palm_r_mac_interrupted, pressed, 300, false);
+          momentary_layer_tap(KC_F15, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, &palm_r_mac_layer_timer, &palm_r_mac_interrupted, pressed, 500, false);
           return true;
         }
 
@@ -1933,14 +1933,14 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case PALM_L_WIN: {
           if (is_after_lead(KC_F14, pressed)) { return false; }
           static uint16_t palm_l_win_layer_timer;
-          momentary_layer_tap(KC_F14, KC_NO, KC_LCTL, KC_LALT, KC_LSFT, KC_LGUI, &palm_l_win_layer_timer, &palm_l_win_interrupted, pressed, 300, false);
+          momentary_layer_tap(KC_F14, KC_NO, KC_LCTL, KC_LALT, KC_LSFT, KC_LGUI, &palm_l_win_layer_timer, &palm_l_win_interrupted, pressed, 500, false);
           return true;
         }
 
         case PALM_R_WIN: {
           if (is_after_lead(KC_F15, pressed)) { return false; }
           static uint16_t palm_r_win_layer_timer;
-          momentary_layer_tap(KC_F15, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, &palm_r_win_layer_timer, &palm_r_win_interrupted, pressed, 300, false);
+          momentary_layer_tap(KC_F15, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, &palm_r_win_layer_timer, &palm_r_win_interrupted, pressed, 500, false);
           return true;
         }
 
