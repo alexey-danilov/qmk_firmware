@@ -778,7 +778,7 @@ bool press_leader_key(bool pressed) {
   if(pressed) {
       hold_timer= timer_read();
   } else {
-      if (pressed_within(hold_timer, AUTOSHIFT_QWERTY_KEYS_TERM)){
+      if (pressed_within(hold_timer, AUTOSHIFT_SPECIAL_TERM)){
           up(KC_LGUI); up(KC_LCTL);
           lead_timer = timer_read();
           switch_lead_led_on();
