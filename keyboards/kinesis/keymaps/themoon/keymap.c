@@ -1850,7 +1850,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
         // >>>>>>> KEYS, RESPONDING TO LEAD_SPACE SEQUENCE
         // autoshifted keys - same key with a shift
-        case KC_Q: { return lead_custom_autoshifted(KC_Q, isMac ? KC_F16 : KC_Q, KC_Q, KC_LSFT, pressed, AUTOSHIFT_QWERTY_KEYS_TERM); }
+        case KC_Q: { return lead_custom_autoshifted(KC_Q, isMac ? KC_F13 : KC_Q, KC_Q, KC_LSFT, pressed, AUTOSHIFT_QWERTY_KEYS_TERM); }
         case KC_W: { return lead_autoshifted_same_key(KC_W, pressed); }
         case KC_E: { return lead_autoshifted_same_key(KC_E, pressed); }
         case KC_R: { return lead_autoshifted_same_key(KC_R, pressed); }
@@ -1865,7 +1865,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case KC_D: { return lead_autoshifted_same_key(KC_D, pressed); }
         case KC_F: { return lead_autoshifted_same_key(KC_F, pressed); }
         case KC_G: { return lead_autoshifted_same_key(KC_G, pressed); }
-        case KC_H: { return lead_custom_autoshifted(KC_H, isMac ? KC_F13 : KC_H, KC_H, KC_LSFT, pressed, AUTOSHIFT_QWERTY_KEYS_TERM); }
+        case KC_H: { return lead_custom_autoshifted(KC_H, isMac ? KC_F16 : KC_H, KC_H, KC_LSFT, pressed, AUTOSHIFT_QWERTY_KEYS_TERM); }
         case KC_J: { return lead_autoshifted_same_key(KC_J, pressed); }
         case KC_K: { return lead_autoshifted_same_key(KC_K, pressed); }
         case KC_L: { return lead_autoshifted_same_key(KC_L, pressed); }
@@ -1934,8 +1934,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case _9_QUEST: { return lead_autoshifted_modified_numbers(KC_9, KC_SLSH, KC_LSFT, pressed); }
         case _0_POINT_UP: { return lead_autoshifted_modified_numbers(KC_0, KC_6, KC_LSFT, pressed); }
 
-        case _DOL_PERC: { return lead_custom_autoshifted_with_mod(KC_4, KC_LSFT, KC_F13, KC_5, KC_LSFT, pressed, AUTOSHIFT_SPECIAL_TERM); }
-        case _HASH_ASTR: { return lead_custom_autoshifted_with_mod(KC_3, KC_LSFT, KC_F16, KC_8, KC_LSFT, pressed, AUTOSHIFT_SPECIAL_TERM); }
+        case _DOL_PERC: { return lead_custom_autoshifted_with_mod(KC_4, KC_LSFT, KC_F16, KC_5, KC_LSFT, pressed, AUTOSHIFT_SPECIAL_TERM); }
+        case _HASH_ASTR: { return lead_custom_autoshifted_with_mod(KC_3, KC_LSFT, KC_F13, KC_8, KC_LSFT, pressed, AUTOSHIFT_SPECIAL_TERM); }
 
         case KC_UP: { if (is_after_lead(KC_UP, pressed)) { return false; } return true; }
         case KC_DOWN: { if (is_after_lead(KC_DOWN, pressed)) { return false; } return true; }
