@@ -3,7 +3,7 @@
 
 #define TAPPING_TERM 140
 
-#define AUTOSHIFT_QWERTY_KEYS_TERM 140 // usual a-z keys
+#define AUTOSHIFT_QWERTY_KEYS_TERM 2000 // usual a-z keys
 #define AUTOSHIFT_MODIFIED_NUMBERS_TERM 140 // 2 -> (
 #define AUTOSHIFT_SPECIAL_TERM 140 // ' -> "
 #define AUTOSHIFT_NUMBERS_TERM 140 // mod + numbers: cmd + 2 -> cmd + shift + 2
