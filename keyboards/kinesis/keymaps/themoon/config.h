@@ -11,7 +11,7 @@
 #define MACRO_BUFFER 1024 // real size of buffer will be less: it holds 2 keys for a single press + modifiers; roughly / 2.5
 
 #define COMBO_COUNT 1
-#define COMBO_TERM 300
+#define COMBO_TERM 25
 
 #include "../../config.h"
 #endif

@@ -875,8 +875,13 @@ bool lead_autoshifted_modified_numbers(uint16_t code, uint16_t held_code, uint16
   return lead_custom_autoshifted(code, code, held_code, held_mod, pressed, AUTOSHIFT_MODIFIED_NUMBERS_TERM);
 }
 
+bool lead_autoshifted_same_key_with_combo(uint16_t code, bool pressed, bool combo_key) {
+  if (!combo_key || macro1_recording || macro2_recording) { return lead_custom_autoshifted(code, code, code, KC_LSFT, pressed, AUTOSHIFT_QWERTY_KEYS_TERM); }
+  return true;
+}
+
 bool lead_autoshifted_same_key(uint16_t code, bool pressed) {
-  return lead_custom_autoshifted(code, code, code, KC_LSFT, pressed, AUTOSHIFT_QWERTY_KEYS_TERM);
+  return lead_autoshifted_same_key_with_combo(code, pressed, false);
 }
 
 bool lead_autoshifted_special(uint16_t code, bool pressed) {
@@ -1043,25 +1048,43 @@ qk_tap_dance_action_t tap_dance_actions[] = {
 };
 
 enum combo_events {
-  ZC_COPY
+  KL_COMBO
   };
 
-const uint16_t PROGMEM copy_combo[] = {KC_S, KC_D, COMBO_END};
+const uint16_t PROGMEM kl_combo[] = {KC_K, KC_L, COMBO_END};
 
 combo_t key_combos[COMBO_COUNT] = {
-  [ZC_COPY] = COMBO_ACTION(copy_combo)
+  [KL_COMBO] = COMBO_ACTION(kl_combo)
 };
 
 void process_combo_event(uint8_t combo_index, bool pressed) {
+  static uint16_t hold_timer;
   switch(combo_index) {
-    case ZC_COPY:
-      if (pressed) {
-        register_code(KC_LCTL);
-        register_code(KC_C);
-        unregister_code(KC_C);
-        unregister_code(KC_LCTL);
-      }
-      break;
+    case KL_COMBO:
+       if (pressed) {
+         hold_timer= timer_read();
+
+       } else {
+         if (pressed_within(hold_timer, 150)) {
+           lang_switch_led = true;
+           if (isMac) {
+              caps_led = false; // on mac changing language resets caps lock
+           }
+           with_1_mod(KC_SPC, isMac ? KC_LALT : KC_LGUI);
+
+         } else {
+           if (pressed_within(hold_timer, 500)) {
+             if (caps_led) {
+               up(KC_LCAP);
+               caps_led = false;
+             } else {
+               down(KC_LCAP);
+               caps_led = true;
+             }
+           }
+        }
+       break;
+     }
   }
 }
 
@@ -1881,22 +1904,14 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case KC_O: { return lead_autoshifted_same_key(KC_O, pressed); }
         case KC_P: { return lead_autoshifted_same_key(KC_P, pressed); }
         case KC_A: { return lead_autoshifted_same_key(KC_A, pressed); }
-        case KC_S: {
-          if (macro1_recording || macro2_recording) {
-            return lead_autoshifted_same_key(KC_S, pressed);
-          } else {return true;}
-        }
-        case KC_D: {
-          if (macro1_recording || macro2_recording) {
-            return lead_autoshifted_same_key(KC_D, pressed);
-          } else {return true;}
-        }
+        case KC_S: { return lead_autoshifted_same_key(KC_S, pressed); }
+        case KC_D: { return lead_autoshifted_same_key(KC_D, pressed); }
         case KC_F: { return lead_autoshifted_same_key(KC_F, pressed); }
         case KC_G: { return lead_autoshifted_same_key(KC_G, pressed); }
         case KC_H: { return lead_custom_autoshifted(KC_H, isMac ? KC_F16 : KC_H, KC_H, KC_LSFT, pressed, AUTOSHIFT_QWERTY_KEYS_TERM); }
         case KC_J: { return lead_autoshifted_same_key(KC_J, pressed); }
-        case KC_K: { return lead_autoshifted_same_key(KC_K, pressed); }
-        case KC_L: { return lead_autoshifted_same_key(KC_L, pressed); }
+        case KC_K: { return lead_autoshifted_same_key_with_combo(KC_K, pressed, true); }
+        case KC_L: { return lead_autoshifted_same_key_with_combo(KC_L, pressed, true); }
         case KC_Z: { return lead_autoshifted_same_key(KC_Z, pressed); }
         case KC_X: { return lead_autoshifted_same_key(KC_X, pressed); }
         case KC_C: { return lead_autoshifted_same_key(KC_C, pressed); }
