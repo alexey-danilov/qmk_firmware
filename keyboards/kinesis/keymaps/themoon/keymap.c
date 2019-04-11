@@ -40,11 +40,11 @@ enum kinesis_keycodes {
   ALT_SHIFT_BS = LT(_ALT_SHIFT_BS, KC_BSPC),
   CMD_ESC = MO(_COMMAND_ESCAPE),
   ALT_SLASH_MAC = MO(_ALT_SLASH_MAC),
-  ALT_BSLASH_AND_MAC = MO(_ALT_BSLASH_MAC),
+  ALT_BSLASH_MAC = MO(_ALT_BSLASH_MAC),
   SHIFT_ENTER_MAC = MO(_SHIFT_ENTER_MAC),
   SHIFT_TAB_MAC = MO(_SHIFT_TAB_MAC),
   CTRL_DEL = MO(_CTRL_DEL),
-  CTRL_F1_PIPE = MO(_CTRL_F1),
+  CTRL_F1 = MO(_CTRL_F1),
   PALM_L_MAC = MO(_PALM_L_MAC),
   PALM_R_MAC = MO(_PALM_R_MAC),
 
@@ -53,11 +53,11 @@ enum kinesis_keycodes {
   CTRL_SHIFT_BS = LT(_CTRL_SHIFT_BS, KC_BSPC),
   CTRL_ESC = MO(_CONTROL_ESCAPE),
   ALT_SLASH_WIN = MO(_ALT_SLASH_WIN),
-  ALT_BSLASH_AND_WIN = MO(_ALT_BSLASH_WIN),
+  ALT_BSLASH_WIN = MO(_ALT_BSLASH_WIN),
   SHIFT_ENTER_WIN = MO(_SHIFT_ENTER_WIN),
   SHIFT_TAB_WIN = MO(_SHIFT_TAB_WIN),
   CTRL_ALT_DEL = MO(_CTRL_ALT_DEL),
-  RWIN_PIPE = MO(_RWIN),
+  RWIN = MO(_RWIN),
   PALM_L_WIN = MO(_PALM_L_WIN),
   PALM_R_WIN = MO(_PALM_R_WIN),
 
@@ -78,19 +78,17 @@ enum holding_keycodes {
   _MINS,
   _APP,
   _NUBS,
-  _INS,
 
-  _1_AT,
+  _1,
   _2_PLEFT,
   _3_SLASH,
   _4_PRGHT,
-  _5_HASH,
-  _6_DOL,
+  _5_EQL,
+  _6_PLUS,
   _7_BANG,
   _8_DASH,
   _9_QUEST,
-  _0_PERC,
-  _UP_ASTR,
+  _0,
 
   HOME_,
   END_,
@@ -144,8 +142,8 @@ enum holding_keycodes {
   W_A, W_S, W_D, W_F, W_G, W_H, W_J, W_K, W_L, W_SCLN,
   W_Z, W_X, W_C, W_V, W_B, W_N, W_M, W_DOT, W_QUOT,
   W_LBRC, W_COMM, W_RBRC,
-  W_MINS, W_EQL,
-  W_APP,
+  W_BSPC,
+  W_EQL, W_MINS,
   W_BSLS
 };
 
@@ -991,7 +989,7 @@ static tap dynamic_macro_state = { .is_press_action = true, .state = 0 };
 
 void dynamic_macro_finished (qk_tap_dance_state_t *state, void *user_data) {
   dynamic_macro_state.state = cur_dance(state);
-  if (!is_after_lead(KC_INS, true)) {
+  if (!is_after_lead(isMac ? KC_NUBS : KC_APP, true)) {
 
     if (macro1_recording || macro2_recording) {
        dprint("\nStopping record of macros");
@@ -1044,6 +1042,29 @@ qk_tap_dance_action_t tap_dance_actions[] = {
   [REST_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, rest_finished, rest_reset, 400)
 };
 
+enum combo_events {
+  ZC_COPY
+  };
+
+const uint16_t PROGMEM copy_combo[] = {KC_S, KC_D, COMBO_END};
+
+combo_t key_combos[COMBO_COUNT] = {
+  [ZC_COPY] = COMBO_ACTION(copy_combo)
+};
+
+void process_combo_event(uint8_t combo_index, bool pressed) {
+  switch(combo_index) {
+    case ZC_COPY:
+      if (pressed) {
+        register_code(KC_LCTL);
+        register_code(KC_C);
+        unregister_code(KC_C);
+        unregister_code(KC_LCTL);
+      }
+      break;
+  }
+}
+
 /*
 * ,-------------------------------------------------------------------------------------------------------------------.
 * |  `~    | F1  |  F2  |  F3  |  F4  | F5_TD |  F6 |  F8  |  F9  |  F10  |  F12 | Mute | Vol- | Vol+ | Prog |  Rest  |
@@ -1077,7 +1098,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [_MAC] = LAYOUT(
            // left side
            KC_GRV, KC_F1, KC_F2, KC_F3, KC_F4, TD(F5_TD), KC_F6, KC_F7, KC_F8,
-           KC_F17, _1_AT, _2_PLEFT, _3_SLASH, _4_PRGHT, _5_HASH,
+           KC_F17, _1, _2_PLEFT, _3_SLASH, _4_PRGHT, _5_EQL,
            KC_F18, KC_Q, KC_W, KC_E, KC_R, KC_T,
            KC_F19,KC_A, KC_S, KC_D, KC_F, KC_G,
            KC_F20, KC_Z, KC_X, KC_C, KC_V, KC_B,
@@ -1090,15 +1111,15 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 			                                              PALM_L_MAC,
     // right side
   KC_F9, KC_F10, KC_F11, KC_F12, KC__MUTE, KC__VOLDOWN, KC__VOLUP, KEYB_CONTROL, TD(REST_TD),
-	_6_DOL, _7_BANG, _8_DASH, _9_QUEST, _0_PERC, KC_F21,
+	_6_PLUS, _7_BANG, _8_DASH, _9_QUEST, _0, KC_F21,
 	KC_Y, KC_U, KC_I, KC_O, KC_P, KC_F22,
 	KC_H, KC_J, KC_K, KC_L, KC_SCLN, KC_F23,
 	KC_N, KC_M, KC_UP, KC_DOT, KC_QUOT, KC_F24,
 	KC_LEFT, KC_DOWN, KC_RGHT, KC_F16,
            // right thumb keys
-           _UP_ASTR, _EQL,
-           ALT_BSLASH_AND_MAC,
-           CTRL_F1_PIPE, SHIFT_TAB_MAC, CMD_SPACE,
+           KC_INS, KC_BSPC,
+           ALT_BSLASH_MAC,
+           CTRL_F1, SHIFT_TAB_MAC, CMD_SPACE,
            // right palm key
            PALM_R_MAC
     ),
@@ -1121,9 +1142,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          CTRL_H, __________,  __________,  __________,  __________,  __________,
          __________, CTRL_M, SELECT_UP_MAC, CTRL_DOT, __________, __________,
                    SELECT_LEFT_MAC,  SELECT_DOWN_MAC,  SELECT_RIGHT_MAC, __________,
-         _MINS, _EQL,
+         _EQL, DEL_LEFT_MAC,
          _BSLS,
-         _NUBS, LANG_CAPS_MAC, LEAD_SPACE,
+         _MINS, LANG_CAPS_MAC, LEAD_SPACE,
          KC_F15
     ),
 
@@ -1134,7 +1155,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
                __________,  __________,  KC_F4,  __________,
-                                 DEL_LEFT_MAC, _INS,
+                                DEL_LEFT_MAC, _NUBS,
                                               _SLSH,
                        KC_F1, _ENTER, DEL_RIGHT_MAC,
                                              KC_F14,
@@ -1190,9 +1211,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
                __________,  __________,  __________,  __________,
-         _MINS, _EQL,
+         _EQL, LCTL(KC_BSPC),
          _BSLS,
-         _NUBS, _TAB, KC_F3,
+         _MINS, _TAB, KC_F3,
          KC_F15
     ),
 
@@ -1203,7 +1224,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
                __________,  __________,  __________,  __________,
-                                 LCTL(KC_BSPC), _INS,
+                                LCTL(KC_BSPC), _NUBS,
                                                _SLSH,
                           _ESC, _ENTER, LCTL(KC_DEL),
                                               KC_F14,
@@ -1214,7 +1235,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________,  __________,  __________,  __________,  __________,  __________,
                    __________,  __________,  __________,  __________,
          _,  _,
-         ALT_BSLASH_AND_MAC,
+         ALT_BSLASH_MAC,
          KC_LCTL, KC_LSFT, KC_LGUI,
          _
     ),
@@ -1226,7 +1247,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
                __________,  __________,  __________,  __________,
-                                   _BSPC, _INS,
+                                  _BSPC, _NUBS,
                                          _SLSH,
                             _ESC, _ENTER, _DEL,
                                         KC_F14,
@@ -1238,7 +1259,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                    _,  _,  _, _,
          _,  _,
          KC_LALT,
-         CTRL_F1_PIPE, KC_LSFT, KC_LCTL,
+         CTRL_F1, KC_LSFT, KC_LCTL,
          _
     ),
 
@@ -1259,9 +1280,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
                __________,  __________,  __________,  __________,
-         _MINS, _EQL,
+         _EQL, _BSPC,
          _BSLS,
-         _NUBS, _TAB, _SPACE,
+         _MINS, _TAB, _SPACE,
          KC_F15
     ),
 
@@ -1282,9 +1303,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
                    __________,  __________,  __________, __________,
-         _MINS, _EQL,
+         _EQL, _BSPC,
          _BSLS,
-         _NUBS, _TAB, _SPACE,
+         _MINS, _TAB, _SPACE,
          KC_F15
     ),
 
@@ -1295,7 +1316,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
                __________,  __________,  __________,  __________,
-                              _BSPC, _INS,
+                             _BSPC, _NUBS,
                                     _SLSH,
                        _ESC, _ENTER, _DEL,
                                    KC_F14,
@@ -1328,9 +1349,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________,  CMD_SHIFT_TAB, CMD_Q, CMD_TAB,  __________,  __________,
          __________,  __________, KC_PGUP, KC_SPC,  __________,  __________,
             HOME_, KC_PGDN, END_, __________,
-         _MINS, _EQL,
+         _EQL, _BSPC,
          _BSLS,
-         _NUBS, FIND_PREV, FIND_NEXT,
+         _MINS, FIND_PREV, FIND_NEXT,
          HIDE_FOCUS_MAC
     ),
 
@@ -1361,7 +1382,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [_WIN] = LAYOUT(
            // left side
            KC_GRV, KC_F1, KC_F2, KC_F3, KC_F4, TD(F5_TD), KC_F6, KC_F7, KC_F8,
-           KC_F17, _1_AT, _2_PLEFT, _3_SLASH, _4_PRGHT, _5_HASH,
+           KC_F17, _1, _2_PLEFT, _3_SLASH, _4_PRGHT, _5_EQL,
            KC_F18, KC_Q, KC_W, KC_E, KC_R, KC_T,
            KC_F19, KC_A, KC_S, KC_D, KC_F, KC_G,
            KC_F20, KC_Z, KC_X, KC_C, KC_V, KC_B,
@@ -1374,15 +1395,15 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 			                                                PALM_L_WIN,
     // right side
     KC_F9, KC_F10, KC_F11, KC_F12, KC_MUTE, KC_VOLD, KC_VOLU, KEYB_CONTROL, TD(REST_TD),
-  	_6_DOL, _7_BANG, _8_DASH, _9_QUEST, _0_PERC, KC_F21,
+  	_6_PLUS, _7_BANG, _8_DASH, _9_QUEST, _0, KC_F21,
   	KC_Y, KC_U, KC_I, KC_O, KC_P, KC_F22,
   	KC_H, KC_J, KC_K, KC_L, KC_SCLN, KC_F23,
   	KC_N, KC_M, KC_UP, KC_DOT, KC_QUOT, KC_F24,
   	KC_LEFT, KC_DOWN, KC_RGHT, KC_F16,
            // right thumb keys
-           _UP_ASTR, _EQL,
-           ALT_BSLASH_AND_WIN,
-           RWIN_PIPE, SHIFT_TAB_WIN, CTRL_SPACE,
+           KC_INS, KC_BSPC,
+           ALT_BSLASH_WIN,
+           RWIN, SHIFT_TAB_WIN, CTRL_SPACE,
            // right palm key
            PALM_R_WIN
     ),
@@ -1406,9 +1427,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________, __________, __________, __________, __________, __________,
          __________,  __________,  SELECT_UP_WIN,  __________,  __________,  __________,
          SELECT_LEFT_WIN,  SELECT_DOWN_WIN,  SELECT_RIGHT_WIN, __________,
-         _MINS, _EQL,
+         _EQL, DEL_LEFT_WIN,
          _BSLS,
-         _APP, LANG_CAPS_WIN, LEAD_SPACE,
+         _MINS, LANG_CAPS_WIN, LEAD_SPACE,
          KC_F15
     ),
 
@@ -1419,7 +1440,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
                __________,  __________,  __________,  __________,
-                               DEL_LEFT_WIN, _INS,
+                               DEL_LEFT_WIN, _APP,
                                             _SLSH,
                      KC_F1, _ENTER, DEL_RIGHT_WIN,
                                            KC_F14,
@@ -1475,9 +1496,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
                   __________, __________,  __________, __________,
-         _MINS, _EQL,
+         _EQL, _BSPC,
          _BSLS,
-         _APP, KC_F2, KC_F3,
+         _MINS, KC_F2, KC_F3,
          KC_F15
     ),
 
@@ -1488,7 +1509,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
                __________,  __________,  __________,  __________,
-                                     _BSPC, _INS,
+                                     _BSPC, _APP,
                                            _SLSH,
                               _ESC, _ENTER, _DEL,
                                           KC_F14,
@@ -1499,7 +1520,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________,  __________,  __________,  __________,  __________,  __________,
                    __________,  __________,  __________,  __________,
          _,  _,
-         ALT_BSLASH_AND_WIN,
+         ALT_BSLASH_WIN,
          KC_LGUI, KC_LSFT, KC_LCTL,
          _
     ),
@@ -1521,9 +1542,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          W_H,  W_J,  W_K, W_L,  W_QUOT,  __________,
          W_N, W_M, KC_UP, W_DOT, W_SCLN,  __________,
          KC_LEFT,  KC_DOWN, KC_RGHT, __________,
-         W_MINS, W_EQL,
+         W_EQL, W_BSPC,
          W_BSLS,
-         W_APP, KC_F2, KC_F3,
+         W_MINS, KC_F2, KC_F3,
          KC_F15
     ),
 
@@ -1544,9 +1565,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   	LGUI(KC_H), LGUI(KC_J), LGUI(KC_K), LGUI(KC_L), LGUI(KC_SCLN), LGUI(KC_F23),
   	LGUI(KC_N), LGUI(KC_M), LGUI(KC_UP), LGUI(KC_DOT), LGUI(KC_QUOT), LGUI(KC_F24),
   	LGUI(KC_LEFT), LGUI(KC_DOWN), LGUI(KC_RGHT), LGUI(KC_F16),
-         LGUI(KC_MINS), LGUI(KC_EQL),
+         LGUI(KC_INS), LGUI(KC_BSPC),
          LGUI(KC_BSLS),
-         RWIN_PIPE, LGUI(KC_LSFT), LGUI(KC_LCTL),
+         RWIN, LGUI(KC_LSFT), LGUI(KC_LCTL),
          LGUI(KC_F16)
     ),
 
@@ -1567,9 +1588,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
                    __________,  __________,  __________, __________,
-         _MINS, _EQL,
+         _EQL, _BSPC,
          _BSLS,
-         _APP, _TAB, _SPACE,
+         _MINS, _TAB, _SPACE,
          KC_F15
     ),
 
@@ -1581,7 +1602,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
                __________,  __________,  __________,  __________,
-                                     _BSPC, _INS,
+                                     _BSPC, _APP,
                                            _SLSH,
                               _ESC, _ENTER, _DEL,
                                           KC_F14,
@@ -1614,9 +1635,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________, ALT_SHIFT_TAB, ALT_F4, ALT_TAB,  __________,  __________,
          __________, __________, KC_PGUP, __________,  __________,  __________,
                       CTRL_HOME, KC_PGDN, CTRL_END, __________,
-         _MINS, _EQL,
+         _EQL, _BSPC,
          _BSLS,
-         _APP, FIND_PREV, FIND_NEXT,
+         _MINS, FIND_PREV, FIND_NEXT,
          HIDE_FOCUS_WIN
     ),
 
@@ -1810,21 +1831,21 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     // support for "mo layer tap" functionality
     if (keycode != CMD_ESC) { cmd_esc_interrupted = true; }
     if (keycode != ALT_SLASH_MAC) { alt_slash_mac_interrupted = true; }
-    if (keycode != ALT_BSLASH_AND_MAC) { alt_bslash_mac_interrupted = true; }
+    if (keycode != ALT_BSLASH_MAC) { alt_bslash_mac_interrupted = true; }
     if (keycode != SHIFT_ENTER_MAC) { shift_enter_mac_interrupted = true; }
     if (keycode != SHIFT_TAB_MAC) { shift_tab_mac_interrupted = true; }
     if (keycode != CTRL_DEL) { ctrl_del_interrupted = true; }
-    if (keycode != CTRL_F1_PIPE) { ctrl_f1_interrupted = true; }
+    if (keycode != CTRL_F1) { ctrl_f1_interrupted = true; }
     if (keycode != PALM_L_MAC) { palm_l_mac_interrupted = true; }
     if (keycode != PALM_R_MAC) { palm_r_mac_interrupted = true; }
 
     if (keycode != CTRL_ESC) { ctrl_esc_interrupted = true; }
     if (keycode != ALT_SLASH_WIN) { alt_slash_win_interrupted = true; }
-    if (keycode != ALT_BSLASH_AND_WIN) { alt_bslash_win_interrupted = true; }
+    if (keycode != ALT_BSLASH_WIN) { alt_bslash_win_interrupted = true; }
     if (keycode != SHIFT_ENTER_WIN) { shift_enter_win_interrupted = true; }
     if (keycode != SHIFT_TAB_WIN) { shift_tab_win_interrupted = true; }
     if (keycode != CTRL_ALT_DEL) { ctrl_alt_del_interrupted = true; }
-    if (keycode != RWIN_PIPE) { rwin_interrupted = true; }
+    if (keycode != RWIN) { rwin_interrupted = true; }
     if (keycode != PALM_L_WIN) { palm_l_win_interrupted = true; }
     if (keycode != PALM_R_WIN) { palm_r_win_interrupted = true; }
 
@@ -1860,8 +1881,16 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case KC_O: { return lead_autoshifted_same_key(KC_O, pressed); }
         case KC_P: { return lead_autoshifted_same_key(KC_P, pressed); }
         case KC_A: { return lead_autoshifted_same_key(KC_A, pressed); }
-        case KC_S: { return lead_autoshifted_same_key(KC_S, pressed); }
-        case KC_D: { return lead_autoshifted_same_key(KC_D, pressed); }
+        case KC_S: {
+          if (macro1_recording || macro2_recording) {
+            return lead_autoshifted_same_key(KC_S, pressed);
+          } else {return true;}
+        }
+        case KC_D: {
+          if (macro1_recording || macro2_recording) {
+            return lead_autoshifted_same_key(KC_D, pressed);
+          } else {return true;}
+        }
         case KC_F: { return lead_autoshifted_same_key(KC_F, pressed); }
         case KC_G: { return lead_autoshifted_same_key(KC_G, pressed); }
         case KC_H: { return lead_custom_autoshifted(KC_H, isMac ? KC_F16 : KC_H, KC_H, KC_LSFT, pressed, AUTOSHIFT_QWERTY_KEYS_TERM); }
@@ -1920,20 +1949,19 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case KC_GRV: { return lead_autoshifted_special(KC_GRV, pressed); }
         case KC_DOT: { return lead_autoshifted_special(KC_DOT, pressed); }
 
+        case KC_INS: { return lead_custom_autoshifted(KC_INS, KC_EQL, KC_INS, KC_LSFT, pressed, AUTOSHIFT_SPECIAL_TERM); }
+
         // custom autoshifted keys - when pressed, other key + shift is sent
-        case _1_AT: { return lead_autoshifted_modified_numbers(KC_1, KC_2, KC_LSFT, pressed); }
+        case _1: { return lead_autoshifted_modified_numbers(KC_1, KC_1, KC_NO, pressed); }
         case _2_PLEFT: { return lead_autoshifted_modified_numbers(KC_2, KC_9, KC_LSFT, pressed); }
         case _3_SLASH: { return lead_autoshifted_modified_numbers(KC_3, KC_MINS, KC_LSFT, pressed); }
         case _4_PRGHT: { return lead_autoshifted_modified_numbers(KC_4, KC_0, KC_LSFT, pressed); }
-        case _5_HASH: { return lead_autoshifted_modified_numbers(KC_5, KC_3, KC_LSFT, pressed); }
-        case _6_DOL: { return lead_autoshifted_modified_numbers(KC_6, KC_4, KC_LSFT, pressed); }
+        case _5_EQL: { return lead_autoshifted_modified_numbers(KC_5, KC_EQL, KC_NO, pressed); }
+        case _6_PLUS: { return lead_autoshifted_modified_numbers(KC_6, KC_EQL, KC_LSFT, pressed); }
         case _7_BANG: { return lead_autoshifted_modified_numbers(KC_7, KC_1, KC_LSFT, pressed); }
         case _8_DASH: { return lead_autoshifted_modified_numbers(KC_8, KC_MINS, KC_NO, pressed); }
         case _9_QUEST: { return lead_autoshifted_modified_numbers(KC_9, KC_SLSH, KC_LSFT, pressed); }
-        case _0_PERC: { return lead_autoshifted_modified_numbers(KC_0, KC_5, KC_LSFT, pressed); }
-
-        case _UP_ASTR: { return lead_custom_autoshifted_with_mod(KC_6, KC_LSFT, KC_MINS, KC_8, KC_LSFT, pressed, AUTOSHIFT_SPECIAL_TERM); }
-        case _EQL: { return lead_custom_autoshifted_with_mod(KC_EQL, KC_NO, KC_EQL, KC_EQL, KC_LSFT, pressed, AUTOSHIFT_SPECIAL_TERM); }
+        case _0: { return lead_autoshifted_modified_numbers(KC_0, KC_0, KC_NO, pressed); }
 
         case KC_UP: { if (is_after_lead(KC_UP, pressed)) { return false; } return true; }
         case KC_DOWN: { if (is_after_lead(KC_DOWN, pressed)) { return false; } return true; }
@@ -1975,8 +2003,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           return true;
         }
 
-        case CTRL_F1_PIPE: {
-          if (is_after_lead(KC_NUBS, pressed)) { return false; }
+        case CTRL_F1: {
+          if (is_after_lead(KC_MINS, pressed)) { return false; }
           static uint16_t ctrl_f1_layer_timer;
           momentary_layer_tap_with_hold(KC_F1, KC_LCTL, KC_LCTL, KC_NO, KC_NO, KC_NO, &ctrl_f1_layer_timer, &ctrl_f1_interrupted, pressed, AUTOSHIFT_SPECIAL_TERM, true, KC_BSLS, KC_LSFT);
           return true;
@@ -1989,7 +2017,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           return true;
         }
 
-        case ALT_BSLASH_AND_MAC: {
+        case ALT_BSLASH_MAC: {
           if (is_after_lead(KC_BSLS, pressed)) { return false; }
           static uint16_t alt_bslash_mac_layer_timer;
           momentary_layer_tap_with_hold(KC_BSLS, KC_NO, KC_LALT, KC_NO, KC_NO, KC_NO, &alt_bslash_mac_layer_timer, &alt_bslash_mac_interrupted, pressed, AUTOSHIFT_SPECIAL_TERM, true, KC_7, KC_LSFT);
@@ -2049,14 +2077,14 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           return true;
         }
 
-        case RWIN_PIPE: {
-          if (is_after_lead(KC_APP, pressed)) { return false; }
+        case RWIN: {
+          if (is_after_lead(KC_MINS, pressed)) { return false; }
           static uint16_t rwin_layer_timer;
           momentary_layer_tap_with_hold(KC_RWIN, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, &rwin_layer_timer, &rwin_interrupted, pressed, AUTOSHIFT_SPECIAL_TERM, false, KC_BSLS, KC_LSFT);
           return true;
         }
 
-        case ALT_BSLASH_AND_WIN: {
+        case ALT_BSLASH_WIN: {
           if (is_after_lead(KC_BSLS, pressed)) { return false; }
           static uint16_t alt_bslash_win_layer_timer;
           momentary_layer_tap_with_hold(KC_BSLS, KC_NO, KC_LALT, KC_NO, KC_NO, KC_NO, &alt_bslash_win_layer_timer, &alt_bslash_win_interrupted, pressed, AUTOSHIFT_SPECIAL_TERM, false, KC_7, KC_LSFT);
@@ -2111,10 +2139,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case _DEL: { return if_held_autoshift(KC_DEL, pressed); }
         case _NUBS: { return if_held_autoshift(KC_NUBS, pressed); }
         case _APP: { return if_held_autoshift(KC_APP, pressed); }
-        case _INS: { return if_held_autoshift(KC_INS, pressed); }
         case _BSLS: { return if_held_autoshift(KC_BSLS, pressed); }
         case _SLSH: { return if_held_autoshift(KC_SLSH, pressed); }
         case _MINS: { return if_held_autoshift(KC_MINS, pressed); }
+        case _EQL: { return if_held_autoshift(KC_EQL, pressed); }
 
         // repeating keycodes
         case KC_PGUP: { return repeat(KC_PGUP, KC_NO, KC_LGUI, KC_LSFT, KC_LALT, KC_LCTL, pressed, 25); }
@@ -2224,10 +2252,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case W_LBRC: { return replace_ctrl_alt_with_lgui(KC_LBRC, pressed); }
         case W_COMM: { return replace_ctrl_alt_with_lgui(KC_COMM, pressed); }
         case W_RBRC: { return replace_ctrl_alt_with_lgui(KC_RBRC, pressed); }
+        case W_BSPC: { return replace_ctrl_alt_with_lgui(KC_BSPC, pressed); }
+        case W_BSLS: { return replace_ctrl_alt_with_lgui(KC_BSLS, pressed); }
         case W_EQL: { return replace_ctrl_alt_with_lgui(KC_EQL, pressed); }
         case W_MINS: { return replace_ctrl_alt_with_lgui(KC_MINS, pressed); }
-        case W_BSLS: { return replace_ctrl_alt_with_lgui(KC_BSLS, pressed); }
-        case W_APP: { return replace_ctrl_alt_with_lgui(KC_APP, pressed); }
 
         default: {
           return true;
