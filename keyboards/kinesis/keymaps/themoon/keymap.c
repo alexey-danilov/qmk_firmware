@@ -875,13 +875,8 @@ bool lead_autoshifted_modified_numbers(uint16_t code, uint16_t held_code, uint16
   return lead_custom_autoshifted(code, code, held_code, held_mod, pressed, AUTOSHIFT_MODIFIED_NUMBERS_TERM);
 }
 
-bool lead_autoshifted_same_key_with_combo(uint16_t code, bool pressed, bool combo_key) {
-  if (!combo_key || macro1_recording || macro2_recording) { return lead_custom_autoshifted(code, code, code, KC_LSFT, pressed, AUTOSHIFT_QWERTY_KEYS_TERM); }
-  return true;
-}
-
 bool lead_autoshifted_same_key(uint16_t code, bool pressed) {
-  return lead_autoshifted_same_key_with_combo(code, pressed, false);
+  return lead_custom_autoshifted(code, code, code, KC_LSFT, pressed, AUTOSHIFT_QWERTY_KEYS_TERM);
 }
 
 bool lead_autoshifted_special(uint16_t code, bool pressed) {
@@ -1046,47 +1041,6 @@ qk_tap_dance_action_t tap_dance_actions[] = {
   [F5_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, f5_finished, f5_reset, 400),
   [REST_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, rest_finished, rest_reset, 400)
 };
-
-enum combo_events {
-  KL_COMBO
-  };
-
-const uint16_t PROGMEM kl_combo[] = {KC_K, KC_L, COMBO_END};
-
-combo_t key_combos[COMBO_COUNT] = {
-  [KL_COMBO] = COMBO_ACTION(kl_combo)
-};
-
-void process_combo_event(uint8_t combo_index, bool pressed) {
-  static uint16_t hold_timer;
-  switch(combo_index) {
-    case KL_COMBO:
-       if (pressed) {
-         hold_timer= timer_read();
-
-       } else {
-         if (pressed_within(hold_timer, 150)) {
-           lang_switch_led = true;
-           if (isMac) {
-              caps_led = false; // on mac changing language resets caps lock
-           }
-           with_1_mod(KC_SPC, isMac ? KC_LALT : KC_LGUI);
-
-         } else {
-           if (pressed_within(hold_timer, 500)) {
-             if (caps_led) {
-               up(KC_LCAP);
-               caps_led = false;
-             } else {
-               down(KC_LCAP);
-               caps_led = true;
-             }
-           }
-        }
-       break;
-     }
-  }
-}
 
 /*
 * ,-------------------------------------------------------------------------------------------------------------------.
@@ -1392,7 +1346,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
          KC_6,  KC_7,  KC_8,  KC_9,  KC_0,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
-         __________,  __________,  __________,  __________,  __________,  __________,
+         __________,  __________,  LGUI(KC_SPC),  __________,  __________,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
                    LGUI(KC_HOME),  _, LGUI(KC_END), _,
          _,  _,
@@ -1678,7 +1632,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
          KC_6,  KC_7,  KC_8,  KC_9,  KC_0,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
-         __________,  __________,  __________,  __________,  __________,  __________,
+         __________,  __________,  LCTL(KC_SPC),  __________,  __________,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
                    KC_HOME,  __________,  KC_END,  __________,
          _,  _,
@@ -1826,7 +1780,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
        remove_mods();
     }
 
-    if (keycode != KC_LEFT && keycode != KC_RGHT) {
+    if (keycode != KC_LEFT && keycode != KC_RGHT && keycode != KC_K) {
       if (keycode != CMD_SPACE && keycode != CTRL_SPACE) {
              esc_timer = 0;
       }
@@ -1910,8 +1864,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case KC_G: { return lead_autoshifted_same_key(KC_G, pressed); }
         case KC_H: { return lead_custom_autoshifted(KC_H, isMac ? KC_F16 : KC_H, KC_H, KC_LSFT, pressed, AUTOSHIFT_QWERTY_KEYS_TERM); }
         case KC_J: { return lead_autoshifted_same_key(KC_J, pressed); }
-        case KC_K: { return lead_autoshifted_same_key_with_combo(KC_K, pressed, true); }
-        case KC_L: { return lead_autoshifted_same_key_with_combo(KC_L, pressed, true); }
+        case KC_L: { return lead_autoshifted_same_key(KC_L, pressed); }
         case KC_Z: { return lead_autoshifted_same_key(KC_Z, pressed); }
         case KC_X: { return lead_autoshifted_same_key(KC_X, pressed); }
         case KC_C: { return lead_autoshifted_same_key(KC_C, pressed); }
@@ -1985,12 +1938,18 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         // >>>>>>> escape as additional leader key
         case KC_LEFT: {
           if (is_after_lead(KC_LEFT, pressed)) { return false; }
-          return following_custom_leader_key(KC_HOME, isMac ? KC_LGUI : KC_NO, KC_NO, KC_NO, &esc_timer, pressed, 250);
+          return following_custom_leader_key(KC_HOME, isMac ? KC_LGUI : KC_NO, KC_NO, KC_NO, &esc_timer, pressed, 200);
         }
         case KC_RGHT: {
           if (is_after_lead(KC_RGHT, pressed)) { return false; }
-          return following_custom_leader_key(KC_END, isMac ? KC_LGUI : KC_NO, KC_NO, KC_NO, &esc_timer, pressed, 250);
+          return following_custom_leader_key(KC_END, isMac ? KC_LGUI : KC_NO, KC_NO, KC_NO, &esc_timer, pressed, 200);
         }
+
+        case KC_K: {
+          if (is_after_lead(KC_K, pressed)) { return false; }
+          return following_custom_leader_key(KC_SPC, isMac ? KC_LGUI : KC_LCTL, KC_NO, KC_NO, &esc_timer, pressed, 200);
+        }
+
         // <<<<<<< escape as additional leader key
 
         // >>>>>>> mac layers
