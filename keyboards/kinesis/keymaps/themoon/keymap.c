@@ -76,6 +76,7 @@ enum holding_keycodes {
   _BSPC,
   _EQL,
   _MINS,
+  _INS,
   _APP,
   _NUBS,
 
@@ -142,9 +143,9 @@ enum holding_keycodes {
   W_A, W_S, W_D, W_F, W_G, W_H, W_J, W_K, W_L, W_SCLN,
   W_Z, W_X, W_C, W_V, W_B, W_N, W_M, W_DOT, W_QUOT,
   W_LBRC, W_COMM, W_RBRC,
-  W_BSPC,
-  W_EQL, W_MINS,
-  W_BSLS
+  W_INS, W_BSPC,
+  W_BSLS,
+  W_MINS, W_EQL,
 };
 
 static uint16_t esc_timer = 0; // timer for leader key: esc
@@ -1119,10 +1120,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          CTRL_H, __________,  __________,  __________,  __________,  __________,
          __________, CTRL_M, SELECT_UP_MAC, CTRL_DOT, __________, __________,
                    SELECT_LEFT_MAC,  SELECT_DOWN_MAC,  SELECT_RIGHT_MAC, __________,
-         _EQL, DEL_LEFT_MAC,
+         _INS, DEL_LEFT_MAC,
          _BSLS,
          _MINS, LANG_CAPS_MAC, LEAD_SPACE,
-         KC_F15
+         _EQL
     ),
 
 [_COMMAND_SPACE] = LAYOUT(
@@ -1134,7 +1135,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                __________,  __________,  KC_F4,  __________,
                                 DEL_LEFT_MAC, _NUBS,
                                               _SLSH,
-                       KC_F1, _ENTER, DEL_RIGHT_MAC,
+                       KC_F3, _ENTER, DEL_RIGHT_MAC,
                                              KC_F14,
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
          KC_6,  KC_7,  KC_8,  KC_9,  KC_0,  __________,
@@ -1188,10 +1189,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
                __________,  __________,  __________,  __________,
-         _EQL, LCTL(KC_BSPC),
+         _INS, LCTL(KC_BSPC),
          _BSLS,
-         _MINS, _TAB, KC_F3,
-         KC_F15
+         _MINS, _TAB, KC_F1,
+         _EQL
     ),
 
 [_ALT_BSLASH_MAC] = LAYOUT(
@@ -1257,10 +1258,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
                __________,  __________,  __________,  __________,
-         _EQL, _BSPC,
+         _INS, _BSPC,
          _BSLS,
          _MINS, _TAB, _SPACE,
-         KC_F15
+         _EQL
     ),
 
 [_SHIFT_ENTER_MAC] = LAYOUT(
@@ -1280,10 +1281,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
                    __________,  __________,  __________, __________,
-         _EQL, _BSPC,
+         _INS, _BSPC,
          _BSLS,
          _MINS, _TAB, _SPACE,
-         KC_F15
+         _EQL
     ),
 
 [_SHIFT_TAB_MAC] = LAYOUT(
@@ -1326,7 +1327,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________,  CMD_SHIFT_TAB, CMD_Q, CMD_TAB,  __________,  __________,
          __________,  __________, KC_PGUP, KC_SPC,  __________,  __________,
             HOME_, KC_PGDN, END_, __________,
-         _EQL, _BSPC,
+         _INS, _BSPC,
          _BSLS,
          _MINS, FIND_PREV, FIND_NEXT,
          HIDE_FOCUS_MAC
@@ -1346,7 +1347,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
          KC_6,  KC_7,  KC_8,  KC_9,  KC_0,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
-         __________,  __________,  LGUI(KC_SPC),  __________,  __________,  __________,
+         __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
                    LGUI(KC_HOME),  _, LGUI(KC_END), _,
          _,  _,
@@ -1404,10 +1405,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________, __________, __________, __________, __________, __________,
          __________,  __________,  SELECT_UP_WIN,  __________,  __________,  __________,
          SELECT_LEFT_WIN,  SELECT_DOWN_WIN,  SELECT_RIGHT_WIN, __________,
-         _EQL, DEL_LEFT_WIN,
+         _INS, DEL_LEFT_WIN,
          _BSLS,
          _MINS, LANG_CAPS_WIN, LEAD_SPACE,
-         KC_F15
+         _EQL
     ),
 
 [_CONTROL_SPACE] = LAYOUT(
@@ -1419,7 +1420,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                __________,  __________,  __________,  __________,
                                DEL_LEFT_WIN, _APP,
                                             _SLSH,
-                     KC_F1, _ENTER, DEL_RIGHT_WIN,
+                     KC_F3, _ENTER, DEL_RIGHT_WIN,
                                            KC_F14,
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
          KC_6,  KC_7,  KC_8,  KC_9,  KC_0,  __________,
@@ -1473,10 +1474,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
                   __________, __________,  __________, __________,
-         _EQL, _BSPC,
+         _INS, _BSPC,
          _BSLS,
-         _MINS, KC_F2, KC_F3,
-         KC_F15
+         _MINS, KC_F2, KC_F1,
+         _EQL
     ),
 
 [_ALT_BSLASH_WIN] = LAYOUT(
@@ -1519,10 +1520,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          W_H,  W_J,  W_K, W_L,  W_QUOT,  __________,
          W_N, W_M, KC_UP, W_DOT, W_SCLN,  __________,
          KC_LEFT,  KC_DOWN, KC_RGHT, __________,
-         W_EQL, W_BSPC,
+         W_INS, W_BSPC,
          W_BSLS,
-         W_MINS, KC_F2, KC_F3,
-         KC_F15
+         W_MINS, KC_F2, KC_F1,
+         _EQL
     ),
 
 [_RWIN] = LAYOUT(
@@ -1565,10 +1566,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
                    __________,  __________,  __________, __________,
-         _EQL, _BSPC,
+         _INS, _BSPC,
          _BSLS,
          _MINS, _TAB, _SPACE,
-         KC_F15
+         _EQL
     ),
 
 
@@ -1612,7 +1613,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________, ALT_SHIFT_TAB, ALT_F4, ALT_TAB,  __________,  __________,
          __________, __________, KC_PGUP, __________,  __________,  __________,
                       CTRL_HOME, KC_PGDN, CTRL_END, __________,
-         _EQL, _BSPC,
+         _INS, _BSPC,
          _BSLS,
          _MINS, FIND_PREV, FIND_NEXT,
          HIDE_FOCUS_WIN
@@ -1632,7 +1633,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
          KC_6,  KC_7,  KC_8,  KC_9,  KC_0,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
-         __________,  __________,  LCTL(KC_SPC),  __________,  __________,  __________,
+         __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
                    KC_HOME,  __________,  KC_END,  __________,
          _,  _,
@@ -1780,7 +1781,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
        remove_mods();
     }
 
-    if (keycode != KC_LEFT && keycode != KC_RGHT && keycode != KC_K) {
+    if (keycode != KC_LEFT && keycode != KC_RGHT) {
       if (keycode != CMD_SPACE && keycode != CTRL_SPACE) {
              esc_timer = 0;
       }
@@ -1864,6 +1865,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case KC_G: { return lead_autoshifted_same_key(KC_G, pressed); }
         case KC_H: { return lead_custom_autoshifted(KC_H, isMac ? KC_F16 : KC_H, KC_H, KC_LSFT, pressed, AUTOSHIFT_QWERTY_KEYS_TERM); }
         case KC_J: { return lead_autoshifted_same_key(KC_J, pressed); }
+        case KC_K: { return lead_autoshifted_same_key(KC_K, pressed); }
         case KC_L: { return lead_autoshifted_same_key(KC_L, pressed); }
         case KC_Z: { return lead_autoshifted_same_key(KC_Z, pressed); }
         case KC_X: { return lead_autoshifted_same_key(KC_X, pressed); }
@@ -1898,7 +1900,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case KC_F12: { return lead_autoshifted_special(KC_F12, pressed); }
         case KC_F13: { return lead_autoshifted_special(KC_F13, pressed); }
         case KC_F14: { return lead_autoshifted_custom_term(KC_F14, pressed, 200); }
-        case KC_F15: { return lead_autoshifted_custom_term(KC_F15, pressed, 200); }
+        // _f15 -> _eql
         case KC_F16: { return lead_autoshifted_special(KC_F16, pressed); }
         case KC_F17: { return lead_autoshifted_special(KC_F17, pressed); }
         case KC_F18: { return lead_autoshifted_special(KC_F18, pressed); }
@@ -1917,7 +1919,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case KC_GRV: { return lead_autoshifted_special(KC_GRV, pressed); }
         case KC_DOT: { return lead_autoshifted_special(KC_DOT, pressed); }
 
-        case KC_INS: { return lead_custom_autoshifted(KC_INS, KC_EQL, KC_INS, KC_LSFT, pressed, AUTOSHIFT_SPECIAL_TERM); }
+        case KC_INS: { return lead_custom_autoshifted(KC_INS, KC_INS, KC_INS, KC_LSFT, pressed, AUTOSHIFT_SPECIAL_TERM); }
 
         // custom autoshifted keys - when pressed, other key + shift is sent
         case _1: { return lead_autoshifted_modified_numbers(KC_1, KC_1, KC_NO, pressed); }
@@ -1945,11 +1947,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           return following_custom_leader_key(KC_END, isMac ? KC_LGUI : KC_NO, KC_NO, KC_NO, &esc_timer, pressed, 200);
         }
 
-        case KC_K: {
-          if (is_after_lead(KC_K, pressed)) { return false; }
-          return following_custom_leader_key(KC_SPC, isMac ? KC_LGUI : KC_LCTL, KC_NO, KC_NO, &esc_timer, pressed, 200);
-        }
-
         // <<<<<<< escape as additional leader key
 
         // >>>>>>> mac layers
@@ -1962,7 +1959,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
 
         case CMD_ESC: {
-          if (is_after_lead(KC_F1, pressed)) { return false; }
+          if (is_after_lead(KC_F3, pressed)) { return false; }
           static uint16_t cmd_esc_layer_timer;
           if (momentary_layer_tap(KC_ESC, KC_NO, KC_LGUI, KC_NO, KC_NO, KC_NO, &cmd_esc_layer_timer, &cmd_esc_interrupted, pressed, 200, true)) {
             esc_timer = timer_read();
@@ -2020,7 +2017,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
 
         case PALM_R_MAC: {
-          if (is_after_lead(KC_F15, pressed)) { return false; }
+          if (is_after_lead(KC_EQL, pressed)) { return false; }
           static uint16_t palm_r_mac_layer_timer;
           momentary_layer_tap_with_hold(KC_F15, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, &palm_r_mac_layer_timer, &palm_r_mac_interrupted, pressed, 200, true, KC_F15, KC_LSFT);
           return true;
@@ -2036,7 +2033,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
 
         case CTRL_ESC: {
-          if (is_after_lead(KC_F1, pressed)) { return false; }
+          if (is_after_lead(KC_F3, pressed)) { return false; }
           static uint16_t ctrl_esc_layer_timer;
           if (momentary_layer_tap(KC_ESC, KC_NO, KC_LCTL, KC_NO, KC_NO, KC_NO, &ctrl_esc_layer_timer, &ctrl_esc_interrupted, pressed, 200, true)) {
             esc_timer = timer_read();
@@ -2095,7 +2092,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
 
         case PALM_R_WIN: {
-          if (is_after_lead(KC_F15, pressed)) { return false; }
+          if (is_after_lead(KC_EQL, pressed)) { return false; }
           static uint16_t palm_r_win_layer_timer;
           momentary_layer_tap_with_hold(KC_F15, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, &palm_r_win_layer_timer, &palm_r_win_interrupted, pressed, 200, false, KC_F15, KC_LSFT);
           return true;
@@ -2116,6 +2113,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case _BSLS: { return if_held_autoshift(KC_BSLS, pressed); }
         case _SLSH: { return if_held_autoshift(KC_SLSH, pressed); }
         case _MINS: { return if_held_autoshift(KC_MINS, pressed); }
+        case _INS: { return if_held_autoshift(KC_INS, pressed); }
         case _EQL: { return if_held_autoshift(KC_EQL, pressed); }
 
         // repeating keycodes
@@ -2228,8 +2226,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case W_RBRC: { return replace_ctrl_alt_with_lgui(KC_RBRC, pressed); }
         case W_BSPC: { return replace_ctrl_alt_with_lgui(KC_BSPC, pressed); }
         case W_BSLS: { return replace_ctrl_alt_with_lgui(KC_BSLS, pressed); }
-        case W_EQL: { return replace_ctrl_alt_with_lgui(KC_EQL, pressed); }
+        case W_INS: { return replace_ctrl_alt_with_lgui(KC_INS, pressed); }
         case W_MINS: { return replace_ctrl_alt_with_lgui(KC_MINS, pressed); }
+        case W_EQL: { return replace_ctrl_alt_with_lgui(KC_EQL, pressed); }
 
         default: {
           return true;
