@@ -1329,8 +1329,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             HOME_, KC_PGDN, END_, __________,
          _INS, _BSPC,
          _BSLS,
-         _MINS, FIND_PREV, FIND_NEXT,
-         HIDE_FOCUS_MAC
+         HIDE_FOCUS_MAC, FIND_PREV, FIND_NEXT,
+         _EQL
     ),
 
 [_PALM_R_MAC] = LAYOUT(
@@ -1615,8 +1615,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                       CTRL_HOME, KC_PGDN, CTRL_END, __________,
          _INS, _BSPC,
          _BSLS,
-         _MINS, FIND_PREV, FIND_NEXT,
-         HIDE_FOCUS_WIN
+         HIDE_FOCUS_WIN, FIND_PREV, FIND_NEXT,
+         _EQL
     ),
 
 [_PALM_R_WIN] = LAYOUT(
