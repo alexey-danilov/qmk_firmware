@@ -1771,6 +1771,8 @@ bool rwin_interrupted = true;
 bool palm_l_win_interrupted = true;
 bool palm_r_win_interrupted = true;
 
+bool left_or_right_pressed = false;
+
 // adding logic to custom keycodes and overriding existing ones (taking hold duration into account);
 // "mo layer tap" and "esc leader key" functionality
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
@@ -1785,22 +1787,30 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       if (keycode != CMD_SPACE && keycode != CTRL_SPACE) {
              esc_timer = 0;
       }
+    } else {
+      if (pressed) {
+        // left or right key down
+        if (!left_or_right_pressed) { left_or_right_pressed = true; }
+      } else {
+        // left or right key up
+        if (left_or_right_pressed) { left_or_right_pressed = false; }
+      }
     }
 
     // custom dynamic macros do no currently play nicely with standard LT functionality and repeating keycodes;
     // following code disables those if any of the macros is being currently recorded
-    if (macro1_recording || macro2_recording) {
-      if ((keycode == CTRL_SPACE || keycode == CMD_SPACE) && pressed) {
+    if ((macro1_recording || macro2_recording) && pressed) {
+      if (keycode == CTRL_SPACE || keycode == CMD_SPACE) {
         key_code(KC_SPC);
         return false;
       }
 
-      if ((keycode == ALT_SHIFT_BS || keycode == CTRL_SHIFT_BS || keycode == KC_BSPC) && pressed) {
+      if (keycode == ALT_SHIFT_BS || keycode == CTRL_SHIFT_BS || keycode == KC_BSPC) {
         key_code(KC_BSPC);
         return false;
       }
 
-      if ((keycode == KC_LEFT || keycode == KC_RGHT) && pressed) {
+      if (keycode == KC_LEFT || keycode == KC_RGHT) {
         key_code(keycode);
         return false;
       }
@@ -1959,6 +1969,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
 
         case CMD_ESC: {
+          if (left_or_right_pressed) { return false; }
           if (is_after_lead(KC_F3, pressed)) { return false; }
           static uint16_t cmd_esc_layer_timer;
           if (momentary_layer_tap(KC_ESC, KC_NO, KC_LGUI, KC_NO, KC_NO, KC_NO, &cmd_esc_layer_timer, &cmd_esc_interrupted, pressed, 200, true)) {
@@ -2033,6 +2044,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
 
         case CTRL_ESC: {
+          if (left_or_right_pressed) { return false; }
           if (is_after_lead(KC_F3, pressed)) { return false; }
           static uint16_t ctrl_esc_layer_timer;
           if (momentary_layer_tap(KC_ESC, KC_NO, KC_LCTL, KC_NO, KC_NO, KC_NO, &ctrl_esc_layer_timer, &ctrl_esc_interrupted, pressed, 200, true)) {
