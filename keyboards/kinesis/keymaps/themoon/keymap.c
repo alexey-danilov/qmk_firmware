@@ -148,7 +148,6 @@ enum holding_keycodes {
   W_MINS, W_EQL,
 };
 
-static uint16_t esc_timer = 0; // timer for leader key: esc
 static uint16_t lead_timer = 0; // timer for leader key
 static bool default_layer = true;
 
@@ -782,19 +781,6 @@ bool delete_word_line(uint16_t code, uint16_t mod_to_remove, uint16_t mod_to_add
       down(mod_to_remove);
   }
   return false;
-}
-
-// ESC AS A LEADER KEY
-// provides functionality similar to "leader key", except that it works for escape
-bool following_custom_leader_key(uint16_t code, uint16_t mod1, uint16_t mod2, uint16_t mod3, uint16_t *leader_timer, bool pressed, uint16_t leader_last_pressed_timeout) {
-  if (*leader_timer && pressed_within(*leader_timer, leader_last_pressed_timeout)) {
-    if (pressed) {
-      *leader_timer = 0;
-      with_3_mods(code, mod1, mod2, mod3);
-      return false;
-    }
-  }
-  return true;
 }
 
 // CMD/CTRL + SPACE AS A LEADER KEY
@@ -1771,7 +1757,8 @@ bool rwin_interrupted = true;
 bool palm_l_win_interrupted = true;
 bool palm_r_win_interrupted = true;
 
-bool left_or_right_pressed = false;
+bool left_pressed = false;
+bool right_pressed = false;
 
 // adding logic to custom keycodes and overriding existing ones (taking hold duration into account);
 // "mo layer tap" and "esc leader key" functionality
@@ -1781,20 +1768,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     if (default_layer) {
        // remove stuck modifiers
        remove_mods();
-    }
-
-    if (keycode != KC_LEFT && keycode != KC_RGHT) {
-      if (keycode != CMD_SPACE && keycode != CTRL_SPACE) {
-             esc_timer = 0;
-      }
-    } else {
-      if (pressed) {
-        // left or right key down
-        if (!left_or_right_pressed) { left_or_right_pressed = true; }
-      } else {
-        // left or right key up
-        if (left_or_right_pressed) { left_or_right_pressed = false; }
-      }
     }
 
     // custom dynamic macros do no currently play nicely with standard LT functionality and repeating keycodes;
@@ -1947,17 +1920,16 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case KC_DOWN: { if (is_after_lead(KC_DOWN, pressed)) { return false; } return true; }
         case KC_BSPC: { if (is_after_lead(KC_BSPC, pressed)) { return false; } return true; }
 
-        // >>>>>>> escape as additional leader key
         case KC_LEFT: {
+          if (pressed) { left_pressed = true; } else { left_pressed = false; }
           if (is_after_lead(KC_LEFT, pressed)) { return false; }
-          return following_custom_leader_key(KC_HOME, isMac ? KC_LGUI : KC_NO, KC_NO, KC_NO, &esc_timer, pressed, 200);
+          return true;
         }
         case KC_RGHT: {
+          if (pressed) { right_pressed = true; } else { right_pressed = false; }
           if (is_after_lead(KC_RGHT, pressed)) { return false; }
-          return following_custom_leader_key(KC_END, isMac ? KC_LGUI : KC_NO, KC_NO, KC_NO, &esc_timer, pressed, 200);
+          return true;
         }
-
-        // <<<<<<< escape as additional leader key
 
         // >>>>>>> mac layers
         case CMD_SPACE: {
@@ -1969,12 +1941,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
 
         case CMD_ESC: {
-          if (left_or_right_pressed) { return false; }
+          if (pressed) {
+            if (left_pressed) { with_1_mod(KC_LEFT, KC_LGUI); return false; }
+            if (right_pressed) { with_1_mod(KC_RGHT, KC_LGUI); return false; }
+          }
           if (is_after_lead(KC_F3, pressed)) { return false; }
           static uint16_t cmd_esc_layer_timer;
-          if (momentary_layer_tap(KC_ESC, KC_NO, KC_LGUI, KC_NO, KC_NO, KC_NO, &cmd_esc_layer_timer, &cmd_esc_interrupted, pressed, 200, true)) {
-            esc_timer = timer_read();
-          }
+          momentary_layer_tap(KC_ESC, KC_NO, KC_LGUI, KC_NO, KC_NO, KC_NO, &cmd_esc_layer_timer, &cmd_esc_interrupted, pressed, 200, true);
           return true;
         }
 
@@ -2044,13 +2017,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
 
         case CTRL_ESC: {
-          if (left_or_right_pressed) { return false; }
+          if (pressed) {
+            if (left_pressed) { key_code(KC_HOME); return false; }
+            if (right_pressed) { key_code(KC_END); return false; }
+          }
           if (is_after_lead(KC_F3, pressed)) { return false; }
           static uint16_t ctrl_esc_layer_timer;
-          if (momentary_layer_tap(KC_ESC, KC_NO, KC_LCTL, KC_NO, KC_NO, KC_NO, &ctrl_esc_layer_timer, &ctrl_esc_interrupted, pressed, 200, true)) {
-            esc_timer = timer_read();
-          }
-          return true;
+          momentary_layer_tap(KC_ESC, KC_NO, KC_LCTL, KC_NO, KC_NO, KC_NO, &ctrl_esc_layer_timer, &ctrl_esc_interrupted, pressed, 200, true);
         }
 
         case CTRL_ALT_DEL: {
@@ -2159,8 +2132,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case SELECT_DOWN_MAC: { return if_held_autoshift(KC_DOWN, pressed); }
         case SELECT_UP_WIN: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_UP, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_HOME, KC_LCTL, KC_LSFT, KC_NO, KC_NO, pressed, AUTOSHIFT_SPECIAL_TERM, true); }
         case SELECT_DOWN_WIN: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_DOWN, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_END, KC_LCTL, KC_LSFT, KC_NO, KC_NO, pressed, AUTOSHIFT_SPECIAL_TERM, false); }
-        case SELECT_LEFT_MAC: { return if_held_add_mods(KC_LEFT, KC_LSFT, KC_NO, pressed, AUTOSHIFT_SPECIAL_TERM); }
-        case SELECT_RIGHT_MAC: { return if_held_add_mods(KC_RGHT, KC_LSFT, KC_NO, pressed, AUTOSHIFT_SPECIAL_TERM); }
+        case SELECT_LEFT_MAC: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_LEFT, KC_NO, KC_NO, KC_NO, KC_NO, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_LEFT, KC_LSFT, KC_NO, KC_NO, KC_NO, pressed, AUTOSHIFT_SPECIAL_TERM, true); }
+        case SELECT_RIGHT_MAC: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_RGHT, KC_NO, KC_NO, KC_NO, KC_NO, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_RGHT, KC_LSFT, KC_NO, KC_NO, KC_NO, pressed, AUTOSHIFT_SPECIAL_TERM, true); }
         case SELECT_LEFT_WIN: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_LEFT, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_HOME, KC_LSFT, KC_NO, KC_NO, KC_NO, pressed, AUTOSHIFT_SPECIAL_TERM, true); }
         case SELECT_RIGHT_WIN: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_RGHT, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_END, KC_LSFT, KC_NO, KC_NO, KC_NO, pressed, AUTOSHIFT_SPECIAL_TERM, true); }
 
