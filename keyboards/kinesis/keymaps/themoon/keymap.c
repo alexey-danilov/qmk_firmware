@@ -1348,7 +1348,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          KC_6,  KC_7,  KC_8,  KC_9,  KC_0,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
-         __________,  __________,  __________,  __________,  __________,  __________,
+         __________,  __________,  LSFT(KC_F15),  __________,  __________,  __________,
                    LGUI(KC_HOME),  KC_F15, LGUI(KC_END), _,
          _,  _,
          _,
@@ -1634,7 +1634,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          KC_6,  KC_7,  KC_8,  KC_9,  KC_0,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
-         __________,  __________,  __________,  __________,  __________,  __________,
+         __________,  __________,  LSFT(KC_F15),  __________,  __________,  __________,
                    KC_HOME,  KC_F15,  KC_END,  __________,
          _,  _,
          _,
@@ -1784,7 +1784,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
        remove_mods();
     }
 
-    if (keycode != KC_LEFT && keycode != KC_RGHT && keycode != PALM_R_MAC && keycode != PALM_R_MAC) {
+    if (keycode != KC_LEFT && keycode != KC_RGHT) {
       if (keycode != CMD_SPACE && keycode != CTRL_SPACE) {
              esc_timer = 0;
       }
@@ -2023,10 +2023,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
 
         case PALM_R_MAC: {
-          if (!not_following_esc(KC_F15, KC_NO, KC_NO, KC_NO, &esc_timer, pressed, 300)) { return false; }
           if (is_after_lead(KC_EQL, pressed)) { return false; }
           static uint16_t palm_r_mac_layer_timer;
-          momentary_layer_tap_with_hold(KC_TAB, KC_LGUI, KC_NO, KC_NO, KC_NO, KC_NO, &palm_r_mac_layer_timer, &palm_r_mac_interrupted, pressed, 300, true, KC_F15, KC_LSFT);
+          momentary_layer_tap_with_hold(KC_F15, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, &palm_r_mac_layer_timer, &palm_r_mac_interrupted, pressed, 250, true, KC_F15, KC_LSFT);
           return true;
         }
 
@@ -2100,10 +2099,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
 
         case PALM_R_WIN: {
-          if (!not_following_esc(KC_F15, KC_NO, KC_NO, KC_NO, &esc_timer, pressed, 300)) { return false; }
           if (is_after_lead(KC_EQL, pressed)) { return false; }
           static uint16_t palm_r_win_layer_timer;
-          momentary_layer_tap_with_hold(KC_TAB, KC_LALT, KC_NO, KC_NO, KC_NO, KC_NO, &palm_r_win_layer_timer, &palm_r_win_interrupted, pressed, 300, false, KC_F15, KC_LSFT);
+          momentary_layer_tap_with_hold(KC_F15, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, &palm_r_win_layer_timer, &palm_r_win_interrupted, pressed, 250, false, KC_F15, KC_LSFT);
           return true;
         }
 
