@@ -141,6 +141,7 @@ enum holding_keycodes {
 
 static uint16_t esc_timer = 0; // timer for leader key: esc
 static uint16_t lead_timer = 0; // timer for leader key
+static uint16_t space_timer = 0;
 static bool default_layer = true;
 
 // HELPER FUNCTIONS
@@ -1764,11 +1765,16 @@ bool palm_r_win_interrupted = true;
 
 bool left_pressed = false;
 bool right_pressed = false;
+bool space_alone = false;
 
 // adding logic to custom keycodes and overriding existing ones (taking hold duration into account);
 // "mo layer tap" and "esc leader key" functionality
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     bool pressed = record->event.pressed;
+
+    if (space_alone && pressed) {
+       space_alone = false;
+    }
 
     if (default_layer) {
        // remove stuck modifiers
@@ -1947,7 +1953,18 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
         // >>>>>>> mac layers
         case CMD_SPACE: {
-          if (is_after_lead(KC_SPC, pressed)) { return false; }; return true;
+          if (is_after_lead(KC_SPC, pressed)) { return false; };
+          if (pressed) {
+            space_alone = true;
+            space_timer = timer_read();
+          }
+          else {
+            if (space_alone && !pressed_within(space_timer, 5)) {
+              up(KC_LGUI); with_1_mod(KC_F15, KC_LSFT);
+            }
+            space_alone = false;
+          }
+          return true;
         }
 
         case ALT_SHIFT_BS: {
@@ -2016,13 +2033,24 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case PALM_R_MAC: {
           if (is_after_lead(KC_EQL, pressed)) { return false; }
           static uint16_t palm_r_mac_layer_timer;
-          momentary_layer_tap_with_hold(KC_F15, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, &palm_r_mac_layer_timer, &palm_r_mac_interrupted, pressed, 250, true, KC_F15, KC_LSFT);
+          momentary_layer_tap(KC_F15, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, &palm_r_mac_layer_timer, &palm_r_mac_interrupted, pressed, 250, true);
           return true;
         }
 
         // >>>>>>> win layers
         case CTRL_SPACE: {
-          if (is_after_lead(KC_SPC, pressed)) { return false; }; return true;
+          if (is_after_lead(KC_SPC, pressed)) { return false; };
+          if (pressed) {
+            space_alone = true;
+            space_timer = timer_read();
+          }
+          else {
+            if (space_alone && !pressed_within(space_timer, 5)) {
+              up(KC_LCTL); with_1_mod(KC_F15, KC_LSFT);
+            }
+            space_alone = false;
+          }
+          return true;
         }
 
         case CTRL_SHIFT_BS: {
@@ -2092,7 +2120,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case PALM_R_WIN: {
           if (is_after_lead(KC_EQL, pressed)) { return false; }
           static uint16_t palm_r_win_layer_timer;
-          momentary_layer_tap_with_hold(KC_F15, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, &palm_r_win_layer_timer, &palm_r_win_interrupted, pressed, 250, false, KC_F15, KC_LSFT);
+          momentary_layer_tap(KC_F15, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, &palm_r_win_layer_timer, &palm_r_win_interrupted, pressed, 300, false);
           return true;
         }
 
