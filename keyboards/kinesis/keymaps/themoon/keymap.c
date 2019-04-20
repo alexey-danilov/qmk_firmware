@@ -103,8 +103,6 @@ enum holding_keycodes {
   SELECT_LEFT_MAC, SELECT_RIGHT_MAC,
   SELECT_LEFT_WIN, SELECT_RIGHT_WIN,
 
-  LEAD_SPACE,
-
   DEL_LEFT_MAC,
   DEL_RIGHT_MAC,
   DEL_LEFT_WIN,
@@ -793,25 +791,6 @@ bool not_following_esc(uint16_t code, uint16_t mod1, uint16_t mod2, uint16_t mod
   return true;
 }
 
-// CMD/CTRL + SPACE AS A LEADER KEY
-bool press_leader_key(bool pressed) {
-  static uint16_t hold_timer;
-  if(pressed) {
-      hold_timer= timer_read();
-  } else {
-      if (held_shorter(hold_timer, AUTOSHIFT_SPECIAL_TERM)){
-          up(KC_LGUI); up(KC_LCTL);
-          lead_timer = timer_read();
-          switch_lead_led_on();
-      } else {
-          with_1_mod(KC_SPC, KC_LSFT);
-          lead_timer = 0;
-          switch_lead_led_off();
-      }
-  }
-  return false;
-}
-
 bool lead_impl(uint16_t code, uint16_t os_mod, uint16_t additional_mod, bool pressed) {
   if (lead_timer) {
     if (held_shorter(lead_timer, 1000)) {
@@ -1118,7 +1097,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                    SELECT_LEFT_MAC,  SELECT_DOWN_MAC,  SELECT_RIGHT_MAC, __________,
          _INS, DEL_LEFT_MAC,
          _BSLS,
-         _MINS, LANG_CAPS_MAC, LEAD_SPACE,
+         _MINS, LANG_CAPS_MAC, _SPACE,
          _EQL
     ),
 
@@ -1403,7 +1382,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          SELECT_LEFT_WIN,  SELECT_DOWN_WIN,  SELECT_RIGHT_WIN, __________,
          _INS, DEL_LEFT_WIN,
          _BSLS,
-         _MINS, LANG_CAPS_WIN, LEAD_SPACE,
+         _MINS, LANG_CAPS_WIN, _SPACE,
          _EQL
     ),
 
@@ -1851,9 +1830,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           return false;
         }
 
-        case LEAD_SPACE: {
-          return press_leader_key(pressed);
-        }
         // >>>>>>> KEYS, RESPONDING TO LEAD_SPACE SEQUENCE
         // autoshifted keys - same key with a shift
         case KC_Q: { return lead_custom_autoshifted(KC_Q, isMac ? KC_F13 : KC_Q, KC_Q, KC_LSFT, pressed, AUTOSHIFT_QWERTY_KEYS_TERM); }
@@ -1968,7 +1944,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           }
           else {
             if (space_alone && held_longer(space_timer, 1) && held_shorter(space_timer, 200)) {
-              up(KC_LGUI); with_1_mod(KC_F13, KC_LALT);
+              up(KC_LGUI);
+              lead_timer = timer_read();
+              switch_lead_led_on();
             }
             space_alone = false;
             space_timer = 0;
@@ -2058,7 +2036,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           }
           else {
             if (space_alone && held_longer(space_timer, 1) && held_shorter(space_timer, 200)) {
-              up(KC_LCTL); with_1_mod(KC_F13, KC_LALT);
+              up(KC_LCTL);
+              lead_timer = timer_read();
+              switch_lead_led_on();
             }
             space_alone = false;
             space_timer = 0;
