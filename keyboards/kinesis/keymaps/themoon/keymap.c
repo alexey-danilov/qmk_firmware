@@ -37,7 +37,7 @@
 enum kinesis_keycodes {
   // mac
   CMD_SPACE = LT(_COMMAND_SPACE, KC_SPC),
-  ALT_SHIFT_BS = LT(_ALT_SHIFT_BS, KC_BSPC),
+  ALT_SHIFT_BS = MO(_ALT_SHIFT_BS),
   CMD_ESC = MO(_COMMAND_ESCAPE),
   ALT_SLASH_MAC = MO(_ALT_SLASH_MAC),
   ALT_BSLASH_MAC = MO(_ALT_BSLASH_MAC),
@@ -50,7 +50,7 @@ enum kinesis_keycodes {
 
   // win
   CTRL_SPACE = LT(_CONTROL_SPACE, KC_SPC),
-  CTRL_SHIFT_BS = LT(_CTRL_SHIFT_BS, KC_BSPC),
+  CTRL_SHIFT_BS = MO(_CTRL_SHIFT_BS),
   CTRL_ESC = MO(_CONTROL_ESCAPE),
   ALT_SLASH_WIN = MO(_ALT_SLASH_WIN),
   ALT_BSLASH_WIN = MO(_ALT_BSLASH_WIN),
@@ -1336,9 +1336,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          HYPR(KC_F19), HYPR(KC_A), HYPR(KC_S), HYPR(KC_D), HYPR(KC_F), HYPR(KC_G),
          HYPR(KC_F20), HYPR(KC_Z), HYPR(KC_X), HYPR(KC_C), HYPR(KC_V), HYPR(KC_B),
                  HYPR(KC_F13), HYPR(KC_LBRC), HYPR(KC_COMM), HYPR(KC_RBRC),
-                                        KC_MRWD, KC_MFFD,
+                                        LGUI(KC_Q), KC_MRWD,
                                                  KC_MPLY,
-              LGUI(KC_Z), LGUI(LSFT(KC_Z)), HYPR(KC_DEL),
+                   LGUI(KC_Z), LGUI(LSFT(KC_Z)), KC_MFFD,
                                             HYPR(KC_F14),
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
          KC_6,  KC_7,  KC_8,  KC_9,  KC_0,  __________,
@@ -1622,9 +1622,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          HYPR(KC_F19), HYPR(KC_A), HYPR(KC_S), HYPR(KC_D), HYPR(KC_F), HYPR(KC_G),
          HYPR(KC_F20), HYPR(KC_Z), HYPR(KC_X), HYPR(KC_C), HYPR(KC_V), HYPR(KC_B),
                  HYPR(KC_F13), HYPR(KC_LBRC), HYPR(KC_COMM), HYPR(KC_RBRC),
-                                        KC_MPRV, KC_MNXT,
+                                        LALT(KC_F4), KC_MPRV,
                                                  KC_MPLY,
-              LCTL(KC_Z), LCTL(LSFT(KC_Z)), HYPR(KC_DEL),
+                   LCTL(KC_Z), LCTL(LSFT(KC_Z)), KC_MNXT,
                                             HYPR(KC_F14),
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
          KC_6,  KC_7,  KC_8,  KC_9,  KC_0,  __________,
@@ -1750,6 +1750,7 @@ return state;
 bool cmd_esc_interrupted = true;
 bool alt_slash_mac_interrupted = true;
 bool alt_bslash_mac_interrupted = true;
+bool alt_shift_interrupted = true;
 bool shift_enter_mac_interrupted = true;
 bool shift_tab_mac_interrupted = true;
 bool ctrl_del_interrupted = true;
@@ -1760,6 +1761,7 @@ bool palm_r_mac_interrupted = true;
 bool ctrl_esc_interrupted = true;
 bool alt_slash_win_interrupted = true;
 bool alt_bslash_win_interrupted = true;
+bool ctrl_shift_interrupted = true;
 bool shift_enter_win_interrupted = true;
 bool shift_tab_win_interrupted = true;
 bool ctrl_alt_del_interrupted = true;
@@ -1814,6 +1816,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     if (keycode != CMD_ESC) { cmd_esc_interrupted = true; }
     if (keycode != ALT_SLASH_MAC) { alt_slash_mac_interrupted = true; }
     if (keycode != ALT_BSLASH_MAC) { alt_bslash_mac_interrupted = true; }
+    if (keycode != ALT_SHIFT_BS) { alt_shift_interrupted = true; }
     if (keycode != SHIFT_ENTER_MAC) { shift_enter_mac_interrupted = true; }
     if (keycode != SHIFT_TAB_MAC) { shift_tab_mac_interrupted = true; }
     if (keycode != CTRL_DEL) { ctrl_del_interrupted = true; }
@@ -1824,6 +1827,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     if (keycode != CTRL_ESC) { ctrl_esc_interrupted = true; }
     if (keycode != ALT_SLASH_WIN) { alt_slash_win_interrupted = true; }
     if (keycode != ALT_BSLASH_WIN) { alt_bslash_win_interrupted = true; }
+    if (keycode != CTRL_SHIFT_BS) { ctrl_shift_interrupted = true; }
     if (keycode != SHIFT_ENTER_WIN) { shift_enter_win_interrupted = true; }
     if (keycode != SHIFT_TAB_WIN) { shift_tab_win_interrupted = true; }
     if (keycode != CTRL_ALT_DEL) { ctrl_alt_del_interrupted = true; }
@@ -1973,7 +1977,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
 
         case ALT_SHIFT_BS: {
-          if (is_after_lead(KC_BSPC, pressed)) { return false; } return true;
+          if (is_after_lead(KC_BSPC, pressed)) { return false; }
+          static uint16_t alt_shift_layer_timer;
+          momentary_layer_tap(KC_BSPC, KC_NO, KC_LALT, KC_LSFT, KC_NO, KC_NO, &alt_shift_layer_timer, &alt_shift_interrupted, pressed, 250, false);
+          return true;
         }
 
         case CMD_ESC: {
@@ -2060,7 +2067,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
 
         case CTRL_SHIFT_BS: {
-          if (is_after_lead(KC_BSPC, pressed)) { return false; } return true;
+          if (is_after_lead(KC_BSPC, pressed)) { return false; }
+          static uint16_t ctrl_shift_layer_timer;
+          momentary_layer_tap(KC_BSPC, KC_NO, KC_LCTL, KC_LSFT, KC_NO, KC_NO, &ctrl_shift_layer_timer, &ctrl_shift_interrupted, pressed, 250, false);
+          return true;
         }
 
         case CTRL_ESC: {
