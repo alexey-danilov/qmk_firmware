@@ -487,6 +487,10 @@ bool pressed_within(uint16_t hold_timer, uint16_t hold_duration) {
  return timer_elapsed(hold_timer) < hold_duration;
 }
 
+bool held_longer(uint16_t hold_timer, uint16_t hold_duration) {
+ return timer_elapsed(hold_timer) > hold_duration;
+}
+
 void led_red_on(void) {
   PORTF &= ~(1<<3);
 }
@@ -1959,10 +1963,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             space_timer = timer_read();
           }
           else {
-            if (space_alone && !pressed_within(space_timer, 5)) {
-              up(KC_LGUI); with_1_mod(KC_F15, KC_LSFT);
+            if (space_alone && held_longer(space_timer, 1)) {
+              up(KC_LGUI); with_1_mod(KC_F13, KC_LALT);
             }
             space_alone = false;
+            space_timer = 0;
           }
           return true;
         }
@@ -2045,10 +2050,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             space_timer = timer_read();
           }
           else {
-            if (space_alone && !pressed_within(space_timer, 5)) {
-              up(KC_LCTL); with_1_mod(KC_F15, KC_LSFT);
+            if (space_alone && held_longer(space_timer, 1)) {
+              up(KC_LCTL); with_1_mod(KC_F13, KC_LALT);
             }
             space_alone = false;
+            space_timer = 0;
           }
           return true;
         }
