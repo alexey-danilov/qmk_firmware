@@ -483,7 +483,7 @@ void remove_mods(void) {
     if (current_mods & (MOD_BIT(KC_RSFT))) { up(KC_RSFT); }
 }
 
-bool pressed_within(uint16_t hold_timer, uint16_t hold_duration) {
+bool held_shorter(uint16_t hold_timer, uint16_t hold_duration) {
  return timer_elapsed(hold_timer) < hold_duration;
 }
 
@@ -567,7 +567,7 @@ bool process_lang_caps(
   } else {
       up(mod_to_be_replaced);
 
-      if (pressed_within(hold_timer, hold_duration)){
+      if (held_shorter(hold_timer, hold_duration)){
           lang_switch_led = true;
           if (isMac) {
              caps_led = false; // on mac changing language resets caps lock
@@ -612,7 +612,7 @@ bool replace_key_and_mods_if_held_replace_key_and_mods(
   } else {
       up(mod1_to_be_replaced); up(mod2_to_be_replaced); up(mod3_to_be_replaced); up(mod4_to_be_replaced);
 
-      if (pressed_within(hold_timer, hold_duration)){
+      if (held_shorter(hold_timer, hold_duration)){
           with_4_mods(code, replacement_mod1, replacement_mod2, replacement_mod3, replacement_mod4);
       } else {
           with_4_mods(held_code, held_mod1, held_mod2, held_mod3, held_mod4);
@@ -635,7 +635,7 @@ bool replace_if_held_add_mods(uint16_t code, uint16_t mod, uint16_t held_code, u
   if(pressed) {
       hold_timer= timer_read();
   } else {
-      if (pressed_within(hold_timer, hold_duration)){
+      if (held_shorter(hold_timer, hold_duration)){
           with_1_mod(code, mod);
       } else {
           with_2_mods(held_code, held_mod1, held_mod2);
@@ -653,7 +653,7 @@ bool if_held_add_mods(uint16_t code, uint16_t held_mod1, uint16_t held_mod2, boo
       pressed_mods = get_mods();
   } else {
       if (pressed_mods) { register_mods(pressed_mods); }
-      if (pressed_within(hold_timer, hold_duration)){
+      if (held_shorter(hold_timer, hold_duration)){
           key_code(code);
       } else {
           with_2_mods(code, held_mod1, held_mod2);
@@ -730,7 +730,7 @@ bool momentary_layer_tap_with_hold(
     if (*interrupted_flag) {
       return false;
     }
-    bool tapped = pressed_within(*layer_timer, hold_duration);
+    bool tapped = held_shorter(*layer_timer, hold_duration);
     bool supportsHold = held_code != KC_NO;
     if (tapped || supportsHold) {
       up(layer_mod1); up(layer_mod2); up(layer_mod3); up(layer_mod4); // unregister mods associated with the layer, so that they don't intefere with the tap key
@@ -770,7 +770,7 @@ bool delete_word_line(uint16_t code, uint16_t mod_to_remove, uint16_t mod_to_add
       hold_timer= timer_read();
   } else {
       up(mod_to_remove);
-      if (pressed_within(hold_timer, hold_duration)){
+      if (held_shorter(hold_timer, hold_duration)){
           with_1_mod(code, mod_to_add);
       } else {
           with_2_mods(held_code, held_mod1, held_mod2); key_code(code);
@@ -783,7 +783,7 @@ bool delete_word_line(uint16_t code, uint16_t mod_to_remove, uint16_t mod_to_add
 // ESC AS A LEADER KEY
 // provides functionality similar to "leader key", except that it works for escape
 bool not_following_esc(uint16_t code, uint16_t mod1, uint16_t mod2, uint16_t mod3, uint16_t *leader_timer, bool pressed, uint16_t leader_last_pressed_timeout) {
-  if (*leader_timer && pressed_within(*leader_timer, leader_last_pressed_timeout)) {
+  if (*leader_timer && held_shorter(*leader_timer, leader_last_pressed_timeout)) {
     if (pressed) {
       *leader_timer = 0;
       with_3_mods(code, mod1, mod2, mod3);
@@ -799,7 +799,7 @@ bool press_leader_key(bool pressed) {
   if(pressed) {
       hold_timer= timer_read();
   } else {
-      if (pressed_within(hold_timer, AUTOSHIFT_SPECIAL_TERM)){
+      if (held_shorter(hold_timer, AUTOSHIFT_SPECIAL_TERM)){
           up(KC_LGUI); up(KC_LCTL);
           lead_timer = timer_read();
           switch_lead_led_on();
@@ -814,7 +814,7 @@ bool press_leader_key(bool pressed) {
 
 bool lead_impl(uint16_t code, uint16_t os_mod, uint16_t additional_mod, bool pressed) {
   if (lead_timer) {
-    if (pressed_within(lead_timer, 1000)) {
+    if (held_shorter(lead_timer, 1000)) {
       if (pressed) {
         lead_timer = 0;
         with_3_mods(code, os_mod, KC_LSFT, additional_mod);
@@ -837,7 +837,7 @@ bool lead_replace_if_held_add_mods(uint16_t code, uint16_t mod, uint16_t held_co
         return false;
       }
       if (pressed_mods) { register_mods(pressed_mods); }
-      if (pressed_within(hold_timer, hold_duration)){
+      if (held_shorter(hold_timer, hold_duration)){
           with_1_mod(code, mod);
       } else {
           with_2_mods(held_code, held_mod1, held_mod2);
@@ -1967,7 +1967,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             space_timer = timer_read();
           }
           else {
-            if (space_alone && held_longer(space_timer, 1)) {
+            if (space_alone && held_longer(space_timer, 1) && held_shorter(space_timer, 200)) {
               up(KC_LGUI); with_1_mod(KC_F13, KC_LALT);
             }
             space_alone = false;
@@ -2057,7 +2057,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             space_timer = timer_read();
           }
           else {
-            if (space_alone && held_longer(space_timer, 1)) {
+            if (space_alone && held_longer(space_timer, 1) && held_shorter(space_timer, 200)) {
               up(KC_LCTL); with_1_mod(KC_F13, KC_LALT);
             }
             space_alone = false;
