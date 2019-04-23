@@ -1516,7 +1516,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          W_INS, W_BSPC,
          W_BSLS,
          W_MINS, KC_F2, KC_F1,
-         _EQL
+         W_EQL
     ),
 
 [_RWIN] = LAYOUT(
