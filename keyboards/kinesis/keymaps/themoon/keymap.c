@@ -98,7 +98,6 @@ enum holding_keycodes {
   F16_SCRN_WIN,
 
   SET_MAC,
-  SET_WIN,
 
   CTRL_HOME,
   CTRL_END,
@@ -935,7 +934,7 @@ void rest_finished (qk_tap_dance_state_t *state, void *user_data) {
           }
           if (isWin) {
             all_leds_on(); _delay_ms(125); all_leds_off(); _delay_ms(200); all_leds_on(); _delay_ms(125); all_leds_off();
-            down(KC_LCTL); down(KC_LSFT); down(KC_LALT); down(KC_PSCR); up(KC_PSCR); up(KC_LALT); up(KC_LSFT); up(KC_LCTL); break;
+            down(KC_SLEP); up(KC_SLEP); break;
           }
       case DOUBLE_TAP:
          // shutdown
@@ -945,7 +944,7 @@ void rest_finished (qk_tap_dance_state_t *state, void *user_data) {
             down(KC_LGUI); down(KC_LCTL); down(KC_LALT); SEND_STRING(SS_DOWN(X_POWER) SS_UP(X_POWER)); up(KC_LALT); up(KC_LCTL); up(KC_LGUI); break;
          }
          if (isWin) {
-            down(KC_LCTL); down(KC_LSFT); down(KC_LALT); down(KC_LGUI); down(KC_PSCR); up(KC_PSCR); up(KC_LGUI); up(KC_LALT); up(KC_LSFT); up(KC_LCTL); break;
+            down(KC_PWR); up(KC_PWR); break;
          }
       default: break;
     }
@@ -1333,7 +1332,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
            KC_F18, KC_Q, KC_W, KC_E, KC_R, KC_T,
            KC_F19, KC_A, KC_S, KC_D, KC_F, KC_G,
            KC_F20, KC_Z, KC_X, KC_C, KC_V, KC_B,
-                SET_WIN, KC_LBRC, KC_COMM, KC_RBRC,
+                KC_F13, KC_LBRC, KC_COMM, KC_RBRC,
                                                  // left thumb keys
 			                                CTRL_SHIFT_BS, TD(TAP_MACRO),
                                                      ALT_SLASH_WIN,
@@ -1880,7 +1879,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case KC_F11: { return lead_autoshifted_special(KC_F11, pressed); }
         case KC_F12: { return lead_autoshifted_special(KC_F12, pressed); }
         case SET_MAC: { return lead_custom_autoshifted_with_mod(KC_COMM, KC_LGUI, KC_F13, KC_F13, KC_LSFT, pressed, AUTOSHIFT_SPECIAL_TERM); }
-        case SET_WIN: { return lead_custom_autoshifted_with_mod(KC_PAUS, KC_NO, KC_F13, KC_F13, KC_LSFT, pressed, AUTOSHIFT_SPECIAL_TERM); }
         case KC_F13: { return lead_autoshifted_special(KC_F13, pressed); }
         case KC_F14: { return lead_autoshifted_custom_term(KC_F14, pressed, 200); }
         // _f15 -> _eql
