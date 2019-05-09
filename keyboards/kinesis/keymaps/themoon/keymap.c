@@ -935,22 +935,17 @@ void rest_finished (qk_tap_dance_state_t *state, void *user_data) {
           }
           if (isWin) {
             all_leds_on(); _delay_ms(125); all_leds_off(); _delay_ms(200); all_leds_on(); _delay_ms(125); all_leds_off();
-            down(KC_LCTL); down(KC_LSFT); down(KC_LALT); down(KC_ESC); up(KC_LALT); up(KC_LSFT); up(KC_LCTL); break;
+            down(KC_LCTL); down(KC_LSFT); down(KC_LALT); down(KC_PSCR); up(KC_PSCR); up(KC_LALT); up(KC_LSFT); up(KC_LCTL); break;
           }
       case DOUBLE_TAP:
          // shutdown
-         all_leds_on();
+         all_leds_on(); _delay_ms(300); led_blue_off(); _delay_ms(300); led_green_off(); _delay_ms(300); led_yellow_off(); _delay_ms(300); led_red_off();
 
          if (isMac) {
-            _delay_ms(300);
-            led_blue_off(); _delay_ms(300);
-            led_green_off(); _delay_ms(300);
-            led_yellow_off(); _delay_ms(300);
-            led_red_off();
             down(KC_LGUI); down(KC_LCTL); down(KC_LALT); SEND_STRING(SS_DOWN(X_POWER) SS_UP(X_POWER)); up(KC_LALT); up(KC_LCTL); up(KC_LGUI); break;
          }
          if (isWin) {
-            down(KC_LCTL); down(KC_LSFT); down(KC_LALT); down(KC_LGUI); down(KC_ESC); up(KC_LGUI); up(KC_LALT); up(KC_LSFT); up(KC_LCTL); break;
+            down(KC_LCTL); down(KC_LSFT); down(KC_LALT); down(KC_LGUI); down(KC_PSCR); up(KC_PSCR); up(KC_LGUI); up(KC_LALT); up(KC_LSFT); up(KC_LCTL); break;
          }
       default: break;
     }
