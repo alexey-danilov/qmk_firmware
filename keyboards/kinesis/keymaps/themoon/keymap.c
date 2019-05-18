@@ -95,12 +95,6 @@ enum holding_keycodes {
   HOME_,
   END_,
 
-  F5_SET_MAC,
-  F5_SET_WIN,
-
-  INS_SCRN_MAC,
-  INS_SCRN_WIN,
-
   CTRL_HOME,
   CTRL_END,
 
@@ -871,8 +865,10 @@ bool lead_autoshifted_custom_term(uint16_t code, bool pressed, uint16_t hold_dur
 }
 
 enum {
-  TAP_MACRO = 0,
-  REST_TD = 1
+  INSERT_TD = 0,
+  TAP_MACRO = 1,
+  F5_TD = 2,
+  REST_TD = 3
 };
 
 enum {
@@ -911,7 +907,7 @@ void rest_finished (qk_tap_dance_state_t *state, void *user_data) {
             all_leds_on(); _delay_ms(125); all_leds_off(); _delay_ms(200); all_leds_on(); _delay_ms(125); all_leds_off();
             down(KC_SLEP); up(KC_SLEP); break;
           }
-      case SINGLE_HOLD:
+      case DOUBLE_TAP:
          // shutdown
          all_leds_on(); _delay_ms(300); led_blue_off(); _delay_ms(300); led_green_off(); _delay_ms(300); led_yellow_off(); _delay_ms(300); led_red_off();
 
@@ -921,14 +917,6 @@ void rest_finished (qk_tap_dance_state_t *state, void *user_data) {
          if (isWin) {
             down(KC_PWR); up(KC_PWR); break;
          }
-      case DOUBLE_TAP:
-         // shutdown
-         if (isMac) {
-            with_1_mod(KC_F2, KC_LCTL);
-         }
-         if (isWin) {
-            key_code(KC_PSCR); break;
-         }
       default: break;
     }
 }
@@ -937,7 +925,63 @@ void rest_reset (qk_tap_dance_state_t *state, void *user_data) {
   rest_tap_state.state = 0;
 }
 
-// dynamic macro
+//**************** INSERT TAP *********************//
+static tap insert_tap_state = { .is_press_action = true, .state = 0 };
+
+void insert_finished (qk_tap_dance_state_t *state, void *user_data) {
+  insert_tap_state.state = cur_dance(state);
+  if (!is_after_lead(KC_INS, true)) {
+    switch (insert_tap_state.state) {
+      case SINGLE_TAP:
+          key_code(KC_INS); break;
+      case SINGLE_HOLD:
+          with_1_mod(KC_INS, KC_LSFT); break;
+      case DOUBLE_TAP:
+         // print screen
+         if (isMac) {
+            with_1_mod(KC_F2, KC_LCTL);
+         }
+         if (isWin) {
+            key_code(KC_PSCR); break;
+         }
+      default: break;
+    }
+  }
+}
+
+void insert_reset (qk_tap_dance_state_t *state, void *user_data) {
+  insert_tap_state.state = 0;
+}
+
+//**************** F5 TAP *********************//
+static tap f5_tap_state = { .is_press_action = true, .state = 0 };
+
+void f5_finished (qk_tap_dance_state_t *state, void *user_data) {
+  f5_tap_state.state = cur_dance(state);
+  if (!is_after_lead(KC_F5, true)) {
+    switch (f5_tap_state.state) {
+      case SINGLE_TAP:
+          key_code(KC_F5); break;
+      case SINGLE_HOLD:
+          with_1_mod(KC_F5, KC_LSFT); break;
+      case DOUBLE_TAP:
+         // settings
+         if (isMac) {
+            with_1_mod(KC_COMM, KC_LGUI);
+         }
+         if (isWin) {
+            key_code(KC_PAUS); break;
+         }
+      default: break;
+    }
+  }
+}
+
+void f5_reset (qk_tap_dance_state_t *state, void *user_data) {
+  f5_tap_state.state = 0;
+}
+
+//**************** DYNAMIC MACRO TAP *********************//
 static tap dynamic_macro_state = { .is_press_action = true, .state = 0 };
 
 void dynamic_macro_finished (qk_tap_dance_state_t *state, void *user_data) {
@@ -990,13 +1034,15 @@ void dynamic_macro_reset (qk_tap_dance_state_t *state, void *user_data) {
 
 // all tap macros
 qk_tap_dance_action_t tap_dance_actions[] = {
-  [TAP_MACRO] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, dynamic_macro_finished, dynamic_macro_reset, 400),
-  [REST_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, rest_finished, rest_reset, 400)
+  [INSERT_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, insert_finished, insert_reset, 350),
+  [TAP_MACRO] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, dynamic_macro_finished, dynamic_macro_reset, 350),
+  [F5_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, f5_finished, f5_reset, 350),
+  [REST_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, rest_finished, rest_reset, 350)
 };
 
 /*
 * ,-------------------------------------------------------------------------------------------------------------------.
-* |  Ins   | F1  |  F2  |  F3  |  F4   |  F5  |  F6 |  F8  |  F9  |  F10  |  F12 | Mute | Vol- | Vol+ | Prog |  Rest  |
+* | TD(Ins)| F1  |  F2  |  F3  |  F4   |TD(F5)|  F6 |  F8  |  F9  |  F10  |  F12 | Mute | Vol- | Vol+ | Prog |  Rest  |
 * |--------+------+------+------+------+------+---------------------------+------+------+------+------+------+--------|
 * |  F17   |   1  |  2(  |  3_  |  4)  |  5=  |                           |  6+  |  7!  |  8-  |  9?  |  0)  |  F21   |
 * |--------+------+------+------+------+------|                           +------+------+------+------+------+--------|
@@ -1026,7 +1072,7 @@ qk_tap_dance_action_t tap_dance_actions[] = {
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [_MAC] = LAYOUT(
            // left side
-           KC_INS, KC_F1, KC_F2, KC_F3, KC_F4, F5_SET_MAC, KC_F6, KC_F7, KC_F8,
+           TD(INSERT_TD), KC_F1, KC_F2, KC_F3, KC_F4, TD(F5_TD), KC_F6, KC_F7, KC_F8,
            KC_F17, _1, _2_PLEFT, _3_SLASH, _4_PRGHT, _5,
            KC_F18, KC_Q, KC_W, KC_E, KC_R, KC_T,
            KC_F19,KC_A, KC_S, KC_D, KC_F, KC_G,
@@ -1310,7 +1356,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // base win layer
 [_WIN] = LAYOUT(
            // left side
-           KC_INS, KC_F1, KC_F2, KC_F3, KC_F4, F5_SET_WIN, KC_F6, KC_F7, KC_F8,
+           TD(INSERT_TD), KC_F1, KC_F2, KC_F3, KC_F4, TD(F5_TD), KC_F6, KC_F7, KC_F8,
            KC_F17, _1, _2_PLEFT, _3_SLASH, _4_PRGHT, _5,
            KC_F18, KC_Q, KC_W, KC_E, KC_R, KC_T,
            KC_F19, KC_A, KC_S, KC_D, KC_F, KC_G,
@@ -1853,8 +1899,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case KC_F2: { return lead_autoshifted_special(KC_F2, pressed); }
         case KC_F3: { return lead_autoshifted_special(KC_F3, pressed); }
         case KC_F4: { return lead_autoshifted_special(KC_F4, pressed); }
-        case F5_SET_MAC: { return lead_custom_autoshifted_with_mod(KC_F5, KC_NO, KC_F5, KC_COMM, KC_LGUI, pressed, AUTOSHIFT_SPECIAL_TERM); }
-        case F5_SET_WIN: { return lead_custom_autoshifted_with_mod(KC_F5, KC_NO, KC_F5, KC_PAUS, KC_NO, pressed, AUTOSHIFT_SPECIAL_TERM); }
         case KC_F5: { return lead_autoshifted_special(KC_F5, pressed); }
         case KC_F6: { return lead_autoshifted_special(KC_F6, pressed); }
         case KC_F7: { return lead_autoshifted_special(KC_F7, pressed); }
@@ -1875,10 +1919,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case KC_F22: { return lead_autoshifted_special(KC_F22, pressed); }
         case KC_F23: { return lead_autoshifted_special(KC_F23, pressed); }
         case KC_F24: { return lead_autoshifted_special(KC_F24, pressed); }
-
-        case INS_SCRN_MAC: { return lead_custom_autoshifted_with_mod(KC_INS, KC_NO, KC_INS, KC_F2, KC_LCTL, pressed, AUTOSHIFT_SPECIAL_TERM); }
-        case INS_SCRN_WIN: { return lead_custom_autoshifted_with_mod(KC_INS, KC_NO, KC_INS, KC_PSCR, KC_NO, pressed, AUTOSHIFT_SPECIAL_TERM); }
-        case KC_INS: { return lead_custom_autoshifted(KC_INS, KC_INS, KC_INS, KC_LSFT, pressed, AUTOSHIFT_SPECIAL_TERM); }
 
         case KC_LBRC: { return lead_autoshifted_special(KC_LBRC, pressed); }
         case KC_RBRC: { return lead_autoshifted_special(KC_RBRC, pressed); }
