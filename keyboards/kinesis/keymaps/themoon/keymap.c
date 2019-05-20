@@ -865,10 +865,9 @@ bool lead_autoshifted_custom_term(uint16_t code, bool pressed, uint16_t hold_dur
 }
 
 enum {
-  INSERT_TD = 0,
-  TAP_MACRO = 1,
-  F5_TD = 2,
-  REST_TD = 3
+  TAP_MACRO = 0,
+  F5_TD = 1,
+  REST_TD = 2
 };
 
 enum {
@@ -925,34 +924,6 @@ void rest_reset (qk_tap_dance_state_t *state, void *user_data) {
   rest_tap_state.state = 0;
 }
 
-//**************** INSERT TAP *********************//
-static tap insert_tap_state = { .is_press_action = true, .state = 0 };
-
-void insert_finished (qk_tap_dance_state_t *state, void *user_data) {
-  insert_tap_state.state = cur_dance(state);
-  if (!is_after_lead(KC_INS, true)) {
-    switch (insert_tap_state.state) {
-      case SINGLE_TAP:
-          key_code(KC_INS); break;
-      case SINGLE_HOLD:
-          with_1_mod(KC_INS, KC_LSFT); break;
-      case DOUBLE_TAP:
-         // print screen
-         if (isMac) {
-            with_1_mod(KC_F2, KC_LCTL);
-         }
-         if (isWin) {
-            key_code(KC_PSCR); break;
-         }
-      default: break;
-    }
-  }
-}
-
-void insert_reset (qk_tap_dance_state_t *state, void *user_data) {
-  insert_tap_state.state = 0;
-}
-
 //**************** F5 TAP *********************//
 static tap f5_tap_state = { .is_press_action = true, .state = 0 };
 
@@ -970,8 +941,18 @@ void f5_finished (qk_tap_dance_state_t *state, void *user_data) {
             with_1_mod(KC_COMM, KC_LGUI);
          }
          if (isWin) {
-            key_code(KC_PAUS); break;
+            key_code(KC_PAUS);
          }
+         break;
+      case DOUBLE_HOLD:
+         // print screen
+         if (isMac) {
+            with_1_mod(KC_F2, KC_LCTL);
+         }
+         if (isWin) {
+            key_code(KC_PSCR);
+         }
+         break;
       default: break;
     }
   }
@@ -1034,15 +1015,14 @@ void dynamic_macro_reset (qk_tap_dance_state_t *state, void *user_data) {
 
 // all tap macros
 qk_tap_dance_action_t tap_dance_actions[] = {
-  [INSERT_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, insert_finished, insert_reset, 350),
-  [TAP_MACRO] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, dynamic_macro_finished, dynamic_macro_reset, 350),
-  [F5_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, f5_finished, f5_reset, 350),
-  [REST_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, rest_finished, rest_reset, 350)
+  [TAP_MACRO] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, dynamic_macro_finished, dynamic_macro_reset, 500),
+  [F5_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, f5_finished, f5_reset, 500),
+  [REST_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, rest_finished, rest_reset, 500)
 };
 
 /*
 * ,-------------------------------------------------------------------------------------------------------------------.
-* | TD(Ins)| F1  |  F2  |  F3  |  F4   |TD(F5)|  F6 |  F8  |  F9  |  F10  |  F12 | Mute | Vol- | Vol+ | Prog |  Rest  |
+* |  Ins   | F1  |  F2  |  F3  |  F4   |TD(F5)|  F6 |  F8  |  F9  |  F10  |  F12 | Mute | Vol- | Vol+ | Prog |  Rest  |
 * |--------+------+------+------+------+------+---------------------------+------+------+------+------+------+--------|
 * |  F17   |   1  |  2(  |  3_  |  4)  |  5=  |                           |  6+  |  7!  |  8-  |  9?  |  0)  |  F21   |
 * |--------+------+------+------+------+------|                           +------+------+------+------+------+--------|
@@ -1072,7 +1052,7 @@ qk_tap_dance_action_t tap_dance_actions[] = {
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [_MAC] = LAYOUT(
            // left side
-           TD(INSERT_TD), KC_F1, KC_F2, KC_F3, KC_F4, TD(F5_TD), KC_F6, KC_F7, KC_F8,
+           _INS, KC_F1, KC_F2, KC_F3, KC_F4, TD(F5_TD), KC_F6, KC_F7, KC_F8,
            KC_F17, _1, _2_PLEFT, _3_SLASH, _4_PRGHT, _5,
            KC_F18, KC_Q, KC_W, KC_E, KC_R, KC_T,
            KC_F19,KC_A, KC_S, KC_D, KC_F, KC_G,
@@ -1356,7 +1336,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // base win layer
 [_WIN] = LAYOUT(
            // left side
-           TD(INSERT_TD), KC_F1, KC_F2, KC_F3, KC_F4, TD(F5_TD), KC_F6, KC_F7, KC_F8,
+           _INS, KC_F1, KC_F2, KC_F3, KC_F4, TD(F5_TD), KC_F6, KC_F7, KC_F8,
            KC_F17, _1, _2_PLEFT, _3_SLASH, _4_PRGHT, _5,
            KC_F18, KC_Q, KC_W, KC_E, KC_R, KC_T,
            KC_F19, KC_A, KC_S, KC_D, KC_F, KC_G,
