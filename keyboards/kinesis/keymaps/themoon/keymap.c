@@ -1304,7 +1304,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________,  __________, __________, __________,  __________,  __________,
          __________,  __________, KC_PGUP, KC_SPC,  __________,  __________,
             HOME_, KC_PGDN, END_, __________,
-         _GRV, _BSPC,
+         _GRV, _DEL,
          HIDE_FOCUS_MAC,
          _EQL, FIND_PREV, FIND_NEXT,
          KC_F15
@@ -1317,7 +1317,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          HYPR(KC_F19), HYPR(KC_A), HYPR(KC_S), HYPR(KC_D), HYPR(KC_F), HYPR(KC_G),
          HYPR(KC_F20), HYPR(KC_Z), HYPR(KC_X), HYPR(KC_C), HYPR(KC_V), HYPR(KC_B),
                  HYPR(KC_F13), KC_MRWD, KC_MPLY, KC_MFFD,
-                                  LGUI(_BSPC), KC__VOLUP,
+                                  HYPR(KC_BSPC), KC__VOLUP,
                                               KC__MUTE,
                 LGUI(KC_Z), LGUI(LSFT(KC_Z)), KC__VOLDOWN,
                                          HYPR(KC_F14),
@@ -1590,7 +1590,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________, __________, __________, __________,  __________,  __________,
          __________, __________, KC_PGUP, __________,  __________,  __________,
                       CTRL_HOME, KC_PGDN, CTRL_END, __________,
-         _GRV, _BSPC,
+         _GRV, _DEL,
          HIDE_FOCUS_WIN,
          _EQL, FIND_PREV, FIND_NEXT,
          KC_F15
