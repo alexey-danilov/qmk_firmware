@@ -1271,7 +1271,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                __________,  __________,  __________,  __________,
                              _BSPC, _NUBS,
                                     _SLSH,
-                       _ESC, _ENTER, _DEL,
+                       _ESC, _ENTER, _BSLS,
                                    KC_F14,
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
          KC_6,  KC_7,  KC_8,  KC_9,  KC_0,  __________,
@@ -1464,7 +1464,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                __________,  __________,  __________,  __________,
                                      _BSPC, _APP,
                                            _SLSH,
-                              _ESC, _ENTER, _DEL,
+                              _ESC, _ENTER, _BSLS,
                                           KC_F14,
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
          KC_6,  KC_7,  KC_8,  KC_9,  KC_0,  __________,
@@ -1959,7 +1959,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case ALT_SHIFT_BS: {
           if (is_after_lead(KC_BSPC, pressed)) { return false; }
           static uint16_t alt_shift_layer_timer;
-          momentary_layer_tap_with_hold(KC_BSPC, KC_NO, KC_LALT, KC_LSFT, KC_NO, KC_NO, &alt_shift_layer_timer, &alt_shift_interrupted, pressed, AUTOSHIFT_SPECIAL_TERM, 1000, false, KC_DEL, KC_NO);
+          momentary_layer_tap_with_hold(KC_BSPC, KC_NO, KC_LALT, KC_LSFT, KC_NO, KC_NO, &alt_shift_layer_timer, &alt_shift_interrupted, pressed, 250, 1000, false, KC_DEL, KC_NO);
           return true;
         }
 
@@ -2061,7 +2061,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case CTRL_SHIFT_BS: {
           if (is_after_lead(KC_BSPC, pressed)) { return false; }
           static uint16_t ctrl_shift_layer_timer;
-          momentary_layer_tap_with_hold(KC_BSPC, KC_NO, KC_LCTL, KC_LSFT, KC_NO, KC_NO, &ctrl_shift_layer_timer, &ctrl_shift_interrupted, pressed, AUTOSHIFT_SPECIAL_TERM, 1000, false, KC_DEL, KC_NO);
+          momentary_layer_tap_with_hold(KC_BSPC, KC_NO, KC_LCTL, KC_LSFT, KC_NO, KC_NO, &ctrl_shift_layer_timer, &ctrl_shift_interrupted, pressed, 250, 1000, false, KC_DEL, KC_NO);
           return true;
         }
 
