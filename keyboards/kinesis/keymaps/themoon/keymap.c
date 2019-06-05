@@ -906,7 +906,7 @@ void settings_finished (qk_tap_dance_state_t *state, void *user_data) {
       case SINGLE_HOLD:
           // sleep
           if (isMac) {
-            with_1_mod(KC_F1, KC_LCTL); break;
+            with_1_mod(KC_F2, KC_LCTL); break;
           }
           if (isWin) {
             key_code(KC_PSCR); break;
@@ -1008,10 +1008,10 @@ qk_tap_dance_action_t tap_dance_actions[] = {
 * |--------+------+------+------+------+------|                           |------+------+------+------+------+--------|
 * |  F20   |   Z  |   X  |   C  |   V  |   B  |                           |   N  |   M  |  Up  |  .>  |  '"  |  F24   |
 * `--------+------+------+------+------+-------                           `------+------+------+------+------+--------'
-*          |  F13 |  [{  |  ,<  |  ]}  |                                        | Left | Down | Right |  `~  |
+*          |  `~  |  [{  |  ,<  |  ]}  |                                        | Left | Down | Right |  F16  |
 *          `---------------------------'                                         `---------------------------'
 *                            .-------------------------.         ,---------------------------.
-*                            | Select word/Bspc | Macro|         |Insert|     Backspace      |
+*                            | Select word/Bspc | Macro|         |AppMenu|     Backspace     |
 *                            `-----------|------|------|         |------+------+-------------`
 *                                 |      |      | Alt//|         | Alt=+|      |      |
 *                                 | LGui/|Shift/|------|         |------|Shift/|RGui/ |
@@ -1033,7 +1033,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
            KC_F18, KC_Q, KC_W, KC_E, KC_R, KC_T,
            KC_F19,KC_A, KC_S, KC_D, KC_F, KC_G,
            KC_F20, KC_Z, KC_X, KC_C, KC_V, KC_B,
-                 KC_F13, KC_LBRC, KC_COMM, KC_RBRC,
+                 KC_GRV, KC_LBRC, KC_COMM, KC_RBRC,
                                                // left thumb keys
 			                                      ALT_SHIFT_BS, TD(TAP_MACRO),
                                                    ALT_SLASH_MAC,
@@ -1046,9 +1046,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	KC_Y, KC_U, KC_I, KC_O, KC_P, KC_F22,
 	KC_H, KC_J, KC_K, KC_L, KC_SCLN, KC_F23,
 	KC_N, KC_M, KC_UP, KC_DOT, KC_QUOT, KC_F24,
-	KC_LEFT, KC_DOWN, KC_RGHT, KC_GRV,
+	KC_LEFT, KC_DOWN, KC_RGHT, KC_F16,
            // right thumb keys
-           _INS, KC_BSPC,
+           LCTL(KC_F1), KC_BSPC,
            ALT_EQL_MAC,
            CTRL_BSLS, SHIFT_TAB_MAC, CMD_SPACE,
            // right palm key
@@ -1292,11 +1292,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          HYPR(KC_F18), HYPR(KC_Q), HYPR(KC_W), HYPR(KC_E), HYPR(KC_R), HYPR(KC_T),
          HYPR(KC_F19), HYPR(KC_A), HYPR(KC_S), HYPR(KC_D), HYPR(KC_F), HYPR(KC_G),
          HYPR(KC_F20), HYPR(KC_Z), HYPR(KC_X), HYPR(KC_C), HYPR(KC_V), HYPR(KC_B),
-                 HYPR(KC_F13), KC_MRWD, KC_MPLY, KC_MFFD,
+                 HYPR(KC_GRV), KC_MRWD, KC_MPLY, KC_MFFD,
                                HYPR(KC_BSPC), HYPR(KC_NUBS),
                                               HYPR(KC_F5),
-                LGUI(KC_Z), LGUI(LSFT(KC_Z)), HYPR(KC_DEL),
-                                         HYPR(KC_F15),
+                LGUI(KC_Z), LGUI(LSFT(KC_Z)), LGUI(KC_Q),
+                                         HYPR(KC_F14),
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
          KC_6,  KC_7,  KC_8,  KC_9,  KC_0,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
@@ -1317,7 +1317,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
            KC_F18, KC_Q, KC_W, KC_E, KC_R, KC_T,
            KC_F19, KC_A, KC_S, KC_D, KC_F, KC_G,
            KC_F20, KC_Z, KC_X, KC_C, KC_V, KC_B,
-                KC_F13, KC_LBRC, KC_COMM, KC_RBRC,
+                KC_GRV, KC_LBRC, KC_COMM, KC_RBRC,
                                                  // left thumb keys
 			                                CTRL_SHIFT_BS, TD(TAP_MACRO),
                                                      ALT_SLASH_WIN,
@@ -1330,9 +1330,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   	KC_Y, KC_U, KC_I, KC_O, KC_P, KC_F22,
   	KC_H, KC_J, KC_K, KC_L, KC_SCLN, KC_F23,
   	KC_N, KC_M, KC_UP, KC_DOT, KC_QUOT, KC_F24,
-  	KC_LEFT, KC_DOWN, KC_RGHT, KC_GRV,
+  	KC_LEFT, KC_DOWN, KC_RGHT, KC_F16,
            // right thumb keys
-           _INS, KC_BSPC,
+           KC_LGUI, KC_BSPC,
            ALT_EQL_WIN,
            RWIN_BSLS, SHIFT_TAB_WIN, CTRL_SPACE,
            // right palm key
@@ -1485,7 +1485,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          LGUI(KC_F18), LGUI(KC_Q), LGUI(KC_W), LGUI(KC_E), LGUI(KC_R), LGUI(KC_T),
          LGUI(KC_F19), LGUI(KC_A), LGUI(KC_S), LGUI(KC_D), LGUI(KC_F), LGUI(KC_G),
          LGUI(KC_F20), LGUI(KC_Z), LGUI(KC_X), LGUI(KC_C), LGUI(KC_V), LGUI(KC_B),
-                LGUI(KC_F13), LGUI(KC_LBRC), LGUI(KC_COMM), LGUI(KC_RBRC),
+                LGUI(KC_GRV), LGUI(KC_LBRC), LGUI(KC_COMM), LGUI(KC_RBRC),
                                      LGUI(KC_BSPC), LGUI(KC_APP),
                                              LGUI(KC_SLSH),
                             LGUI(KC_ESC), LGUI(KC_ENTER), LGUI(KC_DEL),
@@ -1581,8 +1581,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                  HYPR(KC_F13), KC_MPRV, KC_MPLY, KC_MNXT,
                                  HYPR(KC_BSPC), HYPR(KC_APP),
                                                 HYPR(KC_F5),
-                  LCTL(KC_Z), LCTL(LSFT(KC_Z)), HYPR(KC_DEL),
-                                           HYPR(KC_F15),
+                  LCTL(KC_Z), LCTL(LSFT(KC_Z)), LALT(KC_F4),
+                                           HYPR(KC_F14),
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
          KC_6,  KC_7,  KC_8,  KC_9,  KC_0,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
@@ -2013,7 +2013,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case PALM_R_MAC: {
           if (is_after_lead(KC_EQL, pressed)) { return false; }
           static uint16_t palm_r_mac_layer_timer;
-          momentary_layer_tap_with_hold(KC_F15, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, &palm_r_mac_layer_timer, &palm_r_mac_interrupted, pressed, 300, 1000, true, KC_F15, KC_LSFT);
+          momentary_layer_tap_with_hold(KC_F15, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, &palm_r_mac_layer_timer, &palm_r_mac_interrupted, pressed, 200, 1000, true, KC_F15, KC_LSFT);
           return true;
         }
 
@@ -2115,7 +2115,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case PALM_R_WIN: {
           if (is_after_lead(KC_EQL, pressed)) { return false; }
           static uint16_t palm_r_win_layer_timer;
-          momentary_layer_tap_with_hold(KC_F15, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, &palm_r_win_layer_timer, &palm_r_win_interrupted, pressed, 300, 1000, false, KC_LGUI, KC_NO);
+          momentary_layer_tap_with_hold(KC_F15, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, &palm_r_win_layer_timer, &palm_r_win_interrupted, pressed, 200, 1000, false, KC_F15, KC_LSFT);
           return true;
         }
 
