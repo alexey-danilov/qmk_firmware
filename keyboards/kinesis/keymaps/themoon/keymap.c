@@ -1292,7 +1292,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          HYPR(KC_F18), HYPR(KC_Q), HYPR(KC_W), HYPR(KC_E), HYPR(KC_R), HYPR(KC_T),
          HYPR(KC_F19), HYPR(KC_A), HYPR(KC_S), HYPR(KC_D), HYPR(KC_F), HYPR(KC_G),
          HYPR(KC_F20), HYPR(KC_Z), HYPR(KC_X), HYPR(KC_C), HYPR(KC_V), HYPR(KC_B),
-                 HYPR(KC_GRV), KC_MRWD, KC_MPLY, KC_MFFD,
+                 KC_F13, KC_MRWD, KC_MPLY, KC_MFFD,
                                HYPR(KC_BSPC), HYPR(KC_NUBS),
                                               HYPR(KC_F5),
                 LGUI(KC_Z), LGUI(LSFT(KC_Z)), LGUI(KC_Q),
@@ -1578,7 +1578,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          HYPR(KC_F18), HYPR(KC_Q), HYPR(KC_W), HYPR(KC_E), HYPR(KC_R), HYPR(KC_T),
          HYPR(KC_F19), HYPR(KC_A), HYPR(KC_S), HYPR(KC_D), HYPR(KC_F), HYPR(KC_G),
          HYPR(KC_F20), HYPR(KC_Z), HYPR(KC_X), HYPR(KC_C), HYPR(KC_V), HYPR(KC_B),
-                 HYPR(KC_F13), KC_MPRV, KC_MPLY, KC_MNXT,
+                 KC_F13, KC_MPRV, KC_MPLY, KC_MNXT,
                                  HYPR(KC_BSPC), HYPR(KC_APP),
                                                 HYPR(KC_F5),
                   LCTL(KC_Z), LCTL(LSFT(KC_Z)), LALT(KC_F4),
@@ -1744,7 +1744,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
        remove_mods();
     }
 
-    if (keycode != KC_LEFT && keycode != KC_RGHT) {
+    if (keycode != KC_LEFT && keycode != KC_RGHT && keycode != PALM_R_MAC && keycode != PALM_R_WIN) {
       if (keycode != CMD_SPACE && keycode != CTRL_SPACE) {
              esc_timer = 0;
       }
@@ -2013,7 +2013,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case PALM_R_MAC: {
           if (is_after_lead(KC_EQL, pressed)) { return false; }
           static uint16_t palm_r_mac_layer_timer;
-          momentary_layer_tap_with_hold(KC_F15, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, &palm_r_mac_layer_timer, &palm_r_mac_interrupted, pressed, 200, 1000, true, KC_F15, KC_LSFT);
+          if (not_following_esc(KC_F13, KC_NO, KC_NO, KC_NO, &esc_timer, pressed, 500)) {
+            momentary_layer_tap_with_hold(KC_F15, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, &palm_r_mac_layer_timer, &palm_r_mac_interrupted, pressed, 200, 1000, true, KC_F15, KC_LSFT);
+          }
           return true;
         }
 
@@ -2115,7 +2117,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case PALM_R_WIN: {
           if (is_after_lead(KC_EQL, pressed)) { return false; }
           static uint16_t palm_r_win_layer_timer;
-          momentary_layer_tap_with_hold(KC_F15, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, &palm_r_win_layer_timer, &palm_r_win_interrupted, pressed, 200, 1000, false, KC_F15, KC_LSFT);
+          if (not_following_esc(KC_F13, KC_NO, KC_NO, KC_NO, &esc_timer, pressed, 500)) {
+             momentary_layer_tap_with_hold(KC_F15, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, &palm_r_win_layer_timer, &palm_r_win_interrupted, pressed, 200, 1000, false, KC_F15, KC_LSFT);
+          }
           return true;
         }
 
