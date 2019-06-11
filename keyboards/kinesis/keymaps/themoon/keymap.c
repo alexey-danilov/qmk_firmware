@@ -1931,7 +1931,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           }
           else {
             uint16_t delta_millis = timer_elapsed(space_timer);
-            if (space_alone && ((delta_millis > 1) && (delta_millis < 850))) {
+            if (space_alone && ((delta_millis > 1) && (delta_millis < 50))) {
+              up(KC_LGUI); key_code(KC_SPC);
+            } else if (space_alone && ((delta_millis > 51) && (delta_millis < 850))) {
               up(KC_LGUI); with_1_mod(KC_SPC, KC_LALT); // change lang
               lang_switch_led = true;
               caps_led = false; // on mac changing language resets caps lock
@@ -1998,7 +2000,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           if (caps_led) { up(KC_LCAP); caps_led = false; return false; }
           if (is_after_lead(KC_F2, pressed)) { return false; }
           static uint16_t shift_tab_mac_layer_timer;
-          if ((momentary_layer_tap_with_hold(KC_TAB, KC_NO, KC_LSFT, KC_NO, KC_NO, KC_NO, &shift_tab_mac_layer_timer, &shift_tab_mac_interrupted, pressed, 150, 1000, false, KC_CLR, KC_NO, KC_NO)) == 2) {
+          if ((momentary_layer_tap_with_hold(KC_TAB, KC_NO, KC_LSFT, KC_NO, KC_NO, KC_NO, &shift_tab_mac_layer_timer, &shift_tab_mac_interrupted, pressed, 200, 1000, false, KC_CLR, KC_NO, KC_NO)) == 2) {
             // held key
             if (caps_led) {
               up(KC_LCAP);
@@ -2036,7 +2038,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           }
           else {
             uint16_t delta_millis = timer_elapsed(space_timer);
-            if (space_alone && ((delta_millis > 1) && (delta_millis < 850))) {
+            if (space_alone && ((delta_millis > 1) && (delta_millis < 50))) {
+              up(KC_LCTL); key_code(KC_SPC);
+            } else if (space_alone && ((delta_millis > 51) && (delta_millis < 850))) {
               up(KC_LCTL); with_1_mod(KC_SPC, KC_LGUI); // change lang
               lang_switch_led = true;
             }
@@ -2102,7 +2106,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           if (caps_led) { up(KC_LCAP); caps_led = false; return false; }
           if (is_after_lead(KC_F2, pressed)) { return false; }
           static uint16_t shift_tab_win_layer_timer;
-          if ((momentary_layer_tap_with_hold(KC_TAB, KC_NO, KC_LSFT, KC_NO, KC_NO, KC_NO, &shift_tab_win_layer_timer, &shift_tab_win_interrupted, pressed, 150, 1000, false, KC_CLR, KC_NO, KC_NO)) == 2) {
+          if ((momentary_layer_tap_with_hold(KC_TAB, KC_NO, KC_LSFT, KC_NO, KC_NO, KC_NO, &shift_tab_win_layer_timer, &shift_tab_win_interrupted, pressed, 200, 1000, false, KC_CLR, KC_NO, KC_NO)) == 2) {
             // held key
             if (caps_led) {
               up(KC_LCAP);
