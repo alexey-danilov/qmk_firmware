@@ -2203,14 +2203,14 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case KC_PGDN: { return repeat(KC_PGDN, KC_NO, KC_LGUI, KC_LSFT, KC_LALT, KC_LCTL, pressed, 25); }
 
         // holding left palm + jkl
-        case HYPR_U: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_U, KC_LSFT, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_U, KC_LSFT, KC_NO, KC_NO, KC_NO, pressed, AUTOSHIFT_SPECIAL_TERM, isMac ? true: false); }
-        case HYPR_I: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_I, KC_LSFT, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_I, KC_LSFT, KC_NO, KC_NO, KC_NO, pressed, AUTOSHIFT_SPECIAL_TERM, isMac ? true: false); }
-        case HYPR_O: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_O, KC_LSFT, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_O, KC_LSFT, KC_NO, KC_NO, KC_NO, pressed, AUTOSHIFT_SPECIAL_TERM, isMac ? true: false); }
-        case HYPR_J: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_J, KC_LSFT, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_J, KC_LSFT, KC_NO, KC_NO, KC_NO, pressed, AUTOSHIFT_SPECIAL_TERM, isMac ? true: false); }
-        case HYPR_K: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_K, KC_LSFT, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_K, KC_LSFT, KC_NO, KC_NO, KC_NO, pressed, AUTOSHIFT_SPECIAL_TERM, isMac ? true: false); }
-        case HYPR_L: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_L, KC_LSFT, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_L, KC_LSFT, KC_NO, KC_NO, KC_NO, pressed, AUTOSHIFT_SPECIAL_TERM, isMac ? true: false); }
-        case HYPR_M: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_M, KC_LSFT, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_M, KC_LSFT, KC_NO, KC_NO, KC_NO, pressed, AUTOSHIFT_SPECIAL_TERM, isMac ? true: false); }
-        case HYPR_DOT: { return replace_key_and_mods_if_held_replace_key_and_mods(isMac? KC_SPC: KC_DOT, KC_LSFT, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, isMac? KC_SPC: KC_DOT, KC_LSFT, KC_NO, KC_NO, KC_NO, pressed, AUTOSHIFT_SPECIAL_TERM, isMac ? true: false); }
+        case HYPR_U: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_U, KC_LALT, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_U, KC_LALT, KC_NO, KC_NO, KC_NO, pressed, AUTOSHIFT_SPECIAL_TERM, isMac ? true: false); }
+        case HYPR_I: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_I, KC_LALT, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_I, KC_LALT, KC_NO, KC_NO, KC_NO, pressed, AUTOSHIFT_SPECIAL_TERM, isMac ? true: false); }
+        case HYPR_O: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_O, KC_LALT, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_O, KC_LALT, KC_NO, KC_NO, KC_NO, pressed, AUTOSHIFT_SPECIAL_TERM, isMac ? true: false); }
+        case HYPR_J: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_J, KC_LALT, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_J, KC_LALT, KC_NO, KC_NO, KC_NO, pressed, AUTOSHIFT_SPECIAL_TERM, isMac ? true: false); }
+        case HYPR_K: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_K, KC_LALT, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_K, KC_LALT, KC_NO, KC_NO, KC_NO, pressed, AUTOSHIFT_SPECIAL_TERM, isMac ? true: false); }
+        case HYPR_L: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_L, KC_LALT, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_L, KC_LALT, KC_NO, KC_NO, KC_NO, pressed, AUTOSHIFT_SPECIAL_TERM, isMac ? true: false); }
+        case HYPR_M: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_M, KC_LALT, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_M, KC_LALT, KC_NO, KC_NO, KC_NO, pressed, AUTOSHIFT_SPECIAL_TERM, isMac ? true: false); }
+        case HYPR_DOT: { return replace_key_and_mods_if_held_replace_key_and_mods(isMac? KC_SPC: KC_DOT, KC_LALT, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, isMac? KC_SPC: KC_DOT, KC_LALT, KC_NO, KC_NO, KC_NO, pressed, AUTOSHIFT_SPECIAL_TERM, isMac ? true: false); }
 
         // home/end
         case HOME_MAC: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_LEFT, KC_LGUI, KC_LCTL, KC_LALT, KC_LSFT, KC_LGUI, KC_NO, KC_NO, KC_NO, KC_HOME, KC_NO, KC_NO, KC_NO, KC_NO, pressed, AUTOSHIFT_SPECIAL_TERM, true); }
