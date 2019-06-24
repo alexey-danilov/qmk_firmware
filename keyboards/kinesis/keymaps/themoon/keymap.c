@@ -2071,7 +2071,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           if (is_after_lead(KC_F6, pressed)) { return false; }
           static uint16_t palm_r_mac_layer_timer;
           if (not_following_esc(KC_F16, KC_NO, KC_NO, KC_NO, &esc_timer, pressed, 500)) {
-            momentary_layer_tap_with_hold(KC_F6, KC_LALT, KC_NO, KC_NO, KC_NO, KC_NO, &palm_r_mac_layer_timer, &palm_r_mac_interrupted, pressed, 200, 1000, true, KC_F6, KC_LALT, KC_LSFT);
+            momentary_layer_tap_with_hold(KC_TAB, KC_LGUI, KC_NO, KC_NO, KC_NO, KC_NO, &palm_r_mac_layer_timer, &palm_r_mac_interrupted, pressed, 200, 1000, true, KC_F6, KC_LALT, KC_LSFT);
           }
           return true;
         }
@@ -2177,7 +2177,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           if (is_after_lead(KC_F6, pressed)) { return false; }
           static uint16_t palm_r_win_layer_timer;
           if (not_following_esc(KC_F16, KC_LALT, KC_NO, KC_NO, &esc_timer, pressed, 500)) {
-             momentary_layer_tap_with_hold(KC_F6, KC_LALT, KC_NO, KC_NO, KC_NO, KC_NO, &palm_r_win_layer_timer, &palm_r_win_interrupted, pressed, 200, 1000, false, KC_F6, KC_LALT, KC_LSFT);
+             momentary_layer_tap_with_hold(KC_TAB, KC_LALT, KC_NO, KC_NO, KC_NO, KC_NO, &palm_r_win_layer_timer, &palm_r_win_interrupted, pressed, 200, 1000, false, KC_F6, KC_LALT, KC_LSFT);
           }
           return true;
         }
