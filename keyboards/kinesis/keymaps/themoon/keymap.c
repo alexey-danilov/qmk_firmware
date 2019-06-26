@@ -1010,7 +1010,7 @@ void set_finished (qk_tap_dance_state_t *state, void *user_data) {
       case DOUBLE_HOLD:
           // print screen
           if (isMac) {
-            with_1_mod(KC_F2, KC_LCTL); break;
+            with_1_mod(KC_F5, KC_LCTL); break;
           }
           if (isWin) {
             key_code(KC_PSCR); break;
@@ -2029,7 +2029,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case CTRL_F1: {
           if (is_after_lead(KC_F1, pressed)) { return false; }
           static uint16_t ctrl_f1_layer_timer;
-          momentary_layer_tap_with_hold(KC_F1, KC_NO, KC_LCTL, KC_NO, KC_NO, KC_NO, &ctrl_f1_layer_timer, &ctrl_f1_interrupted, pressed, AUTOSHIFT_SPECIAL_TERM, 350, false, KC_F2, KC_LSFT, KC_NO);
+          momentary_layer_tap_with_hold(KC_F1, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_NO, &ctrl_f1_layer_timer, &ctrl_f1_interrupted, pressed, AUTOSHIFT_SPECIAL_TERM, 350, false, KC_F2, KC_LCTL, KC_NO);
           return true;
         }
 
@@ -2166,12 +2166,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case _BSLS: { return if_held_autoshift(KC_BSLS, pressed); }
         case _SLSH: { return if_held_autoshift(KC_SLSH, pressed); }
         case _MINS: { return if_held_autoshift(KC_MINS, pressed); }
+        case _EQL: { return if_held_autoshift(KC_EQL, pressed); }
         case _INS: { return if_held_autoshift(KC_INS, pressed); }
-        case _EQL: { return if_held_add_mods(KC_EQL, KC_LSFT, KC_NO, pressed, 200); }
 
        // lang switch
-        case LANG_CAPS_MAC: { return process_lang_caps(KC_SPC, KC_LGUI, KC_LALT, KC_NO, KC_LCAP, pressed, 160); }
-        case LANG_CAPS_WIN: { return process_lang_caps(KC_SPC, KC_LCTL, KC_LGUI, KC_NO, KC_CAPS, pressed, 160); }
+        case LANG_CAPS_MAC: { return process_lang_caps(KC_SPC, KC_LGUI, KC_LALT, KC_NO, KC_LCAP, pressed, AUTOSHIFT_SPECIAL_TERM); }
+        case LANG_CAPS_WIN: { return process_lang_caps(KC_SPC, KC_LCTL, KC_LGUI, KC_NO, KC_CAPS, pressed, AUTOSHIFT_SPECIAL_TERM); }
 
         // repeating keycodes
         case KC_PGUP: { return repeat(KC_PGUP, KC_NO, KC_LGUI, KC_LSFT, KC_LALT, KC_LCTL, pressed, 25); }
