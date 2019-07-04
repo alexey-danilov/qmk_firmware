@@ -4,7 +4,7 @@
 #define TAPPING_TERM 150
 #define TAPPING_FORCE_HOLD
 
-#define AUTOSHIFT_QWERTY_KEYS_TERM 150 // usual a-z keys
+#define AUTOSHIFT_QWERTY_KEYS_TERM 9999 // usual a-z keys
 #define AUTOSHIFT_MODIFIED_NUMBERS_TERM 150 // 2 -> (
 #define AUTOSHIFT_SPECIAL_TERM 150 // ' -> "
 #define AUTOSHIFT_NUMBERS_TERM 150 // mod + numbers: cmd + 2 -> cmd + shift + 2
