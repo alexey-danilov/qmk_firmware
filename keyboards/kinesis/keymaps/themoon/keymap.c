@@ -101,15 +101,6 @@ enum holding_keycodes {
   HOME_,
   END_,
 
-  HYPR_U,
-  HYPR_I,
-  HYPR_O,
-  HYPR_J,
-  HYPR_K,
-  HYPR_L,
-  HYPR_M,
-  HYPR_DOT,
-
   SELECT_UP_MAC, SELECT_DOWN_MAC,
   SELECT_UP_WIN, SELECT_DOWN_WIN,
 
@@ -1325,9 +1316,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                           PALM_L_MAC,
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
          KC_6, KC_7, KC_8, KC_9, KC_0, KC_F11,
-         __________, HYPR_U, HYPR_I, HYPR_O, __________, KC_F12,
-         __________,  HYPR_J, HYPR_K, HYPR_L,  __________,  KC_F13,
-         __________, HYPR_M, KC_PGUP, HYPR_DOT,  __________,  KC_F14,
+         __________, __________, __________, __________, __________, KC_F12,
+         __________,  __________, __________, __________,  __________,  KC_F13,
+         __________, __________, __________, KC_SPC,  __________,  KC_F14,
             HOME_, KC_PGDN, END_, __________,
          __________, _DEL,
          _MINS,
@@ -1611,9 +1602,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                      PALM_L_WIN,
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
          KC_6, KC_7, KC_8, KC_9, KC_0, KC_F11,
-         __________, HYPR_U, HYPR_I, HYPR_O, __________, KC_F12,
-         __________,  HYPR_J, HYPR_K, HYPR_L,  __________,  KC_F13,
-         __________, HYPR_M, KC_PGUP, HYPR_DOT,  __________,  KC_F14,
+         __________, __________, __________, __________, __________, KC_F12,
+         __________,  __________, __________, __________,  __________,  KC_F13,
+         __________, __________, __________, __________,  __________,  KC_F14,
                       HOME_, KC_PGDN, END_, __________,
          __________, _DEL,
          _MINS,
@@ -2194,16 +2185,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         // repeating keycodes
         case KC_PGUP: { return repeat(KC_PGUP, KC_NO, KC_LGUI, KC_LSFT, KC_LALT, KC_LCTL, pressed, 25); }
         case KC_PGDN: { return repeat(KC_PGDN, KC_NO, KC_LGUI, KC_LSFT, KC_LALT, KC_LCTL, pressed, 25); }
-
-        // holding left palm + jkl
-        case HYPR_U: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_U, KC_LALT, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_U, KC_LALT, KC_NO, KC_NO, KC_NO, pressed, AUTOSHIFT_SPECIAL_TERM, isMac ? true: false); }
-        case HYPR_I: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_I, KC_LALT, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_I, KC_LALT, KC_NO, KC_NO, KC_NO, pressed, AUTOSHIFT_SPECIAL_TERM, isMac ? true: false); }
-        case HYPR_O: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_O, KC_LALT, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_O, KC_LALT, KC_NO, KC_NO, KC_NO, pressed, AUTOSHIFT_SPECIAL_TERM, isMac ? true: false); }
-        case HYPR_J: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_J, KC_LALT, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_J, KC_LALT, KC_NO, KC_NO, KC_NO, pressed, AUTOSHIFT_SPECIAL_TERM, isMac ? true: false); }
-        case HYPR_K: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_K, KC_LALT, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_K, KC_LALT, KC_NO, KC_NO, KC_NO, pressed, AUTOSHIFT_SPECIAL_TERM, isMac ? true: false); }
-        case HYPR_L: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_L, KC_LALT, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_L, KC_LALT, KC_NO, KC_NO, KC_NO, pressed, AUTOSHIFT_SPECIAL_TERM, isMac ? true: false); }
-        case HYPR_M: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_M, KC_LALT, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_M, KC_LALT, KC_NO, KC_NO, KC_NO, pressed, AUTOSHIFT_SPECIAL_TERM, isMac ? true: false); }
-        case HYPR_DOT: { return replace_key_and_mods_if_held_replace_key_and_mods(isMac? KC_SPC: KC_DOT, KC_LALT, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, isMac? KC_SPC: KC_DOT, KC_LALT, KC_NO, KC_NO, KC_NO, pressed, AUTOSHIFT_SPECIAL_TERM, isMac ? true: false); }
 
         // home/end
         case HOME_: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_HOME, KC_LGUI, KC_LCTL, KC_LALT, KC_LSFT, KC_NO, KC_NO, KC_NO, KC_NO, KC_HOME, KC_NO, KC_NO, KC_NO, KC_NO, pressed, AUTOSHIFT_QWERTY_KEYS_TERM, true); }
