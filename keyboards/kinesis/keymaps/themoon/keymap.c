@@ -546,6 +546,26 @@ void all_leds_off(void) {
      if(!caps_led) { led_blue_off(); }
 }
 
+bool isCapsOn(void) {
+  return host_keyboard_leds() & (1<<USB_LED_CAPS_LOCK);
+}
+
+void capsOn(void) {
+  down(KC_LCAP); caps_led = true; led_blue_on();
+}
+
+void capsOff(void) {
+  up(KC_LCAP); caps_led = false; led_blue_off();
+}
+
+void toggleCaps(void) {
+    if (isCapsOn()) {
+        capsOff();
+    } else {
+        capsOn();
+    }
+}
+
 // replaces mods of keycode, adds additional mods if it was held for at least provided duration
 bool replace_key_and_mods_if_held_replace_key_and_mods(
     uint16_t code,
@@ -2032,18 +2052,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
 
         case SHIFT_TAB_MAC: {
-          if (caps_led) { up(KC_LCAP); caps_led = false; return false; }
+          if (isCapsOn()) { capsOff(); return false; }
           if (is_after_lead(KC_F2, pressed)) { return false; }
           static uint16_t shift_tab_mac_layer_timer;
           if ((momentary_layer_tap_with_hold(KC_TAB, KC_NO, KC_LSFT, KC_NO, KC_NO, KC_NO, &shift_tab_mac_layer_timer, &shift_tab_mac_interrupted, pressed, 200, 1000, false, KC_CLR, KC_NO, KC_NO)) == 2) {
             // held key
-            if (caps_led) {
-              up(KC_LCAP);
-              caps_led = false;
-            } else {
-              down(KC_LCAP);
-              caps_led = true;
-            }
+            toggleCaps();
           }
           return true;
         }
@@ -2058,7 +2072,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case PALM_R_MAC: {
           if (is_after_lead(KC_F6, pressed)) { return false; }
           static uint16_t palm_r_mac_layer_timer;
-          momentary_layer_tap_with_hold(KC_TAB, KC_LGUI, KC_NO, KC_NO, KC_NO, KC_NO, &palm_r_mac_layer_timer, &palm_r_mac_interrupted, pressed, 200, 1000, true, KC_F6, KC_LALT, KC_LSFT);
+          momentary_layer_tap_with_hold(KC_F6, KC_LALT, KC_NO, KC_NO, KC_NO, KC_NO, &palm_r_mac_layer_timer, &palm_r_mac_interrupted, pressed, 200, 1000, true, KC_F6, KC_LALT, KC_LSFT);
           return true;
         }
 
@@ -2136,18 +2150,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
 
         case SHIFT_TAB_WIN: {
-          if (caps_led) { up(KC_LCAP); caps_led = false; return false; }
+          if (isCapsOn()) { capsOff(); return false; }
           if (is_after_lead(KC_F2, pressed)) { return false; }
           static uint16_t shift_tab_win_layer_timer;
           if ((momentary_layer_tap_with_hold(KC_TAB, KC_NO, KC_LSFT, KC_NO, KC_NO, KC_NO, &shift_tab_win_layer_timer, &shift_tab_win_interrupted, pressed, 200, 1000, false, KC_CLR, KC_NO, KC_NO)) == 2) {
             // held key
-            if (caps_led) {
-              up(KC_LCAP);
-              caps_led = false;
-            } else {
-              down(KC_LCAP);
-              caps_led = true;
-            }
+            toggleCaps();
           }
           return true;
         }
@@ -2162,7 +2170,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case PALM_R_WIN: {
           if (is_after_lead(KC_F6, pressed)) { return false; }
           static uint16_t palm_r_win_layer_timer;
-          momentary_layer_tap_with_hold(KC_TAB, KC_LALT, KC_NO, KC_NO, KC_NO, KC_NO, &palm_r_win_layer_timer, &palm_r_win_interrupted, pressed, 200, 1000, false, KC_F6, KC_LALT, KC_LSFT);
+          momentary_layer_tap_with_hold(KC_F6, KC_LALT, KC_NO, KC_NO, KC_NO, KC_NO, &palm_r_win_layer_timer, &palm_r_win_interrupted, pressed, 200, 1000, false, KC_F6, KC_LALT, KC_LSFT);
           return true;
         }
 
