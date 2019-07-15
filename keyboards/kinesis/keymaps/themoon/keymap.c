@@ -1991,7 +1991,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             } else if (space_alone && ((delta_millis >= 50) && (delta_millis < 850))) {
               up(KC_LGUI); with_1_mod(KC_SPC, KC_LALT); // change lang
               lang_switch_led = true;
-              caps_led = false; // on mac changing language resets caps lock
+              capsOff(); // on mac changing language resets caps lock
             }
             space_alone = false;
             space_timer = 0;
