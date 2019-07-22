@@ -19,7 +19,7 @@
                              k56, k55,           \
                                   k35,           \
                         k36, k46, k25,           \
-                    k45,                         \
+                    k05, k45,                    \
     kC3, kD3, kE3, kC4, kD4, kE4, kC5, kE5, kD5, \
                    k60, k70, k80, k90, kA0, kB0, \
                    k61, k71, k81, k91, kA1, kB1, \
@@ -29,16 +29,16 @@
               k96, k85,                          \
               k86,                               \
               k66, k75, k65,                     \
-                            k06                  \
+                            k06, k76             \
 ) {                                              \
-    { k00,  k01,  k02,  k03,  ___,  ___,  k06 }, \
+    { k00,  k01,  k02,  k03,  ___,  k05,  k06 }, \
     { k10,  k11,  k12,  k13,  k14,  ___,  ___ }, \
     { k20,  k21,  k22,  k23,  k24,  k25,  ___ }, \
     { k30,  k31,  k32,  k33,  k34,  k35,  k36 }, \
     { k40,  k41,  k42,  k43,  ___,  k45,  k46 }, \
     { k50,  k51,  k52,  k53,  k54,  k55,  k56 }, \
     { k60,  k61,  k62,  k63,  k64,  k65,  k66 }, \
-    { k70,  k71,  k72,  k73,  ___,  k75,  ___ }, \
+    { k70,  k71,  k72,  k73,  ___,  k75,  k76 }, \
     { k80,  k81,  k82,  k83,  k84,  k85,  k86 }, \
     { k90,  k91,  k92,  k93,  k94,  ___,  k96 }, \
     { kA0,  kA1,  kA2,  kA3,  kA4,  ___,  ___ }, \
@@ -59,16 +59,16 @@
                              k56, k55,                  k96, k85,                                \
                                   k35,                  k86,                                     \
                         k36, k46, k25,                  k66, k75, k65,                           \
-                    k45,                                              k06                        \
+                    k05, k45,                                    k06, k76                        \
 ) {                                              \
-    { k00,  k01,  k02,  k03,  ___,  ___,  k06 }, \
+    { k00,  k01,  k02,  k03,  ___,  k05,  k06 }, \
     { k10,  k11,  k12,  k13,  k14,  ___,  ___ }, \
     { k20,  k21,  k22,  k23,  k24,  k25,  ___ }, \
     { k30,  k31,  k32,  k33,  k34,  k35,  k36 }, \
     { k40,  k41,  k42,  k43,  ___,  k45,  k46 }, \
     { k50,  k51,  k52,  k53,  k54,  k55,  k56 }, \
     { k60,  k61,  k62,  k63,  k64,  k65,  k66 }, \
-    { k70,  k71,  k72,  k73,  ___,  k75,  ___ }, \
+    { k70,  k71,  k72,  k73,  ___,  k75,  k76 }, \
     { k80,  k81,  k82,  k83,  k84,  k85,  k86 }, \
     { k90,  k91,  k92,  k93,  k94,  ___,  k96 }, \
     { kA0,  kA1,  kA2,  kA3,  kA4,  ___,  ___ }, \
@@ -84,14 +84,14 @@ https://github.com/stapelberg/kinesis-firmware/blob/master/kb_kinesis/config.ksp
 Along with the pins for each row and column
              PB0 PB1 PB2 PB3 PB4 PB5 PB6
              kx0 kx1 kx2 kx3 kx4 kx5 kx6
-PD0 k0x Row: EQL TAB CAP LSH X2  --  --
+PD0 k0x Row: EQL TAB CAP LSH X2  PA4 PA2
 PD1 k1x Row: 1   Q   A   Z   BQ  --  --
 PD2 k2x Row: 2   W   S   X   INS END --
 PD3 k3x Row: 3   E   D   C   LFT HOM BAK
-PD4 k4x Row: 4   R   F   V   --  --  DEL
+PD4 k4x Row: 4   R   F   V   --  PA3 DEL
 PD5 k5x Row: 5   T   G   B   RT  LAL LCT
 PD6 k6x Row: 6   Y   H   N   UP  SPC PGD
-PD7 k7x Row: 7   U   J   M   --  RET --
+PD7 k7x Row: 7   U   J   M   --  RET PA1
 PC0 k8x Row: 8   I   K   COM DWN RCT PGU
 PC1 k9x Row: 9   O   L   PER LBR --  RAL
 PC2 kAx Row: 0   P   SEM SLA RBR --  --
