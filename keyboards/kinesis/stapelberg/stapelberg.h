@@ -84,14 +84,14 @@ https://github.com/stapelberg/kinesis-firmware/blob/master/kb_kinesis/config.ksp
 Along with the pins for each row and column
              PB0 PB1 PB2 PB3 PB4 PB5 PB6
              kx0 kx1 kx2 kx3 kx4 kx5 kx6
-PD0 k0x Row: EQL TAB CAP LSH X2  PA4 PA2
+PD0 k0x Row: EQL TAB CAP LSH X2  P_1 P_2
 PD1 k1x Row: 1   Q   A   Z   BQ  --  --
 PD2 k2x Row: 2   W   S   X   INS END --
 PD3 k3x Row: 3   E   D   C   LFT HOM BAK
-PD4 k4x Row: 4   R   F   V   --  PA3 DEL
+PD4 k4x Row: 4   R   F   V   --  P_3 DEL
 PD5 k5x Row: 5   T   G   B   RT  LAL LCT
 PD6 k6x Row: 6   Y   H   N   UP  SPC PGD
-PD7 k7x Row: 7   U   J   M   --  RET PA1
+PD7 k7x Row: 7   U   J   M   --  RET P_4
 PC0 k8x Row: 8   I   K   COM DWN RCT PGU
 PC1 k9x Row: 9   O   L   PER LBR --  RAL
 PC2 kAx Row: 0   P   SEM SLA RBR --  --
