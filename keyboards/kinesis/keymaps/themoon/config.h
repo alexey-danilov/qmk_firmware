@@ -11,9 +11,6 @@
 
 #define MACRO_BUFFER 1024 // real size of buffer will be less: it holds 2 keys for a single press + modifiers; roughly / 2.5
 
-#undef MOUSEKEY_INTERVAL
-#define MOUSEKEY_INTERVAL 16
-
 #include "../../config.h"
 #endif
 
