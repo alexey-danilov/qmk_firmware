@@ -2190,14 +2190,14 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case PALM_3_MAC: {
           if (is_after_lead(KC_F7, pressed)) { return false; }
           static uint16_t palm_3_mac_layer_timer;
-          momentary_layer_tap_with_hold(KC_F7, KC_LALT, KC_LALT, KC_LCTL, KC_LSFT, KC_LGUI, &palm_3_mac_layer_timer, &palm_3_mac_interrupted, pressed, 200, 1000, true, KC_F7, KC_LALT, KC_LSFT);
+          momentary_layer_tap_with_hold(KC_TAB, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, KC_NO, &palm_3_mac_layer_timer, &palm_3_mac_interrupted, pressed, 200, 1000, true, KC_F7, KC_LALT, KC_LSFT);
           return true;
         }
 
         case PALM_4_MAC: {
           if (is_after_lead(KC_F8, pressed)) { return false; }
           static uint16_t palm_4_mac_layer_timer;
-          momentary_layer_tap_with_hold(KC_TAB, KC_LGUI, KC_NO, KC_NO, KC_NO, KC_NO, &palm_4_mac_layer_timer, &palm_4_mac_interrupted, pressed, 200, 1000, true, KC_F8, KC_LALT, KC_LSFT);
+          momentary_layer_tap_with_hold(KC_F7, KC_LALT, KC_NO, KC_NO, KC_NO, KC_NO, &palm_4_mac_layer_timer, &palm_4_mac_interrupted, pressed, 200, 1000, true, KC_F8, KC_LALT, KC_LSFT);
           return true;
         }
 
