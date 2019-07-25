@@ -1815,7 +1815,7 @@ uint32_t layer_state_set_user(uint32_t state) {
     case _CTRL_ALT_DEL: down(KC_LCTL); down(KC_LALT); break;
     case _RWIN: break;
     case _PALM_1_WIN: palm_1_win_layer = true; down(KC_LALT); down(KC_LCTL); down(KC_LSFT); break;
-    case _PALM_2_WIN: palm_2_win_layer = true; down(KC_LALT); down(KC_LCTL); down(KC_LSFT); down(KC_LGUI); break;
+    case _PALM_2_WIN: palm_2_win_layer = true; down(KC_LALT); down(KC_LSFT); break;
     case _PALM_3_WIN: break;
     case _PALM_4_WIN: break;
 
@@ -2295,7 +2295,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case PALM_2_WIN: {
           if (is_after_lead(KC_F14, pressed)) { return false; }
           static uint16_t palm_2_win_layer_timer;
-          momentary_layer_tap(KC_F14, KC_NO, KC_LCTL, KC_LALT, KC_LSFT, KC_LGUI, &palm_2_win_layer_timer, &palm_2_win_interrupted, pressed, 300, false);
+          momentary_layer_tap(KC_F14, KC_NO, KC_LALT, KC_LSFT, KC_NO, KC_NO, &palm_2_win_layer_timer, &palm_2_win_interrupted, pressed, 300, false);
           return true;
         }
 
