@@ -1337,12 +1337,12 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________,  __________, __________, __________,  __________,  KC_F13,
          __________,  __________, __________, __________,  __________,  KC_F14,
          __________,  __________, __________, __________,  __________,  KC_F15,
-         __________,  KC_WH_D, KC_MS_U, KC_WH_U,  __________, KC_F16,
+         __________,  KC_BTN3, KC_MS_U, KC_BTN2,  __________, KC_F16,
                       KC_MS_L, KC_MS_D, KC_MS_R, __________,
          KC_MS_WH_LEFT, KC_MS_WH_RIGHT,
-         KC_MS_WH_RIGHT,
-         KC_BTN4, KC_BTN3, KC_BTN1,
-         KC_BTN2, KC_BTN2
+         _,
+         _, KC_BTN4, KC_BTN1,
+         KC_WH_D, KC_WH_U
     ),
 
 [_PALM_3_MAC] = LAYOUT(
@@ -1669,12 +1669,12 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________,  __________, __________, __________,  __________,  KC_F21,
          __________,  __________, __________, __________,  __________,  KC_F22,
          __________,  __________, __________, __________,  __________,  KC_F23,
-         __________,  KC_WH_D, KC_MS_U, KC_WH_U,  __________, KC_F24,
+         __________,  KC_BTN3, KC_MS_U, KC_BTN2,  __________, KC_F24,
                       KC_MS_L, KC_MS_D, KC_MS_R, __________,
          KC_MS_WH_LEFT, KC_MS_WH_RIGHT,
-         KC_MS_WH_RIGHT,
-         KC_BTN4, KC_BTN3, KC_BTN1,
-         KC_BTN2, KC_BTN2
+         _,
+         _, KC_BTN4, KC_BTN1,
+         KC_WH_D, KC_WH_U
     ),
 
 [_PALM_3_WIN] = LAYOUT(
