@@ -1283,12 +1283,12 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                A(KC_F14),
                        G(KC_Z), G(S(KC_Z)), HYPR(KC_DEL),
                                            PALM_1_MAC, _,
-         __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
-         __________,  C(A(KC_7)), C(A(KC_8)), C(A(KC_9)),  __________,  __________,
-         __________,  C(A(KC_U)), C(A(KC_I)), C(A(KC_O)),  __________,  __________,
-         __________,  C(A(KC_J)), C(A(KC_K)), C(A(KC_L)),  __________,  __________,
-         __________,  C(A(KC_M)), KC_PGUP, C(A(KC_DOT)),  __________, __________,
-                      KC_HOME, KC_PGDN, KC_END, __________,
+         _,  _,  _,  _,  _,  _, _, _, _,
+         _,  C(A(KC_7)), C(A(KC_8)), C(A(KC_9)),  _,  _,
+         _,  C(A(KC_U)), C(A(KC_I)), C(A(KC_O)),  _,  _,
+         _,  C(A(KC_J)), C(A(KC_K)), C(A(KC_L)),  _,  _,
+         _,  _, A(S(KC_UP)), _,  _, _,
+         A(S(KC_LEFT)), A(S(KC_DOWN)), A(S(KC_RGHT)), _,
          C(A(KC_F16)), C(A(KC_BSPC)),
          C(A(KC_MINS)),
          C(A(KC_EQL)), FIND_PREV, FIND_NEXT,
@@ -1310,8 +1310,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          _,  _,  _,  _,  _,  _,
          _,  _,  _,  _,  _,  _,
          _,  _,  _,  _,  _,  _,
-         _,  _, A(S(KC_UP)), _,  _, _,
-         A(S(KC_LEFT)), A(S(KC_DOWN)), A(S(KC_RGHT)), _,
+         _,  _, KC_PGUP, _,  _, _,
+         KC_HOME, KC_PGDN, KC_END, _,
          _, _,
          _,
          _, _, _,
@@ -1329,12 +1329,12 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                A(KC_F14),
                        G(KC_Z), G(S(KC_Z)), HYPR(KC_DEL),
                                 HYPR(KC_F5), HYPR(KC_F6),
-         __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
-         KC_6,  KC_7,  KC_8,  KC_9,  KC_0,  __________,
-         __________,  __________,  __________,  __________,  __________,  __________,
-         __________,  __________,  __________,  __________,  __________,  __________,
-         __________,  __________,  __________,  __________,  __________,  __________,
-                   __________,  __________, __________, __________,
+         _,  _,  _,  _,  _,  _, _, _, _,
+         _,  _,  _,  _,  _,  _,
+         _,  _,  _,  _,  _,  _,
+         _,  _,  _,  _,  _,  _,
+         _,  _,  _,  _,  _,  _,
+                   _,  _, _, _,
          _,  _,
          _,
          _,  _,  _,
@@ -1592,12 +1592,12 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                A(KC_F14),
                        C(KC_Z), C(S(KC_Z)), HYPR(KC_DEL),
                                            PALM_1_WIN, _,
-         __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
-         __________,  C(A(KC_7)), C(A(KC_8)), C(A(KC_9)),  __________,  __________,
-         __________,  C(A(KC_U)), C(A(KC_I)), C(A(KC_O)),  __________,  __________,
-         __________,  C(A(KC_J)), C(A(KC_K)), C(A(KC_L)),  __________,  __________,
-         __________,  C(A(KC_M)), KC_PGUP, C(A(KC_DOT)),  __________, __________,
-                      C(KC_HOME), KC_PGDN, C(KC_END), __________,
+         _,  _,  _,  _,  _,  _, _, _, _,
+         _,  C(A(KC_7)), C(A(KC_8)), C(A(KC_9)),  _,  _,
+         _,  C(A(KC_U)), C(A(KC_I)), C(A(KC_O)),  _,  _,
+         _,  C(A(KC_J)), C(A(KC_K)), C(A(KC_L)),  _,  _,
+         _,  C(A(KC_M)), C(S(KC_UP)),  C(A(KC_DOT)),  _, _,
+         C(S(KC_LEFT)), C(S(KC_DOWN)), C(S(KC_RGHT)), _,
          C(A(KC_F16)), C(A(KC_BSPC)),
          C(A(KC_MINS)),
          C(A(KC_EQL)), FIND_PREV, FIND_NEXT,
@@ -1619,8 +1619,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          _,  _,  _,  _,  _,  _,
          _,  _,  _,  _,  _,  _,
          _,  _,  _,  _,  _,  _,
-         _,  _, C(S(KC_UP)), _,  _, _,
-         C(S(KC_LEFT)), C(S(KC_DOWN)), C(S(KC_RGHT)), _,
+         _,  _, KC_PGUP, _,  _, _,
+         C(KC_HOME), KC_PGDN, C(KC_END), _,
          _, _,
          _,
          _, _, _,
@@ -1638,12 +1638,12 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                A(KC_F14),
                        C(KC_Z), C(S(KC_Z)), HYPR(KC_DEL),
                               HYPR(KC_F13), HYPR(KC_F14),
-         __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
-         KC_6,  KC_7,  KC_8,  KC_9,  KC_0,  __________,
-         __________,  __________,  __________,  __________,  __________,  __________,
-         __________,  __________,  __________,  __________,  __________,  __________,
-         __________,  __________,  __________,  __________,  __________,  __________,
-                   __________,  __________,  __________,  __________,
+         _,  _,  _,  _,  _,  _, _, _, _,
+         _,  _,  _,  _,  _,  _,
+         _,  _,  _,  _,  _,  _,
+         _,  _,  _,  _,  _,  _,
+         _,  _,  _,  _,  _,  _,
+                   _,  _,  _,  _,
          _,  _,
          _,
          _,  _,  _,
@@ -1835,13 +1835,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     }
     if (palm_2_mac_layer && pressed) {
        if (keycode != PALM_2_MAC) {
-         up(KC_LALT); up(KC_LSFT); up(KC_LCTL); up(KC_LGUI);
+         up(KC_LALT); up(KC_LSFT); up(KC_LCTL);
          palm_2_mac_layer = false;
        }
     }
     if (palm_2_win_layer && pressed) {
        if (keycode != PALM_2_WIN) {
-         up(KC_LALT); up(KC_LSFT); up(KC_LCTL); up(KC_LGUI);
+         up(KC_LALT); up(KC_LSFT); up(KC_LCTL);;
          palm_2_win_layer = false;
        }
     }
