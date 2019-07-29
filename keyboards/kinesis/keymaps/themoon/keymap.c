@@ -1316,10 +1316,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________,  C(A(KC_J)), C(A(KC_K)), C(A(KC_L)),  __________,  __________,
          __________,  C(A(KC_M)), KC_PGUP, C(A(KC_DOT)),  __________, __________,
                       KC_HOME, KC_PGDN, KC_END, __________,
-         _, G(KC_Q),
+         C(A(KC_F16)), C(A(KC_BSPC)),
          C(A(KC_MINS)),
          C(A(KC_EQL)), FIND_PREV, FIND_NEXT,
-         G(KC_H), G(A(KC_H))
+         C(A(KC_F7)), C(A(KC_F8))
     ),
 
 [_PALM_2_MAC] = LAYOUT(
@@ -1334,15 +1334,15 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                        G(KC_Z), G(S(KC_Z)), HYPR(KC_DEL),
                                            _, PALM_2_MAC,
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
-         __________,  __________, __________, __________,  __________,  KC_F13,
-         __________,  __________, __________, __________,  __________,  KC_F14,
-         __________,  __________, __________, __________,  __________,  KC_F15,
+         __________,  C(A(KC_7)), C(A(KC_8)), C(A(KC_9)),  __________,  KC_F13,
+         __________,  C(A(KC_U)), C(A(KC_I)), C(A(KC_O)),  __________,  KC_F14,
+         __________,  C(A(KC_J)), C(A(KC_K)), C(A(KC_L)),  __________,  KC_F15,
          __________,  KC_BTN3, KC_MS_U, KC_BTN2,  __________, KC_F16,
                       KC_MS_L, KC_MS_D, KC_MS_R, __________,
          KC_MS_WH_LEFT, KC_MS_WH_RIGHT,
-         _,
-         _, KC_BTN4, KC_BTN1,
-         KC_WH_D, KC_WH_U
+         KC_WH_U,
+         KC_WH_D, KC_BTN4, KC_BTN1,
+         C(A(KC_F7)), C(A(KC_F8))
     ),
 
 [_PALM_3_MAC] = LAYOUT(
@@ -1365,7 +1365,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          _,  _,
          _,
          _,  _,  _,
-         PALM_3_MAC, _
+         PALM_3_MAC, HYPR(KC_F8)
     ),
 
 [_PALM_4_MAC] = LAYOUT(
@@ -1388,7 +1388,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          _,  _,
          _,
          _,  _,  _,
-         C(KC_F2), PALM_4_MAC
+         HYPR(KC_F7), PALM_4_MAC
     ),
 
 // base win layer
@@ -1648,7 +1648,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________,  C(A(KC_J)), C(A(KC_K)), C(A(KC_L)),  __________,  __________,
          __________,  C(A(KC_M)), KC_PGUP, C(A(KC_DOT)),  __________, __________,
                       C(KC_HOME), KC_PGDN, C(KC_END), __________,
-         _, A(KC_F4),
+         C(A(KC_F16)), C(A(KC_BSPC)),
          C(A(KC_MINS)),
          C(A(KC_EQL)), FIND_PREV, FIND_NEXT,
          C(A(KC_F15)), C(A(KC_F16))
@@ -1666,15 +1666,15 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                        C(KC_Z), C(S(KC_Z)), HYPR(KC_DEL),
                                            _, PALM_2_WIN,
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
-         __________,  __________, __________, __________,  __________,  KC_F21,
-         __________,  __________, __________, __________,  __________,  KC_F22,
-         __________,  __________, __________, __________,  __________,  KC_F23,
+         __________,  C(A(KC_7)), C(A(KC_8)), C(A(KC_9)),  __________,  KC_F21,
+         __________,  C(A(KC_U)), C(A(KC_I)), C(A(KC_O)),  __________,  KC_F22,
+         __________,  C(A(KC_J)), C(A(KC_K)), C(A(KC_L)),  __________,  KC_F23,
          __________,  KC_BTN3, KC_MS_U, KC_BTN2,  __________, KC_F24,
                       KC_MS_L, KC_MS_D, KC_MS_R, __________,
          KC_MS_WH_LEFT, KC_MS_WH_RIGHT,
-         _,
-         _, KC_BTN4, KC_BTN1,
-         KC_WH_D, KC_WH_U
+         KC_WH_U,
+         KC_WH_D, KC_BTN4, KC_BTN1,
+         C(A(KC_F15)), C(A(KC_F16))
     ),
 
 [_PALM_3_WIN] = LAYOUT(
@@ -1697,7 +1697,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          _,  _,
          _,
          _,  _,  _,
-         PALM_3_WIN, _
+         PALM_3_WIN, HYPR(KC_F16)
     ),
 
 [_PALM_4_WIN] = LAYOUT(
@@ -1720,7 +1720,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          _,  _,
          _,
          _,  _,  _,
-         _, PALM_4_WIN
+         HYPR(KC_F15), PALM_4_WIN
     ),
 
 [_KEYB_CONTROL] = LAYOUT(
