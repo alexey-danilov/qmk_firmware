@@ -140,6 +140,7 @@ enum holding_keycodes {
 
 static uint16_t esc_timer = 0; // timer for leader key: esc
 static uint16_t lead_timer = 0; // timer for leader key
+static uint16_t space_timer = 0;
 static bool default_layer = true;
 static bool palm_1_mac_layer = false;
 static bool palm_2_mac_layer = false;
@@ -1064,7 +1065,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
            ALT_F10, KC_Q, KC_W, KC_E, KC_R, KC_T,
            ALT_F11,KC_A, KC_S, KC_D, KC_F, KC_G,
            ALT_F12, KC_Z, KC_X, KC_C, KC_V, KC_B,
-                 KC_GRV, KC_LBRC, KC_COMM, KC_RBRC,
+                 CMD_ESC, KC_LBRC, KC_COMM, KC_RBRC,
                                                // left thumb keys
 			                              KC_BSPC, TD(TAP_MACRO),
                                                    ALT_SLASH_MAC,
@@ -1077,9 +1078,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	KC_Y, KC_U, KC_I, KC_O, KC_P, ALT_F14,
 	KC_H, KC_J, KC_K, KC_L, KC_SCLN, ALT_F15,
 	KC_N, KC_M, KC_UP, KC_DOT, KC_QUOT, ALT_F16,
-	KC_LEFT, KC_DOWN, KC_RGHT, KC_NUBS,
+	KC_LEFT, KC_DOWN, KC_RGHT, KC_GRV,
            // right thumb keys
-           KC_F16, KC_BSPC,
+           KC_NUBS, KC_BSPC,
            ALT_BSLS_MAC,
            CTRL_F1, SHIFT_TAB_MAC, CMD_SPACE,
            // right palm key
@@ -1744,8 +1745,8 @@ uint32_t layer_state_set_user(uint32_t state) {
     case _SHIFT_TAB_MAC: down(KC_LSFT); break;
     case _CTRL_DEL: down(KC_LCTL); break;
     case _CTRL_F1: down(KC_LCTL); break;
-    case _PALM_1_MAC: palm_1_mac_layer = true; down(KC_LALT); down(KC_LCTL); break;
-    case _PALM_2_MAC: palm_2_mac_layer = true; down(KC_LALT); down(KC_LCTL); down(KC_LSFT); break;
+    case _PALM_1_MAC: palm_1_mac_layer = true; down(KC_LALT); down(KC_LSFT); break;
+    case _PALM_2_MAC: palm_2_mac_layer = true; down(KC_LALT); down(KC_LGUI); break;
     case _PALM_3_MAC: break;
     case _PALM_4_MAC: break;
 
@@ -1758,8 +1759,8 @@ uint32_t layer_state_set_user(uint32_t state) {
     case _SHIFT_TAB_WIN: down(KC_LSFT); break;
     case _ALT_SHIFT_DEL: down(KC_LALT); down(KC_LSFT); break;
     case _RWIN: break;
-    case _PALM_1_WIN: palm_1_win_layer = true; down(KC_LALT); down(KC_LCTL); break;
-    case _PALM_2_WIN: palm_2_win_layer = true; down(KC_LALT); down(KC_LCTL); down(KC_LSFT); break;
+    case _PALM_1_WIN: palm_1_win_layer = true; down(KC_LCTL); down(KC_LSFT); break;
+    case _PALM_2_WIN: palm_2_win_layer = true; down(KC_LALT); down(KC_LCTL); break;
     case _PALM_3_WIN: break;
     case _PALM_4_WIN: break;
 
@@ -1801,11 +1802,16 @@ bool palm_4_win_interrupted = true;
 
 bool left_pressed = false;
 bool right_pressed = false;
+bool space_alone = false;
 
 // adding logic to custom keycodes and overriding existing ones (taking hold duration into account);
 // "mo layer tap" and "esc leader key" functionality
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     bool pressed = record->event.pressed;
+
+    if (space_alone && pressed) {
+       space_alone = false;
+    }
 
     if (default_layer) {
        // remove stuck modifiers
@@ -1817,25 +1823,25 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     // if virtual mouse keys were pressed, modifiers should be off)
     if (palm_1_mac_layer && pressed) {
        if (keycode != PALM_1_MAC) {
-         up(KC_LALT); up(KC_LCTL); up(KC_LSFT);
+         up(KC_LALT); up(KC_LSFT);
          palm_1_mac_layer = false;
        }
     }
     if (palm_1_win_layer && pressed) {
        if (keycode != PALM_1_WIN) {
-         up(KC_LALT); up(KC_LCTL); up(KC_LSFT);
+         up(KC_LCTL); up(KC_LSFT);
          palm_1_win_layer = false;
        }
     }
     if (palm_2_mac_layer && pressed) {
        if (keycode != PALM_2_MAC) {
-         up(KC_LALT); up(KC_LSFT); up(KC_LCTL);
+         up(KC_LALT); up(KC_LGUI);
          palm_2_mac_layer = false;
        }
     }
     if (palm_2_win_layer && pressed) {
        if (keycode != PALM_2_WIN) {
-         up(KC_LALT); up(KC_LSFT); up(KC_LCTL);;
+         up(KC_LALT); up(KC_LCTL);;
          palm_2_win_layer = false;
        }
     }
@@ -2025,7 +2031,24 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
         // >>>>>>> mac layers
         case CMD_SPACE: {
-          if (is_after_lead(KC_SPC, pressed)) { return false; }; return true;
+          if (is_after_lead(KC_SPC, pressed)) { return false; };
+          if (pressed) {
+            space_alone = true;
+            space_timer = timer_read();
+          }
+          else {
+            uint16_t delta_millis = timer_elapsed(space_timer);
+            if (space_alone && ((delta_millis > 1) && (delta_millis < 50))) {
+              up(KC_LGUI); key_code(KC_SPC);
+            } else if (space_alone && ((delta_millis >= 50) && (delta_millis < 850))) {
+              up(KC_LGUI); with_1_mod(KC_SPC, KC_LALT); // change lang
+              lang_switch_led = true;
+              capsOff(); // on mac changing language resets caps lock
+            }
+            space_alone = false;
+            space_timer = 0;
+          }
+          return true;
         }
 
         case CMD_ESC: {
@@ -2077,24 +2100,24 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           if (caps_on) { capsOff(); return false; }
           if (is_after_lead(KC_F2, pressed)) { return false; }
           static uint16_t shift_tab_mac_layer_timer;
-          momentary_layer_tap_with_hold(KC_TAB, KC_NO, KC_LSFT, KC_NO, KC_NO, KC_NO, &shift_tab_mac_layer_timer, &shift_tab_mac_interrupted, pressed, AUTOSHIFT_SPECIAL_TERM, 350, true, KC_TAB, KC_LSFT, KC_NO);
+          if ((momentary_layer_tap_with_hold(KC_TAB, KC_NO, KC_LSFT, KC_NO, KC_NO, KC_NO, &shift_tab_mac_layer_timer, &shift_tab_mac_interrupted, pressed, 200, 1000, false, KC_CLR, KC_NO, KC_NO)) == 2) {
+            // held key
+            toggleCaps();
+          }
           return true;
         }
 
         case PALM_1_MAC: {
           if (is_after_lead(KC_F5, pressed)) { return false; }
           static uint16_t palm_1_mac_layer_timer;
-          if ((momentary_layer_tap(KC_SPC, KC_LALT, KC_LCTL, KC_NO, KC_NO, KC_NO, &palm_1_mac_layer_timer, &palm_1_mac_interrupted, pressed, 300, true)) == 1) {
-            lang_switch_led = true;
-            if (caps_led) { caps_led = false; }
-          }
+          momentary_layer_tap(KC_F5, KC_LALT, KC_LSFT, KC_NO, KC_NO, KC_NO, &palm_1_mac_layer_timer, &palm_1_mac_interrupted, pressed, 300, true);
           return true;
         }
 
         case PALM_2_MAC: {
           if (is_after_lead(KC_F6, pressed)) { return false; }
           static uint16_t palm_2_mac_layer_timer;
-          momentary_layer_tap(KC_F6, KC_LALT, KC_LCTL, KC_LSFT, KC_NO, KC_NO, &palm_2_mac_layer_timer, &palm_2_mac_interrupted, pressed, 300, true);
+          momentary_layer_tap(KC_F6, KC_LALT, KC_LGUI, KC_NO, KC_NO, KC_NO, &palm_2_mac_layer_timer, &palm_2_mac_interrupted, pressed, 300, true);
           return true;
         }
 
@@ -2116,7 +2139,23 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
         // >>>>>>> win layers
         case CTRL_SPACE: {
-          if (is_after_lead(KC_SPC, pressed)) { return false; }; return true;
+          if (is_after_lead(KC_SPC, pressed)) { return false; };
+          if (pressed) {
+            space_alone = true;
+            space_timer = timer_read();
+          }
+          else {
+            uint16_t delta_millis = timer_elapsed(space_timer);
+            if (space_alone && ((delta_millis > 1) && (delta_millis < 50))) {
+              up(KC_LCTL); key_code(KC_SPC);
+            } else if (space_alone && ((delta_millis >= 50) && (delta_millis < 850))) {
+              up(KC_LCTL); with_1_mod(KC_SPC, KC_LGUI); // change lang
+              lang_switch_led = true;
+            }
+            space_alone = false;
+            space_timer = 0;
+          }
+          return true;
         }
 
         case CTRL_ESC: {
@@ -2168,23 +2207,24 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           if (caps_on) { capsOff(); return false; }
           if (is_after_lead(KC_F2, pressed)) { return false; }
           static uint16_t shift_tab_win_layer_timer;
-          momentary_layer_tap_with_hold(KC_TAB, KC_NO, KC_LSFT, KC_NO, KC_NO, KC_NO, &shift_tab_win_layer_timer, &shift_tab_win_interrupted, pressed, AUTOSHIFT_SPECIAL_TERM, 350, true, KC_TAB, KC_LSFT, KC_NO);
+          if ((momentary_layer_tap_with_hold(KC_TAB, KC_NO, KC_LSFT, KC_NO, KC_NO, KC_NO, &shift_tab_win_layer_timer, &shift_tab_win_interrupted, pressed, 200, 1000, false, KC_CLR, KC_NO, KC_NO)) == 2) {
+            // held key
+            toggleCaps();
+          }
           return true;
         }
 
        case PALM_1_WIN: {
           if (is_after_lead(KC_F13, pressed)) { return false; }
           static uint16_t palm_1_win_layer_timer;
-          if ((momentary_layer_tap(KC_F13, KC_NO, KC_LALT, KC_LCTL, KC_NO, KC_NO, &palm_1_win_layer_timer, &palm_1_win_interrupted, pressed, 300, false)) == 1) {
-            lang_switch_led = true;
-          }
+          momentary_layer_tap(KC_F13, KC_NO, KC_LCTL, KC_LSFT, KC_NO, KC_NO, &palm_1_win_layer_timer, &palm_1_win_interrupted, pressed, 300, false);
           return true;
         }
 
         case PALM_2_WIN: {
           if (is_after_lead(KC_F14, pressed)) { return false; }
           static uint16_t palm_2_win_layer_timer;
-          momentary_layer_tap(KC_F14, KC_NO, KC_LALT, KC_LCTL, KC_LSFT, KC_NO, &palm_2_win_layer_timer, &palm_2_win_interrupted, pressed, 300, false);
+          momentary_layer_tap(KC_F14, KC_NO, KC_LALT, KC_LCTL, KC_NO, KC_NO, &palm_2_win_layer_timer, &palm_2_win_interrupted, pressed, 300, false);
           return true;
         }
 
@@ -2198,9 +2238,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case PALM_4_WIN: {
           if (is_after_lead(KC_F16, pressed)) { return false; }
           static uint16_t palm_4_win_layer_timer;
-          if ((momentary_layer_tap_with_hold(KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, &palm_4_win_layer_timer, &palm_4_win_interrupted, pressed, 200, 1000, false, KC_F16, KC_LSFT, KC_NO)) == 1) {
-            toggleCaps();
-          }
+          momentary_layer_tap_with_hold(KC_F16, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, &palm_4_win_layer_timer, &palm_4_win_interrupted, pressed, 200, 1000, false, KC_F16, KC_LSFT, KC_NO);
           return true;
         }
 
