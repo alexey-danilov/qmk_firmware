@@ -1283,15 +1283,15 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                        G(KC_Z), G(S(KC_Z)), HYPR(KC_DEL),
                                            PALM_1_MAC, _,
          _,  _,  _,  _,  _,  _, _, _, _,
-         _,  C(A(KC_7)), C(A(KC_8)), C(A(KC_9)),  _,  _,
-         _,  C(A(KC_U)), C(A(KC_I)), C(A(KC_O)),  _,  _,
-         _,  C(A(KC_J)), C(A(KC_K)), C(A(KC_L)),  _,  _,
-         _,  _, A(S(KC_UP)), _,  _, _,
-         A(S(KC_LEFT)), A(S(KC_DOWN)), A(S(KC_RGHT)), _,
-         C(A(KC_F16)), C(A(KC_BSPC)),
-         C(A(KC_MINS)),
-         C(A(KC_EQL)), FIND_PREV, FIND_NEXT,
-         C(A(KC_F7)), C(A(KC_F8))
+         _,  _, _, _,  _,  _,
+         _,  _, A(S(KC_UP)), _,  _,  _,
+         _,  A(S(KC_LEFT)), A(S(KC_DOWN)), A(S(KC_RGHT)),  _,  _,
+         _,  KC_BTN1, KC_MS_U, KC_BTN2,  _, _,
+         KC_MS_L, KC_MS_D, KC_MS_R, _,
+         KC_MS_WH_LEFT, KC_MS_WH_RIGHT,
+         KC_WH_U,
+         KC_WH_D, FIND_PREV, FIND_NEXT,
+         KC_BTN3, KC_BTN4
     ),
 
 [_PALM_2_MAC] = LAYOUT(
@@ -1304,17 +1304,17 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                   _,  _,
                                       _,
                               _,  _,  _,
-                          _,  PALM_2_MAC,
+                         _,  PALM_2_MAC,
          _,  _,  _,  _,  _,  _, _, _, _,
-         _,  _,  _,  _,  _,  _,
-         _,  _,  _,  _,  _,  _,
-         _,  _,  _,  _,  _,  _,
-         _,  _, KC_PGUP, _,  _, _,
+         _,  C(A(KC_7)), C(A(KC_8)), C(A(KC_9)),  _,  _,
+         _,  C(A(KC_U)), C(A(KC_I)), C(A(KC_O)),  _,  _,
+         _,  C(A(KC_J)), C(A(KC_K)), C(A(KC_L)),  _,  _,
+         _,  C(A(KC_M)), KC_PGUP, C(A(KC_DOT)),  _, _,
          KC_HOME, KC_PGDN, KC_END, _,
-         _, _,
-         _,
-         _, _, _,
-         _, _
+         KC_MRWD, KC_MFFD,
+         KC__VOLUP,
+         KC__VOLDOWN, KC__MUTE, KC_MPLY,
+         C(A(KC_F7)), C(A(KC_F8))
     ),
 
 [_PALM_3_MAC] = LAYOUT(
@@ -1337,20 +1337,20 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          _,  _,
          _,
          _,  _,  _,
-         PALM_3_MAC, HYPR(KC_F8)
+         PALM_3_MAC, _
     ),
 
 [_PALM_4_MAC] = LAYOUT(
          _,  _,  _,  _,  _,  _, _, _, _,
                   _,  _,  _,  _,  _,  _,
-_,  _, KC__VOLDOWN, KC__MUTE, KC__VOLUP, _,
-    _,  _, KC_MRWD, KC_MPLY, KC_MFFD, _,
-    _,  _, KC_BTN2, KC_MS_U, KC_BTN3, _,
-          _,  KC_MS_L, KC_MS_D, KC_MS_R,
+                  _,  _,  _,  _,  _,  _,
+                  _,  _,  _,  _,  _,  _,
+                  _,  _,  _,  _,  _,  _,
+                          _,  _,  _,  _,
                                   _,  _,
                                       _,
-                   KC_BTN1, KC_BTN4,  _,
-                       KC_WH_U, KC_WH_D,
+                              _,  _,  _,
+                                   _, _,
          _,  _,  _,  _,  _,  _, _, _, _,
          _,  _,  _,  _,  _,  _,
          _,  _,  _,  _,  _,  _,
@@ -1360,7 +1360,7 @@ _,  _, KC__VOLDOWN, KC__MUTE, KC__VOLUP, _,
          _,  _,
          _,
          _,  _,  _,
-         HYPR(KC_F7), PALM_4_MAC
+         _, PALM_4_MAC
     ),
 
 // base win layer
@@ -1592,15 +1592,15 @@ _,  _, KC__VOLDOWN, KC__MUTE, KC__VOLUP, _,
                        C(KC_Z), C(S(KC_Z)), HYPR(KC_DEL),
                                            PALM_1_WIN, _,
          _,  _,  _,  _,  _,  _, _, _, _,
-         _,  C(A(KC_7)), C(A(KC_8)), C(A(KC_9)),  _,  _,
-         _,  C(A(KC_U)), C(A(KC_I)), C(A(KC_O)),  _,  _,
-         _,  C(A(KC_J)), C(A(KC_K)), C(A(KC_L)),  _,  _,
-         _,  C(A(KC_M)), C(S(KC_UP)),  C(A(KC_DOT)),  _, _,
-         C(S(KC_LEFT)), C(S(KC_DOWN)), C(S(KC_RGHT)), _,
-         C(A(KC_F16)), C(A(KC_BSPC)),
-         C(A(KC_MINS)),
-         C(A(KC_EQL)), FIND_PREV, FIND_NEXT,
-         C(A(KC_F15)), C(A(KC_F16))
+         _,  _, _, _,  _,  _,
+         _,  _, C(S(KC_UP)), _,  _,  _,
+         _,  C(S(KC_LEFT)), C(S(KC_DOWN)), C(S(KC_RGHT)),  _,  _,
+         _,  KC_BTN1, KC_MS_U, KC_BTN2,  _, _,
+         KC_MS_L, KC_MS_D, KC_MS_R, _,
+         KC_MS_WH_LEFT, KC_MS_WH_RIGHT,
+         KC_WH_U,
+         KC_WH_D, FIND_PREV, FIND_NEXT,
+         KC_BTN3, KC_BTN4
     ),
 
 [_PALM_2_WIN] = LAYOUT(
@@ -1615,15 +1615,15 @@ _,  _, KC__VOLDOWN, KC__MUTE, KC__VOLUP, _,
                               _,  _,  _,
                          _,  PALM_2_WIN,
          _,  _,  _,  _,  _,  _, _, _, _,
-         _,  _,  _,  _,  _,  _,
-         _,  _,  _,  _,  _,  _,
-         _,  _,  _,  _,  _,  _,
-         _,  _, KC_PGUP, _,  _, _,
+         _,  C(A(KC_7)), C(A(KC_8)), C(A(KC_9)),  _,  _,
+         _,  C(A(KC_U)), C(A(KC_I)), C(A(KC_O)),  _,  _,
+         _,  C(A(KC_J)), C(A(KC_K)), C(A(KC_L)),  _,  _,
+         _,  C(A(KC_M)), KC_PGUP, C(A(KC_DOT)),  _, _,
          C(KC_HOME), KC_PGDN, C(KC_END), _,
-         _, _,
-         _,
-         _, _, _,
-         _, _
+         KC_MPRV, KC_MNXT,
+         KC_VOLU,
+         KC_VOLD, KC_MUTE, KC_MPLY,
+         C(A(KC_F15)), C(A(KC_F16))
     ),
 
 [_PALM_3_WIN] = LAYOUT(
@@ -1646,20 +1646,20 @@ _,  _, KC__VOLDOWN, KC__MUTE, KC__VOLUP, _,
          _,  _,
          _,
          _,  _,  _,
-         PALM_3_WIN, HYPR(KC_F16)
+         PALM_3_WIN, _
     ),
 
 [_PALM_4_WIN] = LAYOUT(
          _,  _,  _,  _,  _,  _, _, _, _,
                   _,  _,  _,  _,  _,  _,
-    _,  _, KC_VOLD, KC_MUTE, KC_VOLU, _,
-    _,  _, KC_MPRV, KC_MPLY, KC_MNXT, _,
-    _,  _, KC_BTN2, KC_MS_U, KC_BTN3, _,
-          _,  KC_MS_L, KC_MS_D, KC_MS_R,
+                  _,  _,  _,  _,  _,  _,
+                  _,  _,  _,  _,  _,  _,
+                  _,  _,  _,  _,  _,  _,
+                          _,  _,  _,  _,
                                   _,  _,
                                       _,
-                   KC_BTN1, KC_BTN4,  _,
-                       KC_WH_U, KC_WH_D,
+                              _,  _,  _,
+                                   _, _,
          _,  _,  _,  _,  _,  _, _, _, _,
          _,  _,  _,  _,  _,  _,
          _,  _,  _,  _,  _,  _,
@@ -1669,7 +1669,7 @@ _,  _, KC__VOLDOWN, KC__MUTE, KC__VOLUP, _,
          _,  _,
          _,
          _,  _,  _,
-         HYPR(KC_F15), PALM_4_WIN
+         _, PALM_4_WIN
     ),
 
 [_KEYB_CONTROL] = LAYOUT(

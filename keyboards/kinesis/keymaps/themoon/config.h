@@ -11,13 +11,13 @@
 #define MACRO_BUFFER 1024 // real size of buffer will be less: it holds 2 keys for a single press + modifiers; roughly / 2.5
 
 #undef MOUSEKEY_DELAY
-#define MOUSEKEY_DELAY 150 // Delay between pressing a movement key and cursor movement
+#define MOUSEKEY_DELAY 50 // Delay between pressing a movement key and cursor movement
 
 #undef MOUSEKEY_INTERVAL
 #define MOUSEKEY_INTERVAL 16 // Time between cursor movements
 
 #undef MOUSEKEY_TIME_TO_MAX
-#define MOUSEKEY_TIME_TO_MAX 0 // Time until maximum cursor speed is reached. Setting MOUSEKEY_TIME_TO_MAX or MOUSEKEY_WHEEL_TIME_TO_MAX to 0 will disable acceleration for the cursor or scrolling respectively
+#define MOUSEKEY_TIME_TO_MAX 10 // Time until maximum cursor speed is reached. Setting MOUSEKEY_TIME_TO_MAX or MOUSEKEY_WHEEL_TIME_TO_MAX to 0 will disable acceleration for the cursor or scrolling respectively
 
 #undef MOUSEKEY_MAX_SPEED
 #define MOUSEKEY_MAX_SPEED 2 // Maximum cursor speed at which acceleration stops
