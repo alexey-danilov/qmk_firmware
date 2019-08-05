@@ -2084,7 +2084,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case PALM_R_MAC: {
           if (is_after_lead(KC_F6, pressed)) { return false; }
           static uint16_t palm_r_mac_layer_timer;
-          momentary_layer_tap(KC_F6, KC_LALT, KC_NO, KC_NO, KC_NO, KC_NO, &palm_r_mac_layer_timer, &palm_r_mac_interrupted, pressed, 500, true);
+          momentary_layer_tap_with_hold(KC_F6, KC_LALT, KC_NO, KC_NO, KC_NO, KC_NO, &palm_r_mac_layer_timer, &palm_r_mac_interrupted, pressed, 250, 1000, true, KC_F6, KC_LALT, KC_LSFT);
           return true;
         }
 
@@ -2182,7 +2182,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case PALM_R_WIN: {
           if (is_after_lead(KC_F14, pressed)) { return false; }
           static uint16_t palm_r_win_layer_timer;
-          momentary_layer_tap(KC_F14, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, &palm_r_win_layer_timer, &palm_r_win_interrupted, pressed, 500, false);
+          momentary_layer_tap_with_hold(KC_F14, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, &palm_r_win_layer_timer, &palm_r_win_interrupted, pressed, 250, 1000, false, KC_F14, KC_LSFT, KC_NO);
           return true;
         }
 
