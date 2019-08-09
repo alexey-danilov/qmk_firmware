@@ -1945,10 +1945,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case KC_F15: { return lead_autoshifted_special(KC_F15, pressed); }
         case KC_F16: { return lead_autoshifted_special(KC_F16, pressed); }
 
-        case F5_PALM: { return lead_custom_autoshifted(KC_F5, KC_F5, KC_F5, KC_LSFT, pressed, AUTOSHIFT_SPECIAL_TERM); }
-        case F6_PALM: { return lead_custom_autoshifted(KC_F6, KC_F6, KC_F6, KC_LSFT, pressed, AUTOSHIFT_SPECIAL_TERM); }
-        case F13_PALM: { return lead_custom_autoshifted(KC_F13, KC_F13, KC_F13, KC_LSFT, pressed, AUTOSHIFT_SPECIAL_TERM); }
-        case F14_PALM: { return lead_custom_autoshifted(KC_F14, KC_F14, KC_F14, KC_LSFT, pressed, AUTOSHIFT_SPECIAL_TERM); }
+        case F5_PALM: { return lead_custom_autoshifted(KC_F5, KC_F5, KC_F5, KC_LSFT, pressed, 250); }
+        case F6_PALM: { return lead_custom_autoshifted(KC_F6, KC_F6, KC_F6, KC_LSFT, pressed, 250); }
+        case F13_PALM: { return lead_custom_autoshifted(KC_F13, KC_F13, KC_F13, KC_LSFT, pressed, 250); }
+        case F14_PALM: { return lead_custom_autoshifted(KC_F14, KC_F14, KC_F14, KC_LSFT, pressed, 250); }
 
         case KC_LBRC: { return lead_autoshifted_special(KC_LBRC, pressed); }
         case KC_RBRC: { return lead_autoshifted_special(KC_RBRC, pressed); }
