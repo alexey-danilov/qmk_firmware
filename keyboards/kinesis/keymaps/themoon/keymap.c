@@ -1373,7 +1373,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________, CLOSE_APP_MAC,
          _MINS,
          HIDE_FOCUS_MAC, FIND_PREV_MAC, FIND_NEXT_MAC,
-         F6_PALM
+         KC_F6
     ),
 
 [_PALM_R_MAC] = LAYOUT(
@@ -1383,10 +1383,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          HYPR(KC_F9), HYPR(KC_A), HYPR(KC_S), HYPR(KC_D), HYPR(KC_F), HYPR(KC_G),
          HYPR(KC_F10), HYPR(KC_Z), HYPR(KC_X), HYPR(KC_C), HYPR(KC_V), HYPR(KC_B),
                  HYPR(KC_GRV), KC_MRWD, KC_MPLY, KC_MFFD,
-                                   HYPR(KC_BSPC), HYPR(KC_F15),
+                                HYPR(KC_BSPC), HYPR(KC_F15),
                                                HYPR(KC_F17),
                  LGUI(KC_Z), LGUI(LSFT(KC_Z)), HYPR(KC_DEL),
-                                              HYPR(F5_PALM),
+                                                HYPR(KC_F5),
          __________,  __________,  __________,  __________,  __________, __________, __________, __________, __________,
          KC_6,  KC_7,  KC_8,  KC_9,  KC_0,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
