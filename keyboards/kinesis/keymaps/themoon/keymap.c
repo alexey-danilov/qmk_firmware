@@ -91,6 +91,10 @@ enum holding_keycodes {
   F6_PALM,
   F13_PALM,
   F14_PALM,
+  HYPR_F5,
+  HYPR_F6,
+  CA_F13,
+  CA_F14,
 
   L_PALM_J_MAC,
   L_PALM_K_MAC,
@@ -638,18 +642,23 @@ bool replace_alt_shift_with_lgui(uint16_t code, bool pressed) {
 }
 
 // replaces keycode and adds mod to it if it was held for at least provided duration
-bool replace_if_held_add_mods(uint16_t code, uint16_t mod, uint16_t held_code, uint16_t held_mod1, uint16_t held_mod2, bool pressed, uint16_t hold_duration) {
+bool replace_if_held_add_mods_full(uint16_t code, uint16_t mod_1, uint16_t mod_2, uint16_t mod_3, uint16_t mod_4, uint16_t held_code, uint16_t held_mod_1, uint16_t held_mod_2, uint16_t held_mod_3, uint16_t held_mod_4, bool pressed, uint16_t hold_duration) {
   static uint16_t hold_timer;
   if(pressed) {
       hold_timer= timer_read();
   } else {
       if (held_shorter(hold_timer, hold_duration)){
-          with_1_mod(code, mod);
+          with_4_mods(code, mod_1, mod_2, mod_3, mod_4);
       } else {
-          with_2_mods(held_code, held_mod1, held_mod2);
+          with_4_mods(held_code, held_mod_1, held_mod_2, held_mod_3, held_mod_4);
       }
   }
   return false;
+}
+
+// replaces keycode and adds mod to it if it was held for at least provided duration
+bool replace_if_held_add_mods(uint16_t code, uint16_t mod, uint16_t held_code, uint16_t held_mod1, uint16_t held_mod2, bool pressed, uint16_t hold_duration) {
+  return replace_if_held_add_mods_full(code, mod, KC_NO, KC_NO, KC_NO, held_code, held_mod1, held_mod2, KC_NO, KC_NO, pressed, hold_duration);
 }
 
 // add mod to keycode if it was held for at least provided duration
@@ -1235,7 +1244,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________, C(KC_BSPC),
          _MINS,
          _EQL, _TAB, KC_F1,
-         C(F6_PALM)
+         C(S(KC_F6))
     ),
 
 [_ALT_BSLS_MAC] = LAYOUT(
@@ -1248,7 +1257,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                   C(KC_BSPC), KC_F15,
                                                _SLSH,
                              _ESC, _ENTER, C(KC_DEL),
-                                          C(F5_PALM),
+                                         C(S(KC_F5)),
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
          KC_6,  KC_7,  KC_8,  KC_9,  KC_0,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
@@ -1373,7 +1382,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________, CLOSE_APP_MAC,
          _MINS,
          HIDE_FOCUS_MAC, FIND_PREV_MAC, FIND_NEXT_MAC,
-         KC_F6
+         HYPR_F6
     ),
 
 [_PALM_R_MAC] = LAYOUT(
@@ -1386,7 +1395,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                 HYPR(KC_BSPC), HYPR(KC_F15),
                                                HYPR(KC_F17),
                  LGUI(KC_Z), LGUI(LSFT(KC_Z)), HYPR(KC_DEL),
-                                                HYPR(KC_F5),
+                                                    HYPR_F5,
          __________,  __________,  __________,  __________,  __________, __________, __________, __________, __________,
          KC_6,  KC_7,  KC_8,  KC_9,  KC_0,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
@@ -1659,7 +1668,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________, CLOSE_APP_PC,
          _MINS,
          HIDE_FOCUS_PC, FIND_PREV_PC, FIND_NEXT_PC,
-         F14_PALM
+         CA_F14
     ),
 
 [_PALM_R_PC] = LAYOUT(
@@ -1672,7 +1681,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                              C(A(KC_BSPC)), C(A(KC_F15)),
                                            C(A(KC_SLSH)),
                        C(KC_Z), C(S(KC_Z)), C(A(KC_DEL)),
-                                          C(A(F13_PALM)),
+                                                  CA_F13,
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
          KC_6,  KC_7,  KC_8,  KC_9,  KC_0,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
@@ -1958,10 +1967,15 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case KC_F15: { return lead_autoshifted_special(KC_F15, pressed); }
         case KC_F16: { return lead_autoshifted_special(KC_F16, pressed); }
 
-        case F5_PALM: { return lead_custom_autoshifted(KC_F5, KC_F5, KC_F5, KC_LSFT, pressed, 250); }
-        case F6_PALM: { return lead_custom_autoshifted(KC_F6, KC_F6, KC_F6, KC_LSFT, pressed, 250); }
-        case F13_PALM: { return lead_custom_autoshifted(KC_F13, KC_F13, KC_F13, KC_LSFT, pressed, 250); }
-        case F14_PALM: { return lead_custom_autoshifted(KC_F14, KC_F14, KC_F14, KC_LSFT, pressed, 250); }
+        // palm keys, pressed with non-palm modifier: extended held timeout
+        case F5_PALM: { return replace_if_held_add_mods(KC_F5, KC_NO, KC_F5, KC_LSFT, KC_NO, pressed, 250); }
+        case F6_PALM: { return replace_if_held_add_mods(KC_F6, KC_NO, KC_F6, KC_LSFT, KC_NO, pressed, 250); }
+        case F13_PALM: { return replace_if_held_add_mods(KC_F13, KC_NO, KC_F13, KC_LSFT, KC_NO, pressed, 250); }
+        case F14_PALM: { return replace_if_held_add_mods(KC_F14, KC_NO, KC_F14, KC_LSFT, KC_NO, pressed, 250); }
+        case HYPR_F5: { return replace_if_held_add_mods_full(KC_F5, KC_LGUI, KC_LSFT, KC_LALT, KC_LCTL, KC_F5, KC_LALT, KC_LCTL, KC_NO, KC_NO, pressed, 250); }
+        case HYPR_F6: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_F6, KC_LGUI, KC_LSFT, KC_NO, KC_NO, KC_LGUI, KC_LSFT, KC_NO, KC_NO, KC_F6, KC_NO, KC_NO, KC_NO, KC_NO, pressed, 250, true ); }
+       case CA_F13: { return replace_if_held_add_mods_full(KC_F13, KC_LCTL, KC_LALT, KC_NO, KC_NO, KC_F13, KC_LSFT, KC_LALT, KC_NO, KC_NO, pressed, 250); }
+       case CA_F14: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_F14, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_F14, KC_LSFT, KC_NO, KC_NO, KC_NO, pressed, 250, false ); }
 
         case KC_LBRC: { return lead_autoshifted_special(KC_LBRC, pressed); }
         case KC_RBRC: { return lead_autoshifted_special(KC_RBRC, pressed); }
