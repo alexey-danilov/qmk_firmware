@@ -105,16 +105,16 @@ enum holding_keycodes {
   L_PALM_K_PC,
   L_PALM_L_PC,
 
-  _1_AT,
+  _1,
   _2_PLEFT,
   _3_SLASH,
   _4_PRGHT,
-  _5_DOLL,
-  _6_PERC,
+  _5,
+  _6,
   _7_BANG,
   _8_DASH,
   _9_QUEST,
-  _0_ARR_UP,
+  _0,
 
   HOME_MAC,
   HOME_PC,
@@ -1124,7 +1124,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [_MAC] = LAYOUT(
            // left side
            _INS, KC_F1, KC_F2, KC_F3, KC_F4, TD(SET_TD), KC_F6, KC_F7, KC_F8,
-           ALT_F7, _1_AT, _2_PLEFT, _3_SLASH, _4_PRGHT, _5_DOLL,
+           ALT_F7, _1, _2_PLEFT, _3_SLASH, _4_PRGHT, _5,
            ALT_F8, KC_Q, KC_W, KC_E, KC_R, KC_T,
            ALT_F9,KC_A, KC_S, KC_D, KC_F, KC_G,
            ALT_F10, KC_Z, KC_X, KC_C, KC_V, KC_B,
@@ -1137,7 +1137,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 			                                           PALM_L_MAC,
     // right side
   KC_F9, KC_F10, KC_F11, KC_F12, KC_F13, KC_F14, KC_F15, KEYB_CONTROL, TD(REST_TD),
-	_6_PERC, _7_BANG, _8_DASH, _9_QUEST, _0_ARR_UP, ALT_F11,
+	_6, _7_BANG, _8_DASH, _9_QUEST, _0, ALT_F11,
 	KC_Y, KC_U, KC_I, KC_O, KC_P, ALT_F12,
 	KC_H, KC_J, KC_K, KC_L, KC_SCLN, ALT_F13,
 	KC_N, KC_M, KC_UP, KC_DOT, KC_QUOT, ALT_F14,
@@ -1408,7 +1408,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [_PC] = LAYOUT(
            // left side
            _INS, KC_F1, KC_F2, KC_F3, KC_F4, TD(SET_TD), KC_F6, KC_F7, KC_F8,
-           KC_F17, _1_AT, _2_PLEFT, _3_SLASH, _4_PRGHT, _5_DOLL,
+           KC_F17, _1, _2_PLEFT, _3_SLASH, _4_PRGHT, _5,
            KC_F18, KC_Q, KC_W, KC_E, KC_R, KC_T,
            KC_F19, KC_A, KC_S, KC_D, KC_F, KC_G,
            KC_F20, KC_Z, KC_X, KC_C, KC_V, KC_B,
@@ -1421,7 +1421,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 			                                             PALM_L_PC,
     // right side
     KC_F9, KC_F10, KC_F11, KC_F12, KC_F13, KC_F14, KC_F15, KEYB_CONTROL, TD(REST_TD),
-  	_6_PERC, _7_BANG, _8_DASH, _9_QUEST, _0_ARR_UP, KC_F21,
+  	_6, _7_BANG, _8_DASH, _9_QUEST, _0, KC_F21,
   	KC_Y, KC_U, KC_I, KC_O, KC_P, KC_F22,
   	KC_H, KC_J, KC_K, KC_L, KC_SCLN, KC_F23,
   	KC_N, KC_M, KC_UP, KC_DOT, KC_QUOT, KC_F24,
@@ -1984,17 +1984,20 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case C_F5_F6: { return lead_custom_autoshifted_with_mods(KC_F5, KC_LCTL, KC_NUBS, KC_F6, KC_LCTL, KC_NO, pressed, AUTOSHIFT_SPECIAL_TERM); }
         case KC_DOT: { return lead_autoshifted_special(KC_DOT, pressed); }
 
+        // non-autoshifted numbers
+        case _1: { return lead_autoshifted_modified_numbers(KC_1, KC_1, KC_NO, pressed); }
+        case _5: { return lead_autoshifted_modified_numbers(KC_5, KC_5, KC_NO, pressed); }
+        case _6: { return lead_autoshifted_modified_numbers(KC_6, KC_6, KC_NO, pressed); }
+        case _0: { return lead_autoshifted_modified_numbers(KC_0, KC_0, KC_NO, pressed); }
+        
         // custom autoshifted keys - when pressed, other key + shift is sent
-        case _1_AT: { return lead_custom_autoshifted_with_mods(KC_1, KC_NO, KC_1, KC_2, KC_LSFT, KC_NO, pressed, AUTOSHIFT_SPECIAL_TERM); }
+        // autoshifted numbers
         case _2_PLEFT: { return lead_autoshifted_modified_numbers(KC_2, KC_9, KC_LSFT, pressed); }
         case _3_SLASH: { return lead_autoshifted_modified_numbers(KC_3, KC_MINS, KC_LSFT, pressed); }
         case _4_PRGHT: { return lead_autoshifted_modified_numbers(KC_4, KC_0, KC_LSFT, pressed); }
-        case _5_DOLL: { return lead_autoshifted_modified_numbers(KC_5, KC_4, KC_LSFT, pressed); }
-        case _6_PERC: { return lead_autoshifted_modified_numbers(KC_6, KC_5, KC_LSFT, pressed); }
         case _7_BANG: { return lead_autoshifted_modified_numbers(KC_7, KC_1, KC_LSFT, pressed); }
         case _8_DASH: { return lead_autoshifted_modified_numbers(KC_8, KC_MINS, KC_NO, pressed); }
         case _9_QUEST: { return lead_autoshifted_modified_numbers(KC_9, KC_SLSH, KC_LSFT, pressed); }
-        case _0_ARR_UP: { return lead_autoshifted_modified_numbers(KC_0, KC_6, KC_LSFT, pressed); }
 
         case ALT_F7: { return lead_custom_autoshifted_with_mods(KC_F7, KC_LALT, KC_F7, KC_F7, KC_LALT, KC_LSFT, pressed, AUTOSHIFT_SPECIAL_TERM); }
         case ALT_F8: { return lead_custom_autoshifted_with_mods(KC_F8, KC_LALT, KC_F8, KC_F8, KC_LALT, KC_LSFT, pressed, AUTOSHIFT_SPECIAL_TERM); }
