@@ -175,7 +175,6 @@ static bool default_layer = true;
 static bool isMac;
 static bool isPc;
 static bool caps_led;
-static bool caps_on;
 static bool lang_switch_led;
 static bool lead_led;
 static bool init_complete;
@@ -578,16 +577,14 @@ bool capsOnHardCheck(void) {
 
 void capsOn(void) {
   down(KC_LCAP); caps_led = true; led_blue_on();
-  caps_on = true;
 }
 
 void capsOff(void) {
   up(KC_LCAP); caps_led = false; led_blue_off();
-    caps_on = false;
 }
 
 void toggleCaps(void) {
-    if (capsOnHardCheck()) {
+    if (caps_led) {
         capsOff();
     } else {
         capsOn();
@@ -2101,7 +2098,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
 
         case SHIFT_TAB_MAC: {
-          if (caps_on) { capsOff(); return false; }
+          if (capsOnHardCheck()) { capsOff(); return false; }
           if (is_after_lead(KC_F2, pressed)) { return false; }
           static uint16_t shift_tab_mac_layer_timer;
           if ((momentary_layer_tap_with_hold(KC_TAB, KC_NO, KC_LSFT, KC_NO, KC_NO, KC_NO, &shift_tab_mac_layer_timer, &shift_tab_mac_interrupted, pressed, 200, 1000, false, KC_CLR, KC_NO, KC_NO)) == 2) {
@@ -2199,7 +2196,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
 
         case SHIFT_TAB_PC: {
-          if (caps_on) { capsOff(); return false; }
+          if (capsOnHardCheck()) { capsOff(); return false; }
           if (is_after_lead(KC_F2, pressed)) { return false; }
           static uint16_t shift_tab_pc_layer_timer;
           if ((momentary_layer_tap_with_hold(KC_TAB, KC_NO, KC_LSFT, KC_NO, KC_NO, KC_NO, &shift_tab_pc_layer_timer, &shift_tab_pc_interrupted, pressed, 200, 1000, false, KC_CLR, KC_NO, KC_NO)) == 2) {
