@@ -575,19 +575,11 @@ bool capsOnHardCheck(void) {
   return host_keyboard_leds() & (1<<USB_LED_CAPS_LOCK);
 }
 
-void capsOn(void) {
-  down(KC_LCAP); caps_led = true; led_blue_on();
-}
-
-void capsOff(void) {
-  up(KC_LCAP); caps_led = false; led_blue_off();
-}
-
 void toggleCaps(void) {
-    if (caps_led) {
-        capsOff();
+    if (capsOnHardCheck()) {
+        up(KC_LCAP); caps_led = false; led_blue_off();
     } else {
-        capsOn();
+        down(KC_LCAP); caps_led = true; led_blue_on();
     }
 }
 
@@ -2034,10 +2026,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             uint16_t delta_millis = timer_elapsed(space_timer);
             if (space_alone && ((delta_millis > 1) && (delta_millis < 50))) {
               up(KC_LGUI); key_code(KC_SPC);
-            } else if (space_alone && ((delta_millis >= 50) && (delta_millis < 250))) {
+            } else if (space_alone && ((delta_millis >= 50) && (delta_millis < 400))) {
               up(KC_LGUI); with_1_mod(KC_SPC, KC_LALT); // change lang
               lang_switch_led = true;
-              capsOff(); // on mac changing language resets caps lock
+              // on mac changing language resets caps lock
+              if (capsOnHardCheck()) { up(KC_LCAP); caps_led = false; led_blue_off(); }
             }
             space_alone = false;
             space_timer = 0;
@@ -2098,7 +2091,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
 
         case SHIFT_TAB_MAC: {
-          if (capsOnHardCheck()) { capsOff(); return false; }
+          if (capsOnHardCheck()) { up(KC_LCAP); caps_led = false; led_blue_off(); return false; }
           if (is_after_lead(KC_F2, pressed)) { return false; }
           static uint16_t shift_tab_mac_layer_timer;
           if ((momentary_layer_tap_with_hold(KC_TAB, KC_NO, KC_LSFT, KC_NO, KC_NO, KC_NO, &shift_tab_mac_layer_timer, &shift_tab_mac_interrupted, pressed, 200, 1000, false, KC_CLR, KC_NO, KC_NO)) == 2) {
@@ -2133,7 +2126,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             uint16_t delta_millis = timer_elapsed(space_timer);
             if (space_alone && ((delta_millis > 1) && (delta_millis < 50))) {
               up(KC_LCTL); key_code(KC_SPC);
-            } else if (space_alone && ((delta_millis >= 50) && (delta_millis < 250))) {
+            } else if (space_alone && ((delta_millis >= 50) && (delta_millis < 400))) {
               up(KC_LCTL); with_1_mod(KC_SPC, KC_LGUI); // change lang
               lang_switch_led = true;
             }
@@ -2196,7 +2189,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
 
         case SHIFT_TAB_PC: {
-          if (capsOnHardCheck()) { capsOff(); return false; }
+          if (capsOnHardCheck()) { up(KC_LCAP); caps_led = false; led_blue_off(); return false; }
           if (is_after_lead(KC_F2, pressed)) { return false; }
           static uint16_t shift_tab_pc_layer_timer;
           if ((momentary_layer_tap_with_hold(KC_TAB, KC_NO, KC_LSFT, KC_NO, KC_NO, KC_NO, &shift_tab_pc_layer_timer, &shift_tab_pc_interrupted, pressed, 200, 1000, false, KC_CLR, KC_NO, KC_NO)) == 2) {
