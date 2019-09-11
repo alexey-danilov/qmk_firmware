@@ -1985,9 +1985,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           }
           else {
             uint16_t delta_millis = timer_elapsed(space_timer);
-            if (space_alone && ((delta_millis > 1) && (delta_millis < 100))) { // 0 - 200 ms - space
+            if (space_alone && ((delta_millis > 1) && (delta_millis < 50))) { // 0 - 200 ms - space
               up(KC_LGUI); key_code(KC_SPC);
-            } else if (space_alone && ((delta_millis >= 100) && (delta_millis < 400))) { // 200 - 500 ms - change lang
+            } else if (space_alone && ((delta_millis >= 50) && (delta_millis < 400))) { // 200 - 500 ms - change lang
               up(KC_LGUI); with_1_mod(KC_SPC, KC_LALT); // change lang
               lang_switch_led = true;
               // on mac changing language resets caps lock
@@ -2085,9 +2085,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           }
           else {
             uint16_t delta_millis = timer_elapsed(space_timer);
-            if (space_alone && ((delta_millis > 1) && (delta_millis < 100))) {
+            if (space_alone && ((delta_millis > 1) && (delta_millis < 50))) {
               up(KC_LCTL); key_code(KC_SPC);
-            } else if (space_alone && ((delta_millis >= 100) && (delta_millis < 400))) {
+            } else if (space_alone && ((delta_millis >= 50) && (delta_millis < 400))) {
               up(KC_LCTL); with_1_mod(KC_SPC, KC_LGUI); // change lang
               lang_switch_led = true;
             }

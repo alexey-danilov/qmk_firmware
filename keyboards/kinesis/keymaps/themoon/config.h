@@ -1,7 +1,7 @@
 #ifndef CONFIG_USER_H
 #define CONFIG_USER_H
 
-#define TAPPING_TERM 100
+#define TAPPING_TERM 150
 #define TAPPING_FORCE_HOLD
 
 #define AUTOSHIFT_QWERTY_KEYS_TERM 9999 // usual a-z keys
