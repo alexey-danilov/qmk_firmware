@@ -156,7 +156,6 @@ enum holding_keycodes {
 
 static uint16_t esc_timer = 0; // timer for leader key: esc
 static uint16_t lead_timer = 0; // timer for leader key
-static uint16_t space_timer = 0;
 static bool default_layer = true;
 static bool palm_l_mac_layer = false;
 static bool palm_l_pc_layer = false;
@@ -1746,16 +1745,11 @@ bool palm_r_pc_interrupted = true;
 
 bool left_pressed = false;
 bool right_pressed = false;
-bool space_alone = false;
 
 // adding logic to custom keycodes and overriding existing ones (taking hold duration into account);
 // "mo layer tap" and "esc leader key" functionality
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     bool pressed = record->event.pressed;
-
-    if (space_alone && pressed) {
-       space_alone = false;
-    }
 
     if (default_layer) {
        // remove stuck modifiers
@@ -1977,26 +1971,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         // <<<<<<< escape as additional leader key
 
         // >>>>>>> mac layers
+
         case CMD_SPACE: {
-          if (is_after_lead(KC_SPC, pressed)) { return false; };
-          if (pressed) {
-            space_alone = true;
-            space_timer = timer_read();
-          }
-          else {
-            uint16_t delta_millis = timer_elapsed(space_timer);
-            if (space_alone && ((delta_millis > 1) && (delta_millis < 50))) { // 0 - 200 ms - space
-              up(KC_LGUI); key_code(KC_SPC);
-            } else if (space_alone && ((delta_millis >= 50) && (delta_millis < 400))) { // 200 - 500 ms - change lang
-              up(KC_LGUI); with_1_mod(KC_SPC, KC_LALT); // change lang
-              lang_switch_led = true;
-              // on mac changing language resets caps lock
-              if (capsOnHardCheck()) { up(KC_LCAP); caps_led = false; led_blue_off(); }
-            }
-            space_alone = false;
-            space_timer = 0;
-          }
-          return true;
+          if (is_after_lead(KC_SPC, pressed)) { return false; }; return true;
         }
 
         case ALT_SHIFT_COMM: {
@@ -2072,29 +2049,17 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case PALM_R_MAC: {
           if (is_after_lead(KC_F6, pressed)) { return false; }
           static uint16_t palm_r_mac_layer_timer;
-          momentary_layer_tap_with_hold(KC_F6, KC_LALT, KC_NO, KC_NO, KC_NO, KC_NO, &palm_r_mac_layer_timer, &palm_r_mac_interrupted, pressed, 250, 1000, true, KC_F6, KC_LALT, KC_LSFT);
+          if (momentary_layer_tap_with_hold(KC_F6, KC_LALT, KC_NO, KC_NO, KC_NO, KC_NO, &palm_r_mac_layer_timer, &palm_r_mac_interrupted, pressed, 250, 1000, true, KC_SPC, KC_LALT, KC_NO) == 2) {
+            // held key
+            lang_switch_led = true;
+            if (capsOnHardCheck()) { up(KC_LCAP); caps_led = false; led_blue_off(); }
+          };
           return true;
         }
 
         // >>>>>>> pc layers
         case CTRL_SPACE: {
-          if (is_after_lead(KC_SPC, pressed)) { return false; };
-          if (pressed) {
-            space_alone = true;
-            space_timer = timer_read();
-          }
-          else {
-            uint16_t delta_millis = timer_elapsed(space_timer);
-            if (space_alone && ((delta_millis > 1) && (delta_millis < 50))) {
-              up(KC_LCTL); key_code(KC_SPC);
-            } else if (space_alone && ((delta_millis >= 50) && (delta_millis < 400))) {
-              up(KC_LCTL); with_1_mod(KC_SPC, KC_LGUI); // change lang
-              lang_switch_led = true;
-            }
-            space_alone = false;
-            space_timer = 0;
-          }
-          return true;
+          if (is_after_lead(KC_SPC, pressed)) { return false; }; return true;
         }
 
         case CTRL_SHIFT_COMM: {
@@ -2170,7 +2135,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case PALM_R_PC: {
           if (is_after_lead(KC_F14, pressed)) { return false; }
           static uint16_t palm_r_pc_layer_timer;
-          momentary_layer_tap_with_hold(KC_F14, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, &palm_r_pc_layer_timer, &palm_r_pc_interrupted, pressed, 250, 1000, false, KC_F14, KC_LSFT, KC_NO);
+          if (momentary_layer_tap_with_hold(KC_F14, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, &palm_r_pc_layer_timer, &palm_r_pc_interrupted, pressed, 250, 1000, false, KC_SPC, KC_LGUI, KC_NO) == 2) {
+            lang_switch_led = true;
+          }
           return true;
         }
 
