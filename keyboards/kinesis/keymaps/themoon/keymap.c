@@ -1867,7 +1867,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case KC_D: { return lead_modified_on_default_layer_hold(KC_D, KC_MINS, KC_LSFT, pressed); }
         case KC_F: { return lead_modified_on_default_layer_hold(KC_F, KC_0, KC_LSFT, pressed); }
         case KC_G: { return lead_autoshifted_same_key(KC_G, pressed); }
-        case KC_H: { return lead_custom_autoshifted(KC_H, isMac ? KC_F16 : KC_H, KC_H, KC_LSFT, pressed, AUTOSHIFT_QWERTY_KEYS_TERM); }
+        case KC_H: { return lead_modified_on_default_layer_hold(KC_H, KC_BSLS, KC_LSFT, pressed); }
         case KC_J: { return lead_modified_on_default_layer_hold(KC_J, KC_7, KC_LSFT, pressed); }
         case KC_K: { return lead_modified_on_default_layer_hold(KC_K, KC_MINS, KC_NO, pressed); }
         case KC_L: { return lead_modified_on_default_layer_hold(KC_L, KC_SLSH, KC_LSFT, pressed); }
