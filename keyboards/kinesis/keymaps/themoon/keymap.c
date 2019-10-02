@@ -843,6 +843,10 @@ bool lead_autoshifted_modified_numbers(uint16_t code, uint16_t held_code, uint16
   return lead_custom_autoshifted(code, code, held_code, held_mod, pressed, AUTOSHIFT_MODIFIED_NUMBERS_TERM);
 }
 
+bool lead_modified_on_default_layer_hold(uint16_t code, uint16_t held_code, uint16_t held_mod, bool pressed) {
+  return lead_custom_autoshifted_with_mods(code, KC_NO, code, default_layer ? held_code : code, default_layer ? held_mod : KC_NO, KC_NO, pressed, AUTOSHIFT_SPECIAL_TERM);
+}
+
 bool lead_autoshifted_same_key(uint16_t code, bool pressed) {
   return lead_custom_autoshifted(code, code, code, KC_LSFT, pressed, AUTOSHIFT_QWERTY_KEYS_TERM);
 }
@@ -852,7 +856,7 @@ bool lead_autoshifted_special(uint16_t code, bool pressed) {
 }
 
 bool lead_autoshifted_numbers(uint16_t code, bool pressed) {
-  return lead_custom_autoshifted(code, code, code, KC_LSFT, pressed, AUTOSHIFT_NUMBERS_TERM);
+  return lead_custom_autoshifted(code, code, code, default_layer ? KC_NO : KC_LSFT, pressed, AUTOSHIFT_NUMBERS_TERM);
 }
 
 bool lead_autoshifted_custom_term(uint16_t code, bool pressed, uint16_t hold_duration) {
@@ -1054,7 +1058,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [_MAC] = LAYOUT(
            // left side
            _INS, KC_F1, KC_F2, KC_F3, KC_F4, TD(SET_TD), KC_F6, KC_F7, KC_F8,
-           ALT_F7, _1, _2_PLEFT, _3_SLASH, _4_PRGHT, _5,
+           ALT_F7, KC_1, KC_2, KC_3, KC_4, KC_5,
            ALT_F8, KC_Q, KC_W, KC_E, KC_R, KC_T,
            ALT_F9,KC_A, KC_S, KC_D, KC_F, KC_G,
            ALT_F10, KC_Z, KC_X, KC_C, KC_V, KC_B,
@@ -1067,7 +1071,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 			                                           PALM_L_MAC,
     // right side
   KC_F9, KC_F10, KC_F11, KC_F12, KC_F13, KC_F14, KC_F15, KEYB_CONTROL, TD(REST_TD),
-	_6, _7_BANG, _8_DASH, _9_QUEST, _0, ALT_F11,
+	KC_6, KC_7, KC_8, KC_9, KC_0, ALT_F11,
 	KC_Y, KC_U, KC_I, KC_O, KC_P, ALT_F12,
 	KC_H, KC_J, KC_K, KC_L, KC_SCLN, ALT_F13,
 	KC_N, KC_M, KC_UP, KC_DOT, KC_QUOT, ALT_F14,
@@ -1083,7 +1087,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // mac-specific layers
 [_COMMAND_ESCAPE] = LAYOUT(
          _INS,  __________,  __________,  __________,  __________,  KC_F5, __________, __________, __________,
-         __________, KC_1, KC_2, KC_3, KC_4, KC_5,
+         __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
@@ -1093,7 +1097,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                      CMD_ESC, KC_LSFT, KC_LCTL,
                                              _,
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
-         KC_6, KC_7, KC_8, KC_9, KC_0, __________,
+         __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
          CTRL_H, __________,  __________,  __________,  __________,  __________,
          __________, CTRL_M, SELECT_UP_MAC, CTRL_DOT, __________, __________,
@@ -1106,7 +1110,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 [_COMMAND_SPACE] = LAYOUT(
          _INS,  __________,  __________,  __________,  __________,  KC_F5, __________, __________, __________,
-         __________, KC_1, KC_2, KC_3, KC_4, KC_5,
+         __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
@@ -1152,7 +1156,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 [_ALT_SLASH_MAC] = LAYOUT(
          _INS,  __________,  __________,  __________,  __________,  KC_F5, __________, __________, __________,
-         __________, KC_1, KC_2, KC_3, KC_4, KC_5,
+         __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
@@ -1162,7 +1166,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
           KC_LGUI, KC_LSFT, KC_LCTL,
                                   _,
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
-         KC_6, KC_7, KC_8, KC_9, KC_0, __________,
+         __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
@@ -1175,7 +1179,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 [_ALT_BSLS_MAC] = LAYOUT(
          _INS,  __________,  __________,  __________,  __________,  KC_F5, __________, __________, __________,
-         __________, KC_1, KC_2, KC_3, KC_4, KC_5,
+         __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
@@ -1185,7 +1189,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                              _ESC, _ENTER, C(KC_DEL),
                                          C(S(KC_F5)),
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
-         KC_6,  KC_7,  KC_8,  KC_9,  KC_0,  __________,
+         __________, __________, __________, __________, __________, __________,
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
@@ -1198,7 +1202,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 [_CTRL_F1] = LAYOUT(
          _INS,  __________,  __________,  __________,  __________,  KC_F5, __________, __________, __________,
-         __________, KC_1, KC_2, KC_3, KC_4, KC_5,
+         __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
@@ -1221,7 +1225,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 [_CTRL_DEL] = LAYOUT(
          _INS,  __________,  __________,  __________,  __________,  KC_F5, __________, __________, __________,
-         __________, KC_1, KC_2, KC_3, KC_4, KC_5,
+         __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
@@ -1231,7 +1235,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          KC_LGUI, KC_LSFT, CTRL_DEL,
                                   _,
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
-         KC_6, KC_7, KC_8, KC_9, KC_0, __________,
+         __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
@@ -1244,7 +1248,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 [_SHIFT_ENTER_MAC] = LAYOUT(
          _INS,  __________,  __________,  __________,  __________,  KC_F5, __________, __________, __________,
-         __________, KC_1, KC_2, KC_3, KC_4, KC_5,
+         __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
@@ -1254,7 +1258,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
        KC_LGUI, SHIFT_ENTER_MAC, KC_LCTL,
                                        _,
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
-	       KC_6, KC_7, KC_8, KC_9, KC_0, __________,
+	       __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
@@ -1267,7 +1271,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 [_SHIFT_TAB_MAC] = LAYOUT(
          _INS,  __________,  __________,  __________,  __________,  KC_F5, __________, __________, __________,
-         __________, KC_1, KC_2, KC_3, KC_4, KC_5,
+         __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
@@ -1338,7 +1342,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [_PC] = LAYOUT(
            // left side
            _INS, KC_F1, KC_F2, KC_F3, KC_F4, TD(SET_TD), KC_F6, KC_F7, KC_F8,
-           KC_F17, _1, _2_PLEFT, _3_SLASH, _4_PRGHT, _5,
+           KC_F17, KC_1, KC_2, KC_3, KC_4, KC_5,
            KC_F18, KC_Q, KC_W, KC_E, KC_R, KC_T,
            KC_F19, KC_A, KC_S, KC_D, KC_F, KC_G,
            KC_F20, KC_Z, KC_X, KC_C, KC_V, KC_B,
@@ -1351,7 +1355,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 			                                             PALM_L_PC,
     // right side
     KC_F9, KC_F10, KC_F11, KC_F12, KC_F13, KC_F14, KC_F15, KEYB_CONTROL, TD(REST_TD),
-  	_6, _7_BANG, _8_DASH, _9_QUEST, _0, KC_F21,
+  	KC_6, KC_7, KC_8, KC_9, KC_0, KC_F21,
   	KC_Y, KC_U, KC_I, KC_O, KC_P, KC_F22,
   	KC_H, KC_J, KC_K, KC_L, KC_SCLN, KC_F23,
   	KC_N, KC_M, KC_UP, KC_DOT, KC_QUOT, KC_F24,
@@ -1367,7 +1371,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // pc-specific layers
 [_CONTROL_ESCAPE] = LAYOUT(
          _INS,  __________,  __________,  __________,  __________,  KC_F5, __________, __________, __________,
-         __________, KC_1, KC_2, KC_3, KC_4, KC_5,
+         __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
@@ -1378,7 +1382,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                              _,
 
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
-         KC_6, KC_7, KC_8, KC_9, KC_0, __________,
+         __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
          __________,  __________, SELECT_UP_PC, __________,  __________,  __________,
@@ -1391,7 +1395,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 [_CONTROL_SPACE] = LAYOUT(
          _INS,  __________,  __________,  __________,  __________,  KC_F5, __________, __________, __________,
-         __________, KC_1, KC_2, KC_3, KC_4, KC_5,
+         __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
@@ -1437,7 +1441,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 [_ALT_SLASH_PC] = LAYOUT(
          _INS,  __________,  __________,  __________,  __________,  KC_F5, __________, __________, __________,
-         __________, KC_1, KC_2, KC_3, KC_4, KC_5,
+         __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
@@ -1447,7 +1451,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
               KC_LCTL, KC_LSFT, KC_LGUI,
                                       _,
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
-         KC_6, KC_7, KC_8, KC_9, KC_0, __________,
+         __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
@@ -1460,7 +1464,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 [_ALT_BSLS_PC] = LAYOUT(
          _INS,  __________,  __________,  __________,  __________,  KC_F5, __________, __________, __________,
-         __________, KC_1, KC_2, KC_3, KC_4, KC_5,
+         __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
@@ -1529,7 +1533,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 [_SHIFT_ENTER_PC] = LAYOUT(
          _INS,  __________,  __________,  __________,  __________,  KC_F5, __________, __________, __________,
-         __________, KC_1, KC_2, KC_3, KC_4, KC_5,
+         __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
@@ -1539,7 +1543,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   KC_LCTL, SHIFT_ENTER_PC, KC_LGUI,
                                  _,
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
-	       KC_6, KC_7, KC_8, KC_9, KC_0, __________,
+	       __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
@@ -1553,7 +1557,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 [_SHIFT_TAB_PC] = LAYOUT(
          _INS,  __________,  __________,  __________,  __________,  KC_F5, __________, __________, __________,
-         __________, KC_1, KC_2, KC_3, KC_4, KC_5,
+         __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
@@ -1845,34 +1849,36 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case LEAD_SPACE: {
           return press_leader_key(pressed);
         }
+
         // >>>>>>> KEYS, RESPONDING TO LEAD_SPACE SEQUENCE
         // autoshifted keys - same key with a shift
         case KC_Q: { return lead_custom_autoshifted(KC_Q, isMac ? KC_F13 : KC_Q, KC_Q, KC_LSFT, pressed, AUTOSHIFT_QWERTY_KEYS_TERM); }
-        case KC_W: { return lead_autoshifted_same_key(KC_W, pressed); }
-        case KC_E: { return lead_autoshifted_same_key(KC_E, pressed); }
-        case KC_R: { return lead_autoshifted_same_key(KC_R, pressed); }
+        case KC_W: { return lead_modified_on_default_layer_hold(KC_W, KC_2, KC_LSFT, pressed); }
+        case KC_E: { return lead_modified_on_default_layer_hold(KC_E, KC_8, KC_LSFT, pressed); }
+        case KC_R: { return lead_modified_on_default_layer_hold(KC_R, KC_6, KC_LSFT, pressed); }
         case KC_T: { return lead_autoshifted_same_key(KC_T, pressed); }
         case KC_Y: { return lead_autoshifted_same_key(KC_Y, pressed); }
-        case KC_U: { return lead_autoshifted_same_key(KC_U, pressed); }
-        case KC_I: { return lead_autoshifted_same_key(KC_I, pressed); }
-        case KC_O: { return lead_autoshifted_same_key(KC_O, pressed); }
+        case KC_U: { return lead_modified_on_default_layer_hold(KC_U, KC_5, KC_LSFT, pressed); }
+        case KC_I: { return lead_modified_on_default_layer_hold(KC_I, KC_7, KC_LSFT, pressed); }
+        case KC_O: { return lead_modified_on_default_layer_hold(KC_O, KC_4, KC_LSFT, pressed); }
         case KC_P: { return lead_autoshifted_same_key(KC_P, pressed); }
         case KC_A: { return lead_autoshifted_same_key(KC_A, pressed); }
-        case KC_S: { return lead_autoshifted_same_key(KC_S, pressed); }
-        case KC_D: { return lead_autoshifted_same_key(KC_D, pressed); }
-        case KC_F: { return lead_autoshifted_same_key(KC_F, pressed); }
+        case KC_S: { return lead_modified_on_default_layer_hold(KC_S, KC_9, KC_LSFT, pressed); }
+        case KC_D: { return lead_modified_on_default_layer_hold(KC_D, KC_MINS, KC_NO, pressed); }
+        case KC_F: { return lead_modified_on_default_layer_hold(KC_F, KC_0, KC_LSFT, pressed); }
         case KC_G: { return lead_autoshifted_same_key(KC_G, pressed); }
         case KC_H: { return lead_custom_autoshifted(KC_H, isMac ? KC_F16 : KC_H, KC_H, KC_LSFT, pressed, AUTOSHIFT_QWERTY_KEYS_TERM); }
-        case KC_J: { return lead_autoshifted_same_key(KC_J, pressed); }
-        case KC_K: { return lead_autoshifted_same_key(KC_K, pressed); }
-        case KC_L: { return lead_autoshifted_same_key(KC_L, pressed); }
+        case KC_J: { return lead_modified_on_default_layer_hold(KC_J, KC_EQL, KC_LSFT, pressed); }
+        case KC_K: { return lead_modified_on_default_layer_hold(KC_K, KC_EQL, KC_NO, pressed); }
+        case KC_L: { return lead_modified_on_default_layer_hold(KC_L, KC_SLSH, KC_LSFT, pressed); }
         case KC_Z: { return lead_autoshifted_same_key(KC_Z, pressed); }
-        case KC_X: { return lead_autoshifted_same_key(KC_X, pressed); }
-        case KC_C: { return lead_autoshifted_same_key(KC_C, pressed); }
-        case KC_V: { return lead_autoshifted_same_key(KC_V, pressed); }
+        case KC_X: { return lead_modified_on_default_layer_hold(KC_X, KC_COMM, KC_LSFT, pressed); }
+        case KC_C: { return lead_modified_on_default_layer_hold(KC_C, KC_MINS, KC_LSFT, pressed); }
+        case KC_V: { return lead_modified_on_default_layer_hold(KC_V, KC_DOT, KC_LSFT, pressed); }
         case KC_B: { return lead_autoshifted_same_key(KC_B, pressed); }
         case KC_N: { return lead_autoshifted_same_key(KC_N, pressed); }
-        case KC_M: { return lead_autoshifted_same_key(KC_M, pressed); }
+        case KC_M: { return lead_modified_on_default_layer_hold(KC_M, KC_1, KC_LSFT, pressed); }
+        case KC_DOT: { return lead_modified_on_default_layer_hold(KC_DOT, KC_BSLS, KC_LSFT, pressed); }
 
         case KC_1: { return lead_autoshifted_numbers(KC_1, pressed); }
         case KC_2: { return lead_autoshifted_numbers(KC_2, pressed); }
@@ -1932,7 +1938,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case KC_NUBS: { return lead_autoshifted_special(KC_NUBS, pressed); }
         case KC_APP: { return lead_autoshifted_special(KC_APP, pressed); }
         case C_F2_F3: { return lead_custom_autoshifted_with_mods(KC_F2, KC_LCTL, KC_F3, KC_F3, KC_LCTL, KC_NO, pressed, AUTOSHIFT_SPECIAL_TERM); }
-        case KC_DOT: { return lead_autoshifted_special(KC_DOT, pressed); }
 
         // non-autoshifted numbers
         case _1: { return lead_autoshifted_modified_numbers(KC_1, KC_1, KC_NO, pressed); }
@@ -2002,7 +2007,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case ALT_SHIFT_COMM: {
           if (is_after_lead(KC_COMM, pressed)) { return false; }
           static uint16_t alt_shift_layer_timer;
-          momentary_layer_tap_with_hold(KC_COMM, KC_NO, KC_LALT, KC_LSFT, KC_NO, KC_NO, &alt_shift_layer_timer, &alt_shift_interrupted, pressed, AUTOSHIFT_SPECIAL_TERM, 350, false, KC_COMM, KC_LSFT, KC_NO);
+          momentary_layer_tap(KC_COMM, KC_NO, KC_LALT, KC_LSFT, KC_NO, KC_NO, &alt_shift_layer_timer, &alt_shift_interrupted, pressed, AUTOSHIFT_SPECIAL_TERM, true);
           return true;
         }
 
@@ -2019,28 +2024,28 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case CTRL_DEL: {
           if (is_after_lead(KC_DEL, pressed)) { return false; }
           static uint16_t ctrl_del_layer_timer;
-          momentary_layer_tap_with_hold(KC_DEL, KC_NO, KC_LCTL, KC_NO, KC_NO, KC_NO, &ctrl_del_layer_timer, &ctrl_del_interrupted, pressed, AUTOSHIFT_SPECIAL_TERM, 350, false, KC_EQL, KC_LSFT, KC_NO);
+          momentary_layer_tap(KC_DEL, KC_NO, KC_LCTL, KC_NO, KC_NO, KC_NO, &ctrl_del_layer_timer, &ctrl_del_interrupted, pressed, AUTOSHIFT_SPECIAL_TERM, true);
           return true;
         }
 
         case CTRL_F1: {
           if (is_after_lead(KC_F17, pressed)) { return false; }
           static uint16_t ctrl_f1_layer_timer;
-          momentary_layer_tap_with_hold(KC_F1, KC_LCTL, KC_LCTL, KC_NO, KC_NO, KC_NO, &ctrl_f1_layer_timer, &ctrl_f1_interrupted, pressed, AUTOSHIFT_SPECIAL_TERM, 350, false, KC_6, KC_LSFT, KC_NO);
+          momentary_layer_tap(KC_F1, KC_LCTL, KC_LCTL, KC_NO, KC_NO, KC_NO, &ctrl_f1_layer_timer, &ctrl_f1_interrupted, pressed, AUTOSHIFT_SPECIAL_TERM, true);
           return true;
         }
 
         case ALT_SLASH_MAC: {
           if (is_after_lead(KC_SLSH, pressed)) { return false; }
           static uint16_t alt_slash_mac_layer_timer;
-          momentary_layer_tap_with_hold(KC_SLSH, KC_NO, KC_LALT, KC_NO, KC_NO, KC_NO, &alt_slash_mac_layer_timer, &alt_slash_mac_interrupted, pressed, AUTOSHIFT_SPECIAL_TERM, 350, false, KC_EQL, KC_NO, KC_NO);
+          momentary_layer_tap(KC_SLSH, KC_NO, KC_LALT, KC_NO, KC_NO, KC_NO, &alt_slash_mac_layer_timer, &alt_slash_mac_interrupted, pressed, AUTOSHIFT_SPECIAL_TERM, true);
           return true;
         }
 
         case ALT_BSLS_MAC: {
           if (is_after_lead(KC_BSLS, pressed)) { return false; }
           static uint16_t alt_bsls_mac_layer_timer;
-          momentary_layer_tap_with_hold(KC_BSLS, KC_NO, KC_LALT, KC_NO, KC_NO, KC_NO, &alt_bsls_mac_layer_timer, &alt_bsls_mac_interrupted, pressed, AUTOSHIFT_SPECIAL_TERM, 350, false, KC_2, KC_LSFT, KC_NO);
+          momentary_layer_tap(KC_BSLS, KC_NO, KC_LALT, KC_NO, KC_NO, KC_NO, &alt_bsls_mac_layer_timer, &alt_bsls_mac_interrupted, pressed, AUTOSHIFT_SPECIAL_TERM, true);
           return true;
         }
 
@@ -2100,7 +2105,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case CTRL_SHIFT_COMM: {
           if (is_after_lead(KC_COMM, pressed)) { return false; }
           static uint16_t ctrl_shift_layer_timer;
-          momentary_layer_tap_with_hold(KC_COMM, KC_NO, KC_LCTL, KC_LSFT, KC_NO, KC_NO, &ctrl_shift_layer_timer, &ctrl_shift_interrupted, pressed, AUTOSHIFT_SPECIAL_TERM, 350, false, KC_COMM, KC_LSFT, KC_NO);
+          momentary_layer_tap(KC_COMM, KC_NO, KC_LCTL, KC_LSFT, KC_NO, KC_NO, &ctrl_shift_layer_timer, &ctrl_shift_interrupted, pressed, AUTOSHIFT_SPECIAL_TERM, false);
           return true;
         }
 
@@ -2124,21 +2129,21 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case RGUI: {
           if (is_after_lead(KC_F17, pressed)) { return false; }
           static uint16_t rgui_layer_timer;
-          momentary_layer_tap_with_hold(KC_LGUI, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, &rgui_layer_timer, &rgui_interrupted, pressed, AUTOSHIFT_SPECIAL_TERM, 350, false, KC_6, KC_LSFT, KC_NO);
+          momentary_layer_tap(KC_LGUI, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, &rgui_layer_timer, &rgui_interrupted, pressed, AUTOSHIFT_SPECIAL_TERM, false);
           return true;
         }
 
         case ALT_BSLS_PC: {
           if (is_after_lead(KC_BSLS, pressed)) { return false; }
           static uint16_t alt_bsls_pc_layer_timer;
-          momentary_layer_tap_with_hold(KC_BSLS, KC_NO, KC_LALT, KC_NO, KC_NO, KC_NO, &alt_bsls_pc_layer_timer, &alt_bsls_pc_interrupted, pressed, AUTOSHIFT_SPECIAL_TERM, 350, false, KC_2, KC_LSFT, KC_NO);
+          momentary_layer_tap(KC_BSLS, KC_NO, KC_LALT, KC_NO, KC_NO, KC_NO, &alt_bsls_pc_layer_timer, &alt_bsls_pc_interrupted, pressed, AUTOSHIFT_SPECIAL_TERM, false);
           return true;
         }
 
         case ALT_SLASH_PC: {
           if (is_after_lead(KC_SLSH, pressed)) { return false; }
           static uint16_t alt_slash_pc_layer_timer;
-          momentary_layer_tap_with_hold(KC_SLSH, KC_NO, KC_LALT, KC_NO, KC_NO, KC_NO, &alt_slash_pc_layer_timer, &alt_slash_pc_interrupted, pressed, AUTOSHIFT_SPECIAL_TERM, 350, false, KC_EQL, KC_NO, KC_NO);
+          momentary_layer_tap(KC_SLSH, KC_NO, KC_LALT, KC_NO, KC_NO, KC_NO, &alt_slash_pc_layer_timer, &alt_slash_pc_interrupted, pressed, AUTOSHIFT_SPECIAL_TERM, false);
           return true;
         }
 
