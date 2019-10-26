@@ -2,6 +2,7 @@
 #define CONFIG_USER_H
 
 #define TAPPING_TERM 150
+#define RETRO_TAPPING
 
 #define AUTOSHIFT_QWERTY_KEYS_TERM 9999 // usual a-z keys
 #define AUTOSHIFT_MODIFIED_NUMBERS_TERM 150 // 2 -> (
