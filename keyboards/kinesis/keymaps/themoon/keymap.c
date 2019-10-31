@@ -1089,8 +1089,8 @@ qk_tap_dance_action_t tap_dance_actions[] = {
   [TAP_MACRO] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, dynamic_macro_finished, dynamic_macro_reset, 366),
   [REST_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, rest_finished, rest_reset, 366),
   [SET_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, set_finished, set_reset, 366),
-  [D_LANG] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, d_lang_finished, d_lang_reset, AUTOSHIFT_SPECIAL_TERM),
-  [K_CAPS] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, k_caps_finished, k_caps_reset, AUTOSHIFT_SPECIAL_TERM)
+  [D_LANG] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, d_lang_finished, d_lang_reset, 175),
+  [K_CAPS] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, k_caps_finished, k_caps_reset, 175)
 };
 
 /* Mac keymap:
@@ -1171,8 +1171,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________, CTRL_M, SELECT_UP_MAC, CTRL_DOT, __________, __________,
                    SELECT_LEFT_MAC, SELECT_DOWN_MAC, SELECT_RIGHT_MAC, KC_NUBS,
          __________, DEL_LEFT_MAC,
-         _MINS,
-         _EQL, KC_F2, LEAD_SPACE,
+         _BSLS,
+         _MINS, _EQL, LEAD_SPACE,
          F6_PALM
     ),
 
@@ -1240,8 +1240,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________, __________, __________, __________, __________, __________,
                __________, __________, __________, KC_NUBS,
          __________, C(KC_BSPC),
-         _MINS,
-         _EQL, _TAB, KC_F1,
+         _BSLS,
+         _MINS, _EQL, KC_F1,
          C(S(KC_F6))
     ),
 
@@ -1309,8 +1309,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________, __________, __________, __________, __________, __________,
                __________, __________, __________, KC_NUBS,
          __________, _BSPC,
-         _MINS,
-         _EQL, _TAB, _SPACE,
+         _BSLS,
+         _MINS, _EQL, _SPACE,
          F6_PALM
     ),
 
@@ -1333,7 +1333,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                    __________, __________, __________, KC_NUBS,
          __________, _BSPC,
          _BSLS,
-         _EQL, _TAB, _SPACE,
+         _MINS, _EQL, _SPACE,
          F6_PALM
     ),
 
@@ -1378,8 +1378,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          HYPR(KC_N), HYPR_M, KC_PGUP, HYPR_SPC, HYPR(KC_QUOT), HYPR(KC_F14),
                         KC_HOME, KC_PGDN, KC_END, HYPR(KC_NUBS),
          HYPR(KC_F16), HYPR(KC_BSPC),
-         HYPR(KC_MINS),
-         HYPR(KC_EQL), S_F3_, F3_,
+         HYPR(KC_BSLS),
+         HYPR(KC_MINS), S_F3_, F3_,
          HYPR_F6
     ),
 
@@ -1456,8 +1456,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________, __________, SELECT_UP_PC, __________, __________, __________,
          SELECT_LEFT_PC, SELECT_DOWN_PC, SELECT_RIGHT_PC, __________,
          __________, DEL_LEFT_PC,
-         _MINS,
-         _EQL, KC_F2, LEAD_SPACE,
+         _BSLS,
+         _MINS, _EQL, LEAD_SPACE,
          F14_PALM
     ),
 
@@ -1525,8 +1525,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________, __________, __________, __________, __________, __________,
                   __________, __________, __________, __________,
          __________, _BSPC,
-         _MINS,
-         _EQL, KC_F2, KC_F1,
+         _BSLS,
+         _MINS, _EQL, KC_F1,
          F14_PALM
     ),
 
@@ -1571,8 +1571,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          W_N, W_M, KC_UP, W_DOT, W_SCLN, W_F24,
          KC_LEFT, KC_DOWN, KC_RGHT, W_APP,
          W_F16, W_DEL,
-         W_MINS,
-         W_EQL, KC_F2, KC_F1,
+         W_BSLS,
+         W_MINS, W_EQL, KC_F1,
          W_F14
     ),
 
@@ -1618,7 +1618,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                    __________, __________, __________, __________,
          __________, _BSPC,
          _BSLS,
-         _EQL, _TAB, _SPACE,
+         _MINS, _EQL, _SPACE,
          F14_PALM
     ),
 
@@ -1664,8 +1664,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          C(A(KC_N)), CA_M, KC_PGUP, CA_DOT, C(A(KC_QUOT)), C(A(KC_F24)),
                         C(KC_HOME), KC_PGDN, C(KC_END), C(A(KC_NUBS)),
          C(A(KC_F16)), C(A(KC_BSPC)),
-         C(A(KC_MINS)),
-         C(A(KC_EQL)), S_F3_, F3_,
+         C(A(KC_BSLS)),
+         C(A(KC_MINS)), S_F3_, F3_,
          CA_F14
     ),
 
