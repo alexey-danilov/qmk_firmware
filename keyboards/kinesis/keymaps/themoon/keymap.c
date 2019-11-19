@@ -94,11 +94,11 @@ enum holding_keycodes {
   F13_PALM,
   F14_PALM,
 
-  HYPR_F5,
-  HYPR_F6,
+  CLOSE_APP_MAC,
+  HIDE_FOCUS_MAC,
 
-  CA_F13,
-  CA_F14,
+  CLOSE_APP_WIN,
+  HIDE_FOCUS_WIN,
 
   _1,
   _2_PLEFT,
@@ -1302,7 +1302,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          HYPR(KC_F16), HYPR(KC_BSPC),
          HYPR(KC_MINS),
          HYPR(KC_EQL), S_F3_, F3_,
-         HYPR_F6
+         HIDE_FOCUS_MAC
     ),
 
 [_PALM_R_MAC] = LAYOUT(
@@ -1315,7 +1315,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                HYPR(KC_BSPC), HYPR(KC_F15),
                                                HYPR(KC_SLSH),
                  LGUI(KC_Z), LGUI(LSFT(KC_Z)), HYPR(KC_DEL),
-                                                    HYPR_F5,
+                                                    CLOSE_APP_MAC,
          __________,  __________,  __________,  __________,  __________, __________, __________, __________, __________,
          KC_6,  KC_7,  KC_8,  KC_9,  KC_0,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
@@ -1588,7 +1588,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          C(A(KC_F16)), C(A(KC_BSPC)),
          C(A(KC_MINS)),
          C(A(KC_EQL)), S_F3_, F3_,
-         CA_F14
+         HIDE_FOCUS_WIN
     ),
 
 [_PALM_R_PC] = LAYOUT(
@@ -1601,7 +1601,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                               C(A(KC_BSPC)), C(A(KC_F15)),
                                               C(A(KC_SLSH)),
                          C(KC_Z), C(S(KC_Z)), C(A(KC_DEL)),
-                                                    CA_F13,
+                                                    CLOSE_APP_WIN,
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
          KC_6,  KC_7,  KC_8,  KC_9,  KC_0,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
@@ -1903,11 +1903,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case F13_PALM: { return replace_if_held_add_mods(KC_F13, KC_NO, KC_F13, KC_LSFT, KC_NO, pressed, 250); }
         case F14_PALM: { return replace_if_held_add_mods(KC_F14, KC_NO, KC_F14, KC_LSFT, KC_NO, pressed, 250); }
 
-        case HYPR_F5: { return replace_if_held_add_mods_full(KC_F5, KC_LGUI, KC_LSFT, KC_LALT, KC_LCTL, KC_F5, KC_LALT, KC_LCTL, KC_NO, KC_NO, pressed, 250); }
-        case HYPR_F6: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_F6, KC_LGUI, KC_LSFT, KC_NO, KC_NO, KC_LGUI, KC_LSFT, KC_LALT, KC_LCTL, KC_F6, KC_LALT, KC_LCTL, KC_NO, KC_NO, pressed, AUTOSHIFT_SPECIAL_TERM, true ); }
+        case CLOSE_APP_MAC: { return replace_if_held_add_mods_full(KC_Q, KC_LGUI, KC_NO, KC_NO, KC_NO, KC_ESC, KC_LGUI, KC_LALT, KC_NO, KC_NO, pressed, 250); }
+        case HIDE_FOCUS_MAC: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_H, KC_LSFT, KC_LALT, KC_LCTL, KC_NO, KC_LGUI, KC_NO, KC_NO, KC_NO, KC_H, KC_LGUI, KC_LALT, KC_NO, KC_NO, pressed, 250, true ); }
 
-        case CA_F13: { return replace_if_held_add_mods_full(KC_F13, KC_LCTL, KC_LALT, KC_NO, KC_NO, KC_F13, KC_LSFT, KC_LALT, KC_NO, KC_NO, pressed, 250); }
-        case CA_F14: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_F14, KC_NO, KC_NO, KC_NO, KC_NO, KC_LCTL, KC_LALT, KC_NO, KC_NO, KC_F14, KC_LSFT, KC_LALT, KC_NO, KC_NO, pressed, AUTOSHIFT_SPECIAL_TERM, false ); }
+        case CLOSE_APP_WIN: { return replace_if_held_add_mods_full(KC_F4, KC_LALT, KC_NO, KC_NO, KC_NO, KC_ESC, KC_LCTL, KC_LSFT, KC_NO, KC_NO, pressed, 250); }
+        case HIDE_FOCUS_WIN: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_DOWN, KC_LCTL, KC_LALT, KC_NO, KC_NO, KC_LGUI, KC_NO, KC_NO, KC_NO, KC_DOWN, KC_LGUI, KC_LSFT, KC_NO, KC_NO, pressed, 250, false ); }
 
         case KC_LBRC: { return lead_autoshifted_special(KC_LBRC, pressed); }
         case KC_RBRC: { return lead_autoshifted_special(KC_RBRC, pressed); }
