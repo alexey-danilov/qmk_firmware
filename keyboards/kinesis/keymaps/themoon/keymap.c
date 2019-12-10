@@ -1168,9 +1168,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     // right side
   _KC_F9, _KC_F10, _KC_F11, _KC_F12, _KC_F13, _KC_F14, _KC_F15, _KC_F16, KEYB_CONTROL,
 	_6, _7_BANG, _8_DASH, _9_QUEST, _0, _ALT_F11,
-	KC_Y, _KC_U, _KC_I, _KC_O, _KC_P, _ALT_F12,
-	KC_H, _KC_J, _KC_K, _KC_L, _KC_SCLN, _ALT_F13,
-	KC_N, _KC_M, KC_UP, _KC_DOT, _KC_QUOT, _ALT_F14,
+	_KC_Y, _KC_U, _KC_I, _KC_O, _KC_P, _ALT_F12,
+	_KC_H, _KC_J, _KC_K, _KC_L, _KC_SCLN, _ALT_F13,
+	_KC_N, _KC_M, KC_UP, _KC_DOT, _KC_QUOT, _ALT_F14,
 	KC_LEFT, KC_DOWN, KC_RGHT, _C_F2_F3,
            // right thumb keys
            TD(REST_TD), KC_BSPC,
