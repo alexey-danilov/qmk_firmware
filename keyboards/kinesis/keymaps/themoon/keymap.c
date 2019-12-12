@@ -908,10 +908,20 @@ void rest_finished (qk_tap_dance_state_t *state, void *user_data) {
   if (!is_after_lead(KC_INS, true)) {
       switch (rest_tap_state.state) {
         case SINGLE_TAP:
-              key_code(KC_INS); break;
+            if (isMac) {
+                with_1_mod(KC_F7, KC_LCTL); break;
+            }
+            if (isPc) {
+                with_1_mod(KC_PAUS, KC_LSFT); break;
+            }
 
         case SINGLE_HOLD:
-              with_1_mod(KC_INS, KC_LSFT); break;
+            if (isMac) {
+                with_1_mod(KC_F8, KC_LCTL); break;
+            }
+            if (isPc) {
+                with_1_mod(KC_PAUS, KC_LALT); break;
+            }
 
         case DOUBLE_TAP:
             // sleep
@@ -1161,7 +1171,7 @@ qk_tap_dance_action_t tap_dance_actions[] = {
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [_MAC] = LAYOUT(
            // left side
-           TD(REST_TD), _KC_F1, _KC_F2, _KC_F3, _KC_F4, TD(SET_TD), _KC_F6, _KC_F7, _KC_F8,
+           _KC_INS, _KC_F1, _KC_F2, _KC_F3, _KC_F4, TD(SET_TD), _KC_F6, _KC_F7, _KC_F8,
            _ALT_F7, _1, _2_PLEFT, _3_SLASH, _4_PRGHT, _5,
            _ALT_F8, _KC_Q, _KC_W, _KC_E, _KC_R, _KC_T,
            _ALT_F9, _KC_A, _KC_S, _KC_D, _KC_F, _KC_G,
@@ -1174,7 +1184,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                  // left palm key
 			                                           PALM_L_MAC,
     // right side
-  _KC_F9, _KC_F10, _KC_F11, _KC_F12, _KC_F13, _KC_F14, _KC_F15, _KC_F16, KEYB_CONTROL,
+  _KC_F9, _KC_F10, _KC_F11, _KC_F12, _KC_F13, _KC_F14, _KC_F15, KEYB_CONTROL, TD(REST_TD),
 	_6, _7_BANG, _8_DASH, _9_QUEST, _0, _ALT_F11,
 	_KC_Y, _KC_U, _KC_I, _KC_O, _KC_P, _ALT_F12,
 	_KC_H, _KC_J, _KC_K, _KC_L, _KC_SCLN, _ALT_F13,
@@ -1458,14 +1468,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                    // left palm key
 			                                             PALM_L_PC,
     // right side
-    _KC_F9, _KC_F10, _KC_F11, _KC_F12, _KC_F13, _KC_F14, _KC_F15, _KC_F16, KEYB_CONTROL,
+    _KC_F9, _KC_F10, _KC_F11, _KC_F12, _KC_F13, _KC_F14, _KC_F15, KEYB_CONTROL, TD(REST_TD),
   	_6, _7_BANG, _8_DASH, _9_QUEST, _0, _KC_F21,
   	_KC_Y, _KC_U, _KC_I, _KC_O, _KC_P, _KC_F22,
   	_KC_H, _KC_J, _KC_K, _KC_L, _KC_SCLN, _KC_F23,
   	_KC_N, _KC_M, KC_UP, _KC_DOT, _KC_QUOT, _KC_F24,
   	KC_LEFT, KC_DOWN, KC_RGHT, _KC_APP,
            // right thumb keys
-           TD(REST_TD), KC_BSPC,
+           _KC_F16, KC_BSPC,
            ALT_BSLS_PC,
            RGUI, SHIFT_TAB_PC, CTRL_SPACE,
            // right palm key
@@ -1739,7 +1749,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                  _,
                            _, _, _,
                                  _,
-         _,  _,  _,  _,  _,  _, _, RESET, KEYB_CONTROL,
+         _,  _,  _,  _,  _,  _, _, KEYB_CONTROL, RESET,
 	     _, _, _, _, _, _,
          _,  _,  _,  _,  _,  _,
          _,  _,  _,  _,  _,  _,
@@ -1753,49 +1763,49 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [_FAILSAFE_MAC] = LAYOUT(
                          // left side
-                         TG(_FAILSAFE_MAC), KC_F1, KC_F2, KC_F3, KC_F4, KC_F5, KC_F6, KC_F7, KC_F8,
+                         KC_INS, KC_F1, KC_F2, KC_F3, KC_F4, KC_F5, KC_F6, KC_F7, KC_F8,
                          KC_PGUP, KC_1, KC_2, KC_3, KC_4, KC_5,
                          KC_PGDN, KC_Q, KC_W, KC_E, KC_R, KC_T,
                          KC_HOME, KC_A, KC_S, KC_D, KC_F, KC_G,
                          KC_END, KC_Z, KC_X, KC_C, KC_V, KC_B,
                              KC_GRV, KC_LBRC, KC_COMM, KC_RBRC,
                                                              // left thumb keys
-    		                                                   KC_BSPC, KC_BSLS,
-                                                                 ALT_T(KC_SLSH),
-                                  GUI_T(KC_ESC), SFT_T(KC_ENTER), CTL_T(KC_DEL),
+    		                                                   KC_DEL, KC_CAPS,
+                                                                 ALT_T(KC_MINS),
+                                  GUI_T(KC_ESC), SFT_T(KC_ENTER), CTL_T(KC_SLSH),
                                                                 // left palm key
               			                                                KC_PGUP,
                   // right side
-                KC_F9, KC_F10, KC_F11, KC_F12, KC_F13, KC_F14, KC_F15, KC_F16, _,
+                KC_F9, KC_F10, KC_F11, KC_F12, KC_F13, KC_F14, KC_F15, KC_F16, TG(_FAILSAFE_MAC),
               	KC_6, KC_7, KC_8, KC_9, KC_0, _,
               	KC_Y, KC_U, KC_I, KC_O, KC_P, _,
-              	KC_H, KC_J, KC_K, KC_L, KC_SCLN, _,
+              	KC_H, KC_J, KC_K, KC_L, KC_SCLN, KC_END,
               	KC_N, KC_M, KC_UP, KC_DOT, KC_QUOT, _,
               	KC_LEFT, KC_DOWN, KC_RGHT, KC_NUBS,
                          // right thumb keys
                          KC_INS, KC_BSPC,
                          ALT_T(KC_EQL),
-                         CTL_T(KC_MINS), SFT_T(KC_TAB), GUI_T(KC_SPC),
+                         CTL_T(KC_BSLS), SFT_T(KC_TAB), GUI_T(KC_SPC),
                          // right palm key
                          KC_PGDN
                   ),
 
     [_FAILSAFE_PC] = LAYOUT(
                // left side
-               TG(_FAILSAFE_PC), KC_F1, KC_F2, KC_F3, KC_F4, KC_F5, KC_F6, KC_F7, KC_F8,
+               KC_INS, KC_F1, KC_F2, KC_F3, KC_F4, KC_F5, KC_F6, KC_F7, KC_F8,
                _, KC_1, KC_2, KC_3, KC_4, KC_5,
                _, KC_Q, KC_W, KC_E, KC_R, KC_T,
                KC_HOME, KC_A, KC_S, KC_D, KC_F, KC_G,
                _, KC_Z, KC_X, KC_C, KC_V, KC_B,
                    KC_GRV, KC_LBRC, KC_COMM, KC_RBRC,
                                                     // left thumb keys
-    		                                         KC_BSPC, KC_BSLS,
-                                                       ALT_T(KC_SLSH),
-                        CTL_T(KC_ESC), SFT_T(KC_ENTER), GUI_T(KC_DEL),
+    		                                         KC_DEL, KC_CAPS,
+                                                       ALT_T(KC_MINS),
+                        CTL_T(KC_ESC), SFT_T(KC_ENTER), GUI_T(KC_SLSH),
                                                       // left palm key
     			                                              KC_PGUP,
         // right side
-      KC_F9, KC_F10, KC_F11, KC_F12, KC_F13, KC_F14, KC_F15, KC_F16, _,
+      KC_F9, KC_F10, KC_F11, KC_F12, KC_F13, KC_F14, KC_F15, KC_F16, TG(_FAILSAFE_PC),
     	KC_6, KC_7, KC_8, KC_9, KC_0, _,
     	KC_Y, KC_U, KC_I, KC_O, KC_P, _,
     	KC_H, KC_J, KC_K, KC_L, KC_SCLN, KC_END,
