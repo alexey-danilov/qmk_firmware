@@ -1784,8 +1784,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
               	KC_LEFT, KC_DOWN, KC_RGHT, KC_NUBS,
                          // right thumb keys
                          KC_CAPS, KC_BSPC,
-                         ALT_T(KC_EQL),
-                         CTL_T(KC_MINS), SFT_T(KC_TAB), GUI_T(KC_SPC),
+                         ALT_T(KC_MINS),
+                         CTL_T(KC_EQL), SFT_T(KC_TAB), GUI_T(KC_SPC),
                          // right palm key
                          KC_PGDN
                   ),
@@ -1813,8 +1813,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     	KC_LEFT, KC_DOWN, KC_RGHT, KC_APP,
                // right thumb keys
                KC_CAPS, KC_BSPC,
-               ALT_T(KC_EQL),
-               GUI_T(KC_MINS), SFT_T(KC_TAB), CTL_T(KC_SPC),
+               ALT_T(KC_MINS),
+               GUI_T(KC_EQL), SFT_T(KC_TAB), CTL_T(KC_SPC),
                // right palm key
                KC_PGDN
         ),
