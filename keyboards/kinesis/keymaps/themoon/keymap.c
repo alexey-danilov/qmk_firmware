@@ -2155,7 +2155,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
         case _HIDE_CLOSE_PC: {
           down(KC_LALT);
-          return replace_if_held_add_mods(KC_DOWN, KC_LGUI, KC_F4, KC_LCTL, KC_NO, pressed, 250);
+          return replace_if_held_add_mods(KC_DOWN, KC_LGUI, KC_F4, KC_NO, KC_NO, pressed, 250);
         }
 
         case _LIST_FORCE_CLOSE_APPS_PC: {
