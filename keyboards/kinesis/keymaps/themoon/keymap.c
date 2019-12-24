@@ -61,10 +61,7 @@ enum kinesis_keycodes {
   ALT_SHIFT_DEL = MO(_ALT_SHIFT_DEL),
   RGUI = MO(_RGUI),
   PALM_L_PC = MO(_PALM_L_PC),
-  PALM_R_PC = MO(_PALM_R_PC),
-
-  // firmware-related stuff
-  KEYB_CONTROL = MO(_KEYB_CONTROL)
+  PALM_R_PC = MO(_PALM_R_PC)
 };
 
 enum holding_keycodes {
@@ -876,8 +873,10 @@ enum {
   TAP_MACRO = 0,
   SET_TD = 1,
   REST_TD = 2,
-  MAC_LAYERS = 3,
-  PC_LAYERS = 4,
+  MAC_FAILSAFE = 3,
+  MAC_EXIT_FAILSAFE = 4,
+  PC_FAILSAFE = 5,
+  PC_EXIT_FAILSAFE = 6
 };
 
 enum {
@@ -907,8 +906,35 @@ void rest_finished (qk_tap_dance_state_t *state, void *user_data) {
   rest_tap_state.state = cur_dance(state);
     switch (rest_tap_state.state) {
       case SINGLE_TAP:
-          layer_off(_KEYB_CONTROL);
-          led_red_off(); break;
+          all_leds_off();
+          if (isMac) {
+            _delay_ms(500);
+            led_yellow_on();
+            _delay_ms(500);
+            led_yellow_off();
+            _delay_ms(500);
+            led_yellow_on();
+            _delay_ms(500);
+            led_yellow_off();
+            _delay_ms(500);
+            led_yellow_on();
+            _delay_ms(500);
+            led_yellow_off();
+          } else if (isPc) {
+            _delay_ms(500);
+            led_green_on();
+            _delay_ms(500);
+            led_green_off();
+            _delay_ms(500);
+            led_green_on();
+            _delay_ms(500);
+            led_green_off();
+            _delay_ms(500);
+            led_green_on();
+            _delay_ms(500);
+            led_green_off();
+          }
+          break;
 
       case SINGLE_HOLD:
           layer_on(_KEYB_CONTROL);
@@ -943,7 +969,7 @@ void rest_reset (qk_tap_dance_state_t *state, void *user_data) {
   rest_tap_state.state = 0;
 }
 
-//**************** MAC LAYER TAP *********************//
+//**************** MAC FAILSAFE LAYER TAP *********************//
 static tap mac_layer_tap_state = { .is_press_action = true, .state = 0 };
 
 void mac_layer_finished (qk_tap_dance_state_t *state, void *user_data) {
@@ -956,31 +982,20 @@ void mac_layer_finished (qk_tap_dance_state_t *state, void *user_data) {
 
           layer_on(_FAILSAFE_MAC);
           led_yellow_on();
-          _delay_ms(50);
-          led_yellow_off();
-          _delay_ms(50);
-          led_yellow_on();
-          _delay_ms(50);
-          led_yellow_off();
-          _delay_ms(50);
-          led_yellow_on();
-          _delay_ms(50);
-          led_yellow_off();
-          _delay_ms(50);
-          led_yellow_on();
-          _delay_ms(50);
-          led_yellow_off();
           break;
 
       case DOUBLE_TAP:
           layer_off(_KEYB_CONTROL);
-          led_red_off();
 
           eeconfig_update_default_layer(1UL << _MAC);
           default_layer_set(1UL << _MAC);
           isMac = true; isPc = false;
           all_leds_off();
           led_red_on();
+          led_yellow_on();
+          _delay_ms(500);
+          led_yellow_off();
+          _delay_ms(500);
           led_yellow_on();
           _delay_ms(500);
           led_yellow_off();
@@ -999,7 +1014,25 @@ void mac_layer_reset (qk_tap_dance_state_t *state, void *user_data) {
   mac_layer_tap_state.state = 0;
 }
 
-//**************** PC LAYER TAP *********************//
+static tap mac_failsafe_off_tap_state = { .is_press_action = true, .state = 0 };
+
+void mac_failsafe_off_finished (qk_tap_dance_state_t *state, void *user_data) {
+  mac_failsafe_off_tap_state.state = cur_dance(state);
+  if (!is_after_lead(KC_F16, true)) {
+    switch (mac_failsafe_off_tap_state.state) {
+      default:
+        led_yellow_off();
+        layer_off(_FAILSAFE_MAC);
+        break;
+    }
+  }
+}
+
+void mac_failsafe_off_reset (qk_tap_dance_state_t *state, void *user_data) {
+  mac_failsafe_off_tap_state.state = 0;
+}
+
+//**************** PC FAILSAFE LAYER TAP *********************//
 static tap pc_layer_tap_state = { .is_press_action = true, .state = 0 };
 
 void pc_layer_finished (qk_tap_dance_state_t *state, void *user_data) {
@@ -1012,20 +1045,6 @@ void pc_layer_finished (qk_tap_dance_state_t *state, void *user_data) {
 
           layer_on(_FAILSAFE_PC);
           led_green_on();
-          _delay_ms(50);
-          led_green_off();
-          _delay_ms(50);
-          led_green_on();
-          _delay_ms(50);
-          led_green_off();
-          _delay_ms(50);
-          led_green_on();
-          _delay_ms(50);
-          led_green_off();
-          _delay_ms(50);
-          led_green_on();
-          _delay_ms(50);
-          led_green_off();
           break;
 
       case DOUBLE_TAP:
@@ -1036,7 +1055,10 @@ void pc_layer_finished (qk_tap_dance_state_t *state, void *user_data) {
           default_layer_set(1UL << _PC);
           isPc = true; isMac = false;
           all_leds_off();
-          led_red_on();
+          led_green_on();
+          _delay_ms(500);
+          led_green_off();
+          _delay_ms(500);
           led_green_on();
           _delay_ms(500);
           led_green_off();
@@ -1053,6 +1075,24 @@ void pc_layer_finished (qk_tap_dance_state_t *state, void *user_data) {
 
 void pc_layer_reset (qk_tap_dance_state_t *state, void *user_data) {
   pc_layer_tap_state.state = 0;
+}
+
+static tap pc_failsafe_off_tap_state = { .is_press_action = true, .state = 0 };
+
+void pc_failsafe_off_finished (qk_tap_dance_state_t *state, void *user_data) {
+  pc_failsafe_off_tap_state.state = cur_dance(state);
+  if (!is_after_lead(KC_F16, true)) {
+    switch (pc_failsafe_off_tap_state.state) {
+      default:
+        led_green_off();
+        layer_off(_FAILSAFE_PC);
+        break;
+    }
+  }
+}
+
+void pc_failsafe_off_reset (qk_tap_dance_state_t *state, void *user_data) {
+  pc_failsafe_off_tap_state.state = 0;
 }
 
 //**************** SETTINGS TAP *********************//
@@ -1150,8 +1190,10 @@ qk_tap_dance_action_t tap_dance_actions[] = {
   [TAP_MACRO] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, dynamic_macro_finished, dynamic_macro_reset, 366),
   [REST_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, rest_finished, rest_reset, 366),
   [SET_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, set_finished, set_reset, 366),
-  [MAC_LAYERS] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, mac_layer_finished, mac_layer_reset, 366),
-  [PC_LAYERS] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, pc_layer_finished, pc_layer_reset, 366)
+  [MAC_FAILSAFE] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, mac_layer_finished, mac_layer_reset, 366),
+  [MAC_EXIT_FAILSAFE] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, mac_failsafe_off_finished, mac_failsafe_off_reset, 366),
+  [PC_FAILSAFE] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, pc_layer_finished, pc_layer_reset, 366),
+  [PC_EXIT_FAILSAFE] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, pc_failsafe_off_finished, pc_failsafe_off_reset, 366)
 };
 
 /* Mac keymap:
@@ -1755,7 +1797,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
 
 [_KEYB_CONTROL] = LAYOUT(
-         RESET,  _,  _,  _,  _,  TD(MAC_LAYERS), TD(PC_LAYERS), _, _,
+         RESET,  _,  _,  _,  _,  TD(MAC_FAILSAFE), TD(PC_FAILSAFE), _, _,
          _,  _,  _,  _,  _,  _,
          _,  _,  _,  _,  _,  _,
          _,  _,  _,  _,  _,  _,
@@ -1765,7 +1807,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                  _,
                            _, _, _,
                                  _,
-         _,  _,  _,  _,  _,  _, _, _, KEYB_CONTROL,
+         _,  _,  _,  _,  _,  _, _, _, TG(_KEYB_CONTROL),
 	     _, _, _, _, _, _,
          _,  _,  _,  _,  _,  _,
          _,  _,  _,  _,  _,  _,
@@ -1792,7 +1834,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                                 // left palm key
               			                                                KC_PGUP,
                   // right side
-                KC_F9, KC_F10, KC_F11, KC_F12, KC_F13, KC_F14, KC_F15, KC_F16, TG(_FAILSAFE_MAC),
+                KC_F9, KC_F10, KC_F11, KC_F12, KC_F13, KC_F14, KC_F15, KC_F16, TD(MAC_EXIT_FAILSAFE),
               	KC_6, KC_7, KC_8, KC_9, KC_0, _,
               	KC_Y, KC_U, KC_I, KC_O, KC_P, _,
               	KC_H, KC_J, KC_K, KC_L, KC_SCLN, _,
@@ -1821,7 +1863,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                       // left palm key
     			                                              KC_PGUP,
         // right side
-      KC_F9, KC_F10, KC_F11, KC_F12, KC_F13, KC_F14, KC_F15, KC_F16, TG(_FAILSAFE_PC),
+      KC_F9, KC_F10, KC_F11, KC_F12, KC_F13, KC_F14, KC_F15, KC_F16, TD(PC_EXIT_FAILSAFE),
     	KC_6, KC_7, KC_8, KC_9, KC_0, _,
     	KC_Y, KC_U, KC_I, KC_O, KC_P, _,
     	KC_H, KC_J, KC_K, KC_L, KC_SCLN, _,
