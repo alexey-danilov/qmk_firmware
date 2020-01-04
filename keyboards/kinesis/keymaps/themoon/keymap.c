@@ -78,7 +78,6 @@ enum holding_keycodes {
   _KC_INS,
   _KC_APP,
   _KC_NUBS,
-  _C_F2_F3,
 
   _LANG,
   // holding qwerty keys
@@ -888,11 +887,12 @@ bool lang(bool pressed, uint16_t hold_duration) {
 enum {
   TAP_MACRO = 0,
   SET_TD = 1,
-  REST_TD = 2,
-  MAC_FAILSAFE = 3,
-  MAC_EXIT_FAILSAFE = 4,
-  PC_FAILSAFE = 5,
-  PC_EXIT_FAILSAFE = 6
+  FW_TD = 2,
+  FW_CANCEL = 3,
+  MAC_FAILSAFE = 4,
+  MAC_EXIT_FAILSAFE = 5,
+  PC_FAILSAFE = 6,
+  PC_EXIT_FAILSAFE = 7
 };
 
 enum {
@@ -916,11 +916,11 @@ int cur_dance (qk_tap_dance_state_t *state) {
 }
 
 //**************** REST TAP *********************//
-static tap rest_tap_state = { .is_press_action = true, .state = 0 };
+static tap fw_tap_state = { .is_press_action = true, .state = 0 };
 
-void rest_finished (qk_tap_dance_state_t *state, void *user_data) {
-  rest_tap_state.state = cur_dance(state);
-    switch (rest_tap_state.state) {
+void fw_finished (qk_tap_dance_state_t *state, void *user_data) {
+  fw_tap_state.state = cur_dance(state);
+    switch (fw_tap_state.state) {
       case SINGLE_TAP:
           all_leds_off();
           if (isMac) {
@@ -973,8 +973,8 @@ void rest_finished (qk_tap_dance_state_t *state, void *user_data) {
     }
 }
 
-void rest_reset (qk_tap_dance_state_t *state, void *user_data) {
-  rest_tap_state.state = 0;
+void fw_reset (qk_tap_dance_state_t *state, void *user_data) {
+  fw_tap_state.state = 0;
 }
 
 //**************** MAC FAILSAFE LAYER TAP *********************//
@@ -1131,7 +1131,7 @@ void set_finished (qk_tap_dance_state_t *state, void *user_data) {
       case DOUBLE_HOLD:
           // print screen
           if (isMac) {
-            with_1_mod(KC_F5, KC_LCTL); break;
+            with_1_mod(KC_F3, KC_LCTL); break;
           }
           if (isPc) {
             key_code(KC_PSCR); break;
@@ -1143,6 +1143,22 @@ void set_finished (qk_tap_dance_state_t *state, void *user_data) {
 
 void set_reset (qk_tap_dance_state_t *state, void *user_data) {
   set_tap_state.state = 0;
+}
+
+//**************** FW CANCEL TAP *********************//
+static tap fw_cancel_tap_state = { .is_press_action = true, .state = 0 };
+
+void fw_cancel_finished (qk_tap_dance_state_t *state, void *user_data) {
+  fw_cancel_tap_state.state = cur_dance(state);
+  if (!is_after_lead(KC_F5, true)) {
+    switch (fw_cancel_tap_state.state) {
+      default: layer_off(_KEYB_CONTROL); all_leds_off(); break;
+    }
+  }
+}
+
+void fw_cancel_reset (qk_tap_dance_state_t *state, void *user_data) {
+  fw_cancel_tap_state.state = 0;
 }
 
 //**************** DYNAMIC MACRO TAP *********************//
@@ -1201,7 +1217,8 @@ void dynamic_macro_reset (qk_tap_dance_state_t *state, void *user_data) {
 // all tap macros
 qk_tap_dance_action_t tap_dance_actions[] = {
   [TAP_MACRO] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, dynamic_macro_finished, dynamic_macro_reset, 366),
-  [REST_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, rest_finished, rest_reset, 366),
+  [FW_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, fw_finished, fw_reset, 366),
+  [FW_CANCEL] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, fw_cancel_finished, fw_cancel_reset, 366),
   [SET_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, set_finished, set_reset, 366),
   [MAC_FAILSAFE] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, mac_layer_finished, mac_layer_reset, 366),
   [MAC_EXIT_FAILSAFE] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, mac_failsafe_off_finished, mac_failsafe_off_reset, 366),
@@ -1211,7 +1228,7 @@ qk_tap_dance_action_t tap_dance_actions[] = {
 
 /* Mac keymap:
 * ,-------------------------------------------------------------------------------------------------------------------.
-* |REST_TD |  F1  |  F2  |  F3  |  F4  |F5/SET|  F6 |  F8  |  F9  |  F10  |  F12 |  F13 | F14  | F15  |  FW  |  Prog  |
+* |  Ins   |  F1  |  F2  |  F3  |  F4  |F5/SET|  F6 |  F8  |  F9  |  F10  |  F12 |  F13 | F14  | F15  |      |   FW   |
 * |--------+------+------+------+------+------+---------------------------+------+------+------+------+------+--------|
 * |_ALT_F7 |  1   |  2(  |  3_  |   4) |  5=  |                           |  6+  |  7!  |  8-  |  9?  |  0   |_ALT_F11|
 * |--------+------+------+------+------+------|                           +------+------+------+------+------+--------|
@@ -1221,15 +1238,15 @@ qk_tap_dance_action_t tap_dance_actions[] = {
 * |--------+------+------+------+------+------|                           |------+------+------+------+------+--------|
 * |_ALT_F10|  Z   |   X  |   C  |   V  |  B   |                           |   N  |   M  |  Up  |  .>  |  '"  |_ALT_F14|
 * `--------+------+------+------+------+-------                           `------+------+------+------+------+--------'
-*          |  `~  |  [{  |Sel/,<|  ]}  |                                         | Left | Down | Right|AppKey|
+*          |  `~  |  [{  |Sel/,<|  ]}  |                                         | Left | Down | Right| Nubs |
 *          `---------------------------'                                         `---------------------------'
 *                            .-------------------------.         ,---------------------------.
-*                            | Backspace |    Macro    |         |    F16      |   Backspace |
+*                            | Backspace |    Macro    |         |    Caps     |   Backspace |
 *                            `-----------|------|------|         |------+------+-------------`
-*                                 |      |      | Alt/=|         | Alt\+|      |      |
+*                                 |      |      | Alt/|          | Alt\+|      |      |
 *                                 | LGui/|Shift/|------|         |------|Shift/|LGui/ |
 *                                 | ESC  |Enter | Ctrl |         | Ctrl |Tab   |SPACE |
-*                                 |      |      | Del+ |         |Apps@ |=     |      |
+*                                 |      |      | Del  |         | Apps |=     |      |
 *                                  --------------------           --------------------
 *
 *                    -------------                                                     -------------
@@ -1254,12 +1271,12 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                  // left palm key
 			                                           PALM_L_MAC,
     // right side
-  _KC_F9, _KC_F10, _KC_F11, _KC_F12, _, _, _, _, TD(REST_TD),
+  _KC_F9, _KC_F10, _KC_F11, _KC_F12, _, _, _, _, TD(FW_TD),
 	_6, _7_BANG, _8_DASH, _9_QUEST, _0, _ALT_F11,
 	_KC_Y, _KC_U, _KC_I, _KC_O, _KC_P, _ALT_F12,
 	_KC_H, _KC_J, _KC_K, _KC_L, _KC_SCLN, _ALT_F13,
 	_KC_N, _KC_M, KC_UP, _KC_DOT, _KC_QUOT, _ALT_F14,
-	KC_LEFT, KC_DOWN, KC_RGHT, _C_F2_F3,
+	KC_LEFT, KC_DOWN, KC_RGHT, _KC_NUBS,
            // right thumb keys
            KC_CAPS, KC_BSPC,
            ALT_BSLS_MAC,
@@ -1354,7 +1371,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
-               __________,  __________,  __________,  KC_NUBS,
+               __________,  __________,  __________,  _KC_NUBS,
          _KC_F16, C(KC_BSPC),
          _KC_EQL,
          _KC_MINS, _KC_TAB, KC_F1,
@@ -1539,7 +1556,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                    // left palm key
 			                                             PALM_L_PC,
     // right side
-    _KC_F9, _KC_F10, _KC_F11, _KC_F12, _, _, _, _, TD(REST_TD),
+    _KC_F9, _KC_F10, _KC_F11, _KC_F12, _, _, _, _, TD(FW_TD),
   	_6, _7_BANG, _8_DASH, _9_QUEST, _0, _KC_F21,
   	_KC_Y, _KC_U, _KC_I, _KC_O, _KC_P, _KC_F22,
   	_KC_H, _KC_J, _KC_K, _KC_L, _KC_SCLN, _KC_F23,
@@ -1820,7 +1837,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                  _,
                            _, _, _,
                                  _,
-         _,  _,  _,  _,  _,  _, _, _, TG(_KEYB_CONTROL),
+         _,  _,  _,  _,  _,  _, _, _, TD(FW_CANCEL),
 	     _, _, _, _, _, _,
          _,  _,  _,  _,  _,  _,
          _,  _,  _,  _,  _,  _,
@@ -2221,7 +2238,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case _KC_NUBS: { return lead_autoshifted_special(KC_NUBS, pressed); }
         case _KC_DOT: { return lead_autoshifted_special(KC_DOT, pressed); }
         case _KC_APP: { return lead_autoshifted_special(KC_APP, pressed); }
-        case _C_F2_F3: { return lead_custom_autoshifted_with_mods(KC_F2, KC_LCTL, KC_F3, KC_F3, KC_LCTL, KC_NO, pressed, AUTOSHIFT_SPECIAL_TERM); }
 
         // non-autoshifted numbers
         case _1: { return lead_autoshifted_modified_numbers(KC_1, KC_1, KC_NO, pressed); }
@@ -2303,7 +2319,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case CTRL_F1: {
           if (is_after_lead(KC_F17, pressed)) { return false; }
           static uint16_t ctrl_f1_layer_timer;
-          momentary_layer_tap_with_hold(KC_F1, KC_LCTL, KC_LCTL, KC_NO, KC_NO, KC_NO, &ctrl_f1_layer_timer, &ctrl_f1_interrupted, pressed, AUTOSHIFT_SPECIAL_TERM, 400, false, KC_2, KC_LSFT, KC_NO);
+          momentary_layer_tap_with_hold(KC_F1, KC_LCTL, KC_LCTL, KC_NO, KC_NO, KC_NO, &ctrl_f1_layer_timer, &ctrl_f1_interrupted, pressed, AUTOSHIFT_SPECIAL_TERM, 400, false, KC_F2, KC_LCTL, KC_NO);
           return true;
         }
 
@@ -2381,7 +2397,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case RGUI: {
           if (is_after_lead(KC_F17, pressed)) { return false; }
           static uint16_t rgui_layer_timer;
-          momentary_layer_tap_with_hold(KC_LGUI, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, &rgui_layer_timer, &rgui_interrupted, pressed, AUTOSHIFT_SPECIAL_TERM, 400, false, KC_2, KC_LSFT, KC_NO);
+          momentary_layer_tap_with_hold(KC_LGUI, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, &rgui_layer_timer, &rgui_interrupted, pressed, AUTOSHIFT_SPECIAL_TERM, 400, false, KC_PAUS, KC_LSFT, KC_NO);
           return true;
         }
 
