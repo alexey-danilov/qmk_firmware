@@ -876,9 +876,9 @@ bool lang(bool pressed, uint16_t hold_duration) {
         }
       } else {
         if (isMac) {
-         up(KC_LGUI); with_2_mods(KC_SPC, KC_LALT, KC_LSFT);
+         with_1_mod(KC_F2, KC_LSFT);
         } else {
-         up(KC_LCTL); with_2_mods(KC_SPC, KC_LGUI, KC_LSFT);
+         with_1_mod(KC_F2, KC_LSFT);
         }
       }
   }
