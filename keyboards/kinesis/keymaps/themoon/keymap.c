@@ -1115,7 +1115,7 @@ void set_finished (qk_tap_dance_state_t *state, void *user_data) {
       case DOUBLE_HOLD:
           // print screen
           if (isMac) {
-            with_1_mod(KC_F3, KC_LCTL); break;
+            with_1_mod(KC_F2, KC_LCTL); break;
           }
           if (isPc) {
             key_code(KC_PSCR); break;
