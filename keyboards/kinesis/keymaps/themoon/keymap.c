@@ -756,10 +756,25 @@ bool not_following_esc(uint16_t code, uint16_t mod1, uint16_t mod2, uint16_t mod
     if (pressed) {
       *leader_timer = 0;
       with_3_mods(code, mod1, mod2, mod3);
-      return false;
     }
+    return false;
+  } else {
+    return true;
   }
-  return true;
+}
+
+// ESC AS A LEADER KEY
+// provides functionality similar to "leader key", except that it works for escape
+bool not_following_esc4(uint16_t code, uint16_t mod1, uint16_t mod2, uint16_t mod3, uint16_t *leader_timer, bool pressed, uint16_t leader_last_pressed_timeout) {
+  if (*leader_timer && held_shorter(*leader_timer, leader_last_pressed_timeout)) {
+    if (!pressed) {
+      *leader_timer = 0;
+      with_3_mods(code, mod1, mod2, mod3);
+    }
+    return false;
+  } else {
+    return true;
+  }
 }
 
 // CMD/CTRL + SPACE AS A LEADER KEY
@@ -2044,7 +2059,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
        }
     }
 
-    if (keycode != KC_LEFT && keycode != KC_RGHT) {
+    if (keycode != KC_LEFT && keycode != KC_RGHT && keycode != _KC_J && keycode != _KC_K && keycode != _KC_L) {
       if (keycode != CMD_SPACE && keycode != CTRL_SPACE) {
              esc_timer = 0;
       }
@@ -2134,9 +2149,29 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case _KC_F: { return lead_autoshifted_same_key(KC_F, pressed); }
         case _KC_G: { return lead_autoshifted_same_key(KC_G, pressed); }
         case _KC_H: { return lead_custom_autoshifted(KC_H, isMac ? KC_F16 : KC_H, KC_H, KC_LSFT, pressed, AUTOSHIFT_QWERTY_KEYS_TERM); }
-        case _KC_J: { return lead_autoshifted_same_key(KC_J, pressed); }
-        case _KC_K: { return lead_autoshifted_same_key(KC_K, pressed); }
-        case _KC_L: { return lead_autoshifted_same_key(KC_L, pressed); }
+
+        case _KC_J: {
+          if (is_after_lead(KC_J, !pressed)) { return false; }
+          if (not_following_esc(KC_J, isMac ? KC_LGUI : KC_LCTL, KC_LALT, KC_NO, &esc_timer, !pressed, 300)) {
+            if (!pressed) { key_code(KC_J); }
+          }
+          return false;
+        }
+        case _KC_K: {
+          if (is_after_lead(KC_K, !pressed)) { return false; }
+          if (not_following_esc(KC_K, isMac ? KC_LGUI : KC_LCTL, KC_LALT, KC_NO, &esc_timer, !pressed, 300)) {
+            if (!pressed) { key_code(KC_K); }
+          }
+          return false;
+        }
+        case _KC_L: {
+          if (is_after_lead(KC_L, !pressed)) { return false; }
+          if (not_following_esc(KC_L, isMac ? KC_LGUI : KC_LCTL, KC_LALT, KC_NO, &esc_timer, !pressed, 300)) {
+            if (!pressed) { key_code(KC_L); }
+          }
+          return false;
+        }
+
         case _KC_Z: { return lead_autoshifted_same_key(KC_Z, pressed); }
         case _KC_X: { return lead_autoshifted_same_key(KC_X, pressed); }
         case _KC_C: { return lead_autoshifted_same_key(KC_C, pressed); }
