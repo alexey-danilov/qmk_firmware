@@ -1304,7 +1304,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                    _SELECT_LEFT_MAC,  _SELECT_DOWN_MAC,  _SELECT_RIGHT_MAC, KC_NUBS,
          __________, _DEL_LEFT_MAC,
          _KC_MINS,
-         _KC_EQL, KC_F2, LEAD_SPACE,
+         _KC_EQL, _KC_F2, LEAD_SPACE,
          _F6_PALM
     ),
 
@@ -1373,7 +1373,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                __________,  __________,  __________,  KC_NUBS,
          __________, C(KC_BSPC),
          _KC_MINS,
-         _KC_EQL, _KC_TAB, KC_F1,
+         _KC_EQL, _KC_TAB, _KC_F1,
          C(S(KC_F6))
     ),
 
