@@ -2149,29 +2149,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case _KC_F: { return lead_autoshifted_same_key(KC_F, pressed); }
         case _KC_G: { return lead_autoshifted_same_key(KC_G, pressed); }
         case _KC_H: { return lead_custom_autoshifted(KC_H, isMac ? KC_F16 : KC_H, KC_H, KC_LSFT, pressed, AUTOSHIFT_QWERTY_KEYS_TERM); }
-
-        case _KC_J: {
-          if (is_after_lead(KC_J, !pressed)) { return false; }
-          if (not_following_esc(KC_J, isMac ? KC_LGUI : KC_LCTL, KC_LALT, KC_NO, &esc_timer, !pressed, 300)) {
-            if (!pressed) { key_code(KC_J); }
-          }
-          return false;
-        }
-        case _KC_K: {
-          if (is_after_lead(KC_K, !pressed)) { return false; }
-          if (not_following_esc(KC_K, isMac ? KC_LGUI : KC_LCTL, KC_LALT, KC_NO, &esc_timer, !pressed, 300)) {
-            if (!pressed) { key_code(KC_K); }
-          }
-          return false;
-        }
-        case _KC_L: {
-          if (is_after_lead(KC_L, !pressed)) { return false; }
-          if (not_following_esc(KC_L, isMac ? KC_LGUI : KC_LCTL, KC_LALT, KC_NO, &esc_timer, !pressed, 300)) {
-            if (!pressed) { key_code(KC_L); }
-          }
-          return false;
-        }
-
+        case _KC_J: { return lead_autoshifted_same_key(KC_J, pressed); }
+        case _KC_K: { return lead_autoshifted_same_key(KC_K, pressed); }
+        case _KC_L: { return lead_autoshifted_same_key(KC_L, pressed); }
         case _KC_Z: { return lead_autoshifted_same_key(KC_Z, pressed); }
         case _KC_X: { return lead_autoshifted_same_key(KC_X, pressed); }
         case _KC_C: { return lead_autoshifted_same_key(KC_C, pressed); }
@@ -2215,6 +2195,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case _KC_F22: { return lead_autoshifted_special(KC_F22, pressed); }
         case _KC_F23: { return lead_autoshifted_special(KC_F23, pressed); }
         case _KC_F24: { return lead_autoshifted_special(KC_F24, pressed); }
+        //        case _KC_J: {
+        //          if (is_after_lead(KC_J, !pressed)) { return false; }
+        //          if (not_following_esc(KC_J, isMac ? KC_LGUI : KC_LCTL, KC_LALT, KC_NO, &esc_timer, !pressed, 300)) {
+        //            if (!pressed) { key_code(KC_J); }
+        //          }
+        //          return false;
+        //        }
 
         // palm keys, pressed with non-palm modifier: extended held timeout
         case _F5_PALM: { return replace_if_held_add_mods(KC_F5, KC_NO, KC_F5, KC_LSFT, KC_NO, pressed, 250); }
