@@ -2516,7 +2516,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case _KC_SLSH: { return if_held_autoshift(KC_SLSH, pressed); }
         case _KC_MINS: { return if_held_autoshift(KC_MINS, pressed); }
         case _KC_INS: { return if_held_autoshift(KC_INS, pressed); }
-        case _KC_EQL: { return if_held_add_mods(KC_EQL, KC_LSFT, KC_NO, pressed, 200); }
+        case _KC_EQL: { return if_held_add_mods(KC_EQL, KC_LSFT, KC_NO, pressed, AUTOSHIFT_SPECIAL_TERM); }
 
         // delete words / lines
         case _DEL_LEFT_MAC: { return delete_word_line(KC_BSPC, KC_LGUI, KC_LALT, KC_LEFT, KC_LGUI, KC_LSFT, pressed, AUTOSHIFT_SPECIAL_TERM); }
@@ -2541,8 +2541,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
         // mac overrides
         case _CTRL_DOT: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_DOT, KC_LGUI, KC_NO, KC_NO, KC_NO, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_DOT, KC_LGUI, KC_LSFT, KC_NO, KC_NO, pressed, AUTOSHIFT_SPECIAL_TERM, true); }
-        case _CTRL_H: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_H, KC_LGUI, KC_NO, KC_NO, KC_NO, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_H, KC_LGUI, KC_LSFT, KC_NO, KC_NO, pressed, AUTOSHIFT_QWERTY_KEYS_WITH_MODIFIERS_TERM, true); }
-        case _CTRL_M: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_M, KC_LGUI, KC_NO, KC_NO, KC_NO, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_M, KC_LGUI, KC_LSFT, KC_NO, KC_NO, pressed, AUTOSHIFT_QWERTY_KEYS_WITH_MODIFIERS_TERM, true); }
+        case _CTRL_H: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_H, KC_LGUI, KC_NO, KC_NO, KC_NO, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_H, KC_LGUI, KC_LSFT, KC_NO, KC_NO, pressed, AUTOSHIFT_SPECIAL_TERM, true); }
+        case _CTRL_M: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_M, KC_LGUI, KC_NO, KC_NO, KC_NO, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_M, KC_LGUI, KC_LSFT, KC_NO, KC_NO, pressed, AUTOSHIFT_SPECIAL_TERM, true); }
 
         // pc overrides
         case W_F1: { return replace_alt_shift_with_lgui(KC_F1, pressed); }
