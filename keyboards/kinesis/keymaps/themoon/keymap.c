@@ -103,6 +103,8 @@ enum holding_keycodes {
   _ALT_F13,
   _ALT_F14,
 
+  _SHIFT_SPACE_,
+
   _HIDE_CLOSE_MAC,
   _HIDE_CLOSE_PC,
   _LIST_FORCE_CLOSE_APPS_MAC,
@@ -131,9 +133,9 @@ enum holding_keycodes {
   _DEL_RIGHT_PC,
 
   // mac-specific overrides
-  _C_DOT,
-  _C_H,
-  _C_M,
+  _CTRL_DOT,
+  _CTRL_H,
+  _CTRL_M,
 
   // LPc + key overrides
   W_INS, W_F1, W_F2, W_F3, W_F4, W_F5, W_F6, W_F7, W_F8, W_F9, W_F10, W_F11, W_F12, W_F13, W_F14, W_F15, W_F16,
@@ -619,7 +621,7 @@ bool replace_key_and_mods_if_held_replace_key_and_mods(
 }
 
 bool replace_alt_shift_with_lgui(uint16_t code, bool pressed) {
-  return replace_key_and_mods_if_held_replace_key_and_mods(code, KC_LALT, KC_LSFT, KC_NO, KC_NO, KC_LGUI, KC_NO, KC_NO, KC_NO, code, KC_LGUI, KC_NO, KC_NO, KC_NO, pressed, AUTOSHIFT_QWERTY_KEYS_TERM, true);
+  return replace_key_and_mods_if_held_replace_key_and_mods(code, KC_LALT, KC_LSFT, KC_NO, KC_NO, KC_LGUI, KC_NO, KC_NO, KC_NO, code, KC_LGUI, KC_NO, KC_NO, KC_NO, pressed, AUTOSHIFT_QWERTY_KEYS_NO_MODIFIERS_TERM, true);
 }
 
 // replaces keycode and adds mod to it if it was held for at least provided duration
@@ -664,7 +666,7 @@ bool if_held_add_mods(uint16_t code, uint16_t held_mod1, uint16_t held_mod2, boo
   return false;
 }
 
-// adds shift to keycode if it was held for at least AUTOSHIFT_QWERTY_KEYS_TERM ms
+// adds shift to keycode if it was held for at least AUTOSHIFT_QWERTY_KEYS_NO_MODIFIERS_TERM ms
 bool if_held_autoshift(uint16_t code, bool pressed) {
   return if_held_add_mods(code, KC_LSFT, KC_NO, pressed, AUTOSHIFT_SPECIAL_TERM);
 }
@@ -862,8 +864,8 @@ bool lead_autoshifted_modified_numbers(uint16_t code, uint16_t held_code, uint16
   return lead_custom_autoshifted(code, code, held_code, held_mod, pressed, AUTOSHIFT_MODIFIED_NUMBERS_TERM);
 }
 
-bool lead_autoshifted_same_key(uint16_t code, bool pressed) {
-  return lead_custom_autoshifted(code, code, code, KC_LSFT, pressed, AUTOSHIFT_QWERTY_KEYS_TERM);
+bool lead_autoshifted_qwerty(uint16_t code, bool pressed) {
+  return lead_custom_autoshifted(code, code, code, KC_LSFT, pressed, default_layer ? AUTOSHIFT_QWERTY_KEYS_NO_MODIFIERS_TERM : AUTOSHIFT_QWERTY_KEYS_WITH_MODIFIERS_TERM);
 }
 
 bool lead_autoshifted_special(uint16_t code, bool pressed) {
@@ -1299,8 +1301,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
          _KC_6, _KC_7, _KC_8, _KC_9, _KC_0, __________,
          __________, __________, __________, __________, __________, __________,
-         _C_H, __________,  __________,  __________,  __________,  __________,
-         __________, _C_M, _SELECT_UP_MAC, _C_DOT, __________, __________,
+         _CTRL_H, __________,  __________,  __________,  __________,  __________,
+         __________, _CTRL_M, _SELECT_UP_MAC, _CTRL_DOT, __________, __________,
                    _SELECT_LEFT_MAC,  _SELECT_DOWN_MAC,  _SELECT_RIGHT_MAC, KC_NUBS,
          __________, _DEL_LEFT_MAC,
          _KC_MINS,
@@ -1465,7 +1467,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                    __________,  __________,  __________, _KC_NUBS,
          __________, _KC_BSPC,
          _KC_BSLS,
-         _KC_EQL, _KC_TAB, _KC_SPACE,
+         _KC_EQL, _KC_TAB, _SHIFT_SPACE_,
          _F6_PALM
     ),
 
@@ -1751,7 +1753,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                    __________,  __________,  __________, __________,
          __________, _KC_BSPC,
          _KC_BSLS,
-         _KC_EQL, _KC_TAB, _KC_SPACE,
+         _KC_EQL, _KC_TAB, _SHIFT_SPACE_,
          _F14_PALM
     ),
 
@@ -2059,7 +2061,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
        }
     }
 
-    if (keycode != KC_LEFT && keycode != KC_RGHT && keycode != _KC_J && keycode != _KC_K && keycode != _KC_L) {
+    if (keycode != KC_LEFT && keycode != KC_RGHT && keycode != _KC_K) {
       if (keycode != CMD_SPACE && keycode != CTRL_SPACE) {
              esc_timer = 0;
       }
@@ -2133,32 +2135,39 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
         // >>>>>>> KEYS, RESPONDING TO LEAD_SPACE SEQUENCE
         // autoshifted keys - same key with a shift
-        case _KC_Q: { return lead_custom_autoshifted(KC_Q, isMac ? KC_F13 : KC_Q, KC_Q, KC_LSFT, pressed, AUTOSHIFT_QWERTY_KEYS_TERM); }
-        case _KC_W: { return lead_autoshifted_same_key(KC_W, pressed); }
-        case _KC_E: { return lead_autoshifted_same_key(KC_E, pressed); }
-        case _KC_R: { return lead_autoshifted_same_key(KC_R, pressed); }
-        case _KC_T: { return lead_autoshifted_same_key(KC_T, pressed); }
-        case _KC_Y: { return lead_autoshifted_same_key(KC_Y, pressed); }
-        case _KC_U: { return lead_autoshifted_same_key(KC_U, pressed); }
-        case _KC_I: { return lead_autoshifted_same_key(KC_I, pressed); }
-        case _KC_O: { return lead_autoshifted_same_key(KC_O, pressed); }
-        case _KC_P: { return lead_autoshifted_same_key(KC_P, pressed); }
-        case _KC_A: { return lead_autoshifted_same_key(KC_A, pressed); }
-        case _KC_S: { return lead_autoshifted_same_key(KC_S, pressed); }
-        case _KC_D: { return lead_autoshifted_same_key(KC_D, pressed); }
-        case _KC_F: { return lead_autoshifted_same_key(KC_F, pressed); }
-        case _KC_G: { return lead_autoshifted_same_key(KC_G, pressed); }
-        case _KC_H: { return lead_custom_autoshifted(KC_H, isMac ? KC_F16 : KC_H, KC_H, KC_LSFT, pressed, AUTOSHIFT_QWERTY_KEYS_TERM); }
-        case _KC_J: { return lead_autoshifted_same_key(KC_J, pressed); }
-        case _KC_K: { return lead_autoshifted_same_key(KC_K, pressed); }
-        case _KC_L: { return lead_autoshifted_same_key(KC_L, pressed); }
-        case _KC_Z: { return lead_autoshifted_same_key(KC_Z, pressed); }
-        case _KC_X: { return lead_autoshifted_same_key(KC_X, pressed); }
-        case _KC_C: { return lead_autoshifted_same_key(KC_C, pressed); }
-        case _KC_V: { return lead_autoshifted_same_key(KC_V, pressed); }
-        case _KC_B: { return lead_autoshifted_same_key(KC_B, pressed); }
-        case _KC_N: { return lead_autoshifted_same_key(KC_N, pressed); }
-        case _KC_M: { return lead_autoshifted_same_key(KC_M, pressed); }
+        case _KC_Q: { return lead_custom_autoshifted(KC_Q, isMac ? KC_F13 : KC_Q, KC_Q, KC_LSFT, pressed, default_layer ? AUTOSHIFT_QWERTY_KEYS_NO_MODIFIERS_TERM : AUTOSHIFT_QWERTY_KEYS_WITH_MODIFIERS_TERM); }
+        case _KC_W: { return lead_autoshifted_qwerty(KC_W, pressed); }
+        case _KC_E: { return lead_autoshifted_qwerty(KC_E, pressed); }
+        case _KC_R: { return lead_autoshifted_qwerty(KC_R, pressed); }
+        case _KC_T: { return lead_autoshifted_qwerty(KC_T, pressed); }
+        case _KC_Y: { return lead_autoshifted_qwerty(KC_Y, pressed); }
+        case _KC_U: { return lead_autoshifted_qwerty(KC_U, pressed); }
+        case _KC_I: { return lead_autoshifted_qwerty(KC_I, pressed); }
+        case _KC_O: { return lead_autoshifted_qwerty(KC_O, pressed); }
+        case _KC_P: { return lead_autoshifted_qwerty(KC_P, pressed); }
+        case _KC_A: { return lead_autoshifted_qwerty(KC_A, pressed); }
+        case _KC_S: { return lead_autoshifted_qwerty(KC_S, pressed); }
+        case _KC_D: { return lead_autoshifted_qwerty(KC_D, pressed); }
+//        case _KC_F: { return lead_custom_autoshifted(KC_F, KC_F, KC_F, KC_LSFT, pressed, AUTOSHIFT_QWERTY_KEYS_NO_MODIFIERS_TERM); }
+        case _KC_F: { return lead_autoshifted_qwerty(KC_F, pressed); }
+        case _KC_H: { return lead_custom_autoshifted(KC_H, isMac ? KC_F16 : KC_H, KC_H, KC_LSFT, pressed, default_layer ? AUTOSHIFT_QWERTY_KEYS_NO_MODIFIERS_TERM : AUTOSHIFT_QWERTY_KEYS_WITH_MODIFIERS_TERM); }
+        case _KC_J: { return lead_autoshifted_qwerty(KC_J, pressed); }
+        case _KC_K: {
+          if (is_after_lead(KC_K, !pressed)) { return false; }
+          if (not_following_esc(KC_K, isMac ? KC_LGUI : KC_LCTL, KC_LALT, KC_NO, &esc_timer, !pressed, 1000)) {
+            return lead_autoshifted_qwerty(KC_K, pressed);
+          }
+          return false;
+        }
+        case _KC_L: { return lead_autoshifted_qwerty(KC_L, pressed); }
+        case _KC_Z: { return lead_autoshifted_qwerty(KC_Z, pressed); }
+        case _KC_X: { return lead_autoshifted_qwerty(KC_X, pressed); }
+        case _KC_C: { return lead_autoshifted_qwerty(KC_C, pressed); }
+        case _KC_V: { return lead_autoshifted_qwerty(KC_V, pressed); }
+        case _KC_G: { return lead_autoshifted_qwerty(KC_G, pressed); }
+        case _KC_B: { return lead_autoshifted_qwerty(KC_B, pressed); }
+        case _KC_N: { return lead_autoshifted_qwerty(KC_N, pressed); }
+        case _KC_M: { return lead_autoshifted_qwerty(KC_M, pressed); }
 
         case _KC_1: { return lead_autoshifted_numbers(KC_1, pressed); }
         case _KC_2: { return lead_autoshifted_numbers(KC_2, pressed); }
@@ -2195,20 +2204,14 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case _KC_F22: { return lead_autoshifted_special(KC_F22, pressed); }
         case _KC_F23: { return lead_autoshifted_special(KC_F23, pressed); }
         case _KC_F24: { return lead_autoshifted_special(KC_F24, pressed); }
-        //        case _KC_J: {
-        //          if (is_after_lead(KC_J, !pressed)) { return false; }
-        //          if (not_following_esc(KC_J, isMac ? KC_LGUI : KC_LCTL, KC_LALT, KC_NO, &esc_timer, !pressed, 300)) {
-        //            if (!pressed) { key_code(KC_J); }
-        //          }
-        //          return false;
-        //        }
 
         // palm keys, pressed with non-palm modifier: extended held timeout
-        case _F5_PALM: { return replace_if_held_add_mods(KC_F5, KC_NO, KC_F5, KC_LSFT, KC_NO, pressed, 250); }
-        case _F6_PALM: { return replace_if_held_add_mods(KC_F6, KC_NO, KC_F6, KC_LSFT, KC_NO, pressed, 250); }
-
+        case _F5_PALM: { return replace_if_held_add_mods(KC_F5, KC_LALT, KC_F5, KC_LSFT, KC_NO, pressed, 250); }
+        case _F6_PALM: { return replace_if_held_add_mods(KC_F6, KC_LALT, KC_F6, KC_LSFT, KC_NO, pressed, 250); }
         case _F13_PALM: { return replace_if_held_add_mods(KC_F13, KC_NO, KC_F13, KC_LSFT, KC_NO, pressed, 250); }
         case _F14_PALM: { return replace_if_held_add_mods(KC_F14, KC_NO, KC_F14, KC_LSFT, KC_NO, pressed, 250); }
+
+        case _SHIFT_SPACE_: { return replace_if_held_add_mods(KC_SPC, KC_NO, KC_SPC, KC_LALT, KC_LCTL, pressed, AUTOSHIFT_SPECIAL_TERM); }
 
         // native window switching support
         case KC_TAB: {
@@ -2533,13 +2536,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case _SELECT_RIGHT_PC: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_RGHT, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_END, KC_LSFT, KC_NO, KC_NO, KC_NO, pressed, AUTOSHIFT_SPECIAL_TERM, true); }
 
         // f3 / shift + f3
-        case _F3: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_F3, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_F3, KC_NO, KC_NO, KC_NO, KC_NO, pressed, AUTOSHIFT_QWERTY_KEYS_TERM, true); }
-        case _S_F3: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_F3, KC_NO, KC_NO, KC_NO, KC_NO, KC_LSFT, KC_NO, KC_NO, KC_NO, KC_F3, KC_LSFT, KC_NO, KC_NO, KC_NO, pressed, AUTOSHIFT_QWERTY_KEYS_TERM, true); }
+        case _F3: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_F3, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_F3, KC_NO, KC_NO, KC_NO, KC_NO, pressed, AUTOSHIFT_QWERTY_KEYS_NO_MODIFIERS_TERM, true); }
+        case _S_F3: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_F3, KC_NO, KC_NO, KC_NO, KC_NO, KC_LSFT, KC_NO, KC_NO, KC_NO, KC_F3, KC_LSFT, KC_NO, KC_NO, KC_NO, pressed, AUTOSHIFT_QWERTY_KEYS_NO_MODIFIERS_TERM, true); }
 
         // mac overrides
-        case _C_DOT: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_DOT, KC_LGUI, KC_NO, KC_NO, KC_NO, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_DOT, KC_LGUI, KC_LSFT, KC_NO, KC_NO, pressed, AUTOSHIFT_SPECIAL_TERM, true); }
-        case _C_H: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_H, KC_LGUI, KC_NO, KC_NO, KC_NO, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_H, KC_LGUI, KC_LSFT, KC_NO, KC_NO, pressed, AUTOSHIFT_QWERTY_KEYS_TERM, true); }
-        case _C_M: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_M, KC_LGUI, KC_NO, KC_NO, KC_NO, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_M, KC_LGUI, KC_LSFT, KC_NO, KC_NO, pressed, AUTOSHIFT_QWERTY_KEYS_TERM, true); }
+        case _CTRL_DOT: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_DOT, KC_LGUI, KC_NO, KC_NO, KC_NO, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_DOT, KC_LGUI, KC_LSFT, KC_NO, KC_NO, pressed, AUTOSHIFT_SPECIAL_TERM, true); }
+        case _CTRL_H: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_H, KC_LGUI, KC_NO, KC_NO, KC_NO, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_H, KC_LGUI, KC_LSFT, KC_NO, KC_NO, pressed, AUTOSHIFT_QWERTY_KEYS_WITH_MODIFIERS_TERM, true); }
+        case _CTRL_M: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_M, KC_LGUI, KC_NO, KC_NO, KC_NO, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_M, KC_LGUI, KC_LSFT, KC_NO, KC_NO, pressed, AUTOSHIFT_QWERTY_KEYS_WITH_MODIFIERS_TERM, true); }
 
         // pc overrides
         case W_F1: { return replace_alt_shift_with_lgui(KC_F1, pressed); }
