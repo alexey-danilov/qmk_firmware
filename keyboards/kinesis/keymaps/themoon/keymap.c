@@ -2061,7 +2061,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
        }
     }
 
-    if (keycode != KC_LEFT && keycode != KC_RGHT /* && keycode != _KC_K */ ) { // add here keycodes to use with
+    if (keycode != KC_LEFT && keycode != KC_RGHT && keycode != _KC_K) {
       if (keycode != CMD_SPACE && keycode != CTRL_SPACE) {
              esc_timer = 0;
       }
@@ -2152,14 +2152,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case _KC_F: { return lead_autoshifted_qwerty(KC_F, pressed); }
         case _KC_H: { return lead_custom_autoshifted(KC_H, isMac ? KC_F16 : KC_H, KC_H, KC_LSFT, pressed, default_layer ? AUTOSHIFT_QWERTY_KEYS_NO_MODIFIERS_TERM : AUTOSHIFT_QWERTY_KEYS_WITH_MODIFIERS_TERM); }
         case _KC_J: { return lead_autoshifted_qwerty(KC_J, pressed); }
-        case _KC_K: { return lead_autoshifted_qwerty(KC_K, pressed); }
-        /*case _KC_K: {
-            if (is_after_lead(KC_K, !pressed)) { return false; }
-            if (not_following_esc(KC_K, isMac ? KC_LGUI : KC_LCTL, KC_LALT, KC_NO, &esc_timer, !pressed, 1000)) {
-              return lead_autoshifted_qwerty(KC_K, pressed);
-            }
-            return false;
-        }*/
+        case _KC_K: {
+          if (is_after_lead(KC_K, !pressed)) { return false; }
+          if (not_following_esc(KC_K, isMac ? KC_LGUI : KC_LCTL, KC_LALT, KC_NO, &esc_timer, !pressed, 1000)) {
+            return lead_autoshifted_qwerty(KC_K, pressed);
+          }
+          return false;
+        }
         case _KC_L: { return lead_autoshifted_qwerty(KC_L, pressed); }
         case _KC_Z: { return lead_autoshifted_qwerty(KC_Z, pressed); }
         case _KC_X: { return lead_autoshifted_qwerty(KC_X, pressed); }
