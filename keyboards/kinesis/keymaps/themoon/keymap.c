@@ -1217,14 +1217,14 @@ void dynamic_macro_reset (qk_tap_dance_state_t *state, void *user_data) {
 
 // all tap macros
 qk_tap_dance_action_t tap_dance_actions[] = {
-  [TAP_MACRO] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, dynamic_macro_finished, dynamic_macro_reset, 366),
-  [FW_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, fw_finished, fw_reset, 366),
-  [FW_CANCEL] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, fw_cancel_finished, fw_cancel_reset, 366),
-  [SET_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, set_finished, set_reset, 366),
-  [MAC_FAILSAFE] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, mac_layer_finished, mac_layer_reset, 366),
-  [MAC_EXIT_FAILSAFE] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, mac_failsafe_off_finished, mac_failsafe_off_reset, 366),
-  [PC_FAILSAFE] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, pc_layer_finished, pc_layer_reset, 366),
-  [PC_EXIT_FAILSAFE] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, pc_failsafe_off_finished, pc_failsafe_off_reset, 366)
+  [TAP_MACRO] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, dynamic_macro_finished, dynamic_macro_reset, 300),
+  [FW_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, fw_finished, fw_reset, 300),
+  [FW_CANCEL] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, fw_cancel_finished, fw_cancel_reset, 300),
+  [SET_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, set_finished, set_reset, 500),
+  [MAC_FAILSAFE] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, mac_layer_finished, mac_layer_reset, 300),
+  [MAC_EXIT_FAILSAFE] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, mac_failsafe_off_finished, mac_failsafe_off_reset, 300),
+  [PC_FAILSAFE] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, pc_layer_finished, pc_layer_reset, 300),
+  [PC_EXIT_FAILSAFE] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, pc_failsafe_off_finished, pc_failsafe_off_reset, 300)
 };
 
 /* Mac keymap:
@@ -2061,7 +2061,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
        }
     }
 
-    if (keycode != KC_LEFT && keycode != KC_RGHT && keycode != _KC_K) {
+    if (keycode != KC_LEFT && keycode != KC_RGHT /* && keycode != _KC_K */ ) { // add here keycodes to use with
       if (keycode != CMD_SPACE && keycode != CTRL_SPACE) {
              esc_timer = 0;
       }
@@ -2148,17 +2148,18 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case _KC_A: { return lead_autoshifted_qwerty(KC_A, pressed); }
         case _KC_S: { return lead_autoshifted_qwerty(KC_S, pressed); }
         case _KC_D: { return lead_autoshifted_qwerty(KC_D, pressed); }
-//        case _KC_F: { return lead_custom_autoshifted(KC_F, KC_F, KC_F, KC_LSFT, pressed, AUTOSHIFT_QWERTY_KEYS_NO_MODIFIERS_TERM); }
+        /* case _KC_F: { return lead_custom_autoshifted(KC_F, KC_F, KC_F, KC_LSFT, pressed, AUTOSHIFT_QWERTY_KEYS_NO_MODIFIERS_TERM); } */
         case _KC_F: { return lead_autoshifted_qwerty(KC_F, pressed); }
         case _KC_H: { return lead_custom_autoshifted(KC_H, isMac ? KC_F16 : KC_H, KC_H, KC_LSFT, pressed, default_layer ? AUTOSHIFT_QWERTY_KEYS_NO_MODIFIERS_TERM : AUTOSHIFT_QWERTY_KEYS_WITH_MODIFIERS_TERM); }
         case _KC_J: { return lead_autoshifted_qwerty(KC_J, pressed); }
-        case _KC_K: {
-          if (is_after_lead(KC_K, !pressed)) { return false; }
-          if (not_following_esc(KC_K, isMac ? KC_LGUI : KC_LCTL, KC_LALT, KC_NO, &esc_timer, !pressed, 1000)) {
-            return lead_autoshifted_qwerty(KC_K, pressed);
-          }
-          return false;
-        }
+        case _KC_K: { return lead_autoshifted_qwerty(KC_K, pressed); }
+        /*case _KC_K: {
+            if (is_after_lead(KC_K, !pressed)) { return false; }
+            if (not_following_esc(KC_K, isMac ? KC_LGUI : KC_LCTL, KC_LALT, KC_NO, &esc_timer, !pressed, 1000)) {
+              return lead_autoshifted_qwerty(KC_K, pressed);
+            }
+            return false;
+        }*/
         case _KC_L: { return lead_autoshifted_qwerty(KC_L, pressed); }
         case _KC_Z: { return lead_autoshifted_qwerty(KC_Z, pressed); }
         case _KC_X: { return lead_autoshifted_qwerty(KC_X, pressed); }
@@ -2634,17 +2635,25 @@ void led_set_user(uint8_t usb_led) {
 
   if (macro1_recording) {
     led_red_on();
+    led_yellow_on();
   } else {
-    if (!lead_led && !macro2_recording) {
+    if (!lead_led) {
+      led_yellow_off();
+    }
+    if (!macro2_recording) {
       led_red_off();
     }
   }
 
   if (macro2_recording) {
+    led_red_on();
     led_green_on();
   } else {
-    if (!lead_led & !macro1_recording) {
+    if (!lead_led) {
       led_green_off();
+    }
+    if (!macro1_recording) {
+      led_red_off();
     }
   }
 }
