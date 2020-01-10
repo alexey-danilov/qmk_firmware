@@ -1217,14 +1217,14 @@ void dynamic_macro_reset (qk_tap_dance_state_t *state, void *user_data) {
 
 // all tap macros
 qk_tap_dance_action_t tap_dance_actions[] = {
-  [TAP_MACRO] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, dynamic_macro_finished, dynamic_macro_reset, 300),
-  [FW_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, fw_finished, fw_reset, 300),
-  [FW_CANCEL] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, fw_cancel_finished, fw_cancel_reset, 300),
+  [TAP_MACRO] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, dynamic_macro_finished, dynamic_macro_reset, 500),
+  [FW_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, fw_finished, fw_reset, 500),
+  [FW_CANCEL] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, fw_cancel_finished, fw_cancel_reset, 500),
   [SET_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, set_finished, set_reset, 500),
-  [MAC_FAILSAFE] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, mac_layer_finished, mac_layer_reset, 300),
-  [MAC_EXIT_FAILSAFE] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, mac_failsafe_off_finished, mac_failsafe_off_reset, 300),
-  [PC_FAILSAFE] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, pc_layer_finished, pc_layer_reset, 300),
-  [PC_EXIT_FAILSAFE] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, pc_failsafe_off_finished, pc_failsafe_off_reset, 300)
+  [MAC_FAILSAFE] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, mac_layer_finished, mac_layer_reset, 500),
+  [MAC_EXIT_FAILSAFE] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, mac_failsafe_off_finished, mac_failsafe_off_reset, 500),
+  [PC_FAILSAFE] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, pc_layer_finished, pc_layer_reset, 500),
+  [PC_EXIT_FAILSAFE] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, pc_failsafe_off_finished, pc_failsafe_off_reset, 500)
 };
 
 /* Mac keymap:
