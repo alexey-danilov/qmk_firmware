@@ -160,7 +160,6 @@ enum holding_keycodes {
 
 static uint16_t esc_timer = 0; // timer for leader key: esc
 static uint16_t lead_timer = 0; // timer for leader key
-static uint16_t space_timer = 0;
 static bool default_layer = true;
 static bool palm_l_mac_layer = false;
 static bool palm_r_mac_layer = false;
@@ -1132,7 +1131,7 @@ void set_finished (qk_tap_dance_state_t *state, void *user_data) {
       case DOUBLE_HOLD:
           // print screen
           if (isMac) {
-            with_1_mod(KC_F2, KC_LCTL); break;
+            with_1_mod(KC_F3, KC_LCTL); break;
           }
           if (isPc) {
             key_code(KC_PSCR); break;
@@ -1305,8 +1304,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________, _CTRL_M, _SELECT_UP_MAC, _CTRL_DOT, __________, __________,
                    _SELECT_LEFT_MAC,  _SELECT_DOWN_MAC,  _SELECT_RIGHT_MAC, KC_NUBS,
          __________, _DEL_LEFT_MAC,
-         _KC_MINS,
-         _KC_EQL, _KC_F2, LEAD_SPACE,
+         _KC_EQL,
+         _KC_MINS, _KC_F2, LEAD_SPACE,
          _F6_PALM
     ),
 
@@ -1374,8 +1373,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________, __________, __________, __________, __________, __________,
                __________,  __________,  __________,  KC_NUBS,
          __________, C(KC_BSPC),
-         _KC_MINS,
-         _KC_EQL, _KC_TAB, _KC_F1,
+         _KC_EQL,
+         _KC_MINS, _KC_TAB, _KC_F1,
          C(S(KC_F6))
     ),
 
@@ -1443,8 +1442,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________, __________, __________, __________, __________, __________,
                __________,  __________,  __________,  _KC_NUBS,
          __________, _KC_BSPC,
-         _KC_MINS,
-         _KC_EQL, _KC_TAB, _KC_SPACE,
+         _KC_EQL,
+         _KC_MINS, _KC_TAB, _KC_SPACE,
          _F6_PALM
     ),
 
@@ -1467,7 +1466,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                    __________,  __________,  __________, _KC_NUBS,
          __________, _KC_BSPC,
          _KC_BSLS,
-         _KC_EQL, _KC_TAB, _SHIFT_SPACE_,
+         _KC_MINS, _KC_TAB, _SHIFT_SPACE_,
          _F6_PALM
     ),
 
@@ -1591,8 +1590,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________,  __________, _SELECT_UP_PC, __________,  __________,  __________,
          _SELECT_LEFT_PC, _SELECT_DOWN_PC, _SELECT_RIGHT_PC, __________,
          __________, _DEL_LEFT_PC,
-         _KC_MINS,
-         _KC_EQL, _KC_F2, LEAD_SPACE,
+         _KC_EQL,
+         _KC_MINS, _KC_F2, LEAD_SPACE,
          _F14_PALM
     ),
 
@@ -1660,8 +1659,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________, __________, __________, __________, __________, __________,
                   __________, __________,  __________, __________,
          __________, _KC_BSPC,
-         _KC_MINS,
-         _KC_EQL, _KC_F2, _KC_F1,
+         _KC_EQL,
+         _KC_MINS, _KC_F2, _KC_F1,
          _F14_PALM
     ),
 
@@ -1706,8 +1705,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          W_N, W_M, KC_UP, W_DOT, W_SCLN, W_F24,
          KC_LEFT, KC_DOWN, KC_RGHT, W_APP,
          W_F16, W_DEL,
-         W_MINS,
-         W_EQL, KC_F2, KC_F1,
+         W_EQL,
+         W_MINS, KC_F2, KC_F1,
          W_F14
     ),
 
@@ -1753,7 +1752,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                    __________,  __________,  __________, __________,
          __________, _KC_BSPC,
          _KC_BSLS,
-         _KC_EQL, _KC_TAB, _SHIFT_SPACE_,
+         _KC_MINS, _KC_TAB, _SHIFT_SPACE_,
          _F14_PALM
     ),
 
@@ -1859,7 +1858,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                          _, KC_Z, KC_X, KC_C, KC_V, KC_B,
                              KC_GRV, KC_LBRC, KC_COMM, KC_RBRC,
                                                              // left thumb keys
-    		                                                    KC_BSPC, KC_BSLS,
+    		                                                    KC_BSPC, KC_CAPS,
                                                                   ALT_T(KC_SLSH),
                                    GUI_T(KC_ESC), SFT_T(KC_ENTER), CTL_T(KC_DEL),
                                                                 // left palm key
@@ -1872,8 +1871,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
               	KC_N, KC_M, KC_UP, KC_DOT, KC_QUOT, _,
               	KC_LEFT, KC_DOWN, KC_RGHT, KC_NUBS,
                          // right thumb keys
-                         KC_CAPS, KC_BSPC,
-                         ALT_T(KC_MINS),
+                         C(KC_F1), KC_MINS,
+                         ALT_T(KC_BSLS),
                          CTL_T(KC_EQL), SFT_T(KC_TAB), KC_SPC,
                          // right palm key
                          KC_PGDN
@@ -1888,7 +1887,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                _, KC_Z, KC_X, KC_C, KC_V, KC_B,
                    KC_GRV, KC_LBRC, KC_COMM, KC_RBRC,
                                                     // left thumb keys
-    		                                         KC_BSPC, KC_BSLS,
+    		                                         KC_BSPC, KC_CAPS,
                                                        ALT_T(KC_SLSH),
                         CTL_T(KC_ESC), SFT_T(KC_ENTER), GUI_T(KC_DEL),
                                                       // left palm key
@@ -1901,8 +1900,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     	KC_N, KC_M, KC_UP, KC_DOT, KC_QUOT,  _,
     	KC_LEFT, KC_DOWN, KC_RGHT, KC_APP,
                // right thumb keys
-               KC_CAPS, KC_BSPC,
-               ALT_T(KC_MINS),
+               KC_RGUI, KC_MINS,
+               ALT_T(KC_BSLS),
                GUI_T(KC_EQL), SFT_T(KC_TAB), KC_SPC,
                // right palm key
                KC_PGDN
@@ -2029,17 +2028,11 @@ bool palm_r_pc_interrupted = true;
 
 bool left_pressed = false;
 bool right_pressed = false;
-bool space_alone = false;
 
 // adding logic to custom keycodes and overriding existing ones (taking hold duration into account);
 // "mo layer tap" and "esc leader key" functionality
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     bool pressed = record->event.pressed;
-
-    if (space_alone && pressed) {
-       space_alone = false;
-    }
-
     if (default_layer) {
        // remove stuck modifiers
        remove_mods();
@@ -2308,25 +2301,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
         // >>>>>>> mac layers
         case CMD_SPACE: {
-          if (is_after_lead(KC_SPC, pressed)) { return false; };
-          if (pressed) {
-            space_alone = true;
-            space_timer = timer_read();
-          }
-          else {
-            uint16_t delta_millis = timer_elapsed(space_timer);
-            if (space_alone && ((delta_millis > 1) && (delta_millis < 100))) { // 0 - 250 ms - space
-              up(KC_LGUI); key_code(KC_SPC);
-            } else if (space_alone && ((delta_millis >= 100) && (delta_millis < 500))) { // 250 - 600 ms - change lang
-              up(KC_LGUI); with_1_mod(KC_SPC, KC_LALT); // change lang
-              lang_switch_led = true;
-              // on mac changing language resets caps lock
-              if (capsOnHardCheck()) { up(KC_LCAP); caps_led = false; led_blue_off(); }
-            }
-            space_alone = false;
-            space_timer = 0;
-          }
-          return true;
+          if (is_after_lead(KC_SPC, pressed)) { return false; }; return true;
         }
 
         case ALT_SHIFT_COMM: {
@@ -2356,7 +2331,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case CTRL_F1: {
           if (is_after_lead(KC_F17, pressed)) { return false; }
           static uint16_t ctrl_f1_layer_timer;
-          momentary_layer_tap_with_hold(KC_F1, KC_LCTL, KC_LCTL, KC_NO, KC_NO, KC_NO, &ctrl_f1_layer_timer, &ctrl_f1_interrupted, pressed, AUTOSHIFT_SPECIAL_TERM, 400, false, KC_EQL, KC_LSFT, KC_NO);
+          momentary_layer_tap_with_hold(KC_F1, KC_LCTL, KC_LCTL, KC_NO, KC_NO, KC_NO, &ctrl_f1_layer_timer, &ctrl_f1_interrupted, pressed, AUTOSHIFT_SPECIAL_TERM, 400, false, KC_F2, KC_LCTL, KC_NO);
           return true;
         }
 
@@ -2370,7 +2345,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case ALT_BSLS_MAC: {
           if (is_after_lead(KC_BSLS, pressed)) { return false; }
           static uint16_t alt_bsls_mac_layer_timer;
-          momentary_layer_tap_with_hold(KC_BSLS, KC_NO, KC_LALT, KC_NO, KC_NO, KC_NO, &alt_bsls_mac_layer_timer, &alt_bsls_mac_interrupted, pressed, AUTOSHIFT_SPECIAL_TERM, 400, false, KC_EQL, KC_NO, KC_NO);
+          momentary_layer_tap_with_hold(KC_BSLS, KC_NO, KC_LALT, KC_NO, KC_NO, KC_NO, &alt_bsls_mac_layer_timer, &alt_bsls_mac_interrupted, pressed, AUTOSHIFT_SPECIAL_TERM, 400, false, KC_EQL, KC_LSFT, KC_NO);
           return true;
         }
 
@@ -2382,13 +2357,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
 
         case SHIFT_TAB_MAC: {
-          if (capsOnHardCheck()) { key_code(KC_CAPS); caps_led = false; led_blue_off(); return false; }
           if (is_after_lead(KC_F2, pressed)) { return false; }
           static uint16_t shift_tab_mac_layer_timer;
-          if ((momentary_layer_tap_with_hold(KC_TAB, KC_NO, KC_LSFT, KC_NO, KC_NO, KC_NO, &shift_tab_mac_layer_timer, &shift_tab_mac_interrupted, pressed, 200, 1000, false, KC_CLR, KC_NO, KC_NO)) == 2) {
-            // held key
-            toggleCaps();
-          }
+          momentary_layer_tap_with_hold(KC_TAB, KC_NO, KC_LSFT, KC_NO, KC_NO, KC_NO, &shift_tab_mac_layer_timer, &shift_tab_mac_interrupted, pressed, AUTOSHIFT_SPECIAL_TERM, 400, false, KC_EQL, KC_NO, KC_NO);
           return true;
         }
 
@@ -2400,31 +2371,22 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
 
         case PALM_R_MAC: {
+          if (capsOnHardCheck()) { key_code(KC_CAPS); caps_led = false; led_blue_off(); return false; }
           if (is_after_lead(KC_F6, pressed)) { return false; }
           static uint16_t palm_r_mac_layer_timer;
-          momentary_layer_tap_with_hold(KC_F6, KC_LALT, KC_NO, KC_NO, KC_NO, KC_NO, &palm_r_mac_layer_timer, &palm_r_mac_interrupted, pressed, 250, 1000, true, KC_F6, KC_LALT, KC_LSFT);
+          uint8_t tap_status = momentary_layer_tap_with_hold(KC_NO, KC_NO, KC_LALT, KC_NO, KC_NO, KC_NO, &palm_r_mac_layer_timer, &palm_r_mac_interrupted, pressed, 250, 1000, false, KC_CLR, KC_NO, KC_NO);
+          if (tap_status == 1) {
+            with_1_mod(KC_SPC, KC_LALT);
+            lang_switch_led = true;
+          } else if (tap_status == 2) {
+            toggleCaps();
+          }
           return true;
         }
 
         // >>>>>>> pc layers
         case CTRL_SPACE: {
-          if (is_after_lead(KC_SPC, pressed)) { return false; };
-          if (pressed) {
-            space_alone = true;
-            space_timer = timer_read();
-          }
-          else {
-            uint16_t delta_millis = timer_elapsed(space_timer);
-            if (space_alone && ((delta_millis > 1) && (delta_millis < 100))) {
-              up(KC_LCTL); key_code(KC_SPC);
-            } else if (space_alone && ((delta_millis >= 100) && (delta_millis < 500))) {
-              up(KC_LCTL); with_1_mod(KC_SPC, KC_LGUI); // change lang
-              lang_switch_led = true;
-            }
-            space_alone = false;
-            space_timer = 0;
-          }
-          return true;
+          if (is_after_lead(KC_SPC, pressed)) { return false; }; return true;
         }
 
         case CTRL_SHIFT_COMM: {
@@ -2447,21 +2409,21 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case ALT_SHIFT_DEL: {
           if (is_after_lead(KC_DEL, pressed)) { return false; }
           static uint16_t alt_shift_del_layer_timer;
-          momentary_layer_tap_with_hold(KC_DEL, KC_NO, KC_LSFT, KC_LALT, KC_NO, KC_NO, &alt_shift_del_layer_timer, &alt_shift_del_interrupted, pressed, AUTOSHIFT_SPECIAL_TERM, 350, false, KC_EQL, KC_LSFT, KC_NO);
+          momentary_layer_tap_with_hold(KC_DEL, KC_NO, KC_LSFT, KC_LALT, KC_NO, KC_NO, &alt_shift_del_layer_timer, &alt_shift_del_interrupted, pressed, AUTOSHIFT_SPECIAL_TERM, 400, false, KC_EQL, KC_LSFT, KC_NO);
           return true;
         }
 
         case RGUI: {
           if (is_after_lead(KC_F17, pressed)) { return false; }
           static uint16_t rgui_layer_timer;
-          momentary_layer_tap_with_hold(KC_LGUI, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, &rgui_layer_timer, &rgui_interrupted, pressed, AUTOSHIFT_SPECIAL_TERM, 400, false, KC_EQL, KC_LSFT, KC_NO);
+          momentary_layer_tap_with_hold(KC_LGUI, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, &rgui_layer_timer, &rgui_interrupted, pressed, AUTOSHIFT_SPECIAL_TERM, 400, false, KC_LGUI, KC_LCTL, KC_NO);
           return true;
         }
 
         case ALT_BSLS_PC: {
           if (is_after_lead(KC_BSLS, pressed)) { return false; }
           static uint16_t alt_bsls_pc_layer_timer;
-          momentary_layer_tap_with_hold(KC_BSLS, KC_NO, KC_LALT, KC_NO, KC_NO, KC_NO, &alt_bsls_pc_layer_timer, &alt_bsls_pc_interrupted, pressed, AUTOSHIFT_SPECIAL_TERM, 400, false, KC_EQL, KC_NO, KC_NO);
+          momentary_layer_tap_with_hold(KC_BSLS, KC_NO, KC_LALT, KC_NO, KC_NO, KC_NO, &alt_bsls_pc_layer_timer, &alt_bsls_pc_interrupted, pressed, AUTOSHIFT_SPECIAL_TERM, 400, false, KC_EQL, KC_LSFT, KC_NO);
           return true;
         }
 
@@ -2480,13 +2442,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
 
         case SHIFT_TAB_PC: {
-          if (capsOnHardCheck()) { key_code(KC_CAPS); caps_led = false; led_blue_off(); return false; }
           if (is_after_lead(KC_F2, pressed)) { return false; }
           static uint16_t shift_tab_pc_layer_timer;
-          if ((momentary_layer_tap_with_hold(KC_TAB, KC_NO, KC_LSFT, KC_NO, KC_NO, KC_NO, &shift_tab_pc_layer_timer, &shift_tab_pc_interrupted, pressed, 200, 1000, false, KC_CLR, KC_NO, KC_NO)) == 2) {
-            // held key
-            toggleCaps();
-          }
+          momentary_layer_tap_with_hold(KC_TAB, KC_NO, KC_LSFT, KC_NO, KC_NO, KC_NO, &shift_tab_pc_layer_timer, &shift_tab_pc_interrupted, pressed, AUTOSHIFT_SPECIAL_TERM, 400, false, KC_EQL, KC_NO, KC_NO);
           return true;
         }
 
@@ -2498,9 +2456,16 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
 
         case PALM_R_PC: {
-          if (is_after_lead(KC_F14, pressed)) { return false; }
+          if (capsOnHardCheck()) { key_code(KC_CAPS); caps_led = false; led_blue_off(); return false; }
+          if (is_after_lead(KC_F6, pressed)) { return false; }
           static uint16_t palm_r_pc_layer_timer;
-          momentary_layer_tap_with_hold(KC_F14, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, &palm_r_pc_layer_timer, &palm_r_pc_interrupted, pressed, 250, 1000, false, KC_F14, KC_LSFT, KC_NO);
+          uint8_t tap_status = momentary_layer_tap_with_hold(KC_NO, KC_NO, KC_LALT, KC_NO, KC_NO, KC_NO, &palm_r_pc_layer_timer, &palm_r_pc_interrupted, pressed, 250, 1000, false, KC_CLR, KC_NO, KC_NO);
+          if (tap_status == 1) {
+            with_1_mod(KC_SPC, KC_LGUI);
+            lang_switch_led = true;
+          } else if (tap_status == 2) {
+            toggleCaps();
+          }
           return true;
         }
 
