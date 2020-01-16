@@ -160,6 +160,7 @@ enum holding_keycodes {
 
 static uint16_t esc_timer = 0; // timer for leader key: esc
 static uint16_t lead_timer = 0; // timer for leader key
+static uint16_t space_timer = 0;
 static bool default_layer = true;
 static bool palm_l_mac_layer = false;
 static bool palm_r_mac_layer = false;
@@ -2028,11 +2029,17 @@ bool palm_r_pc_interrupted = true;
 
 bool left_pressed = false;
 bool right_pressed = false;
+bool space_alone = false;
 
 // adding logic to custom keycodes and overriding existing ones (taking hold duration into account);
 // "mo layer tap" and "esc leader key" functionality
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     bool pressed = record->event.pressed;
+
+    if (space_alone && pressed) {
+       space_alone = false;
+    }
+
     if (default_layer) {
        // remove stuck modifiers
        remove_mods();
@@ -2301,7 +2308,20 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
         // >>>>>>> mac layers
         case CMD_SPACE: {
-          if (is_after_lead(KC_SPC, pressed)) { return false; }; return true;
+          if (is_after_lead(KC_SPC, pressed)) { return false; };
+          if (pressed) {
+            space_alone = true;
+            space_timer = timer_read();
+          }
+          else {
+            uint16_t delta_millis = timer_elapsed(space_timer);
+            if (space_alone && ((delta_millis > 1) && (delta_millis < 350))) { // 0 - 300 ms - space
+              up(KC_LGUI); key_code(KC_SPC);
+            }
+            space_alone = false;
+            space_timer = 0;
+          }
+          return true;
         }
 
         case ALT_SHIFT_COMM: {
@@ -2374,7 +2394,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           if (capsOnHardCheck()) { key_code(KC_CAPS); caps_led = false; led_blue_off(); return false; }
           if (is_after_lead(KC_F6, pressed)) { return false; }
           static uint16_t palm_r_mac_layer_timer;
-          uint8_t tap_status = momentary_layer_tap_with_hold(KC_NO, KC_NO, KC_LALT, KC_NO, KC_NO, KC_NO, &palm_r_mac_layer_timer, &palm_r_mac_interrupted, pressed, 250, 1000, false, KC_CLR, KC_NO, KC_NO);
+          uint8_t tap_status = momentary_layer_tap_with_hold(KC_NO, KC_NO, KC_LALT, KC_NO, KC_NO, KC_NO, &palm_r_mac_layer_timer, &palm_r_mac_interrupted, pressed, 250, 500, false, KC_CLR, KC_NO, KC_NO);
           if (tap_status == 1) {
             with_1_mod(KC_SPC, KC_LALT);
             lang_switch_led = true;
@@ -2386,7 +2406,20 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
         // >>>>>>> pc layers
         case CTRL_SPACE: {
-          if (is_after_lead(KC_SPC, pressed)) { return false; }; return true;
+          if (is_after_lead(KC_SPC, pressed)) { return false; };
+          if (pressed) {
+            space_alone = true;
+            space_timer = timer_read();
+          }
+          else {
+            uint16_t delta_millis = timer_elapsed(space_timer);
+            if (space_alone && ((delta_millis > 1) && (delta_millis < 350))) {
+              up(KC_LCTL); key_code(KC_SPC);
+            }
+            space_alone = false;
+            space_timer = 0;
+          }
+          return true;
         }
 
         case CTRL_SHIFT_COMM: {
@@ -2459,7 +2492,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           if (capsOnHardCheck()) { key_code(KC_CAPS); caps_led = false; led_blue_off(); return false; }
           if (is_after_lead(KC_F6, pressed)) { return false; }
           static uint16_t palm_r_pc_layer_timer;
-          uint8_t tap_status = momentary_layer_tap_with_hold(KC_NO, KC_NO, KC_LALT, KC_NO, KC_NO, KC_NO, &palm_r_pc_layer_timer, &palm_r_pc_interrupted, pressed, 250, 1000, false, KC_CLR, KC_NO, KC_NO);
+          uint8_t tap_status = momentary_layer_tap_with_hold(KC_NO, KC_NO, KC_LALT, KC_NO, KC_NO, KC_NO, &palm_r_pc_layer_timer, &palm_r_pc_interrupted, pressed, 250, 500, false, KC_CLR, KC_NO, KC_NO);
           if (tap_status == 1) {
             with_1_mod(KC_SPC, KC_LGUI);
             lang_switch_led = true;
