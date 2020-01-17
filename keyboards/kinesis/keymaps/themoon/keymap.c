@@ -1513,7 +1513,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                    HYPR(KC_GRV), KC_MRWD, KC_MPLY, KC_MFFD,
                                         HYPR(KC_BSPC), HYPR(KC_F15),
                                                       HYPR(KC_BSPC),
-           LGUI(KC_Z), LGUI(LSFT(KC_Z)), _LIST_FORCE_CLOSE_APPS_MAC,
+                         LGUI(KC_Z), LGUI(LSFT(KC_Z)), HYPR(KC_DEL),
                                                         HYPR(KC_F5),
          __________,  __________,  __________,  __________,  __________, __________, __________, __________, __________,
          _KC_6, _KC_7, _KC_8, _KC_9, _KC_0,  __________,
