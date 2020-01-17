@@ -765,20 +765,6 @@ bool not_following_esc(uint16_t code, uint16_t mod1, uint16_t mod2, uint16_t mod
   }
 }
 
-// ESC AS A LEADER KEY
-// provides functionality similar to "leader key", except that it works for escape
-bool not_following_esc4(uint16_t code, uint16_t mod1, uint16_t mod2, uint16_t mod3, uint16_t *leader_timer, bool pressed, uint16_t leader_last_pressed_timeout) {
-  if (*leader_timer && held_shorter(*leader_timer, leader_last_pressed_timeout)) {
-    if (!pressed) {
-      *leader_timer = 0;
-      with_3_mods(code, mod1, mod2, mod3);
-    }
-    return false;
-  } else {
-    return true;
-  }
-}
-
 // CMD/CTRL + SPACE AS A LEADER KEY
 bool press_leader_key(bool pressed) {
   static uint16_t hold_timer;
@@ -2394,7 +2380,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           if (capsOnHardCheck()) { key_code(KC_CAPS); caps_led = false; led_blue_off(); return false; }
           if (is_after_lead(KC_F6, pressed)) { return false; }
           static uint16_t palm_r_mac_layer_timer;
-          uint8_t tap_status = momentary_layer_tap_with_hold(KC_NO, KC_NO, KC_LALT, KC_NO, KC_NO, KC_NO, &palm_r_mac_layer_timer, &palm_r_mac_interrupted, pressed, 250, 500, false, KC_CLR, KC_NO, KC_NO);
+          uint8_t tap_status = momentary_layer_tap_with_hold(KC_NO, KC_NO, KC_LALT, KC_NO, KC_NO, KC_NO, &palm_r_mac_layer_timer, &palm_r_mac_interrupted, pressed, 200, 700, false, KC_CLR, KC_NO, KC_NO);
           if (tap_status == 1) {
             with_1_mod(KC_SPC, KC_LALT);
             lang_switch_led = true;
@@ -2492,7 +2478,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           if (capsOnHardCheck()) { key_code(KC_CAPS); caps_led = false; led_blue_off(); return false; }
           if (is_after_lead(KC_F6, pressed)) { return false; }
           static uint16_t palm_r_pc_layer_timer;
-          uint8_t tap_status = momentary_layer_tap_with_hold(KC_NO, KC_NO, KC_LALT, KC_NO, KC_NO, KC_NO, &palm_r_pc_layer_timer, &palm_r_pc_interrupted, pressed, 250, 500, false, KC_CLR, KC_NO, KC_NO);
+          uint8_t tap_status = momentary_layer_tap_with_hold(KC_NO, KC_NO, KC_LALT, KC_NO, KC_NO, KC_NO, &palm_r_pc_layer_timer, &palm_r_pc_interrupted, pressed, 200, 700, false, KC_CLR, KC_NO, KC_NO);
           if (tap_status == 1) {
             with_1_mod(KC_SPC, KC_LGUI);
             lang_switch_led = true;
