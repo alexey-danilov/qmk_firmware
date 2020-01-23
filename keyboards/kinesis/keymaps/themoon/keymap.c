@@ -161,8 +161,9 @@ enum holding_keycodes {
   SET_LAYER_PC,
 };
 
-static uint16_t esc_timer = 0; // timer for leader key: esc
-static uint16_t lead_timer = 0; // timer for leader key
+static uint16_t left_arrow_timer = 0; // timer for leader key: left arrow
+static uint16_t right_arrow_timer = 0; // timer for leader key: right arrow
+static uint16_t lead_timer = 0; // timer for leader key (cmd/ctrl + space)
 static uint16_t space_timer = 0;
 static bool default_layer = true;
 static bool palm_l_mac_layer = false;
@@ -756,15 +757,15 @@ bool delete_word_line(uint16_t code, uint16_t mod_to_remove, uint16_t mod_to_add
 
 // ESC AS A LEADER KEY
 // provides functionality similar to "leader key", except that it works for escape
-bool not_following_esc(uint16_t code, uint16_t mod1, uint16_t mod2, uint16_t mod3, uint16_t *leader_timer, bool pressed, uint16_t leader_last_pressed_timeout) {
+bool following_custom_leader(uint16_t code, uint16_t mod1, uint16_t mod2, uint16_t mod3, uint16_t *leader_timer, bool pressed, uint16_t leader_last_pressed_timeout) {
   if (*leader_timer && held_shorter(*leader_timer, leader_last_pressed_timeout)) {
     if (pressed) {
       *leader_timer = 0;
-      with_3_mods(code, mod1, mod2, mod3);
+      down(mod1); down(mod2); down(mod3); down(code); up(code); up(mod1); up(mod2); up(mod3);
     }
-    return false;
-  } else {
     return true;
+  } else {
+    return false;
   }
 }
 
@@ -1485,7 +1486,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 
 [_PALM_L_MAC] = LAYOUT(
-         HYPR(KC_INS), HYPR(KC_F1), HYPR(KC_F2), HYPR(KC_F3), KC__VOLDOWN, KC__MUTE, KC__VOLUP, HYPR(KC_F7), HYPR(KC_F8),
+         HYPR(KC_INS), HYPR(KC_F1), HYPR(KC_F2), HYPR(KC_F3), HYPR(KC_F4), HYPR(KC_F5), HYPR(KC_F6), HYPR(KC_F7), HYPR(KC_F8),
          HYPR(KC_F7), HYPR(KC_1), HYPR(KC_2), HYPR(KC_3), HYPR(KC_4), HYPR(KC_5),
          HYPR(KC_F8), HYPR(KC_Q), HYPR(KC_W), HYPR(KC_E), HYPR(KC_R), HYPR(KC_T),
          HYPR(KC_F9), HYPR(KC_A), HYPR(KC_S), HYPR(KC_D), HYPR(KC_F), HYPR(KC_G),
@@ -1501,21 +1502,21 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          HYPR(KC_H), HYPR(KC_J), HYPR(KC_K), HYPR(KC_L), HYPR(KC_SCLN), HYPR(KC_F13),
          HYPR(KC_N), HYPR(KC_M), KC_PGUP, HYPR(KC_SPC), HYPR(KC_QUOT), HYPR(KC_F14),
                         KC_HOME, KC_PGDN, KC_END, HYPR(KC_NUBS),
-         HYPR(KC_F1), HYPR(KC_BSLS),
-         HYPR(KC_MINS),
-         _LIST_FORCE_CLOSE_APPS_MAC, _S_F3, _F3,
+         _LIST_FORCE_CLOSE_APPS_MAC, KC__MUTE,
+         KC__VOLDOWN,
+         KC__VOLUP, _S_F3, _F3,
          G(A(KC_H))
     ),
 
 [_PALM_R_MAC] = LAYOUT(
-         HYPR(KC_INS), HYPR(KC_F1), HYPR(KC_F2), HYPR(KC_F3), KC__VOLDOWN, KC__MUTE, KC__VOLUP, HYPR(KC_F7), HYPR(KC_F8),
+         HYPR(KC_INS), HYPR(KC_F1), HYPR(KC_F2), HYPR(KC_F3), HYPR(KC_F4), HYPR(KC_F5), HYPR(KC_F6), HYPR(KC_F7), HYPR(KC_F8),
          HYPR(KC_F7), HYPR(KC_1), HYPR(KC_2), HYPR(KC_3), HYPR(KC_4), HYPR(KC_5),
          HYPR(KC_F8), HYPR(KC_Q), HYPR(KC_W), HYPR(KC_E), HYPR(KC_R), HYPR(KC_T),
          HYPR(KC_F9), HYPR(KC_A), HYPR(KC_S), HYPR(KC_D), HYPR(KC_F), HYPR(KC_G),
          HYPR(KC_F10), HYPR(KC_Z), HYPR(KC_X), HYPR(KC_C), HYPR(KC_V), HYPR(KC_B),
                    HYPR(KC_GRV), S(KC_TAB), _HIDE_CLOSE_MAC, KC_TAB,
-                                         KC_MRWD, HYPR(KC_F15),
-                                                       KC_MPLY,
+                                         KC_MPLY, HYPR(KC_F15),
+                                                       KC_MRWD,
                          LGUI(KC_Z), LGUI(LSFT(KC_Z)), KC_MFFD,
                                                    HYPR(KC_F5),
          __________,  __________,  __________,  __________,  __________, __________, __________, __________, __________,
@@ -1524,9 +1525,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
                    __________,  __________, __________, __________,
-         _,  _,
-         _,
-         _,  _,  _,
+         _LIST_FORCE_CLOSE_APPS_MAC, KC__MUTE,
+         KC__VOLDOWN,
+         KC__VOLUP,  _,  _,
          PALM_R_MAC
     ),
 
@@ -1771,11 +1772,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
 
 [_PALM_L_PC] = LAYOUT(
-         C(A(KC_INS)), C(A(KC_F1)), C(A(KC_F2)), C(A(KC_F3)), KC_VOLD, KC_MUTE, KC_VOLU, C(A(KC_F7)), C(A(KC_F8)),
-         C(A(KC_F7)), C(A(KC_1)), C(A(KC_2)), C(A(KC_3)), C(A(KC_4)), C(A(KC_5)),
-         C(A(KC_F8)), C(A(KC_Q)), C(A(KC_W)), C(A(KC_E)), C(A(KC_R)), C(A(KC_T)),
-         C(A(KC_F9)), C(A(KC_A)), C(A(KC_S)), C(A(KC_D)), C(A(KC_F)), C(A(KC_G)),
-         C(A(KC_F10)), C(A(KC_Z)), C(A(KC_X)), C(A(KC_C)), C(A(KC_V)), C(A(KC_B)),
+         C(A(KC_INS)), C(A(KC_F1)), C(A(KC_F2)), C(A(KC_F3)), C(A(KC_F4)), C(A(KC_F5)), C(A(KC_F6)), C(A(KC_F7)), C(A(KC_F8)),
+         C(A(KC_F17)), C(A(KC_1)), C(A(KC_2)), C(A(KC_3)), C(A(KC_4)), C(A(KC_5)),
+         C(A(KC_F18)), C(A(KC_Q)), C(A(KC_W)), C(A(KC_E)), C(A(KC_R)), C(A(KC_T)),
+         C(A(KC_F19)), C(A(KC_A)), C(A(KC_S)), C(A(KC_D)), C(A(KC_F)), C(A(KC_G)),
+         C(A(KC_F20)), C(A(KC_Z)), C(A(KC_X)), C(A(KC_C)), C(A(KC_V)), C(A(KC_B)),
                     C(A(KC_GRV)), S(KC_TAB), _HIDE_CLOSE_PC, KC_TAB,
                                 KC_MPRV, C(A(KC_F15)),
                                               KC_MPLY,
@@ -1787,21 +1788,21 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          C(A(KC_H)), C(A(KC_J)), C(A(KC_K)), C(A(KC_L)), C(A(KC_SCLN)), C(A(KC_F23)),
          C(A(KC_N)), C(A(KC_M)), KC_PGUP, C(A(KC_DOT)), C(A(KC_QUOT)), C(A(KC_F24)),
                         C(KC_HOME), KC_PGDN, C(KC_END), C(A(KC_NUBS)),
-         C(A(KC_PAUS)), C(A(KC_BSLS)),
-         C(A(KC_MINS)),
-         _LIST_FORCE_CLOSE_APPS_PC, _S_F3, _F3,
+         _LIST_FORCE_CLOSE_APPS_PC, KC_MUTE,
+         KC_VOLD,
+         KC_VOLU, _S_F3, _F3,
          C(A(KC_F14))
     ),
 
 [_PALM_R_PC] = LAYOUT(
-         C(A(KC_INS)), C(A(KC_F1)), C(A(KC_F2)), C(A(KC_F3)), KC_VOLD, KC_MUTE, KC_VOLU, C(A(KC_F7)), C(A(KC_F8)),
+         C(A(KC_INS)), C(A(KC_F1)), C(A(KC_F2)), C(A(KC_F3)), C(A(KC_F4)), C(A(KC_F5)), C(A(KC_F6)), C(A(KC_F7)), C(A(KC_F8)),
          C(A(KC_F17)), C(A(KC_1)), C(A(KC_2)), C(A(KC_3)), C(A(KC_4)), C(A(KC_5)),
          C(A(KC_F18)), C(A(KC_Q)), C(A(KC_W)), C(A(KC_E)), C(A(KC_R)), C(A(KC_T)),
          C(A(KC_F19)), C(A(KC_A)), C(A(KC_S)), C(A(KC_D)), C(A(KC_F)), C(A(KC_G)),
          C(A(KC_F20)), C(A(KC_Z)), C(A(KC_X)), C(A(KC_C)), C(A(KC_V)), C(A(KC_B)),
                     C(A(KC_GRV)), S(KC_TAB), _HIDE_CLOSE_PC, KC_TAB,
-                                      KC_MPRV, C(A(KC_F15)),
-                                                    KC_MPLY,
+                                      KC_MPLY, C(A(KC_F15)),
+                                                    KC_MPRV,
                                C(KC_Z), C(S(KC_Z)), KC_MNXT,
                                                C(A(KC_F13)),
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
@@ -1810,9 +1811,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
                    KC_HOME,  __________,  KC_END,  __________,
-         _,  _,
-         _,
-         _,  _,  _,
+         _LIST_FORCE_CLOSE_APPS_PC, KC_MUTE,
+         KC_VOLD,
+         KC_VOLU,  _, _,
          PALM_R_PC
     ),
 
@@ -2050,12 +2051,14 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
        }
     }
 
-    if (keycode != KC_LEFT && keycode != KC_RGHT /* && keycode != _KC_K */) {
-      if (keycode != CMD_SPACE && keycode != CTRL_SPACE) {
-             esc_timer = 0;
-      }
+
+    if (left_arrow_timer != 0 && keycode != KC_LEFT && keycode != CMD_SPACE && keycode != CMD_ESC) {
+        left_arrow_timer = 0;
     }
 
+    if (right_arrow_timer != 0 && keycode != KC_RGHT && keycode != CMD_SPACE && keycode != CMD_ESC) {
+        right_arrow_timer = 0;
+    }
     // custom dynamic macros do no currently play nicely with standard LT functionality;
     // following code disables those if any of the macros is being currently recorded
     if ((macro1_recording || macro2_recording) && pressed) {
@@ -2142,13 +2145,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case _KC_H: { return lead_custom_autoshifted(KC_H, isMac ? KC_F16 : KC_H, KC_H, KC_LSFT, pressed, default_layer ? AUTOSHIFT_QWERTY_KEYS_NO_MODIFIERS_TERM : AUTOSHIFT_QWERTY_KEYS_WITH_MODIFIERS_TERM); }
         case _KC_J: { return lead_autoshifted_qwerty(KC_J, pressed); }
         case _KC_K: { return lead_autoshifted_qwerty(KC_K, pressed); }
-        /* case _KC_K: {
-          if (is_after_lead(KC_K, !pressed)) { return false; }
-          if (not_following_esc(KC_K, isMac ? KC_LGUI : KC_LCTL, KC_LALT, KC_NO, &esc_timer, !pressed, 1000)) {
-            return lead_autoshifted_qwerty(KC_K, pressed);
-          }
-          return false;
-        } */
         case _KC_L: { return lead_autoshifted_qwerty(KC_L, pressed); }
         case _KC_Z: { return lead_autoshifted_qwerty(KC_Z, pressed); }
         case _KC_X: { return lead_autoshifted_qwerty(KC_X, pressed); }
@@ -2208,22 +2204,40 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case KC_TAB: {
           if (palm_r_mac_layer) { down(KC_LGUI); };
           if (palm_r_pc_layer) { down(KC_LALT); };
+          if (palm_l_mac_layer) {
+            up(KC_LCTL); up(KC_LSFT); up(KC_LALT);
+          }
+          if (palm_l_mac_layer) {
+            up(KC_LCTL);
+          }
           return true;
         }
 
         case S(KC_TAB): {
           if (palm_r_mac_layer) { down(KC_LGUI); };
           if (palm_r_pc_layer) { down(KC_LALT); };
+          if (palm_l_mac_layer) {
+            up(KC_LCTL); up(KC_LALT);
+          }
+          if (palm_l_mac_layer) {
+            up(KC_LCTL);
+          }
           return true;
         }
 
         case _HIDE_CLOSE_MAC: {
           down(KC_LGUI);
+          if (palm_l_mac_layer) {
+            up(KC_LCTL); up(KC_LSFT); up(KC_LALT);
+          }
           return replace_if_held_add_mods(KC_H, KC_NO, KC_Q, KC_NO, KC_NO, pressed, 250);
         }
 
         case _HIDE_CLOSE_PC: {
           down(KC_LALT);
+          if (palm_l_mac_layer) {
+            up(KC_LCTL);
+          }
           return replace_if_held_add_mods(KC_DOWN, KC_LGUI, KC_F4, KC_LCTL, KC_NO, pressed, 250);
         }
 
@@ -2279,15 +2293,15 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
         // >>>>>>> escape as additional leader key
         case KC_LEFT: {
-          if (pressed) { left_pressed = true; } else { left_pressed = false; }
           if (is_after_lead(KC_LEFT, pressed)) { return false; }
-          return not_following_esc(KC_LEFT, isMac ? KC_LGUI : KC_LCTL, KC_LALT, KC_NO, &esc_timer, pressed, 300);
+          if (pressed) { left_pressed = true; left_arrow_timer = timer_read(); } else { left_pressed = false; }
+          return true;
         }
 
         case KC_RGHT: {
-          if (pressed) { right_pressed = true; } else { right_pressed = false; }
           if (is_after_lead(KC_RGHT, pressed)) { return false; }
-          return not_following_esc(KC_RGHT, isMac ? KC_LGUI : KC_LCTL, KC_LALT, KC_NO, &esc_timer, pressed, 300);
+          if (pressed) { right_pressed = true; right_arrow_timer = timer_read(); } else { right_pressed = false; }
+          return true;
         }
 
         // <<<<<<< escape as additional leader key
@@ -2321,9 +2335,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           if (left_pressed || right_pressed) { return false; }
           if (is_after_lead(KC_F3, pressed)) { return false; }
           static uint16_t cmd_esc_layer_timer;
-          if (momentary_layer_tap(KC_ESC, KC_NO, KC_LGUI, KC_NO, KC_NO, KC_NO, &cmd_esc_layer_timer, &cmd_esc_interrupted, pressed, 200, true)) {
-            esc_timer = timer_read();
+          if (following_custom_leader(KC_LEFT, KC_LGUI, KC_LALT, KC_NO, &left_arrow_timer, !pressed, 1000)) {
+            return true;
           }
+          if (following_custom_leader(KC_RGHT, KC_LGUI, KC_LALT, KC_NO, &right_arrow_timer, !pressed, 1000)) {
+            return true;
+          }
+           momentary_layer_tap(KC_ESC, KC_NO, KC_LGUI, KC_NO, KC_NO, KC_NO, &cmd_esc_layer_timer, &cmd_esc_interrupted, pressed, 200, true);
           return true;
         }
 
@@ -2419,9 +2437,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           if (left_pressed || right_pressed) { return false; }
           if (is_after_lead(KC_F3, pressed)) { return false; }
           static uint16_t ctrl_esc_layer_timer;
-          if (momentary_layer_tap(KC_ESC, KC_NO, KC_LCTL, KC_NO, KC_NO, KC_NO, &ctrl_esc_layer_timer, &ctrl_esc_interrupted, pressed, 200, true)) {
-            esc_timer = timer_read();
+          if (following_custom_leader(KC_HOME, KC_LCTL, KC_NO, KC_NO, &left_arrow_timer, !pressed, 1000)) {
+            return true;
           }
+          if (following_custom_leader(KC_END, KC_LCTL, KC_NO, KC_NO, &right_arrow_timer, !pressed, 1000)) {
+            return true;
+          }
+           momentary_layer_tap(KC_ESC, KC_NO, KC_LCTL, KC_NO, KC_NO, KC_NO, &ctrl_esc_layer_timer, &ctrl_esc_interrupted, pressed, 200, true);
           return true;
         }
 
