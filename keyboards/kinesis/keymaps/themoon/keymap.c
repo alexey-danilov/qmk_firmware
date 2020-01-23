@@ -973,41 +973,35 @@ static tap mac_layer_tap_state = { .is_press_action = true, .state = 0 };
 
 void mac_layer_finished (qk_tap_dance_state_t *state, void *user_data) {
   mac_layer_tap_state.state = cur_dance(state);
-  if (!is_after_lead(KC_F16, true)) {
-    switch (mac_layer_tap_state.state) {
-      case SINGLE_TAP:
-          layer_off(_KEYB_CONTROL);
-          all_leds_off();
-
-          layer_on(_FAILSAFE_MAC);
-          led_yellow_on();
-          break;
-
-      case DOUBLE_TAP:
-          layer_off(_FAILSAFE_MAC);
-          layer_off(_KEYB_CONTROL);
-          all_leds_off();
-
-          eeconfig_update_default_layer(1UL << _MAC);
-          default_layer_set(1UL << _MAC);
-          isMac = true; isPc = false;
-          all_leds_off();
-          led_red_on();
-          led_yellow_on();
-          _delay_ms(250);
-          led_yellow_off();
-          _delay_ms(250);
-          led_yellow_on();
-          _delay_ms(250);
-          led_yellow_off();
-          _delay_ms(250);
-          led_yellow_on();
-          _delay_ms(250);
-          all_leds_off();
-          break;
-
-      default: break;
-    }
+  switch (mac_layer_tap_state.state) {
+    case SINGLE_TAP:
+        layer_off(_KEYB_CONTROL);
+        all_leds_off();
+        layer_on(_FAILSAFE_MAC);
+        led_yellow_on();
+        break;
+    case DOUBLE_TAP:
+        layer_off(_FAILSAFE_MAC);
+        layer_off(_KEYB_CONTROL);
+        all_leds_off();
+        eeconfig_update_default_layer(1UL << _MAC);
+        default_layer_set(1UL << _MAC);
+        isMac = true; isPc = false;
+        all_leds_off();
+        led_red_on();
+        led_yellow_on();
+        _delay_ms(250);
+        led_yellow_off();
+        _delay_ms(250);
+        led_yellow_on();
+        _delay_ms(250);
+        led_yellow_off();
+        _delay_ms(250);
+        led_yellow_on();
+        _delay_ms(250);
+        all_leds_off();
+        break;
+    default: break;
   }
 }
 
@@ -1019,13 +1013,11 @@ static tap mac_failsafe_off_tap_state = { .is_press_action = true, .state = 0 };
 
 void mac_failsafe_off_finished (qk_tap_dance_state_t *state, void *user_data) {
   mac_failsafe_off_tap_state.state = cur_dance(state);
-  if (!is_after_lead(KC_F16, true)) {
-    switch (mac_failsafe_off_tap_state.state) {
-      default:
-        led_yellow_off();
-        layer_off(_FAILSAFE_MAC);
-        break;
-    }
+  switch (mac_failsafe_off_tap_state.state) {
+    default:
+      led_yellow_off();
+      layer_off(_FAILSAFE_MAC);
+      break;
   }
 }
 
@@ -1038,40 +1030,34 @@ static tap pc_layer_tap_state = { .is_press_action = true, .state = 0 };
 
 void pc_layer_finished (qk_tap_dance_state_t *state, void *user_data) {
   pc_layer_tap_state.state = cur_dance(state);
-  if (!is_after_lead(KC_F16, true)) {
-    switch (pc_layer_tap_state.state) {
-      case SINGLE_TAP:
-          layer_off(_KEYB_CONTROL);
-          all_leds_off();
-
-          layer_on(_FAILSAFE_PC);
-          led_green_on();
-          break;
-
-      case DOUBLE_TAP:
-          layer_off(_FAILSAFE_PC);
-          layer_off(_KEYB_CONTROL);
-          all_leds_off();
-
-          eeconfig_update_default_layer(1UL << _PC);
-          default_layer_set(1UL << _PC);
-          isPc = true; isMac = false;
-          led_red_on();
-          led_green_on();
-          _delay_ms(250);
-          led_green_off();
-          _delay_ms(250);
-          led_green_on();
-          _delay_ms(250);
-          led_green_off();
-          _delay_ms(250);
-          led_green_on();
-          _delay_ms(250);
-          all_leds_off();
-          break;
-
-      default: break;
-    }
+  switch (pc_layer_tap_state.state) {
+    case SINGLE_TAP:
+        layer_off(_KEYB_CONTROL);
+        all_leds_off();
+        layer_on(_FAILSAFE_PC);
+        led_green_on();
+        break;
+    case DOUBLE_TAP:
+        layer_off(_FAILSAFE_PC);
+        layer_off(_KEYB_CONTROL);
+        all_leds_off();
+        eeconfig_update_default_layer(1UL << _PC);
+        default_layer_set(1UL << _PC);
+        isPc = true; isMac = false;
+        led_red_on();
+        led_green_on();
+        _delay_ms(250);
+        led_green_off();
+        _delay_ms(250);
+        led_green_on();
+        _delay_ms(250);
+        led_green_off();
+        _delay_ms(250);
+        led_green_on();
+        _delay_ms(250);
+        all_leds_off();
+        break;
+    default: break;
   }
 }
 
@@ -1083,13 +1069,11 @@ static tap pc_failsafe_off_tap_state = { .is_press_action = true, .state = 0 };
 
 void pc_failsafe_off_finished (qk_tap_dance_state_t *state, void *user_data) {
   pc_failsafe_off_tap_state.state = cur_dance(state);
-  if (!is_after_lead(KC_F16, true)) {
-    switch (pc_failsafe_off_tap_state.state) {
-      default:
-        led_green_off();
-        layer_off(_FAILSAFE_PC);
-        break;
-    }
+  switch (pc_failsafe_off_tap_state.state) {
+    default:
+      led_green_off();
+      layer_off(_FAILSAFE_PC);
+      break;
   }
 }
 
@@ -1232,12 +1216,12 @@ qk_tap_dance_action_t tap_dance_actions[] = {
 *          |  `~  |  [{  |Sel/,<|  ]}  |                                         | Left | Down | Right|AppKey|
 *          `---------------------------'                                         `---------------------------'
 *                            .-------------------------.         ,---------------------------.
-*                            | Backspace |    Macro    |         |    F16      |   Backspace |
+*                            | Backspace |    Macro    |         |    Apps     |   Backspace |
 *                            `-----------|------|------|         |------+------+-------------`
 *                                 |      |      | Alt/=|         | Alt\ |      |      |
 *                                 | LGui/|Shift/|------|         |------|Shift/|LGui/ |
 *                                 | ESC  |Enter | Ctrl |         | Ctrl |Tab   |SPACE |
-*                                 |      |      | Del+ |         | Apps |Caps  |Lang  |
+*                                 |      |      | Del+ |         | \    |Caps  |Lang  |
 *                                  --------------------           --------------------
 *
 *                    -------------                                                     -------------
@@ -1492,9 +1476,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          HYPR(KC_F9), HYPR(KC_A), HYPR(KC_S), HYPR(KC_D), HYPR(KC_F), HYPR(KC_G),
          HYPR(KC_F10), HYPR(KC_Z), HYPR(KC_X), HYPR(KC_C), HYPR(KC_V), HYPR(KC_B),
                    HYPR(KC_GRV), S(KC_TAB), _HIDE_CLOSE_MAC, KC_TAB,
-                                          KC_MRWD, HYPR(KC_F15),
+                                               KC_MRWD, KC_MFFD,
                                                         KC_MPLY,
-                          LGUI(KC_Z), LGUI(LSFT(KC_Z)), KC_MFFD,
+                         LGUI(KC_Z), LGUI(LSFT(KC_Z)), KC__MUTE,
                                                      PALM_L_MAC,
          HYPR(KC_F9), HYPR(KC_F10), HYPR(KC_F11), HYPR(KC_F12), _, _, _, _, _,
          HYPR(KC_6), HYPR(KC_7), HYPR(KC_8), HYPR(KC_9), HYPR(KC_0), HYPR(KC_F11),
@@ -1502,10 +1486,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          HYPR(KC_H), HYPR(KC_J), HYPR(KC_K), HYPR(KC_L), HYPR(KC_SCLN), HYPR(KC_F13),
          HYPR(KC_N), HYPR(KC_M), KC_PGUP, HYPR(KC_SPC), HYPR(KC_QUOT), HYPR(KC_F14),
                         KC_HOME, KC_PGDN, KC_END, HYPR(KC_NUBS),
-         _LIST_FORCE_CLOSE_APPS_MAC, KC__MUTE,
+         _LIST_FORCE_CLOSE_APPS_MAC, HYPR(KC_BSPC),
          KC__VOLDOWN,
          KC__VOLUP, _S_F3, _F3,
-         G(A(KC_H))
+         HYPR(KC_F16)
     ),
 
 [_PALM_R_MAC] = LAYOUT(
@@ -1515,17 +1499,17 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          HYPR(KC_F9), HYPR(KC_A), HYPR(KC_S), HYPR(KC_D), HYPR(KC_F), HYPR(KC_G),
          HYPR(KC_F10), HYPR(KC_Z), HYPR(KC_X), HYPR(KC_C), HYPR(KC_V), HYPR(KC_B),
                    HYPR(KC_GRV), S(KC_TAB), _HIDE_CLOSE_MAC, KC_TAB,
-                                         KC_MPLY, HYPR(KC_F15),
-                                                       KC_MRWD,
-                         LGUI(KC_Z), LGUI(LSFT(KC_Z)), KC_MFFD,
-                                                   HYPR(KC_F5),
+                                               KC_MRWD, KC_MFFD,
+                                                        KC_MPLY,
+                         LGUI(KC_Z), LGUI(LSFT(KC_Z)), KC__MUTE,
+                                                   HYPR(KC_F15),
          __________,  __________,  __________,  __________,  __________, __________, __________, __________, __________,
          _KC_6, _KC_7, _KC_8, _KC_9, _KC_0,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
                    __________,  __________, __________, __________,
-         _LIST_FORCE_CLOSE_APPS_MAC, KC__MUTE,
+         _LIST_FORCE_CLOSE_APPS_MAC, HYPR(KC_BSPC),
          KC__VOLDOWN,
          KC__VOLUP,  _,  _,
          PALM_R_MAC
@@ -1778,9 +1762,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          C(A(KC_F19)), C(A(KC_A)), C(A(KC_S)), C(A(KC_D)), C(A(KC_F)), C(A(KC_G)),
          C(A(KC_F20)), C(A(KC_Z)), C(A(KC_X)), C(A(KC_C)), C(A(KC_V)), C(A(KC_B)),
                     C(A(KC_GRV)), S(KC_TAB), _HIDE_CLOSE_PC, KC_TAB,
-                                KC_MPRV, C(A(KC_F15)),
+                                     KC_MPRV, KC_MNXT,
                                               KC_MPLY,
-                         C(KC_Z), C(S(KC_Z)), KC_MNXT,
+                         C(KC_Z), C(S(KC_Z)), KC_MUTE,
                                             PALM_L_PC,
          C(A(KC_F9)), C(A(KC_F10)), C(A(KC_F11)), C(A(KC_F12)), _, _, _, _, _,
          C(A(KC_6)), C(A(KC_7)), C(A(KC_8)), C(A(KC_9)), C(A(KC_0)), C(A(KC_F21)),
@@ -1788,7 +1772,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          C(A(KC_H)), C(A(KC_J)), C(A(KC_K)), C(A(KC_L)), C(A(KC_SCLN)), C(A(KC_F23)),
          C(A(KC_N)), C(A(KC_M)), KC_PGUP, C(A(KC_DOT)), C(A(KC_QUOT)), C(A(KC_F24)),
                         C(KC_HOME), KC_PGDN, C(KC_END), C(A(KC_NUBS)),
-         _LIST_FORCE_CLOSE_APPS_PC, KC_MUTE,
+         _LIST_FORCE_CLOSE_APPS_PC, C(A(KC_BSPC)),
          KC_VOLD,
          KC_VOLU, _S_F3, _F3,
          C(A(KC_F14))
@@ -1801,9 +1785,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          C(A(KC_F19)), C(A(KC_A)), C(A(KC_S)), C(A(KC_D)), C(A(KC_F)), C(A(KC_G)),
          C(A(KC_F20)), C(A(KC_Z)), C(A(KC_X)), C(A(KC_C)), C(A(KC_V)), C(A(KC_B)),
                     C(A(KC_GRV)), S(KC_TAB), _HIDE_CLOSE_PC, KC_TAB,
-                                      KC_MPLY, C(A(KC_F15)),
-                                                    KC_MPRV,
-                               C(KC_Z), C(S(KC_Z)), KC_MNXT,
+                                           KC_MPRV, KC_MNXT,
+                                                    KC_MPLY,
+                               C(KC_Z), C(S(KC_Z)), KC_MUTE,
                                                C(A(KC_F13)),
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
          _KC_6, _KC_7, _KC_8, _KC_9, _KC_0,  __________,
@@ -1811,9 +1795,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________,  __________,  __________,  __________,  __________,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
                    KC_HOME,  __________,  KC_END,  __________,
-         _LIST_FORCE_CLOSE_APPS_PC, KC_MUTE,
+         _LIST_FORCE_CLOSE_APPS_PC, C(A(KC_BSPC)),
          KC_VOLD,
-         KC_VOLU,  _, _,
+         KC_VOLU, _, _,
          PALM_R_PC
     ),
 
