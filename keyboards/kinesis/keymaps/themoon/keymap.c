@@ -1253,7 +1253,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	_KC_N, _KC_M, KC_UP, _KC_DOT, _KC_QUOT, _ALT_F14,
 	KC_LEFT, KC_DOWN, KC_RGHT, _KC_NUBS,
            // right thumb keys
-           _CTRL_F1_F2, KC_BSPC,
+           _KC_F16, KC_BSPC,
            ALT_TAB_MAC,
            CTRL_BSLS, SHIFT_LANG_MAC, CMD_SPACE,
            // right palm key
@@ -1486,14 +1486,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          HYPR(KC_H), HYPR(KC_J), HYPR(KC_K), HYPR(KC_L), HYPR(KC_SCLN), HYPR(KC_F13),
          HYPR(KC_N), HYPR(KC_M), KC_PGUP, HYPR(KC_SPC), HYPR(KC_QUOT), HYPR(KC_F14),
                         KC_HOME, KC_PGDN, KC_END, HYPR(KC_NUBS),
-         _LIST_FORCE_CLOSE_APPS_MAC, HYPR(KC_BSPC),
+         HYPR(KC_F16), HYPR(KC_BSPC),
          KC__VOLDOWN,
          KC__VOLUP, _S_F3, _F3,
          HYPR(KC_F16)
     ),
 
 [_PALM_R_MAC] = LAYOUT(
-         HYPR(KC_INS), HYPR(KC_F1), HYPR(KC_F2), HYPR(KC_F3), HYPR(KC_F4), HYPR(KC_F5), HYPR(KC_F6), HYPR(KC_F7), HYPR(KC_F8),
+         HYPR(KC_INS), HYPR(KC_F1), HYPR(KC_F2), HYPR(KC_F3), HYPR(KC_F4), _LIST_FORCE_CLOSE_APPS_MAC, HYPR(KC_F6), HYPR(KC_F7), HYPR(KC_F8),
          HYPR(KC_F7), HYPR(KC_1), HYPR(KC_2), HYPR(KC_3), HYPR(KC_4), HYPR(KC_5),
          HYPR(KC_F8), HYPR(KC_Q), HYPR(KC_W), HYPR(KC_E), HYPR(KC_R), HYPR(KC_T),
          HYPR(KC_F9), HYPR(KC_A), HYPR(KC_S), HYPR(KC_D), HYPR(KC_F), HYPR(KC_G),
@@ -1502,7 +1502,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                KC_MRWD, KC_MFFD,
                                                         KC_MPLY,
                          LGUI(KC_Z), LGUI(LSFT(KC_Z)), KC__MUTE,
-                                                   HYPR(KC_F15),
+                                                    _CTRL_F1_F2,
          __________,  __________,  __________,  __________,  __________, __________, __________, __________, __________,
          _KC_6, _KC_7, _KC_8, _KC_9, _KC_0,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
@@ -1538,7 +1538,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   	_KC_N, _KC_M, KC_UP, _KC_DOT, _KC_QUOT, _KC_F24,
   	KC_LEFT, KC_DOWN, KC_RGHT, _KC_APP,
            // right thumb keys
-           _RGUI_PAUS, KC_BSPC,
+           _KC_F16, KC_BSPC,
            ALT_TAB_PC,
            RGUI, SHIFT_LANG_PC, CTRL_SPACE,
            // right palm key
@@ -1727,7 +1727,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                    __________,  __________,  __________, __________,
          __________, _KC_BSPC,
          _KC_TAB,
-         _KC_BSLS, _KC_F16, _SHIFT_SPACE_,
+         _KC_BSLS, _KC_F2, _SHIFT_SPACE_,
          _F14_PALM
     ),
 
@@ -1772,14 +1772,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          C(A(KC_H)), C(A(KC_J)), C(A(KC_K)), C(A(KC_L)), C(A(KC_SCLN)), C(A(KC_F23)),
          C(A(KC_N)), C(A(KC_M)), KC_PGUP, C(A(KC_DOT)), C(A(KC_QUOT)), C(A(KC_F24)),
                         C(KC_HOME), KC_PGDN, C(KC_END), C(A(KC_NUBS)),
-         _LIST_FORCE_CLOSE_APPS_PC, C(A(KC_BSPC)),
+         C(A(KC_F16)), C(A(KC_BSPC)),
          KC_VOLD,
          KC_VOLU, _S_F3, _F3,
          C(A(KC_F14))
     ),
 
 [_PALM_R_PC] = LAYOUT(
-         C(A(KC_INS)), C(A(KC_F1)), C(A(KC_F2)), C(A(KC_F3)), C(A(KC_F4)), C(A(KC_F5)), C(A(KC_F6)), C(A(KC_F7)), C(A(KC_F8)),
+         C(A(KC_INS)), C(A(KC_F1)), C(A(KC_F2)), C(A(KC_F3)), C(A(KC_F4)), _LIST_FORCE_CLOSE_APPS_PC, C(A(KC_F6)), C(A(KC_F7)), C(A(KC_F8)),
          C(A(KC_F17)), C(A(KC_1)), C(A(KC_2)), C(A(KC_3)), C(A(KC_4)), C(A(KC_5)),
          C(A(KC_F18)), C(A(KC_Q)), C(A(KC_W)), C(A(KC_E)), C(A(KC_R)), C(A(KC_T)),
          C(A(KC_F19)), C(A(KC_A)), C(A(KC_S)), C(A(KC_D)), C(A(KC_F)), C(A(KC_G)),
@@ -1788,7 +1788,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                            KC_MPRV, KC_MNXT,
                                                     KC_MPLY,
                                C(KC_Z), C(S(KC_Z)), KC_MUTE,
-                                               C(A(KC_F13)),
+                                                 _RGUI_PAUS,
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
          _KC_6, _KC_7, _KC_8, _KC_9, _KC_0,  __________,
          __________,  __________,  __________,  __________,  __________,  __________,
@@ -2225,13 +2225,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           return replace_if_held_add_mods(KC_DOWN, KC_LGUI, KC_F4, KC_LCTL, KC_NO, pressed, 250);
         }
 
+
         case _LIST_FORCE_CLOSE_APPS_MAC: {
-          up(KC_LSFT); up(KC_LALT); up(KC_LCTL);
-          return replace_if_held_add_mods(KC_F6, KC_LCTL, KC_ESC, KC_LGUI, KC_LALT, pressed, 250);
+          return replace_if_held_add_mods(KC_F5, KC_LCTL, KC_ESC, KC_LGUI, KC_LALT, pressed, 250);
         }
 
         case _LIST_FORCE_CLOSE_APPS_PC: {
-          up(KC_LCTL);
           return replace_if_held_add_mods_full(KC_ESC, KC_LCTL, KC_LSFT, KC_NO, KC_NO, KC_F4, KC_LCTL, KC_LALT, KC_NO, KC_NO, pressed, 250);
         }
 
@@ -2260,8 +2259,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case _8_DASH: { return lead_autoshifted_modified_numbers(KC_8, KC_MINS, KC_NO, pressed); }
         case _9_QUEST: { return lead_autoshifted_modified_numbers(KC_9, KC_SLSH, KC_LSFT, pressed); }
 
-        case _CTRL_F1_F2: { return lead_custom_autoshifted_with_mods(KC_F1, KC_LCTL, KC_F1, KC_F2, KC_LCTL, KC_NO, pressed, AUTOSHIFT_SPECIAL_TERM); }
-        case _RGUI_PAUS: { return lead_custom_autoshifted_with_mods(KC_RGUI, KC_NO, KC_PAUS, KC_PAUS, KC_LSFT, KC_NO, pressed, AUTOSHIFT_SPECIAL_TERM); }
+        case _CTRL_F1_F2: { return lead_custom_autoshifted_with_mods(KC_F1, KC_LCTL, KC_F1, KC_F2, KC_LCTL, KC_NO, pressed, 250); }
+        case _RGUI_PAUS: { return lead_custom_autoshifted_with_mods(KC_RGUI, KC_NO, KC_PAUS, KC_PAUS, KC_LSFT, KC_NO, pressed, 250); }
         case _ALT_F7: { return lead_custom_autoshifted_with_mods(KC_F7, KC_LALT, KC_F7, KC_F7, KC_LALT, KC_LSFT, pressed, AUTOSHIFT_SPECIAL_TERM); }
         case _ALT_F8: { return lead_custom_autoshifted_with_mods(KC_F8, KC_LALT, KC_F8, KC_F8, KC_LALT, KC_LSFT, pressed, AUTOSHIFT_SPECIAL_TERM); }
         case _ALT_F9: { return lead_custom_autoshifted_with_mods(KC_F9, KC_LALT, KC_F9, KC_F9, KC_LALT, KC_LSFT, pressed, AUTOSHIFT_SPECIAL_TERM); }
