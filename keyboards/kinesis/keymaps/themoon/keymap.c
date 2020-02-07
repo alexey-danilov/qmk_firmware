@@ -90,7 +90,9 @@ enum holding_keycodes {
 
   _TAB,
   _F5_PALM,
+  _F6_PALM,
   _F13_PALM,
+  _F14_PALM,
 
   _ALT_F7,
   _ALT_F8,
@@ -1279,7 +1281,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________, _DEL_LEFT_MAC,
          _KC_EQL,
          _KC_MINS, _KC_F2, LEAD_SPACE,
-         _TAB
+         _F6_PALM
     ),
 
 [_COMMAND_SPACE] = LAYOUT(
@@ -1348,7 +1350,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________, C(KC_BSPC),
          _KC_EQL,
          _KC_MINS, _KC_F1, _KC_F1,
-         _TAB
+         _F6_PALM
     ),
 
 [_ALT_EQL_MAC] = LAYOUT(
@@ -1565,7 +1567,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________, _DEL_LEFT_PC,
          _KC_EQL,
          _KC_MINS, _KC_F2, LEAD_SPACE,
-         _TAB
+         _F14_PALM
     ),
 
 [_CONTROL_SPACE] = LAYOUT(
@@ -1634,7 +1636,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________, _KC_BSPC,
          _KC_EQL,
          _KC_MINS, _KC_F2, _KC_F1,
-         _TAB
+         _F14_PALM
     ),
 
 [_ALT_EQL_PC] = LAYOUT(
@@ -2174,9 +2176,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case _KC_F24: { return lead_autoshifted_special(KC_F24, pressed); }
 
         // palm keys, pressed with non-palm modifier: extended held timeout
-        case _F5_PALM: { return replace_if_held_add_mods(KC_F5, KC_LALT, KC_F5, KC_LSFT, KC_NO, pressed, 250); }
-        case _TAB: { return replace_if_held_add_mods(KC_TAB, KC_NO, KC_TAB, KC_LSFT, KC_NO, pressed, 250); }
-        case _F13_PALM: { return replace_if_held_add_mods(KC_F13, KC_NO, KC_F13, KC_LSFT, KC_NO, pressed, 250); }
+        case _F5_PALM: { return replace_if_held_add_mods(KC_F5, KC_LALT, KC_F5, KC_LSFT, KC_NO, pressed, 300); }
+        case _F6_PALM: { return replace_if_held_add_mods(KC_F6, KC_LALT, KC_F6, KC_LSFT, KC_NO, pressed, 300); }
+        case _TAB: { return replace_if_held_add_mods(KC_TAB, KC_NO, KC_TAB, KC_LSFT, KC_NO, pressed, 300); }
+        case _F13_PALM: { return replace_if_held_add_mods(KC_F13, KC_NO, KC_F13, KC_LSFT, KC_NO, pressed, 300); }
+        case _F14_PALM: { return replace_if_held_add_mods(KC_F14, KC_NO, KC_F14, KC_LSFT, KC_NO, pressed, 300); }
 
         case _SHIFT_SPACE_: { return replace_if_held_add_mods(KC_SPC, KC_NO, KC_SPC, KC_LALT, KC_LCTL, pressed, AUTOSHIFT_SPECIAL_TERM); }
 
@@ -2384,7 +2388,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case PALM_R_MAC: {
           if (is_after_lead(KC_TAB, pressed)) { return false; }
           static uint16_t palm_r_mac_layer_timer;
-          momentary_layer_tap_with_hold(KC_TAB, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, &palm_r_mac_layer_timer, &palm_r_mac_interrupted, pressed, 250, 1000, true, KC_TAB, KC_LSFT, KC_NO);
+          momentary_layer_tap_with_hold(KC_TAB, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, &palm_r_mac_layer_timer, &palm_r_mac_interrupted, pressed, 300, 1000, true, KC_TAB, KC_LSFT, KC_NO);
           return true;
         }
 
@@ -2486,7 +2490,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case PALM_R_PC: {
           if (is_after_lead(KC_TAB, pressed)) { return false; }
           static uint16_t palm_r_pc_layer_timer;
-          momentary_layer_tap_with_hold(KC_TAB, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, &palm_r_pc_layer_timer, &palm_r_pc_interrupted, pressed, 250, 1000, false, KC_TAB, KC_LSFT, KC_NO);
+          momentary_layer_tap_with_hold(KC_TAB, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, &palm_r_pc_layer_timer, &palm_r_pc_interrupted, pressed, 300, 1000, false, KC_TAB, KC_LSFT, KC_NO);
           return true;
         }
 
