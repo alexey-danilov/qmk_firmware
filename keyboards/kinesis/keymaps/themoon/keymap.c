@@ -2618,7 +2618,7 @@ void led_set_user(uint8_t usb_led) {
     if (!lead_led) {
       led_yellow_off();
     }
-    if (!macro2_recording) {
+    if (!macro2_recording & !lead_led) {
       led_red_off();
     }
   }
@@ -2630,7 +2630,7 @@ void led_set_user(uint8_t usb_led) {
     if (!lead_led) {
       led_green_off();
     }
-    if (!macro1_recording) {
+    if (!macro1_recording & !lead_led) {
       led_red_off();
     }
   }
