@@ -982,7 +982,7 @@ void mac_layer_finished (qk_tap_dance_state_t *state, void *user_data) {
         layer_on(_FAILSAFE_MAC);
         led_yellow_on();
         break;
-    case DOUBLE_TAP:
+    case SINGLE_HOLD:
         layer_off(_FAILSAFE_MAC);
         layer_off(_KEYB_CONTROL);
         all_leds_off();
