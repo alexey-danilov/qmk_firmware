@@ -161,7 +161,8 @@ enum holding_keycodes {
   SET_LAYER_PC,
 };
 
-static uint16_t esc_timer = 0; // timer for leader key: esc
+static uint16_t left_arrow_timer = 0; // timer for leader key: left arrow
+static uint16_t right_arrow_timer = 0; // timer for leader key: right arrow
 static uint16_t lead_timer = 0; // timer for leader key (cmd/ctrl + space)
 static uint16_t space_timer = 0;
 static bool default_layer = true;
@@ -2034,12 +2035,14 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
        }
     }
 
-    if (keycode != KC_LEFT && keycode != KC_RGHT /* && keycode != _KC_K */) {
-      if (keycode != CMD_SPACE && keycode != CTRL_SPACE) {
-             esc_timer = 0;
-      }
+
+    if (left_arrow_timer != 0 && keycode != KC_LEFT && keycode != CMD_SPACE && keycode != CMD_ESC) {
+        left_arrow_timer = 0;
     }
 
+    if (right_arrow_timer != 0 && keycode != KC_RGHT && keycode != CMD_SPACE && keycode != CMD_ESC) {
+        right_arrow_timer = 0;
+    }
     // custom dynamic macros do no currently play nicely with standard LT functionality;
     // following code disables those if any of the macros is being currently recorded
     if ((macro1_recording || macro2_recording) && pressed) {
@@ -2126,13 +2129,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case _KC_H: { return lead_custom_autoshifted(KC_H, isMac ? KC_F16 : KC_H, KC_H, KC_LSFT, pressed, default_layer ? AUTOSHIFT_QWERTY_KEYS_NO_MODIFIERS_TERM : AUTOSHIFT_QWERTY_KEYS_WITH_MODIFIERS_TERM); }
         case _KC_J: { return lead_autoshifted_qwerty(KC_J, pressed); }
         case _KC_K: { return lead_autoshifted_qwerty(KC_K, pressed); }
-        /* case _KC_K: {
-          if (is_after_lead(KC_K, !pressed)) { return false; }
-          if (not_following_esc(KC_K, isMac ? KC_LGUI : KC_LCTL, KC_LALT, KC_NO, &esc_timer, !pressed, 1000)) {
-            return lead_autoshifted_qwerty(KC_K, pressed);
-          }
-          return false;
-        } */
         case _KC_L: { return lead_autoshifted_qwerty(KC_L, pressed); }
         case _KC_Z: { return lead_autoshifted_qwerty(KC_Z, pressed); }
         case _KC_X: { return lead_autoshifted_qwerty(KC_X, pressed); }
@@ -2279,15 +2275,17 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
         // >>>>>>> escape as additional leader key
         case KC_LEFT: {
-          if (pressed) { left_pressed = true; } else { left_pressed = false; }
           if (is_after_lead(KC_LEFT, pressed)) { return false; }
-          return !following_custom_leader(isMac ? KC_LEFT : KC_HOME, isMac ? KC_LGUI : KC_NO, isMac ? KC_LALT : KC_NO, KC_NO, &esc_timer, pressed, 300);
+          if (pressed) { left_pressed = true; left_arrow_timer = timer_read(); } else { left_pressed = false; }
+          return true;
         }
 
         case KC_RGHT: {
-          if (pressed) { right_pressed = true; } else { right_pressed = false; }
           if (is_after_lead(KC_RGHT, pressed)) { return false; }
-          return !following_custom_leader(isMac ? KC_RGHT : KC_END, isMac ? KC_LGUI : KC_NO, isMac ? KC_LALT : KC_NO, KC_NO, &esc_timer, pressed, 300);        }
+          if (pressed) { right_pressed = true; right_arrow_timer = timer_read(); } else { right_pressed = false; }
+          return true;
+        }
+
         // <<<<<<< escape as additional leader key
 
         // >>>>>>> mac layers
@@ -2319,9 +2317,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           if (left_pressed || right_pressed) { return false; }
           if (is_after_lead(KC_F3, pressed)) { return false; }
           static uint16_t cmd_esc_layer_timer;
-          if (momentary_layer_tap(KC_ESC, KC_NO, KC_LGUI, KC_NO, KC_NO, KC_NO, &cmd_esc_layer_timer, &cmd_esc_interrupted, pressed, 200, true)) {
-            esc_timer = timer_read();
+          if (following_custom_leader(KC_LEFT, KC_LGUI, KC_LALT, KC_NO, &left_arrow_timer, !pressed, 1000)) {
+            return true;
           }
+          if (following_custom_leader(KC_RGHT, KC_LGUI, KC_LALT, KC_NO, &right_arrow_timer, !pressed, 1000)) {
+            return true;
+          }
+           momentary_layer_tap(KC_ESC, KC_NO, KC_LGUI, KC_NO, KC_NO, KC_NO, &cmd_esc_layer_timer, &cmd_esc_interrupted, pressed, 200, true);
           return true;
         }
 
@@ -2417,9 +2419,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           if (left_pressed || right_pressed) { return false; }
           if (is_after_lead(KC_F3, pressed)) { return false; }
           static uint16_t ctrl_esc_layer_timer;
-          if (momentary_layer_tap(KC_ESC, KC_NO, KC_LCTL, KC_NO, KC_NO, KC_NO, &ctrl_esc_layer_timer, &ctrl_esc_interrupted, pressed, 200, true)) {
-            esc_timer = timer_read();
+          if (following_custom_leader(KC_HOME, KC_LCTL, KC_NO, KC_NO, &left_arrow_timer, !pressed, 1000)) {
+            return true;
           }
+          if (following_custom_leader(KC_END, KC_LCTL, KC_NO, KC_NO, &right_arrow_timer, !pressed, 1000)) {
+            return true;
+          }
+           momentary_layer_tap(KC_ESC, KC_NO, KC_LCTL, KC_NO, KC_NO, KC_NO, &ctrl_esc_layer_timer, &ctrl_esc_interrupted, pressed, 200, true);
           return true;
         }
 
