@@ -176,7 +176,9 @@ static bool palm_r_pc_layer = false;
 static bool isMac;
 static bool isPc;
 static bool caps_led;
-static bool lang_switch_led;
+static bool yellow_green_led_blink_twice;
+static bool scroll_left_led;
+static bool scroll_right_led;
 static bool lead_led;
 static bool init_complete;
 
@@ -1470,15 +1472,15 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 
 [_PALM_L_MAC] = LAYOUT(
-         HYPR(KC_INS), HYPR(KC_F1), HYPR(KC_F2), HYPR(KC_F3), KC__VOLDOWN, KC__MUTE, KC__VOLUP, HYPR(KC_F7), HYPR(KC_F8),
+         HYPR(KC_INS), HYPR(KC_F1), HYPR(KC_F2), HYPR(KC_F3), HYPR(KC_F4), _LIST_FORCE_CLOSE_APPS_MAC, HYPR(KC_F6), HYPR(KC_F7), HYPR(KC_F8),
          HYPR(KC_F7), HYPR(KC_1), HYPR(KC_2), HYPR(KC_3), HYPR(KC_4), HYPR(KC_5),
          HYPR(KC_F8), HYPR(KC_Q), HYPR(KC_W), HYPR(KC_E), HYPR(KC_R), HYPR(KC_T),
          HYPR(KC_F9), HYPR(KC_A), HYPR(KC_S), HYPR(KC_D), HYPR(KC_F), HYPR(KC_G),
          HYPR(KC_F10), HYPR(KC_Z), HYPR(KC_X), HYPR(KC_C), HYPR(KC_V), HYPR(KC_B),
                    HYPR(KC_GRV), S(KC_TAB), _HIDE_CLOSE_MAC, KC_TAB,
-                                               KC_MRWD, KC_MFFD,
+                                          KC_MRWD, HYPR(KC_F15),
                                                         KC_MPLY,
-       LGUI(KC_Z), LGUI(LSFT(KC_Z)), _LIST_FORCE_CLOSE_APPS_MAC,
+                          LGUI(KC_Z), LGUI(LSFT(KC_Z)), KC_MFFD,
                                                      PALM_L_MAC,
          HYPR(KC_F9), HYPR(KC_F10), HYPR(KC_F11), HYPR(KC_F12), _, _, _, _, _,
          HYPR(KC_6), HYPR(KC_7), HYPR(KC_8), HYPR(KC_9), HYPR(KC_0), HYPR(KC_F11),
@@ -1486,22 +1488,22 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          HYPR(KC_H), HYPR(KC_J), HYPR(KC_K), HYPR(KC_L), HYPR(KC_SCLN), HYPR(KC_F13),
          HYPR(KC_N), HYPR(KC_M), KC_PGUP, HYPR(KC_SPC), HYPR(KC_QUOT), HYPR(KC_F14),
                         KC_HOME, KC_PGDN, KC_END, HYPR(KC_NUBS),
-         HYPR(KC_F16), HYPR(KC_BSPC),
-         HYPR(KC_EQL),
-         HYPR(KC_MINS), _S_F3, _F3,
+         HYPR(KC_F16), KC__MUTE,
+         KC__VOLUP,
+         KC__VOLDOWN, _S_F3, _F3,
          HYPR(KC_F16)
     ),
 
 [_PALM_R_MAC] = LAYOUT(
-         HYPR(KC_INS), HYPR(KC_F1), HYPR(KC_F2), HYPR(KC_F3), KC__VOLDOWN, KC__MUTE, KC__VOLUP, HYPR(KC_F7), HYPR(KC_F8),
+         HYPR(KC_INS), HYPR(KC_F1), HYPR(KC_F2), HYPR(KC_F3), HYPR(KC_F4), _LIST_FORCE_CLOSE_APPS_MAC, HYPR(KC_F6), HYPR(KC_F7), HYPR(KC_F8),
          HYPR(KC_F7), HYPR(KC_1), HYPR(KC_2), HYPR(KC_3), HYPR(KC_4), HYPR(KC_5),
          HYPR(KC_F8), HYPR(KC_Q), HYPR(KC_W), HYPR(KC_E), HYPR(KC_R), HYPR(KC_T),
          HYPR(KC_F9), HYPR(KC_A), HYPR(KC_S), HYPR(KC_D), HYPR(KC_F), HYPR(KC_G),
          HYPR(KC_F10), HYPR(KC_Z), HYPR(KC_X), HYPR(KC_C), HYPR(KC_V), HYPR(KC_B),
                    HYPR(KC_GRV), S(KC_TAB), _HIDE_CLOSE_MAC, KC_TAB,
-                                               KC_MRWD, KC_MFFD,
+                                          KC_MRWD, HYPR(KC_F15),
                                                         KC_MPLY,
-       LGUI(KC_Z), LGUI(LSFT(KC_Z)), _LIST_FORCE_CLOSE_APPS_MAC,
+                          LGUI(KC_Z), LGUI(LSFT(KC_Z)), KC_MFFD,
                                                     _CTRL_F1_F2,
          __________,  __________,  __________,  __________,  __________, __________, __________, __________, __________,
          _KC_6, _KC_7, _KC_8, _KC_9, _KC_0,  __________,
@@ -1756,38 +1758,38 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
 
 [_PALM_L_PC] = LAYOUT(
-         C(A(KC_INS)), C(A(KC_F1)), C(A(KC_F2)), C(A(KC_F3)), KC_VOLD, KC_MUTE, KC_VOLU, C(A(KC_F7)), C(A(KC_F8)),
+         C(A(KC_INS)), C(A(KC_F1)), C(A(KC_F2)), C(A(KC_F3)), C(A(KC_F4)), _LIST_FORCE_CLOSE_APPS_PC, C(A(KC_F6)), C(A(KC_F7)), C(A(KC_F8)),
          C(A(KC_F17)), C(A(KC_1)), C(A(KC_2)), C(A(KC_3)), C(A(KC_4)), C(A(KC_5)),
          C(A(KC_F18)), C(A(KC_Q)), C(A(KC_W)), C(A(KC_E)), C(A(KC_R)), C(A(KC_T)),
          C(A(KC_F19)), C(A(KC_A)), C(A(KC_S)), C(A(KC_D)), C(A(KC_F)), C(A(KC_G)),
          C(A(KC_F20)), C(A(KC_Z)), C(A(KC_X)), C(A(KC_C)), C(A(KC_V)), C(A(KC_B)),
                     C(A(KC_GRV)), S(KC_TAB), _HIDE_CLOSE_PC, KC_TAB,
-                                     KC_MPRV, KC_MNXT,
+                                KC_MPRV, C(A(KC_F15)),
                                               KC_MPLY,
-       C(KC_Z), C(S(KC_Z)), _LIST_FORCE_CLOSE_APPS_PC,
-                                                  PALM_L_PC,
+                         C(KC_Z), C(S(KC_Z)), KC_MNXT,
+                                            PALM_L_PC,
          C(A(KC_F9)), C(A(KC_F10)), C(A(KC_F11)), C(A(KC_F12)), _, _, _, _, _,
          C(A(KC_6)), C(A(KC_7)), C(A(KC_8)), C(A(KC_9)), C(A(KC_0)), C(A(KC_F21)),
          C(A(KC_Y)), C(A(KC_U)), C(A(KC_I)), C(A(KC_O)), C(A(KC_P)), C(A(KC_F22)),
          C(A(KC_H)), C(A(KC_J)), C(A(KC_K)), C(A(KC_L)), C(A(KC_SCLN)), C(A(KC_F23)),
          C(A(KC_N)), C(A(KC_M)), KC_PGUP, C(A(KC_DOT)), C(A(KC_QUOT)), C(A(KC_F24)),
                         C(KC_HOME), KC_PGDN, C(KC_END), C(A(KC_NUBS)),
-         C(A(KC_F16)), C(A(KC_BSPC)),
-         C(A(KC_EQL)),
-         C(A(KC_MINS)), _S_F3, _F3,
+         C(A(KC_F16)), KC_MUTE,
+         KC_VOLU,
+         KC_VOLD, _S_F3, _F3,
          C(A(KC_F14))
     ),
 
 [_PALM_R_PC] = LAYOUT(
-         C(A(KC_INS)), C(A(KC_F1)), C(A(KC_F2)), C(A(KC_F3)), KC_VOLD, KC_MUTE, KC_VOLU, C(A(KC_F7)), C(A(KC_F8)),
+         C(A(KC_INS)), C(A(KC_F1)), C(A(KC_F2)), C(A(KC_F3)), C(A(KC_F4)), _LIST_FORCE_CLOSE_APPS_PC, C(A(KC_F6)), C(A(KC_F7)), C(A(KC_F8)),
          C(A(KC_F17)), C(A(KC_1)), C(A(KC_2)), C(A(KC_3)), C(A(KC_4)), C(A(KC_5)),
          C(A(KC_F18)), C(A(KC_Q)), C(A(KC_W)), C(A(KC_E)), C(A(KC_R)), C(A(KC_T)),
          C(A(KC_F19)), C(A(KC_A)), C(A(KC_S)), C(A(KC_D)), C(A(KC_F)), C(A(KC_G)),
          C(A(KC_F20)), C(A(KC_Z)), C(A(KC_X)), C(A(KC_C)), C(A(KC_V)), C(A(KC_B)),
                     C(A(KC_GRV)), S(KC_TAB), _HIDE_CLOSE_PC, KC_TAB,
-                                           KC_MPRV, KC_MNXT,
+                                      KC_MPRV, C(A(KC_F15)),
                                                     KC_MPLY,
-             C(KC_Z), C(S(KC_Z)), _LIST_FORCE_CLOSE_APPS_PC,
+                               C(KC_Z), C(S(KC_Z)), KC_MNXT,
                                                  _RGUI_PAUS,
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
          _KC_6, _KC_7, _KC_8, _KC_9, _KC_0,  __________,
@@ -1908,14 +1910,42 @@ void matrix_scan_user(void) {
      switch_lead_led_off();
    }
 
-   if (lang_switch_led) {
-     lang_switch_led = false;
-     led_red_on(); _delay_ms(10);
-     led_yellow_on(); _delay_ms(10); led_red_off();
-     led_green_on(); _delay_ms(10); led_yellow_off();
-     led_blue_on(); _delay_ms(10);  led_green_off();
-     if (!caps_led) { _delay_ms(10); led_blue_off(); }
+   if (yellow_green_led_blink_twice) {
+     yellow_green_led_blink_twice = false;
+     led_yellow_on(); led_green_on();
+     _delay_ms(20);
+     led_yellow_off(); led_green_off();
+     _delay_ms(20);
+     led_yellow_on(); led_green_on();
+     _delay_ms(20);
+     if (!macro1_recording) { led_yellow_off(); }
+     if (!macro2_recording) { led_green_off(); }
    }
+
+   if (scroll_left_led) {
+     scroll_left_led = false;
+     led_blue_on(); _delay_ms(7);
+     led_green_on(); _delay_ms(7);
+     if (!caps_led) { led_blue_off(); }
+     led_yellow_on(); _delay_ms(7);
+     if (!macro2_recording) { led_green_off(); }
+     led_red_on(); _delay_ms(7);
+     if (!macro1_recording) { led_yellow_off(); }
+     if (!macro1_recording && macro2_recording) { _delay_ms(7); led_red_off(); }
+   }
+
+   if (scroll_right_led) {
+     scroll_right_led = false;
+     led_red_on(); _delay_ms(7);
+     led_yellow_on(); _delay_ms(7);
+     if (!macro1_recording && macro2_recording) { led_red_off(); }
+     led_green_on(); _delay_ms(7);
+     if (!macro1_recording) { led_yellow_off(); }
+     led_blue_on(); _delay_ms(7);
+     if (!macro2_recording) { led_green_off(); }
+     if (!caps_led) { _delay_ms(7); led_blue_off(); }
+   }
+
 }
 
 // support for "mo layer tap" functionality: activate mod as soon as layer is activated -> to allow key + mouse combination without delay
@@ -2005,8 +2035,6 @@ bool left_pressed = false;
 bool right_pressed = false;
 bool space_alone = false;
 
-// adding logic to custom keycodes and overriding existing ones (taking hold duration into account);
-// "mo layer tap" and "esc leader key" functionality
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     bool pressed = record->event.pressed;
 
@@ -2043,8 +2071,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     if (right_arrow_timer != 0 && keycode != KC_RGHT && keycode != CMD_SPACE && keycode != CMD_ESC) {
         right_arrow_timer = 0;
     }
-    // custom dynamic macros do no currently play nicely with standard LT functionality;
-    // following code disables those if any of the macros is being currently recorded
+    // custom dynamic macros don't play nicely with standard LT functionality;
     if ((macro1_recording || macro2_recording) && pressed) {
       if (keycode == CTRL_SPACE || keycode == CMD_SPACE) {
         key_code(KC_SPC);
@@ -2109,7 +2136,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case LEAD_SPACE: {
           return press_leader_key(pressed);
         }
-        // >>>>>>> KEYS, RESPONDING TO LEAD_SPACE SEQUENCE
         // autoshifted keys - same key with a shift
         case _KC_Q: { return lead_custom_autoshifted(KC_Q, isMac ? KC_F13 : KC_Q, KC_Q, KC_LSFT, pressed, default_layer ? AUTOSHIFT_QWERTY_KEYS_NO_MODIFIERS_TERM : AUTOSHIFT_QWERTY_KEYS_WITH_MODIFIERS_TERM); }
         case _KC_W: { return lead_autoshifted_qwerty(KC_W, pressed); }
@@ -2273,7 +2299,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case KC_DOWN: { if (is_after_lead(KC_DOWN, pressed)) { return false; } return true; }
         case KC_BSPC: { if (is_after_lead(KC_BSPC, pressed)) { return false; } return true; }
 
-        // >>>>>>> escape as additional leader key
+        // >>>>>>> arrows as additional leader key
         case KC_LEFT: {
           if (is_after_lead(KC_LEFT, pressed)) { return false; }
           if (pressed) { left_pressed = true; left_arrow_timer = timer_read(); } else { left_pressed = false; }
@@ -2285,10 +2311,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           if (pressed) { right_pressed = true; right_arrow_timer = timer_read(); } else { right_pressed = false; }
           return true;
         }
+        // <<<<<<< arrows as additional leader key
 
-        // <<<<<<< escape as additional leader key
-
-        // >>>>>>> mac layers
+        // >>>>>>> LAYERS
+        // >>>>>>> MAC LAYERS
         case CMD_SPACE: {
           if (is_after_lead(KC_SPC, pressed)) { return false; };
           if (pressed) {
@@ -2318,9 +2344,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           if (is_after_lead(KC_F3, pressed)) { return false; }
           static uint16_t cmd_esc_layer_timer;
           if (following_custom_leader(KC_LEFT, KC_LGUI, KC_LALT, KC_NO, &left_arrow_timer, !pressed, 1000)) {
+            scroll_left_led = true;
             return true;
           }
           if (following_custom_leader(KC_RGHT, KC_LGUI, KC_LALT, KC_NO, &right_arrow_timer, !pressed, 1000)) {
+            scroll_right_led = true;
             return true;
           }
            momentary_layer_tap(KC_ESC, KC_NO, KC_LGUI, KC_NO, KC_NO, KC_NO, &cmd_esc_layer_timer, &cmd_esc_interrupted, pressed, 200, true);
@@ -2369,7 +2397,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           uint8_t tap_status = momentary_layer_tap_with_hold(KC_NO, KC_NO, KC_LSFT, KC_NO, KC_NO, KC_NO, &shift_lang_mac_layer_timer, &shift_lang_mac_interrupted, pressed, AUTOSHIFT_SPECIAL_TERM, 400, false, KC_CLR, KC_NO, KC_NO);
           if (tap_status == 1) {
             with_1_mod(KC_SPC, KC_LALT);
-            lang_switch_led = true;
+            yellow_green_led_blink_twice = true;
           } else if (tap_status == 2) {
             toggleCaps();
           }
@@ -2390,7 +2418,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           return true;
         }
 
-        // >>>>>>> pc layers
+        // >>>>>>> PC LAYERS
         case CTRL_SPACE: {
           if (is_after_lead(KC_SPC, pressed)) { return false; };
           if (pressed) {
@@ -2419,10 +2447,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           if (left_pressed || right_pressed) { return false; }
           if (is_after_lead(KC_F3, pressed)) { return false; }
           static uint16_t ctrl_esc_layer_timer;
-          if (following_custom_leader(KC_HOME, KC_LCTL, KC_NO, KC_NO, &left_arrow_timer, !pressed, 1000)) {
+          if (following_custom_leader(KC_HOME, KC_NO, KC_NO, KC_NO, &left_arrow_timer, !pressed, 1000)) {
             return true;
           }
-          if (following_custom_leader(KC_END, KC_LCTL, KC_NO, KC_NO, &right_arrow_timer, !pressed, 1000)) {
+          if (following_custom_leader(KC_END, KC_NO, KC_NO, KC_NO, &right_arrow_timer, !pressed, 1000)) {
             return true;
           }
            momentary_layer_tap(KC_ESC, KC_NO, KC_LCTL, KC_NO, KC_NO, KC_NO, &ctrl_esc_layer_timer, &ctrl_esc_interrupted, pressed, 200, true);
@@ -2471,7 +2499,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           uint8_t tap_status = momentary_layer_tap_with_hold(KC_NO, KC_NO, KC_LSFT, KC_NO, KC_NO, KC_NO, &shift_lang_pc_layer_timer, &shift_lang_pc_interrupted, pressed, AUTOSHIFT_SPECIAL_TERM, 400, false, KC_CLR, KC_NO, KC_NO);
           if (tap_status == 1) {
             with_1_mod(KC_SPC, KC_LGUI);
-            lang_switch_led = true;
+            yellow_green_led_blink_twice = true;
           } else if (tap_status == 2) {
             toggleCaps();
           }
@@ -2491,9 +2519,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           momentary_layer_tap_with_hold(KC_F14, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, &palm_r_pc_layer_timer, &palm_r_pc_interrupted, pressed, 250, 1000, false, KC_F14, KC_LSFT, KC_NO);
           return true;
         }
+        // <<<<<<< LAYERS
 
-        // <<<<<<< layers
-        // <<<<<<< KEYS, RESPONDING TO LEAD_SPACE SEQUENCE
         // additional auto-shifted keys
         case _KC_ENTER: { return if_held_autoshift(KC_ENTER, pressed); }
         case _KC_ESC: { return if_held_autoshift(KC_ESC, pressed); }
