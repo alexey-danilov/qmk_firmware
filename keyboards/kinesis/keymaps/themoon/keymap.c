@@ -176,7 +176,7 @@ static bool palm_r_pc_layer = false;
 static bool isMac;
 static bool isPc;
 static bool caps_led;
-static bool yellow_green_led_blink_twice;
+static bool yellow_green_led_blink;
 static bool scroll_left_led;
 static bool scroll_right_led;
 static bool lead_led;
@@ -1910,14 +1910,10 @@ void matrix_scan_user(void) {
      switch_lead_led_off();
    }
 
-   if (yellow_green_led_blink_twice) {
-     yellow_green_led_blink_twice = false;
+   if (yellow_green_led_blink) {
+     yellow_green_led_blink = false;
      led_yellow_on(); led_green_on();
-     _delay_ms(20);
-     led_yellow_off(); led_green_off();
-     _delay_ms(20);
-     led_yellow_on(); led_green_on();
-     _delay_ms(20);
+     _delay_ms(42);
      if (!macro1_recording) { led_yellow_off(); }
      if (!macro2_recording) { led_green_off(); }
    }
@@ -2397,7 +2393,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           uint8_t tap_status = momentary_layer_tap_with_hold(KC_NO, KC_NO, KC_LSFT, KC_NO, KC_NO, KC_NO, &shift_lang_mac_layer_timer, &shift_lang_mac_interrupted, pressed, AUTOSHIFT_SPECIAL_TERM, 400, false, KC_CLR, KC_NO, KC_NO);
           if (tap_status == 1) {
             with_1_mod(KC_SPC, KC_LALT);
-            yellow_green_led_blink_twice = true;
+            yellow_green_led_blink = true;
           } else if (tap_status == 2) {
             toggleCaps();
           }
@@ -2499,7 +2495,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           uint8_t tap_status = momentary_layer_tap_with_hold(KC_NO, KC_NO, KC_LSFT, KC_NO, KC_NO, KC_NO, &shift_lang_pc_layer_timer, &shift_lang_pc_interrupted, pressed, AUTOSHIFT_SPECIAL_TERM, 400, false, KC_CLR, KC_NO, KC_NO);
           if (tap_status == 1) {
             with_1_mod(KC_SPC, KC_LGUI);
-            yellow_green_led_blink_twice = true;
+            yellow_green_led_blink = true;
           } else if (tap_status == 2) {
             toggleCaps();
           }
