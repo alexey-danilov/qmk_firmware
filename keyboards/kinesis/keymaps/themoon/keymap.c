@@ -1913,33 +1913,33 @@ void matrix_scan_user(void) {
    if (yellow_green_led_blink) {
      yellow_green_led_blink = false;
      led_yellow_on(); led_green_on();
-     _delay_ms(42);
+     _delay_ms(64);
      if (!macro1_recording) { led_yellow_off(); }
      if (!macro2_recording) { led_green_off(); }
    }
 
    if (scroll_left_led) {
      scroll_left_led = false;
-     led_blue_on(); _delay_ms(7);
-     led_green_on(); _delay_ms(7);
+     led_blue_on(); _delay_ms(20);
+     led_green_on(); _delay_ms(20);
      if (!caps_led) { led_blue_off(); }
-     led_yellow_on(); _delay_ms(7);
+     led_yellow_on(); _delay_ms(20);
      if (!macro2_recording) { led_green_off(); }
-     led_red_on(); _delay_ms(7);
+     led_red_on(); _delay_ms(20);
      if (!macro1_recording) { led_yellow_off(); }
-     if (!macro1_recording && macro2_recording) { _delay_ms(7); led_red_off(); }
+     if (!macro1_recording && !macro2_recording) { _delay_ms(20); led_red_off(); }
    }
 
    if (scroll_right_led) {
      scroll_right_led = false;
-     led_red_on(); _delay_ms(7);
-     led_yellow_on(); _delay_ms(7);
-     if (!macro1_recording && macro2_recording) { led_red_off(); }
-     led_green_on(); _delay_ms(7);
+     led_red_on(); _delay_ms(20);
+     led_yellow_on(); _delay_ms(20);
+     if (!macro1_recording && !macro2_recording) { led_red_off(); }
+     led_green_on(); _delay_ms(20);
      if (!macro1_recording) { led_yellow_off(); }
-     led_blue_on(); _delay_ms(7);
+     led_blue_on(); _delay_ms(20);
      if (!macro2_recording) { led_green_off(); }
-     if (!caps_led) { _delay_ms(7); led_blue_off(); }
+     if (!caps_led) { _delay_ms(20); led_blue_off(); }
    }
 
 }
@@ -2340,14 +2340,14 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           if (is_after_lead(KC_F3, pressed)) { return false; }
           static uint16_t cmd_esc_layer_timer;
           if (following_custom_leader(KC_LEFT, KC_LGUI, KC_LALT, KC_NO, &left_arrow_timer, !pressed, 1000)) {
-            scroll_left_led = true;
+//            if (pressed) { scroll_left_led = true; }
             return true;
           }
           if (following_custom_leader(KC_RGHT, KC_LGUI, KC_LALT, KC_NO, &right_arrow_timer, !pressed, 1000)) {
-            scroll_right_led = true;
+//            if (pressed) { scroll_right_led = true; }
             return true;
           }
-           momentary_layer_tap(KC_ESC, KC_NO, KC_LGUI, KC_NO, KC_NO, KC_NO, &cmd_esc_layer_timer, &cmd_esc_interrupted, pressed, 200, true);
+          momentary_layer_tap(KC_ESC, KC_NO, KC_LGUI, KC_NO, KC_NO, KC_NO, &cmd_esc_layer_timer, &cmd_esc_interrupted, pressed, 200, true);
           return true;
         }
 
@@ -2390,7 +2390,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           if (capsOnHardCheck()) { key_code(KC_CAPS); caps_led = false; led_blue_off(); return false; }
           if (is_after_lead(KC_F2, pressed)) { return false; }
           static uint16_t shift_lang_mac_layer_timer;
-          uint8_t tap_status = momentary_layer_tap_with_hold(KC_NO, KC_NO, KC_LSFT, KC_NO, KC_NO, KC_NO, &shift_lang_mac_layer_timer, &shift_lang_mac_interrupted, pressed, AUTOSHIFT_SPECIAL_TERM, 400, false, KC_CLR, KC_NO, KC_NO);
+          uint8_t tap_status = momentary_layer_tap_with_hold(KC_NO, KC_NO, KC_LSFT, KC_NO, KC_NO, KC_NO, &shift_lang_mac_layer_timer, &shift_lang_mac_interrupted, pressed, AUTOSHIFT_SPECIAL_TERM, 1000, false, KC_CLR, KC_NO, KC_NO);
           if (tap_status == 1) {
             with_1_mod(KC_SPC, KC_LALT);
             yellow_green_led_blink = true;
@@ -2492,7 +2492,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           if (capsOnHardCheck()) { key_code(KC_CAPS); caps_led = false; led_blue_off(); return false; }
           if (is_after_lead(KC_F2, pressed)) { return false; }
           static uint16_t shift_lang_pc_layer_timer;
-          uint8_t tap_status = momentary_layer_tap_with_hold(KC_NO, KC_NO, KC_LSFT, KC_NO, KC_NO, KC_NO, &shift_lang_pc_layer_timer, &shift_lang_pc_interrupted, pressed, AUTOSHIFT_SPECIAL_TERM, 400, false, KC_CLR, KC_NO, KC_NO);
+          uint8_t tap_status = momentary_layer_tap_with_hold(KC_NO, KC_NO, KC_LSFT, KC_NO, KC_NO, KC_NO, &shift_lang_pc_layer_timer, &shift_lang_pc_interrupted, pressed, AUTOSHIFT_SPECIAL_TERM, 1000, false, KC_CLR, KC_NO, KC_NO);
           if (tap_status == 1) {
             with_1_mod(KC_SPC, KC_LGUI);
             yellow_green_led_blink = true;
