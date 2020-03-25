@@ -927,7 +927,7 @@ void fw_finished (qk_tap_dance_state_t *state, void *user_data) {
             _delay_ms(250);
             led_green_off();
           }
-          led_yellow_off();
+          change_lang_led = false;
           break;
 
       case SINGLE_HOLD:
