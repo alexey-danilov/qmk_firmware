@@ -1898,7 +1898,7 @@ void matrix_init_user(void) {
 }
 
 void matrix_scan_user(void) {
-   if (lead_timer > 0) {==+=
+   if (lead_timer > 0) {
      if (timer_elapsed(lead_timer) > 1000) {
        switch_lead_led_off();
      }
