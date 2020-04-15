@@ -572,7 +572,7 @@ void blink_all_leds_short(void) {
 }
 
 void blink_all_leds_long(void) {
-  all_leds_on(); _delay_ms(500); all_leds_off();
+  all_leds_on(); _delay_ms(1000); all_leds_off();
 }
 
 bool capsOnHardCheck(void) {
@@ -911,13 +911,14 @@ int cur_dance (qk_tap_dance_state_t *state) {
   else return 6;
 }
 
-//**************** REST TAP *********************//
+//**************** FW TAP *********************//
 static tap fw_tap_state = { .is_press_action = true, .state = 0 };
 
 void fw_finished (qk_tap_dance_state_t *state, void *user_data) {
   fw_tap_state.state = cur_dance(state);
     switch (fw_tap_state.state) {
       case SINGLE_TAP:
+      case SINGLE_HOLD:
           all_leds_off();
           if (isMac) {
             _delay_ms(250);
@@ -941,31 +942,23 @@ void fw_finished (qk_tap_dance_state_t *state, void *user_data) {
           change_lang_led = false;
           break;
 
-      case SINGLE_HOLD:
+      case DOUBLE_TAP:
+          layer_off(_KEYB_CONTROL);
+          all_leds_off();
+          if (isMac) {
+            layer_on(_FAILSAFE_MAC);
+            led_yellow_on();
+          } else {
+            layer_on(_FAILSAFE_PC);
+            led_green_on();
+          }
+          break;
+
+      case DOUBLE_HOLD:
           layer_on(_KEYB_CONTROL);
           all_leds_on();
           break;
 
-      case DOUBLE_TAP:
-          // sleep
-          if (isMac) {
-            blink_all_leds_short(); _delay_ms(200); blink_all_leds_short();
-            down(KC_LCTL); down(KC_LSFT); SEND_STRING(SS_DOWN(X_POWER) SS_UP(X_POWER)); up(KC_LSFT); up(KC_LCTL); break;
-          }
-          if (isPc) {
-            blink_all_leds_short(); _delay_ms(200); blink_all_leds_short();
-            down(KC_SLEP); up(KC_SLEP); break;
-          }
-      case DOUBLE_HOLD:
-         // shutdown
-         all_leds_on(); _delay_ms(300); led_blue_off(); _delay_ms(300); led_green_off(); _delay_ms(300); led_yellow_off(); _delay_ms(300); led_red_off();
-
-         if (isMac) {
-            down(KC_LGUI); down(KC_LCTL); down(KC_LALT); SEND_STRING(SS_DOWN(X_POWER) SS_UP(X_POWER)); up(KC_LALT); up(KC_LCTL); up(KC_LGUI); break;
-         }
-         if (isPc) {
-            down(KC_PWR); up(KC_PWR); break;
-         }
       default: break;
     }
 }
@@ -986,7 +979,7 @@ void mac_layer_finished (qk_tap_dance_state_t *state, void *user_data) {
         layer_on(_FAILSAFE_MAC);
         led_yellow_on();
         break;
-    case SINGLE_HOLD:
+    case DOUBLE_HOLD:
         layer_off(_FAILSAFE_MAC);
         layer_off(_KEYB_CONTROL);
         all_leds_off();
@@ -1043,7 +1036,7 @@ void pc_layer_finished (qk_tap_dance_state_t *state, void *user_data) {
         layer_on(_FAILSAFE_PC);
         led_green_on();
         break;
-    case DOUBLE_TAP:
+    case DOUBLE_HOLD:
         layer_off(_FAILSAFE_PC);
         layer_off(_KEYB_CONTROL);
         all_leds_off();
@@ -1101,11 +1094,25 @@ void status_finished (qk_tap_dance_state_t *state, void *user_data) {
           with_1_mod(KC_INS, KC_LSFT); break;
 
       case DOUBLE_TAP:
-          with_1_mod(KC_INS, KC_LALT); blink_all_leds_short(); break;
-
+          // sleep
+          if (isMac) {
+            blink_all_leds_short(); _delay_ms(200); blink_all_leds_short();
+            down(KC_LCTL); down(KC_LSFT); SEND_STRING(SS_DOWN(X_POWER) SS_UP(X_POWER)); up(KC_LSFT); up(KC_LCTL); break;
+          }
+          if (isPc) {
+            blink_all_leds_short(); _delay_ms(200); blink_all_leds_short();
+            down(KC_SLEP); up(KC_SLEP); break;
+          }
       case DOUBLE_HOLD:
-          with_1_mod(KC_INS, KC_LCTL); blink_all_leds_long(); break;
+         // shutdown
+         all_leds_on(); _delay_ms(300); led_blue_off(); _delay_ms(300); led_green_off(); _delay_ms(300); led_yellow_off(); _delay_ms(300); led_red_off();
 
+         if (isMac) {
+            down(KC_LGUI); down(KC_LCTL); down(KC_LALT); SEND_STRING(SS_DOWN(X_POWER) SS_UP(X_POWER)); up(KC_LALT); up(KC_LCTL); up(KC_LGUI); break;
+         }
+         if (isPc) {
+            down(KC_PWR); up(KC_PWR); break;
+         }
       default: break;
     }
   }
@@ -1129,7 +1136,7 @@ void f8_finished (qk_tap_dance_state_t *state, void *user_data) {
           with_1_mod(KC_F8, KC_LSFT); break;
 
       case DOUBLE_TAP:
-          with_1_mod(KC_F8, KC_LALT); blink_all_leds_short(); break;
+          with_1_mod(KC_F8, KC_LALT); break;
 
       case DOUBLE_HOLD:
           with_1_mod(KC_F8, KC_LCTL); blink_all_leds_long(); break;
@@ -1159,10 +1166,10 @@ void set_finished (qk_tap_dance_state_t *state, void *user_data) {
       case DOUBLE_TAP:
           // settings
           if (isMac) {
-            with_1_mod(KC_COMM, KC_LGUI); blink_all_leds_short(); break;
+            with_1_mod(KC_COMM, KC_LGUI); break;
           }
           if (isPc) {
-            with_1_mod(KC_LALT, KC_F5); blink_all_leds_short(); break;
+            with_1_mod(KC_LALT, KC_F5); break;
           }
 
       case DOUBLE_HOLD:
@@ -1866,7 +1873,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
 
 [_KEYB_CONTROL] = LAYOUT(
-         RESET,  _,  _,  _,  _,  TD(MAC_FAILSAFE), TD(PC_FAILSAFE), _, _,
+         _,  _,  _,  _,  _,  TD(MAC_FAILSAFE), TD(PC_FAILSAFE), _, _,
          _,  _,  _,  _,  _,  _,
          _,  _,  _,  _,  _,  _,
          _,  _,  _,  _,  _,  _,
@@ -1876,7 +1883,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                  _,
                            _, _, _,
                                  _,
-         _,  _,  _,  _,  _,  _, _, _, TD(FW_CANCEL),
+         _,  _,  _,  _,  _,  _, _, RESET, TD(FW_CANCEL),
 	     _, _, _, _, _, _,
          _,  _,  _,  _,  _,  _,
          _,  _,  _,  _,  _,  _,
