@@ -166,7 +166,9 @@ static bool palm_r_pc_layer = false;
 // HELPER FUNCTIONS
 // switch mac <-> pc
 static bool isMac;
+static bool failsafeMac;
 static bool isPc;
+static bool failsafePc;
 static bool caps_led;
 static bool change_lang_led;
 static bool trigger_lang_change;
@@ -977,7 +979,6 @@ void mac_layer_finished (qk_tap_dance_state_t *state, void *user_data) {
         layer_off(_KEYB_CONTROL);
         all_leds_off();
         layer_on(_FAILSAFE_MAC);
-        led_yellow_on();
         break;
     case DOUBLE_HOLD:
         layer_off(_FAILSAFE_MAC);
@@ -1014,8 +1015,8 @@ void mac_failsafe_off_finished (qk_tap_dance_state_t *state, void *user_data) {
   mac_failsafe_off_tap_state.state = cur_dance(state);
   switch (mac_failsafe_off_tap_state.state) {
     default:
-      led_yellow_off();
       layer_off(_FAILSAFE_MAC);
+      led_yellow_off();
       break;
   }
 }
@@ -1032,9 +1033,8 @@ void pc_layer_finished (qk_tap_dance_state_t *state, void *user_data) {
   switch (pc_layer_tap_state.state) {
     case SINGLE_TAP:
         layer_off(_KEYB_CONTROL);
-        all_leds_off();
         layer_on(_FAILSAFE_PC);
-        led_green_on();
+        all_leds_off();
         break;
     case DOUBLE_HOLD:
         layer_off(_FAILSAFE_PC);
@@ -1070,8 +1070,8 @@ void pc_failsafe_off_finished (qk_tap_dance_state_t *state, void *user_data) {
   pc_failsafe_off_tap_state.state = cur_dance(state);
   switch (pc_failsafe_off_tap_state.state) {
     default:
-      led_green_off();
       layer_off(_FAILSAFE_PC);
+      led_green_off();
       break;
   }
 }
@@ -1896,62 +1896,62 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
 
     [_FAILSAFE_MAC] = LAYOUT(
-                         // left side
-                         KC_INS, KC_F1, KC_F2, KC_F3, KC_F4, KC_F5, KC_F6, KC_F7, KC_F8,
-                         _, KC_1, KC_2, KC_3, KC_4, KC_5,
-                         _, KC_Q, KC_W, KC_E, KC_R, KC_T,
-                         KC_HOME, KC_A, KC_S, KC_D, KC_F, KC_G,
-                         _, KC_Z, KC_X, KC_C, KC_V, KC_B,
-                             KC_GRV, KC_LBRC, KC_COMM, KC_RBRC,
-                                                             // left thumb keys
-    		                                                    KC_BSPC, KC_PGUP,
-                                                                  ALT_T(KC_SLSH),
-                                   GUI_T(KC_ESC), SFT_T(KC_ENTER), CTL_T(KC_DEL),
-                                                                // left palm key
-              			                                                 KC_PGDN,
+                // left side
+                KC_INS, KC_F1, KC_F2, KC_F3, KC_F4, KC_F5, KC_F6, KC_F7, KC_F8,
+                KC_PGUP, KC_1, KC_2, KC_3, KC_4, KC_5,
+                KC_PGDN, KC_Q, KC_W, KC_E, KC_R, KC_T,
+                KC_LCTL, KC_A, KC_S, KC_D, KC_F, KC_G,
+                KC_LALT, KC_Z, KC_X, KC_C, KC_V, KC_B,
+                    KC_GRV, KC_LBRC, KC_COMM, KC_RBRC,
+                                                    // left thumb keys
+    		                                           KC_BSPC, KC_LGUI,
+                                                                KC_SLSH,
+                                               KC_ESC, KC_ENTER, KC_DEL,
+                                                       // left palm key
+              	                                                KC_LSFT,
                   // right side
                 KC_F9, KC_F10, KC_F11, KC_F12, _, _, _, _, TD(MAC_EXIT_FAILSAFE),
-              	KC_6, KC_7, KC_8, KC_9, KC_0, _,
-              	KC_Y, KC_U, KC_I, KC_O, KC_P, _,
-              	KC_H, KC_J, KC_K, KC_L, KC_SCLN, KC_END,
-              	KC_N, KC_M, KC_UP, KC_DOT, KC_QUOT, _,
+              	KC_6, KC_7, KC_8, KC_9, KC_0, KC_END,
+              	KC_Y, KC_U, KC_I, KC_O, KC_P, KC_HOME,
+              	KC_H, KC_J, KC_K, KC_L, KC_SCLN, KC_RCTL,
+              	KC_N, KC_M, KC_UP, KC_DOT, KC_QUOT, KC_RALT,
               	KC_LEFT, KC_DOWN, KC_RGHT, KC_NUBS,
                          // right thumb keys
-                         KC_CAPS, KC_BSPC,
-                         ALT_T(KC_TAB),
-                         CTL_T(KC_BSLS), SFT_T(KC_MINS), KC_SPC,
+                         KC_RGUI, KC_EQL,
+                         KC_TAB,
+                         KC_BSLS, KC_MINS, KC_SPC,
                          // right palm key
-                         KC_EQL
+                         KC_RSFT
                   ),
 
     [_FAILSAFE_PC] = LAYOUT(
                // left side
                KC_INS, KC_F1, KC_F2, KC_F3, KC_F4, KC_F5, KC_F6, KC_F7, KC_F8,
-               _, KC_1, KC_2, KC_3, KC_4, KC_5,
-               _, KC_Q, KC_W, KC_E, KC_R, KC_T,
-               KC_HOME, KC_A, KC_S, KC_D, KC_F, KC_G,
-               _, KC_Z, KC_X, KC_C, KC_V, KC_B,
+               KC_PGUP, KC_1, KC_2, KC_3, KC_4, KC_5,
+               KC_PGDN, KC_Q, KC_W, KC_E, KC_R, KC_T,
+               KC_LGUI, KC_A, KC_S, KC_D, KC_F, KC_G,
+               KC_LALT, KC_Z, KC_X, KC_C, KC_V, KC_B,
                    KC_GRV, KC_LBRC, KC_COMM, KC_RBRC,
                                                     // left thumb keys
-    		                                         KC_BSPC, KC_PGUP,
-                                                       ALT_T(KC_SLSH),
-                        CTL_T(KC_ESC), SFT_T(KC_ENTER), GUI_T(KC_DEL),
-                                                      // left palm key
-    			                                              KC_PGDN,
-        // right side
-      KC_F9, KC_F10, KC_F11, KC_F12, _, _, _, _, TD(PC_EXIT_FAILSAFE),
-    	KC_6, KC_7, KC_8, KC_9, KC_0, _,
-    	KC_Y, KC_U, KC_I, KC_O, KC_P, _,
-    	KC_H, KC_J, KC_K, KC_L, KC_SCLN, _,
-    	KC_N, KC_M, KC_UP, KC_DOT, KC_QUOT,  KC_END,
-    	KC_LEFT, KC_DOWN, KC_RGHT, KC_APP,
-               // right thumb keys
-               KC_CAPS, KC_BSPC,
-               ALT_T(KC_TAB),
-               GUI_T(KC_BSLS), SFT_T(KC_MINS), KC_SPC,
-               // right palm key
-               KC_EQL
-        ),
+                                                      KC_BSPC, KC_LCTL,
+                                                               KC_SLSH,
+                                              KC_ESC, KC_ENTER, KC_DEL,
+                                                       // left palm key
+                             	                               KC_LSFT,
+              // right side
+              KC_F9, KC_F10, KC_F11, KC_F12, _, _, _, _, TD(PC_EXIT_FAILSAFE),
+              KC_6, KC_7, KC_8, KC_9, KC_0, KC_END,
+              KC_Y, KC_U, KC_I, KC_O, KC_P, KC_HOME,
+              KC_H, KC_J, KC_K, KC_L, KC_SCLN, KC_RGUI,
+              KC_N, KC_M, KC_UP, KC_DOT, KC_QUOT, KC_RALT,
+              KC_LEFT, KC_DOWN, KC_RGHT, KC_NUBS,
+                       // right thumb keys
+                       KC_RCTL, KC_EQL,
+                       KC_TAB,
+                       KC_BSLS, KC_MINS, KC_SPC,
+                       // right palm key
+                       KC_RSFT
+              ),
 };
 
 void matrix_init_user(void) {
@@ -2014,6 +2014,13 @@ void matrix_scan_user(void) {
      if (!caps_led) { _delay_ms(20); led_blue_off(); }
    }
 
+   if (failsafeMac) {
+     led_yellow_on();
+   }
+
+   if (failsafePc) {
+     led_green_on();
+   }
 }
 
 // support for "mo layer tap" functionality: activate mod as soon as layer is activated -> to allow key + mouse combination without delay
@@ -2050,27 +2057,31 @@ uint32_t layer_state_set_user(uint32_t state) {
 
     case _FAILSAFE_MAC:
      palm_l_mac_layer = false;
-     palm_l_mac_layer = false;
+     palm_r_mac_layer = false;
      palm_l_pc_layer = false;
      palm_r_pc_layer = false;
      default_layer = false;
+     failsafeMac = true;
      break;
 
     case _FAILSAFE_PC:
      palm_l_mac_layer = false;
-     palm_l_mac_layer = false;
+     palm_r_mac_layer = false;
      palm_l_pc_layer = false;
      palm_r_pc_layer = false;
      default_layer = false;
+     failsafePc = true;
      break;
 
     // unregister everything (even if it was not pressed - no big deal; this works faster than getting pressed mods)
     default:
      remove_mods();
      palm_l_mac_layer = false;
-     palm_l_mac_layer = false;
+     palm_r_mac_layer = false;
      palm_l_pc_layer = false;
      palm_r_pc_layer = false;
+     failsafeMac = false;
+     failsafePc = false;
      default_layer = true; break;
     }
 return state;
