@@ -153,6 +153,7 @@ enum holding_keycodes {
   SET_LAYER_PC,
 };
 
+static uint16_t esc_timer = 0; // timer for leader key: esc
 static uint16_t left_arrow_timer = 0; // timer for leader key: left arrow
 static uint16_t right_arrow_timer = 0; // timer for leader key: right arrow
 static uint16_t lead_timer = 0; // timer for leader key (cmd/ctrl + space)
@@ -1420,8 +1421,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                __________,  __________,  __________,  KC_NUBS,
          __________, C(KC_BSPC),
          _KC_EQL,
-         _KC_MINS, _KC_TAB, _KC_F1,
-         __KC_F16
+         _KC_MINS, _KC_F2, _KC_F1,
+         _KC_TAB
     ),
 
 [_ALT_TAB_MAC] = LAYOUT(
@@ -1490,7 +1491,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________, _KC_BSPC,
          _KC_EQL,
          _KC_MINS, _KC_F2, _KC_SPACE,
-         __KC_F16
+         _KC_TAB
     ),
 
 [_SHIFT_ENTER_MAC] = LAYOUT(
@@ -1511,9 +1512,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________, __________, __________, __________, __________, __________,
                    __________,  __________,  __________, _KC_NUBS,
          __________, _KC_BSPC,
-         _KC_TAB,
-         _KC_BSLS, C(KC_F2), _KC_SPACE,
-         MEH(KC_F16)
+         _KC_BSLS,
+         C(KC_F1), C(KC_F2), _KC_SPACE,
+         _KC_TAB
     ),
 
 [_SHIFT_LANG_MAC] = LAYOUT(
@@ -1524,7 +1525,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________, __________, __________, __________, __________, __________,
                __________,  __________,  _KC_COMM,  __________,
                               _KC_BSPC, _KC_F13,
-                                       _KC_MINS,
+                                      C(KC_EQL),
                     _KC_ESC, _KC_ENTER, _KC_DEL,
                                     MEH(KC_F15),
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
@@ -1557,7 +1558,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          HYPR(KC_H), HYPR(KC_J), HYPR(KC_K), HYPR(KC_L), HYPR(KC_SCLN), HYPR(KC_F13),
          HYPR(KC_N), HYPR(KC_M), KC_PGUP, HYPR(KC_END), HYPR(KC_QUOT), HYPR(KC_F14),
                         KC_HOME, KC_PGDN, KC_END, HYPR(KC_NUBS),
-         HYPR(KC_F16), KC__MUTE,
+         HYPR(KC_F14), KC__MUTE,
          KC__VOLUP,
          KC__VOLDOWN, _S_F3, _F3,
          HYPR(KC_F16)
@@ -1753,7 +1754,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          W_PAUS, W_DEL,
          W_EQL,
          W_MINS, KC_F2, KC_F1,
-         W_F16
+         W_TAB
     ),
 
 [_RGUI] = LAYOUT(
@@ -1776,7 +1777,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          G(KC_PAUS), G(KC_BSPC),
          KC_LALT,
          RGUI, KC_LSFT, KC_LCTL,
-         G(KC_EQL)
+         G(KC_TAB)
     ),
 
 [_SHIFT_ENTER_PC] = LAYOUT(
@@ -1797,8 +1798,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________, __________, __________, __________, __________, __________,
                    __________,  __________,  __________, __________,
          __________, _KC_BSPC,
-         _KC_TAB,
-         _KC_BSLS, C(_KC_F2), _KC_SPACE,
+         _KC_BSLS,
+         C(_KC_F1), C(_KC_F2), _KC_SPACE,
          C(A(S(KC_F16)))
     ),
 
@@ -1811,7 +1812,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________, __________, __________, __________, __________, __________,
                __________,  __________,  _KC_COMM,  __________,
                                        _KC_BSPC, _KC_F13,
-                                                _KC_MINS,
+                                              C(_KC_EQL),
                              _KC_ESC, _KC_ENTER, _KC_DEL,
                                          C(A(S(KC_F15))),
          __________,  __________,  __________,  __________,  __________,  __________, __________, __________, __________,
@@ -1844,8 +1845,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          C(A(KC_N)), C(A(KC_M)), KC_PGUP, C(A(KC_DOT)), C(A(KC_QUOT)), C(A(KC_F24)),
                         C(KC_HOME), KC_PGDN, C(KC_END), C(A(KC_NUBS)),
          C(A(KC_PAUS)), C(A(KC_BSPC)),
-         C(A(KC_TAB)),
-         C(A(KC_BSLS)), _S_F3, _F3,
+         C(A(KC_BSLS)),
+         C(A(KC_F1)), _S_F3, _F3,
          C(A(KC_F16))
     ),
 
@@ -2142,6 +2143,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
        }
     }
 
+    if (keycode != KC_LEFT && keycode != KC_RGHT /* && keycode != _KC_K */) {
+      if (keycode != CMD_SPACE && keycode != CTRL_SPACE) {
+             esc_timer = 0;
+      }
+    }
 
     if (left_arrow_timer != 0 && keycode != KC_LEFT && keycode != CMD_SPACE && keycode != CMD_ESC) {
         left_arrow_timer = 0;
@@ -2229,8 +2235,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case _KC_A: { return lead_autoshifted_qwerty(KC_A, pressed); }
         case _KC_S: { return lead_autoshifted_qwerty(KC_S, pressed); }
         case _KC_D: { return lead_autoshifted_qwerty(KC_D, pressed); }
-        /* case _KC_F: { return lead_custom_autoshifted(KC_F, KC_F, KC_F, KC_LSFT, pressed, AUTOSHIFT_QWERTY_KEYS_NO_MODIFIERS_TERM); } */
-        case _KC_F: { return lead_autoshifted_qwerty(KC_F, pressed); }
+        /* case _KC_K: {
+          if (is_after_lead(KC_K, !pressed)) { return false; }
+          if (not_following_esc(KC_K, isMac ? KC_LGUI : KC_LCTL, KC_LALT, KC_NO, &esc_timer, !pressed, 1000)) {
+            return lead_autoshifted_qwerty(KC_K, pressed);
+          }
+          return false;
+        } */        case _KC_F: { return lead_autoshifted_qwerty(KC_F, pressed); }
         case _KC_H: { return lead_custom_autoshifted(KC_H, isMac ? KC_HOME : KC_H, KC_H, KC_LSFT, pressed, default_layer ? AUTOSHIFT_QWERTY_KEYS_NO_MODIFIERS_TERM : AUTOSHIFT_QWERTY_KEYS_WITH_MODIFIERS_TERM); }
         case _KC_J: { return lead_autoshifted_qwerty(KC_J, pressed); }
         case _KC_K: { return lead_autoshifted_qwerty(KC_K, pressed); }
@@ -2367,13 +2378,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case KC_LEFT: {
           if (is_after_lead(KC_LEFT, pressed)) { return false; }
           if (pressed) { left_pressed = true; left_arrow_timer = timer_read(); } else { left_pressed = false; }
-          return true;
+          return !following_custom_leader(isMac ? KC_LEFT : KC_HOME, isMac ? KC_LGUI : KC_NO, isMac ? KC_LALT : KC_NO, KC_NO, &esc_timer, pressed, 300);
         }
 
         case KC_RGHT: {
           if (is_after_lead(KC_RGHT, pressed)) { return false; }
           if (pressed) { right_pressed = true; right_arrow_timer = timer_read(); } else { right_pressed = false; }
-          return true;
+          return !following_custom_leader(isMac ? KC_RGHT : KC_END, isMac ? KC_LGUI : KC_NO, isMac ? KC_LALT : KC_NO, KC_NO, &esc_timer, pressed, 300);
         }
         // <<<<<<< arrows as additional leader key
 
@@ -2415,7 +2426,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 //            if (pressed) { scroll_right_led = true; }
             return true;
           }
-          momentary_layer_tap(KC_ESC, KC_NO, KC_LGUI, KC_NO, KC_NO, KC_NO, &cmd_esc_layer_timer, &cmd_esc_interrupted, pressed, 200, true);
+          if (momentary_layer_tap(KC_ESC, KC_NO, KC_LGUI, KC_NO, KC_NO, KC_NO, &cmd_esc_layer_timer, &cmd_esc_interrupted, pressed, 200, true)) {
+            esc_timer = timer_read();
+          }
           return true;
         }
 
@@ -2519,7 +2532,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 //            if (pressed) { scroll_right_led = true; }
             return true;
           }
-           momentary_layer_tap(KC_ESC, KC_NO, KC_LCTL, KC_NO, KC_NO, KC_NO, &ctrl_esc_layer_timer, &ctrl_esc_interrupted, pressed, 200, true);
+          if (momentary_layer_tap(KC_ESC, KC_NO, KC_LCTL, KC_NO, KC_NO, KC_NO, &ctrl_esc_layer_timer, &ctrl_esc_interrupted, pressed, 200, true)) {
+            esc_timer = timer_read();
+          }
           return true;
         }
 
