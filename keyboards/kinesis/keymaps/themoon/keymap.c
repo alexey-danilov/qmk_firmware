@@ -2143,7 +2143,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
        }
     }
 
-    if (keycode != KC_LEFT && keycode != KC_RGHT /* && keycode != _KC_K */) {
+    if (keycode != SHIFT_LANG_MAC && keycode != SHIFT_LANG_PC /* && keycode != _KC_K */) {
       if (keycode != CMD_SPACE && keycode != CTRL_SPACE) {
              esc_timer = 0;
       }
@@ -2378,13 +2378,17 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case KC_LEFT: {
           if (is_after_lead(KC_LEFT, pressed)) { return false; }
           if (pressed) { left_pressed = true; left_arrow_timer = timer_read(); } else { left_pressed = false; }
-          return !following_custom_leader(isMac ? KC_LEFT : KC_HOME, isMac ? KC_LGUI : KC_NO, isMac ? KC_LALT : KC_NO, KC_NO, &esc_timer, pressed, 300);
+          return true;
+//          + esc as custom leader
+//          return !following_custom_leader(isMac ? KC_LEFT : KC_HOME, isMac ? KC_LGUI : KC_NO, isMac ? KC_LALT : KC_NO, KC_NO, &esc_timer, pressed, 300);
         }
 
         case KC_RGHT: {
           if (is_after_lead(KC_RGHT, pressed)) { return false; }
           if (pressed) { right_pressed = true; right_arrow_timer = timer_read(); } else { right_pressed = false; }
-          return !following_custom_leader(isMac ? KC_RGHT : KC_END, isMac ? KC_LGUI : KC_NO, isMac ? KC_LALT : KC_NO, KC_NO, &esc_timer, pressed, 300);
+          return true;
+//          + esc as custom leader
+//          return !following_custom_leader(isMac ? KC_RGHT : KC_END, isMac ? KC_LGUI : KC_NO, isMac ? KC_LALT : KC_NO, KC_NO, &esc_timer, pressed, 300);
         }
         // <<<<<<< arrows as additional leader key
 
@@ -2470,6 +2474,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case SHIFT_LANG_MAC: {
           if (capsOnHardCheck()) { key_code(KC_CAPS); caps_led = false; led_blue_off(); return false; }
           if (is_after_lead(KC_MINS, pressed)) { return false; }
+          // invert change lang led after on esc + lang
+          if (following_custom_leader(KC_NO, KC_NO, KC_NO, KC_NO, &esc_timer, pressed, 300)) {
+            scroll_right_led = true;
+            trigger_lang_change = true;
+            return false;
+          }
           static uint16_t shift_lang_mac_layer_timer;
           uint8_t tap_status = momentary_layer_tap_with_hold(KC_NO, KC_NO, KC_LSFT, KC_NO, KC_NO, KC_NO, &shift_lang_mac_layer_timer, &shift_lang_mac_interrupted, pressed, AUTOSHIFT_SPECIAL_TERM, 1000, false, KC_CLR, KC_NO, KC_NO);
           if (tap_status == 1) {
@@ -2576,6 +2586,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case SHIFT_LANG_PC: {
           if (capsOnHardCheck()) { key_code(KC_CAPS); caps_led = false; led_blue_off(); return false; }
           if (is_after_lead(KC_MINS, pressed)) { return false; }
+          // invert change lang led after on esc + lang
+          if (following_custom_leader(KC_NO, KC_NO, KC_NO, KC_NO, &esc_timer, pressed, 300)) {
+            scroll_right_led = true;
+            trigger_lang_change = true;
+            return false;
+          }
           static uint16_t shift_lang_pc_layer_timer;
           uint8_t tap_status = momentary_layer_tap_with_hold(KC_NO, KC_NO, KC_LSFT, KC_NO, KC_NO, KC_NO, &shift_lang_pc_layer_timer, &shift_lang_pc_interrupted, pressed, AUTOSHIFT_SPECIAL_TERM, 1000, false, KC_CLR, KC_NO, KC_NO);
           if (tap_status == 1) {
