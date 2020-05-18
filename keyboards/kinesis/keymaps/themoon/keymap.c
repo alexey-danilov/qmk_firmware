@@ -73,8 +73,8 @@ enum holding_keycodes {
   _KC_BSLS,
   _KC_SLSH,
   _KC_BSPC,
-  _KC_MINS,
   _KC_EQL,
+         _KC_MINS,
   _KC_INS,
   _KC_APP,
   _KC_NUBS,
@@ -1351,8 +1351,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________, _CTRL_M, _SELECT_UP_MAC, _CTRL_DOT, __________, __________,
                    _SELECT_LEFT_MAC,  _SELECT_DOWN_MAC,  _SELECT_RIGHT_MAC, KC_NUBS,
          __________, _DEL_LEFT_MAC,
-         _KC_MINS,
-         _KC_EQL, _KC_F2, LEAD_SPACE,
+         _KC_EQL,
+         _KC_MINS, _KC_F2, LEAD_SPACE,
          __KC_F16
     ),
 
@@ -1420,8 +1420,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________, __________, __________, __________, __________, __________,
                __________,  __________,  __________,  KC_NUBS,
          __________, C(KC_BSPC),
-         _KC_MINS,
-         _KC_EQL, _KC_F2, _KC_F1,
+         _KC_EQL,
+         _KC_MINS, _KC_F2, _KC_F1,
          _KC_TAB
     ),
 
@@ -1489,8 +1489,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________, __________, __________, __________, __________, __________,
                __________,  __________,  __________,  _KC_NUBS,
          __________, _KC_BSPC,
-         _KC_MINS,
-         _KC_EQL, _KC_F2, _KC_SPACE,
+         _KC_EQL,
+         _KC_MINS, _KC_F2, _KC_SPACE,
          _KC_TAB
     ),
 
@@ -1559,8 +1559,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          HYPR(KC_N), HYPR(KC_M), KC_PGUP, HYPR(KC_END), HYPR(KC_QUOT), HYPR(KC_F14),
                         KC_HOME, KC_PGDN, KC_END, HYPR(KC_NUBS),
          HYPR(KC_F14), KC__MUTE,
-         KC__VOLDOWN,
-         KC__VOLUP, _S_F3, _F3,
+         KC__VOLUP,
+         KC__VOLDOWN, _S_F3, _F3,
          HYPR(KC_F16)
     ),
 
@@ -1637,8 +1637,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________,  __________, _SELECT_UP_PC, __________,  __________,  __________,
          _SELECT_LEFT_PC, _SELECT_DOWN_PC, _SELECT_RIGHT_PC, __________,
          __________, _DEL_LEFT_PC,
-         _KC_MINS,
-         _KC_EQL, _KC_F2, LEAD_SPACE,
+         _KC_EQL,
+         _KC_MINS, _KC_F2, LEAD_SPACE,
          __KC_F16
     ),
 
@@ -1706,8 +1706,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________, __________, __________, __________, __________, __________,
                   __________, __________,  __________, __________,
          __________, _KC_BSPC,
-         _KC_MINS,
-         _KC_EQL, _KC_F2, _KC_F1,
+         _KC_EQL,
+         _KC_MINS, _KC_F2, _KC_F1,
          __KC_F16
     ),
 
@@ -1752,8 +1752,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          W_N, W_M, KC_UP, W_DOT, W_SCLN, W_F24,
          KC_LEFT, KC_DOWN, KC_RGHT, W_APP,
          W_PAUS, W_DEL,
-         W_MINS,
-         W_EQL, KC_F2, KC_F1,
+         W_EQL,
+         W_MINS, KC_F2, KC_F1,
          W_TAB
     ),
 
