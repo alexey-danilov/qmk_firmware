@@ -83,8 +83,9 @@ enum holding_keycodes {
   __KC_F15,
   __KC_F16,
 
-  LANG_CAPS_MAC,
-  LANG_CAPS_PC,
+  CHANGE_LANG_MAC,
+  CHANGE_LANG_PC,
+  CAPS,
 
   // holding qwerty keys
   _KC_F1, _KC_F2, _KC_F3, _KC_F4, _KC_F5, _KC_F6, _KC_F7, _KC_F8, _KC_F9, _KC_F10, _KC_F11, _KC_F12,
@@ -586,9 +587,9 @@ bool capsOnHardCheck(void) {
 
 void toggleCaps(void) {
     if (capsOnHardCheck()) {
-        up(KC_LCAP); caps_led = false; led_blue_off();
+        key_code(KC_LCAP); caps_led = false; led_blue_off();
     } else {
-        down(KC_LCAP); caps_led = true; led_blue_on();
+        key_code(KC_LCAP); caps_led = true; led_blue_on();
     }
 }
 
@@ -776,32 +777,16 @@ bool following_custom_leader(uint16_t code, uint16_t mod1, uint16_t mod2, uint16
   }
 }
 
-bool process_lang_caps(
-    uint16_t lang_switch_code,
-    uint16_t mod_to_be_replaced,
-    uint16_t lang_switch_mod1,
-    uint16_t lang_switch_mod2,
-    uint16_t caps_code,
-    bool pressed,
-    uint16_t hold_duration
-) {
-  static uint16_t hold_timer;
-
+bool change_lang(uint16_t lang_switch_code, uint16_t mod_to_be_replaced, uint16_t lang_switch_mod1, uint16_t lang_switch_mod2, bool pressed) {
   if (pressed) {
-      hold_timer= timer_read();
-  } else {
       up(mod_to_be_replaced);
 
-      if (held_shorter(hold_timer, hold_duration)){
-          if (isMac && capsOnHardCheck()) {
-            toggleCaps(); // on mac changing language resets caps lock
-          }
-          trigger_lang_change = true;
-          with_2_mods(lang_switch_code, lang_switch_mod1, lang_switch_mod2);
-
-      } else {
-          toggleCaps();
+      if (isMac && capsOnHardCheck()) {
+        toggleCaps(); // on mac changing language resets caps lock
       }
+      scroll_right_led = true;
+      trigger_lang_change = true;
+      with_2_mods(lang_switch_code, lang_switch_mod1, lang_switch_mod2);
   }
   return false;
 }
@@ -1349,14 +1334,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                  // left palm key
 			                                          PALM_L_MAC,
     // right side
-  _KC_F9, _KC_F10, _KC_F11, _KC_F12, G(C(KC_F13)), G(C(KC_F14)), G(C(KC_F15)), _, TD(FW_TD),
+  _KC_F9, _KC_F10, _KC_F11, _KC_F12, KC__MUTE, KC__VOLDOWN, KC__VOLUP, _, TD(FW_TD),
 	_6, _7_BANG, _8_DASH, _9_QUEST, _0, _ALT_F9,
 	_KC_Y, _KC_U, _KC_I, _KC_O, _KC_P, _ALT_F10,
 	_KC_H, _KC_J, _KC_K, _KC_L, _KC_SCLN, _ALT_F11,
 	_KC_N, _KC_M, KC_UP, _KC_DOT, _KC_QUOT, _ALT_F12,
 	KC_LEFT, KC_DOWN, KC_RGHT, _KC_NUBS,
            // right thumb keys
-           _KC_F14, KC_BSPC,
+           CAPS, KC_BSPC,
            ALT_BSLS_MAC,
            CTRL_F1, SHIFT_TAB_MAC, CMD_SPACE,
            // right palm key
@@ -1383,7 +1368,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                    _SELECT_LEFT_MAC,  _SELECT_DOWN_MAC,  _SELECT_RIGHT_MAC, KC_NUBS,
          _KC_EQL, _DEL_LEFT_MAC,
          _KC_BSLS,
-         KC_SPC, LANG_CAPS_MAC, LEAD_SPACE,
+         KC_SPC, CHANGE_LANG_MAC, LEAD_SPACE,
          __KC_F16
     ),
 
@@ -1579,9 +1564,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          HYPR(KC_F9), HYPR(KC_A), HYPR(KC_S), HYPR(KC_D), HYPR(KC_F), HYPR(KC_G),
          HYPR(KC_F10), HYPR(KC_Z), HYPR(KC_X), HYPR(KC_C), HYPR(KC_V), HYPR(KC_B),
                    HYPR(KC_GRV), S(KC_TAB), _HIDE_CLOSE_MAC, KC_TAB,
-                                          KC_MRWD, HYPR(KC_F13),
-                                                        KC_MPLY,
-                          LGUI(KC_Z), LGUI(LSFT(KC_Z)), KC_MFFD,
+                                   HYPR(KC_BSPC), HYPR(KC_MINS),
+                                                  HYPR(KC_SLSH),
+                     LGUI(KC_Z), LGUI(LSFT(KC_Z)), HYPR(KC_DEL),
                                                      PALM_L_MAC,
          HYPR(KC_F9), HYPR(KC_F10), HYPR(KC_F11), HYPR(KC_F12), _, _, _, _, _,
          HYPR(KC_6), HYPR(KC_7), HYPR(KC_8), HYPR(KC_9), HYPR(KC_0), HYPR(KC_F11),
@@ -1589,7 +1574,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          HYPR(KC_H), HYPR(KC_J), HYPR(KC_K), HYPR(KC_L), HYPR(KC_SCLN), HYPR(KC_F13),
          HYPR(KC_N), HYPR(KC_M), KC_PGUP, HYPR(KC_END), HYPR(KC_QUOT), HYPR(KC_F14),
                         KC_HOME, KC_PGDN, KC_END, HYPR(KC_NUBS),
-         KC__VOLUP, HYPR(KC_BSPC),
+         HYPR(KC_EQL), HYPR(KC_BSPC),
          HYPR(KC_BSLS),
          HYPR(KC_SPC), _S_F3, _F3,
          HYPR(KC_F16)
@@ -1602,7 +1587,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          HYPR(KC_F9), HYPR(KC_A), HYPR(KC_S), HYPR(KC_D), HYPR(KC_F), HYPR(KC_G),
          HYPR(KC_F10), HYPR(KC_Z), HYPR(KC_X), HYPR(KC_C), HYPR(KC_V), HYPR(KC_B),
                    HYPR(KC_GRV), S(KC_TAB), _HIDE_CLOSE_MAC, KC_TAB,
-                                     HYPR(KC_BSPC), KC__VOLDOWN,
+                                   HYPR(KC_BSPC), HYPR(KC_MINS),
                                                   HYPR(KC_SLSH),
                      LGUI(KC_Z), LGUI(LSFT(KC_Z)), HYPR(KC_DEL),
                                                    HYPR(KC_F15),
@@ -1634,7 +1619,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                    // left palm key
 			                                             PALM_L_PC,
     // right side
-    _KC_F9, _KC_F10, _KC_F11, _KC_F12, C(A(KC_F13)), C(A(KC_F14)), C(A(KC_F15)), _, TD(FW_TD),
+    _KC_F9, _KC_F10, _KC_F11, _KC_F12, KC_MUTE, KC_VOLD, KC_VOLU, _, TD(FW_TD),
   	_6, _7_BANG, _8_DASH, _9_QUEST, _0, _KC_F21,
   	_KC_Y, _KC_U, _KC_I, _KC_O, _KC_P, _KC_F22,
   	_KC_H, _KC_J, _KC_K, _KC_L, _KC_SCLN, _KC_F23,
@@ -1669,7 +1654,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          _SELECT_LEFT_PC, _SELECT_DOWN_PC, _SELECT_RIGHT_PC, __________,
          _KC_EQL, _DEL_LEFT_PC,
          _KC_BSLS,
-         KC_SPC, LANG_CAPS_PC, LEAD_SPACE,
+         KC_SPC, CHANGE_LANG_PC, LEAD_SPACE,
          __KC_F16
     ),
 
@@ -1805,7 +1790,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   	G(KC_H), G(KC_J), G(KC_K), G(KC_L), G(KC_SCLN), G(KC_F23),
   	G(KC_N), G(KC_M), G(KC_UP), G(KC_DOT), G(KC_QUOT), G(KC_F24),
   	G(KC_LEFT), G(KC_DOWN), G(KC_RGHT), G(KC_APP),
-         G(KC_PAUS), G(KC_BSPC),
+         G(KC_EQL), G(KC_BSPC),
          KC_LALT,
          RGUI, KC_LSFT, KC_LCTL,
          G(KC_F14)
@@ -1874,7 +1859,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          C(A(KC_H)), C(A(KC_J)), C(A(KC_K)), C(A(KC_L)), C(A(KC_SCLN)), C(A(KC_F23)),
          C(A(KC_N)), C(A(KC_M)), KC_PGUP, C(A(KC_DOT)), C(A(KC_QUOT)), C(A(KC_F24)),
                         C(KC_HOME), KC_PGDN, C(KC_END), C(A(KC_NUBS)),
-         C(A(KC_PAUS)), C(A(KC_BSPC)),
+         C(A(KC_EQL)), C(A(KC_BSPC)),
          C(A(KC_BSLS)),
          C(A(KC_F1)), _S_F3, _F3,
          C(A(KC_F16))
@@ -2626,9 +2611,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case _DEL_LEFT_PC: { return delete_word_line(KC_BSPC, KC_LCTL, KC_LCTL, KC_HOME, KC_LSFT, KC_NO, pressed, AUTOSHIFT_SPECIAL_TERM); }
         case _DEL_RIGHT_PC: { return delete_word_line(KC_DEL, KC_LCTL, KC_LCTL, KC_END, KC_LSFT, KC_NO, pressed, AUTOSHIFT_SPECIAL_TERM); }
 
-        // lang switch
-        case LANG_CAPS_MAC: { return process_lang_caps(KC_SPC, KC_LGUI, KC_LALT, KC_NO, KC_LCAP, pressed, AUTOSHIFT_SPECIAL_TERM); }
-        case LANG_CAPS_PC: { return process_lang_caps(KC_SPC, KC_LCTL, KC_LGUI, KC_NO, KC_CAPS, pressed, AUTOSHIFT_SPECIAL_TERM); }
+        case CAPS: { if (pressed) { toggleCaps(); } return false; }
+        case CHANGE_LANG_MAC: { return change_lang(KC_SPC, KC_LGUI, KC_LALT, KC_NO, pressed); }
+        case CHANGE_LANG_PC: { return change_lang(KC_SPC, KC_LCTL, KC_LGUI, KC_NO, pressed); }
 
         // select block of text
         case _SELECT_UP_MAC: { return if_held_autoshift(KC_UP, pressed); }
