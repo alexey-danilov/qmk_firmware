@@ -1509,7 +1509,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________, _KC_BSPC,
          _KC_EQL,
          _KC_MINS, _KC_TAB, _KC_SPACE,
-         _KC_TAB
+         _KC_F16
     ),
 
 [_SHIFT_ENTER_MAC] = LAYOUT(
@@ -1771,8 +1771,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          KC_LEFT, KC_DOWN, KC_RGHT, W_APP,
          W_PAUS, W_DEL,
          W_EQL,
-         W_MINS, KC_F2, KC_F1,
-         W_TAB
+         W_MINS, W_TAB, W_F1,
+         W_F16
     ),
 
 [_RGUI_BSLS] = LAYOUT(
