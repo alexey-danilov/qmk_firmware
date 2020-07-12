@@ -798,7 +798,6 @@ bool change_lang(uint16_t lang_switch_code, uint16_t mod_to_be_replaced, uint16_
       } else {
           toggleCaps();
       }
-      down(mod_to_be_replaced);
   }
   return false;
 }
