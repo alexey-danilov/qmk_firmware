@@ -82,6 +82,7 @@ enum holding_keycodes {
 
   __KC_F15,
   __KC_F16,
+  __KC_F17,
 
   CHANGE_LANG_MAC,
   CHANGE_LANG_PC,
@@ -589,7 +590,7 @@ bool capsOnHardCheck(void) {
 
 void toggleCaps(void) {
     if (capsOnHardCheck()) {
-        key_code(KC_LCAP); caps_led = false; led_blue_off();
+        key_code(KC_CAPS); caps_led = false; led_blue_off();
     } else {
         key_code(KC_LCAP); caps_led = true; led_blue_on();
     }
@@ -780,15 +781,24 @@ bool following_custom_leader(uint16_t code, uint16_t mod1, uint16_t mod2, uint16
 }
 
 bool change_lang(uint16_t lang_switch_code, uint16_t mod_to_be_replaced, uint16_t lang_switch_mod1, uint16_t lang_switch_mod2, bool pressed) {
+  static uint16_t hold_timer;
+
   if (pressed) {
+      hold_timer= timer_read();
+  } else {
       up(mod_to_be_replaced);
 
-      if (isMac && capsOnHardCheck()) {
-        toggleCaps(); // on mac changing language resets caps lock
+      if (held_shorter(hold_timer, AUTOSHIFT_SPECIAL_TERM)){
+          scroll_right_led = true;
+          trigger_lang_change = true;
+          with_2_mods(lang_switch_code, lang_switch_mod1, lang_switch_mod2);
+          if (isMac && capsOnHardCheck()) {
+            toggleCaps(); // on mac changing language resets caps lock
+          }
+      } else {
+          toggleCaps();
       }
-      scroll_right_led = true;
-      trigger_lang_change = true;
-      with_2_mods(lang_switch_code, lang_switch_mod1, lang_switch_mod2);
+      down(mod_to_be_replaced);
   }
   return false;
 }
@@ -1343,7 +1353,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	_KC_N, _KC_M, KC_UP, _KC_DOT, _KC_QUOT, _ALT_F12,
 	KC_LEFT, KC_DOWN, KC_RGHT, _KC_NUBS,
            // right thumb keys
-           CAPS, KC_BSPC,
+           _KC_F17, KC_BSPC,
            ALT_EQL_MAC,
            CTRL_BSLS, SHIFT_TAB_MAC, CMD_SPACE,
            // right palm key
