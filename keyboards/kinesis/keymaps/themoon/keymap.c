@@ -1164,10 +1164,10 @@ void f8_finished (qk_tap_dance_state_t *state, void *user_data) {
           with_1_mod(KC_F8, KC_LSFT); break;
 
       case DOUBLE_TAP:
-          with_1_mod(KC_F8, KC_LALT); break;
+          with_2_mods(KC_F8, KC_LALT, KC_LCTL); blink_all_leds_short(); break;
 
       case DOUBLE_HOLD:
-          with_1_mod(KC_F8, KC_LCTL); blink_all_leds_long(); break;
+          with_3_mods(KC_F8, KC_LSFT, KC_LALT, KC_LCTL); blink_all_leds_long(); break;
 
       default: break;
     }
