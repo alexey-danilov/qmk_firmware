@@ -15,5 +15,3 @@
 
 #include "../../config.h"
 #endif
-
-// make kinesis/stapelberg:themoon
