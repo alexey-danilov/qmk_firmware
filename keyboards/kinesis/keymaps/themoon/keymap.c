@@ -119,11 +119,11 @@ enum holding_keycodes {
   _HIDE_CLOSE_MAC,
   _HIDE_CLOSE_PC,
 
-  _1,
+  _1_AS_1,
   _2_PLEFT,
   _3_SLASH,
   _4_PRGHT,
-  _5,
+  _5_AS_5,
   _6,
   _7_BANG,
   _8_DASH,
@@ -1794,7 +1794,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [_MAC] = LAYOUT(
            // left side
            TD(STATUS_TD), _KC_F1, _KC_F2, _KC_F3, _KC_F4, TD(SET_TD), _KC_F6, _KC_F7, _KC_F8,
-           TD(F5_TD), _1, _2_PLEFT, _3_SLASH, _4_PRGHT, _5,
+           TD(F5_TD), _1_AS_1, _2_PLEFT, _3_SLASH, _4_PRGHT, _5_AS_5,
            TD(F6_TD), _KC_Q, _KC_W, _KC_E, _KC_R, _KC_T,
            TD(F7_TD), _KC_A, _KC_S, _KC_D, _KC_F, _KC_G,
            TD(F8_TD), _KC_Z, _KC_X, _KC_C, _KC_V, _KC_B,
@@ -2079,7 +2079,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [_PC] = LAYOUT(
            // left side
            TD(STATUS_TD), _KC_F1, _KC_F2, _KC_F3, _KC_F4, TD(SET_TD), _KC_F6, _KC_F7, TD(F8_TD),
-           TD(F17_TD), _1, _2_PLEFT, _3_SLASH, _4_PRGHT, _5,
+           TD(F17_TD), _1_AS_1, _2_PLEFT, _3_SLASH, _4_PRGHT, _5_AS_5,
            TD(F18_TD), _KC_Q, _KC_W, _KC_E, _KC_R, _KC_T,
            TD(F19_TD), _KC_A, _KC_S, _KC_D, _KC_F, _KC_G,
            TD(F20_TD),  _KC_Z, _KC_X, _KC_C, _KC_V, _KC_B,
@@ -2834,8 +2834,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case _KC_APP: { return lead_autoshifted_special(KC_APP, pressed); }
 
         // non-autoshifted numbers
-        case _1: { return lead_autoshifted_modified_numbers(KC_1, KC_1, KC_NO, pressed); }
-        case _5: { return lead_autoshifted_modified_numbers(KC_5, KC_5, KC_NO, pressed); }
+        case _1_AS_1: { return lead_custom_autoshifted_with_mods(KC_1, KC_NO, KC_1, KC_1, KC_LSFT, KC_LALT, pressed, AUTOSHIFT_SPECIAL_TERM); }
+        case _5_AS_5: { return lead_custom_autoshifted_with_mods(KC_5, KC_NO, KC_5, KC_5, KC_LSFT, KC_LALT, pressed, AUTOSHIFT_SPECIAL_TERM); }
         case _6: { return lead_autoshifted_modified_numbers(KC_6, KC_6, KC_NO, pressed); }
         case _0: { return lead_autoshifted_modified_numbers(KC_0, KC_0, KC_NO, pressed); }
 
