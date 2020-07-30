@@ -119,11 +119,9 @@ enum holding_keycodes {
   _HIDE_CLOSE_MAC,
   _HIDE_CLOSE_PC,
 
-  _1_AS_1,
   _2_PLEFT,
   _3_SLASH,
   _4_PRGHT,
-  _5_AS_5,
   _6,
   _7_BANG,
   _8_DASH,
@@ -191,6 +189,9 @@ static bool scroll_left_led;
 static bool scroll_right_led;
 static bool lead_led;
 static bool init_complete;
+
+static bool macro1_overridden = false;
+static bool macro2_overridden = false;
 
 static bool macro1_recording = false;
 static bool macro2_recording = false;
@@ -951,6 +952,8 @@ enum {
   F22_TD = 22,
   F23_TD = 23,
   F24_TD = 24,
+  ONE_TD = 25,
+  FIVE_TD = 26,
 };
 
 enum {
@@ -980,7 +983,6 @@ void fw_finished (qk_tap_dance_state_t *state, void *user_data) {
   fw_tap_state.state = cur_dance(state);
     switch (fw_tap_state.state) {
       case SINGLE_TAP:
-      case SINGLE_HOLD:
           all_leds_off();
           if (isMac) {
             _delay_ms(250);
@@ -1004,7 +1006,7 @@ void fw_finished (qk_tap_dance_state_t *state, void *user_data) {
           change_lang_led = false;
           break;
 
-      case DOUBLE_TAP:
+      case SINGLE_HOLD:
           layer_off(_KEYB_CONTROL);
           all_leds_off();
           if (isMac) {
@@ -1014,6 +1016,12 @@ void fw_finished (qk_tap_dance_state_t *state, void *user_data) {
             layer_on(_FAILSAFE_PC);
             led_green_on();
           }
+          break;
+
+      case DOUBLE_TAP:
+          macro1_overridden = false;
+          macro2_overridden = false;
+          blink_all_leds_short_and_short();
           break;
 
       case DOUBLE_HOLD:
@@ -1181,6 +1189,62 @@ void status_reset (qk_tap_dance_state_t *state, void *user_data) {
   status_tap_state.state = 0;
 }
 
+//**************** 1 TAP *********************//
+static tap one_tap_state = { .is_press_action = true, .state = 0 };
+
+void one_tap_finished (qk_tap_dance_state_t *state, void *user_data) {
+  one_tap_state.state = cur_dance(state);
+  if (!is_after_lead(KC_1, true)) {
+    switch (one_tap_state.state) {
+      case SINGLE_TAP:
+          key_code(KC_1); break;
+
+      case SINGLE_HOLD:
+          with_1_mod(KC_1, KC_LALT); break;
+
+      case DOUBLE_TAP:
+          with_2_mods(KC_1, KC_LALT, KC_LSFT); blink_all_leds_short_and_short(); break;
+
+      case DOUBLE_HOLD:
+          with_3_mods(KC_1, KC_LCTL, KC_LALT, KC_LSFT); blink_all_leds_long(); break;
+
+      default: break;
+    }
+  }
+}
+
+void one_tap_reset (qk_tap_dance_state_t *state, void *user_data) {
+  one_tap_state.state = 0;
+}
+
+//**************** 5 TAP *********************//
+static tap five_tap_state = { .is_press_action = true, .state = 0 };
+
+void five_tap_finished (qk_tap_dance_state_t *state, void *user_data) {
+  five_tap_state.state = cur_dance(state);
+  if (!is_after_lead(KC_5, true)) {
+    switch (five_tap_state.state) {
+      case SINGLE_TAP:
+          key_code(KC_5); break;
+
+      case SINGLE_HOLD:
+          with_1_mod(KC_5, KC_LALT); break;
+
+      case DOUBLE_TAP:
+          with_2_mods(KC_5, KC_LALT, KC_LSFT); blink_all_leds_short_and_short(); break;
+
+      case DOUBLE_HOLD:
+          with_3_mods(KC_5, KC_LCTL, KC_LALT, KC_LSFT); blink_all_leds_long(); break;
+
+      default: break;
+    }
+  }
+}
+
+void five_tap_reset (qk_tap_dance_state_t *state, void *user_data) {
+  five_tap_state.state = 0;
+}
+
 //**************** F5 TAP *********************//
 static tap f5_tap_state = { .is_press_action = true, .state = 0 };
 
@@ -1189,16 +1253,16 @@ void f5_finished (qk_tap_dance_state_t *state, void *user_data) {
   if (!is_after_lead(KC_F5, true)) {
     switch (f5_tap_state.state) {
       case SINGLE_TAP:
-          with_1_mod(KC_F5, KC_LALT); blink_all_leds_short(); break;
+          with_1_mod(KC_F5, KC_LALT); break;
 
       case SINGLE_HOLD:
-          with_2_mods(KC_F5, KC_LALT, KC_LSFT); blink_all_leds_long(); break;
+          with_2_mods(KC_F5, KC_LALT, KC_LSFT); break;
 
       case DOUBLE_TAP:
           with_2_mods(KC_F5, KC_LALT, KC_LCTL); blink_all_leds_short_and_short(); break;
 
       case DOUBLE_HOLD:
-          with_3_mods(KC_F5, KC_LSFT, KC_LALT, KC_LCTL); blink_all_leds_short_and_long(); break;
+          with_3_mods(KC_F5, KC_LSFT, KC_LALT, KC_LCTL); blink_all_leds_long(); break;
 
       default: break;
     }
@@ -1217,16 +1281,16 @@ void f6_finished (qk_tap_dance_state_t *state, void *user_data) {
   if (!is_after_lead(KC_F6, true)) {
     switch (f6_tap_state.state) {
       case SINGLE_TAP:
-          with_1_mod(KC_F6, KC_LALT); blink_all_leds_short(); break;
+          with_1_mod(KC_F6, KC_LALT); break;
 
       case SINGLE_HOLD:
-          with_2_mods(KC_F6, KC_LALT, KC_LSFT); blink_all_leds_long(); break;
+          with_2_mods(KC_F6, KC_LALT, KC_LSFT); break;
 
       case DOUBLE_TAP:
           with_2_mods(KC_F6, KC_LALT, KC_LCTL); blink_all_leds_short_and_short(); break;
 
       case DOUBLE_HOLD:
-          with_3_mods(KC_F6, KC_LSFT, KC_LALT, KC_LCTL); blink_all_leds_short_and_long(); break;
+          with_3_mods(KC_F6, KC_LSFT, KC_LALT, KC_LCTL); blink_all_leds_long(); break;
 
       default: break;
     }
@@ -1245,16 +1309,16 @@ void f7_finished (qk_tap_dance_state_t *state, void *user_data) {
   if (!is_after_lead(KC_F7, true)) {
     switch (f7_tap_state.state) {
       case SINGLE_TAP:
-          with_1_mod(KC_F7, KC_LALT);  blink_all_leds_short(); break;
+          with_1_mod(KC_F7, KC_LALT);  break;
 
       case SINGLE_HOLD:
-          with_2_mods(KC_F7, KC_LALT, KC_LSFT); blink_all_leds_long(); break;
+          with_2_mods(KC_F7, KC_LALT, KC_LSFT); break;
 
       case DOUBLE_TAP:
           with_2_mods(KC_F7, KC_LALT, KC_LCTL); blink_all_leds_short_and_short(); break;
 
       case DOUBLE_HOLD:
-          with_3_mods(KC_F7, KC_LSFT, KC_LALT, KC_LCTL); blink_all_leds_short_and_long(); break;
+          with_3_mods(KC_F7, KC_LSFT, KC_LALT, KC_LCTL); blink_all_leds_long(); break;
 
       default: break;
     }
@@ -1273,16 +1337,16 @@ void f8_finished (qk_tap_dance_state_t *state, void *user_data) {
   if (!is_after_lead(KC_F8, true)) {
     switch (f8_tap_state.state) {
       case SINGLE_TAP:
-          with_1_mod(KC_F8, KC_LALT);  blink_all_leds_short(); break;
+          with_1_mod(KC_F8, KC_LALT);  break;
 
       case SINGLE_HOLD:
-          with_2_mods(KC_F8, KC_LALT, KC_LSFT); blink_all_leds_long(); break;
+          with_2_mods(KC_F8, KC_LALT, KC_LSFT); break;
 
       case DOUBLE_TAP:
           with_2_mods(KC_F8, KC_LALT, KC_LCTL); blink_all_leds_short_and_short(); break;
 
       case DOUBLE_HOLD:
-          with_3_mods(KC_F8, KC_LSFT, KC_LALT, KC_LCTL); blink_all_leds_short_and_long(); break;
+          with_3_mods(KC_F8, KC_LSFT, KC_LALT, KC_LCTL); blink_all_leds_long(); break;
 
       default: break;
     }
@@ -1301,16 +1365,16 @@ void f9_finished (qk_tap_dance_state_t *state, void *user_data) {
   if (!is_after_lead(KC_F9, true)) {
     switch (f9_tap_state.state) {
       case SINGLE_TAP:
-          with_1_mod(KC_F9, KC_LALT); blink_all_leds_short(); break;
+          with_1_mod(KC_F9, KC_LALT); break;
 
       case SINGLE_HOLD:
-          with_2_mods(KC_F9, KC_LALT, KC_LSFT); blink_all_leds_long(); break;
+          with_2_mods(KC_F9, KC_LALT, KC_LSFT); break;
 
       case DOUBLE_TAP:
           with_2_mods(KC_F9, KC_LALT, KC_LCTL); blink_all_leds_short_and_short(); break;
 
       case DOUBLE_HOLD:
-          with_3_mods(KC_F9, KC_LSFT, KC_LALT, KC_LCTL); blink_all_leds_short_and_long(); break;
+          with_3_mods(KC_F9, KC_LSFT, KC_LALT, KC_LCTL); blink_all_leds_long(); break;
 
       default: break;
     }
@@ -1329,16 +1393,16 @@ void f10_finished (qk_tap_dance_state_t *state, void *user_data) {
   if (!is_after_lead(KC_F10, true)) {
     switch (f10_tap_state.state) {
       case SINGLE_TAP:
-          with_1_mod(KC_F10, KC_LALT); blink_all_leds_short(); break;
+          with_1_mod(KC_F10, KC_LALT); break;
 
       case SINGLE_HOLD:
-          with_2_mods(KC_F10, KC_LALT, KC_LSFT); blink_all_leds_long(); break;
+          with_2_mods(KC_F10, KC_LALT, KC_LSFT); break;
 
       case DOUBLE_TAP:
           with_2_mods(KC_F10, KC_LALT, KC_LCTL); blink_all_leds_short_and_short(); break;
 
       case DOUBLE_HOLD:
-          with_3_mods(KC_F10, KC_LSFT, KC_LALT, KC_LCTL); blink_all_leds_short_and_long(); break;
+          with_3_mods(KC_F10, KC_LSFT, KC_LALT, KC_LCTL); blink_all_leds_long(); break;
 
       default: break;
     }
@@ -1357,16 +1421,16 @@ void f11_finished (qk_tap_dance_state_t *state, void *user_data) {
   if (!is_after_lead(KC_F11, true)) {
     switch (f11_tap_state.state) {
       case SINGLE_TAP:
-          with_1_mod(KC_F11, KC_LALT); blink_all_leds_short(); break;
+          with_1_mod(KC_F11, KC_LALT); break;
 
       case SINGLE_HOLD:
-          with_2_mods(KC_F11, KC_LALT, KC_LSFT); blink_all_leds_long(); break;
+          with_2_mods(KC_F11, KC_LALT, KC_LSFT); break;
 
       case DOUBLE_TAP:
           with_2_mods(KC_F11, KC_LALT, KC_LCTL); blink_all_leds_short_and_short(); break;
 
       case DOUBLE_HOLD:
-          with_3_mods(KC_F11, KC_LSFT, KC_LALT, KC_LCTL); blink_all_leds_short_and_long(); break;
+          with_3_mods(KC_F11, KC_LSFT, KC_LALT, KC_LCTL); blink_all_leds_long(); break;
 
       default: break;
     }
@@ -1385,16 +1449,16 @@ void f12_finished (qk_tap_dance_state_t *state, void *user_data) {
   if (!is_after_lead(KC_F12, true)) {
     switch (f12_tap_state.state) {
       case SINGLE_TAP:
-          with_1_mod(KC_F12, KC_LALT); blink_all_leds_short(); break;
+          with_1_mod(KC_F12, KC_LALT); break;
 
       case SINGLE_HOLD:
-          with_2_mods(KC_F12, KC_LALT, KC_LSFT); blink_all_leds_long(); break;
+          with_2_mods(KC_F12, KC_LALT, KC_LSFT); break;
 
       case DOUBLE_TAP:
           with_2_mods(KC_F12, KC_LALT, KC_LCTL); blink_all_leds_short_and_short(); break;
 
       case DOUBLE_HOLD:
-          with_3_mods(KC_F12, KC_LSFT, KC_LALT, KC_LCTL); blink_all_leds_short_and_long(); break;
+          with_3_mods(KC_F12, KC_LSFT, KC_LALT, KC_LCTL); blink_all_leds_long(); break;
 
       default: break;
     }
@@ -1413,16 +1477,16 @@ void f17_finished (qk_tap_dance_state_t *state, void *user_data) {
   if (!is_after_lead(KC_F17, true)) {
     switch (f17_tap_state.state) {
       case SINGLE_TAP:
-          key_code(KC_F17); blink_all_leds_short(); break;
+          key_code(KC_F17); break;
 
       case SINGLE_HOLD:
-          with_1_mod(KC_F17, KC_LSFT); blink_all_leds_long(); break;
+          with_1_mod(KC_F17, KC_LSFT); break;
 
       case DOUBLE_TAP:
           with_2_mods(KC_F17, KC_LALT, KC_LCTL); blink_all_leds_short_and_short(); break;
 
       case DOUBLE_HOLD:
-          with_3_mods(KC_F17, KC_LSFT, KC_LALT, KC_LCTL); blink_all_leds_short_and_long(); break;
+          with_3_mods(KC_F17, KC_LSFT, KC_LALT, KC_LCTL); blink_all_leds_long(); break;
 
       default: break;
     }
@@ -1441,16 +1505,16 @@ void f18_finished (qk_tap_dance_state_t *state, void *user_data) {
   if (!is_after_lead(KC_F18, true)) {
     switch (f18_tap_state.state) {
       case SINGLE_TAP:
-          key_code(KC_F18); blink_all_leds_short(); break;
+          key_code(KC_F18); break;
 
       case SINGLE_HOLD:
-          with_1_mod(KC_F18, KC_LSFT); blink_all_leds_long(); break;
+          with_1_mod(KC_F18, KC_LSFT); break;
 
       case DOUBLE_TAP:
           with_2_mods(KC_F18, KC_LALT, KC_LCTL); blink_all_leds_short_and_short(); break;
 
       case DOUBLE_HOLD:
-          with_3_mods(KC_F18, KC_LSFT, KC_LALT, KC_LCTL); blink_all_leds_short_and_long(); break;
+          with_3_mods(KC_F18, KC_LSFT, KC_LALT, KC_LCTL); blink_all_leds_long(); break;
 
       default: break;
     }
@@ -1469,16 +1533,16 @@ void f19_finished (qk_tap_dance_state_t *state, void *user_data) {
   if (!is_after_lead(KC_F19, true)) {
     switch (f19_tap_state.state) {
       case SINGLE_TAP:
-          key_code(KC_F19); blink_all_leds_short(); break;
+          key_code(KC_F19); break;
 
       case SINGLE_HOLD:
-          with_1_mod(KC_F19, KC_LSFT); blink_all_leds_long(); break;
+          with_1_mod(KC_F19, KC_LSFT); break;
 
       case DOUBLE_TAP:
           with_2_mods(KC_F19, KC_LALT, KC_LCTL); blink_all_leds_short_and_short(); break;
 
       case DOUBLE_HOLD:
-          with_3_mods(KC_F19, KC_LSFT, KC_LALT, KC_LCTL); blink_all_leds_short_and_long(); break;
+          with_3_mods(KC_F19, KC_LSFT, KC_LALT, KC_LCTL); blink_all_leds_long(); break;
 
       default: break;
     }
@@ -1497,16 +1561,16 @@ void f20_finished (qk_tap_dance_state_t *state, void *user_data) {
   if (!is_after_lead(KC_F20, true)) {
     switch (f20_tap_state.state) {
       case SINGLE_TAP:
-          key_code(KC_F20); blink_all_leds_short(); break;
+          key_code(KC_F20); break;
 
       case SINGLE_HOLD:
-          with_1_mod(KC_F20, KC_LSFT); blink_all_leds_long(); break;
+          with_1_mod(KC_F20, KC_LSFT); break;
 
       case DOUBLE_TAP:
           with_2_mods(KC_F20, KC_LALT, KC_LCTL); blink_all_leds_short_and_short(); break;
 
       case DOUBLE_HOLD:
-          with_3_mods(KC_F20, KC_LSFT, KC_LALT, KC_LCTL); blink_all_leds_short_and_long(); break;
+          with_3_mods(KC_F20, KC_LSFT, KC_LALT, KC_LCTL); blink_all_leds_long(); break;
 
       default: break;
     }
@@ -1525,16 +1589,16 @@ void f21_finished (qk_tap_dance_state_t *state, void *user_data) {
   if (!is_after_lead(KC_F21, true)) {
     switch (f21_tap_state.state) {
       case SINGLE_TAP:
-          key_code(KC_F21); blink_all_leds_short(); break;
+          key_code(KC_F21); break;
 
       case SINGLE_HOLD:
-          with_1_mod(KC_F21, KC_LSFT); blink_all_leds_long(); break;
+          with_1_mod(KC_F21, KC_LSFT); break;
 
       case DOUBLE_TAP:
           with_2_mods(KC_F21, KC_LALT, KC_LCTL); blink_all_leds_short_and_short(); break;
 
       case DOUBLE_HOLD:
-          with_3_mods(KC_F21, KC_LSFT, KC_LALT, KC_LCTL); blink_all_leds_short_and_long(); break;
+          with_3_mods(KC_F21, KC_LSFT, KC_LALT, KC_LCTL); blink_all_leds_long(); break;
 
       default: break;
     }
@@ -1553,16 +1617,16 @@ void f22_finished (qk_tap_dance_state_t *state, void *user_data) {
   if (!is_after_lead(KC_F22, true)) {
     switch (f22_tap_state.state) {
       case SINGLE_TAP:
-          key_code(KC_F22); blink_all_leds_short(); break;
+          key_code(KC_F22); break;
 
       case SINGLE_HOLD:
-          with_1_mod(KC_F22, KC_LSFT); blink_all_leds_long(); break;
+          with_1_mod(KC_F22, KC_LSFT); break;
 
       case DOUBLE_TAP:
           with_2_mods(KC_F22, KC_LALT, KC_LCTL); blink_all_leds_short_and_short(); break;
 
       case DOUBLE_HOLD:
-          with_3_mods(KC_F22, KC_LSFT, KC_LALT, KC_LCTL); blink_all_leds_short_and_long(); break;
+          with_3_mods(KC_F22, KC_LSFT, KC_LALT, KC_LCTL); blink_all_leds_long(); break;
 
       default: break;
     }
@@ -1581,16 +1645,16 @@ void f23_finished (qk_tap_dance_state_t *state, void *user_data) {
   if (!is_after_lead(KC_F23, true)) {
     switch (f23_tap_state.state) {
       case SINGLE_TAP:
-          key_code(KC_F23); blink_all_leds_short(); break;
+          key_code(KC_F23); break;
 
       case SINGLE_HOLD:
-          with_1_mod(KC_F23, KC_LSFT); blink_all_leds_long(); break;
+          with_1_mod(KC_F23, KC_LSFT); break;
 
       case DOUBLE_TAP:
           with_2_mods(KC_F23, KC_LALT, KC_LCTL); blink_all_leds_short_and_short(); break;
 
       case DOUBLE_HOLD:
-          with_3_mods(KC_F23, KC_LSFT, KC_LALT, KC_LCTL); blink_all_leds_short_and_long(); break;
+          with_3_mods(KC_F23, KC_LSFT, KC_LALT, KC_LCTL); blink_all_leds_long(); break;
 
       default: break;
     }
@@ -1609,16 +1673,16 @@ void f24_finished (qk_tap_dance_state_t *state, void *user_data) {
   if (!is_after_lead(KC_F24, true)) {
     switch (f24_tap_state.state) {
       case SINGLE_TAP:
-          key_code(KC_F24); blink_all_leds_short(); break;
+          key_code(KC_F24); break;
 
       case SINGLE_HOLD:
-          with_1_mod(KC_F24, KC_LSFT); blink_all_leds_long(); break;
+          with_1_mod(KC_F24, KC_LSFT); break;
 
       case DOUBLE_TAP:
           with_2_mods(KC_F24, KC_LALT, KC_LCTL); blink_all_leds_short_and_short(); break;
 
       case DOUBLE_HOLD:
-          with_3_mods(KC_F24, KC_LSFT, KC_LALT, KC_LCTL); blink_all_leds_short_and_long(); break;
+          with_3_mods(KC_F24, KC_LSFT, KC_LALT, KC_LCTL); blink_all_leds_long(); break;
 
       default: break;
     }
@@ -1656,10 +1720,10 @@ void set_finished (qk_tap_dance_state_t *state, void *user_data) {
       case DOUBLE_HOLD:
           // print screen
           if (isMac) {
-            with_1_mod(KC_F5, KC_LCTL); blink_all_leds_short_and_long(); break;
+            with_1_mod(KC_F5, KC_LCTL); blink_all_leds_long(); break;
           }
           if (isPc) {
-            key_code(KC_PSCR); blink_all_leds_short_and_long(); break;
+            key_code(KC_PSCR); blink_all_leds_long(); break;
           }
       default: break;
     }
@@ -1712,8 +1776,19 @@ void dynamic_macro_finished (qk_tap_dance_state_t *state, void *user_data) {
 
     } else {
       switch (dynamic_macro_state.state) {
-          case SINGLE_TAP: led_yellow_on(); playMacro1(); if (!change_lang_led) { led_yellow_off(); } break;
-          case DOUBLE_TAP: led_green_on(); playMacro2(); led_green_off(); break;
+          case SINGLE_TAP:
+            if (macro1_overridden) {
+                led_yellow_on(); playMacro1(); if (!change_lang_led) { led_yellow_off(); }
+            } else {
+                SEND_STRING(DEF_DM1); key_code(KC_ENTER); led_red_on(); _delay_ms(1000); led_red_off(); led_red_off();
+            }; break;
+
+          case DOUBLE_TAP: 
+            if (macro2_overridden) {
+                led_green_on(); playMacro2(); led_green_off();
+            } else {
+               SEND_STRING(DEF_DM2); key_code(KC_ENTER); led_green_on(); _delay_ms(1000); led_green_off(); led_green_off();
+            }; break;
 
           case SINGLE_HOLD:
               macroPointer1 = 0;
@@ -1721,6 +1796,7 @@ void dynamic_macro_finished (qk_tap_dance_state_t *state, void *user_data) {
               dprint("\nStarting recording of macro 1");
               led_red_on();
               led_yellow_on();
+              macro1_overridden = true;
           break;
 
           default:
@@ -1729,6 +1805,7 @@ void dynamic_macro_finished (qk_tap_dance_state_t *state, void *user_data) {
               dprint("\nStarting recording of macro 2");
               led_red_on();
               led_green_on();
+              macro2_overridden = true;
           break;
         }
     }
@@ -1746,6 +1823,8 @@ qk_tap_dance_action_t tap_dance_actions[] = {
   [FW_CANCEL] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, fw_cancel_finished, fw_cancel_reset, QUAD_TAP_TIMEOUT),
   [STATUS_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, status_finished, status_reset, QUAD_TAP_TIMEOUT),
   [F5_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, f5_finished, f5_reset, QUAD_TAP_TIMEOUT),
+  [ONE_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, one_tap_finished, one_tap_reset, QUAD_TAP_TIMEOUT),
+  [FIVE_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, five_tap_finished, five_tap_reset, QUAD_TAP_TIMEOUT),
   [F6_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, f6_finished, f6_reset, QUAD_TAP_TIMEOUT),
   [F7_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, f7_finished, f7_reset, QUAD_TAP_TIMEOUT),
   [F8_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, f8_finished, f8_reset, QUAD_TAP_TIMEOUT),
@@ -1801,7 +1880,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [_MAC] = LAYOUT(
            // left side
            TD(STATUS_TD), _KC_F1, _KC_F2, _KC_F3, _KC_F4, TD(SET_TD), _KC_F6, _KC_F7, _KC_F8,
-           TD(F5_TD), _1_AS_1, _2_PLEFT, _3_SLASH, _4_PRGHT, _5_AS_5,
+           TD(F5_TD), TD(ONE_TD), _2_PLEFT, _3_SLASH, _4_PRGHT, TD(FIVE_TD),
            TD(F6_TD), _KC_Q, _KC_W, _KC_E, _KC_R, _KC_T,
            TD(F7_TD), _KC_A, _KC_S, _KC_D, _KC_F, _KC_G,
            TD(F8_TD), _KC_Z, _KC_X, _KC_C, _KC_V, _KC_B,
@@ -2086,7 +2165,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [_PC] = LAYOUT(
            // left side
            TD(STATUS_TD), _KC_F1, _KC_F2, _KC_F3, _KC_F4, TD(SET_TD), _KC_F6, _KC_F7, TD(F8_TD),
-           TD(F17_TD), _1_AS_1, _2_PLEFT, _3_SLASH, _4_PRGHT, _5_AS_5,
+           TD(F17_TD), TD(ONE_TD), _2_PLEFT, _3_SLASH, _4_PRGHT, TD(FIVE_TD),
            TD(F18_TD), _KC_Q, _KC_W, _KC_E, _KC_R, _KC_T,
            TD(F19_TD), _KC_A, _KC_S, _KC_D, _KC_F, _KC_G,
            TD(F20_TD),  _KC_Z, _KC_X, _KC_C, _KC_V, _KC_B,
@@ -2841,8 +2920,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case _KC_APP: { return lead_autoshifted_special(KC_APP, pressed); }
 
         // non-autoshifted numbers
-        case _1_AS_1: { return lead_custom_autoshifted_with_mods(KC_1, KC_NO, KC_1, KC_1, KC_LSFT, KC_LALT, pressed, AUTOSHIFT_SPECIAL_TERM); }
-        case _5_AS_5: { return lead_custom_autoshifted_with_mods(KC_5, KC_NO, KC_5, KC_5, KC_LSFT, KC_LALT, pressed, AUTOSHIFT_SPECIAL_TERM); }
         case _6: { return lead_autoshifted_modified_numbers(KC_6, KC_6, KC_NO, pressed); }
         case _0: { return lead_autoshifted_modified_numbers(KC_0, KC_0, KC_NO, pressed); }
 

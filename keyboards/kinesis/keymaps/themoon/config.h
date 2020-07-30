@@ -3,6 +3,9 @@
 
 #define QUAD_TAP_TIMEOUT 400
 
+#define DEF_DM1 "_"
+#define DEF_DM2 "_"
+
 #define TAPPING_TERM 150
 #define TAPPING_FORCE_HOLD
 #define AUTOSHIFT_QWERTY_KEYS_NO_MODIFIERS_TERM 9999 // usual a-z keys without any modifiers
