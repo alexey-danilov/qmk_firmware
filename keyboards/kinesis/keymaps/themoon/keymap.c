@@ -1200,10 +1200,10 @@ void one_tap_finished (qk_tap_dance_state_t *state, void *user_data) {
           key_code(KC_1); break;
 
       case SINGLE_HOLD:
-          with_1_mod(KC_1, KC_LALT); break;
+          with_1_mod(KC_1, KC_LCTL); break;
 
       case DOUBLE_TAP:
-          with_2_mods(KC_1, KC_LALT, KC_LSFT); blink_all_leds_short_and_short(); break;
+          with_2_mods(KC_1, KC_LCTL, KC_LSFT); blink_all_leds_short_and_short(); break;
 
       case DOUBLE_HOLD:
           with_3_mods(KC_1, KC_LCTL, KC_LALT, KC_LSFT); blink_all_leds_long(); break;
@@ -1228,10 +1228,10 @@ void five_tap_finished (qk_tap_dance_state_t *state, void *user_data) {
           key_code(KC_5); break;
 
       case SINGLE_HOLD:
-          with_1_mod(KC_5, KC_LALT); break;
+          with_1_mod(KC_5, KC_LCTL); break;
 
       case DOUBLE_TAP:
-          with_2_mods(KC_5, KC_LALT, KC_LSFT); blink_all_leds_short_and_short(); break;
+          with_2_mods(KC_5, KC_LCTL, KC_LSFT); blink_all_leds_short_and_short(); break;
 
       case DOUBLE_HOLD:
           with_3_mods(KC_5, KC_LCTL, KC_LALT, KC_LSFT); blink_all_leds_long(); break;
@@ -1818,7 +1818,7 @@ void dynamic_macro_reset (qk_tap_dance_state_t *state, void *user_data) {
 
 // all tap macros
 qk_tap_dance_action_t tap_dance_actions[] = {
-  [TAP_MACRO] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, dynamic_macro_finished, dynamic_macro_reset, QUAD_TAP_TIMEOUT),
+  [TAP_MACRO] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, dynamic_macro_finished, dynamic_macro_reset, MACRO_TIMEOUT),
   [FW_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, fw_finished, fw_reset, QUAD_TAP_TIMEOUT),
   [FW_CANCEL] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, fw_cancel_finished, fw_cancel_reset, QUAD_TAP_TIMEOUT),
   [STATUS_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, status_finished, status_reset, QUAD_TAP_TIMEOUT),

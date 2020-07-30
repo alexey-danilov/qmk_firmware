@@ -2,6 +2,7 @@
 #define CONFIG_USER_H
 
 #define QUAD_TAP_TIMEOUT 400
+#define MACRO_TIMEOUT 700
 
 #define DEF_DM1 "_"
 #define DEF_DM2 "_"
