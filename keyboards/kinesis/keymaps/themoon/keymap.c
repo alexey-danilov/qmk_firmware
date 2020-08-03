@@ -119,9 +119,11 @@ enum holding_keycodes {
   _HIDE_CLOSE_MAC,
   _HIDE_CLOSE_PC,
 
+  _1_CTRL_1,
   _2_PLEFT,
   _3_SLASH,
   _4_PRGHT,
+  _5_CTRL_5,
   _6,
   _7_BANG,
   _8_DASH,
@@ -951,9 +953,7 @@ enum {
   F21_TD = 21,
   F22_TD = 22,
   F23_TD = 23,
-  F24_TD = 24,
-  ONE_TD = 25,
-  FIVE_TD = 26,
+  F24_TD = 24
 };
 
 enum {
@@ -1187,62 +1187,6 @@ void status_finished (qk_tap_dance_state_t *state, void *user_data) {
 
 void status_reset (qk_tap_dance_state_t *state, void *user_data) {
   status_tap_state.state = 0;
-}
-
-//**************** 1 TAP *********************//
-static tap one_tap_state = { .is_press_action = true, .state = 0 };
-
-void one_tap_finished (qk_tap_dance_state_t *state, void *user_data) {
-  one_tap_state.state = cur_dance(state);
-  if (!is_after_lead(KC_1, true)) {
-    switch (one_tap_state.state) {
-      case SINGLE_TAP:
-          key_code(KC_1); break;
-
-      case SINGLE_HOLD:
-          with_1_mod(KC_1, KC_LCTL); break;
-
-      case DOUBLE_TAP:
-          with_2_mods(KC_1, KC_LCTL, KC_LSFT); blink_all_leds_short_and_short(); break;
-
-      case DOUBLE_HOLD:
-          with_3_mods(KC_1, KC_LCTL, KC_LALT, KC_LSFT); blink_all_leds_long(); break;
-
-      default: break;
-    }
-  }
-}
-
-void one_tap_reset (qk_tap_dance_state_t *state, void *user_data) {
-  one_tap_state.state = 0;
-}
-
-//**************** 5 TAP *********************//
-static tap five_tap_state = { .is_press_action = true, .state = 0 };
-
-void five_tap_finished (qk_tap_dance_state_t *state, void *user_data) {
-  five_tap_state.state = cur_dance(state);
-  if (!is_after_lead(KC_5, true)) {
-    switch (five_tap_state.state) {
-      case SINGLE_TAP:
-          key_code(KC_5); break;
-
-      case SINGLE_HOLD:
-          with_1_mod(KC_5, KC_LCTL); break;
-
-      case DOUBLE_TAP:
-          with_2_mods(KC_5, KC_LCTL, KC_LSFT); blink_all_leds_short_and_short(); break;
-
-      case DOUBLE_HOLD:
-          with_3_mods(KC_5, KC_LCTL, KC_LALT, KC_LSFT); blink_all_leds_long(); break;
-
-      default: break;
-    }
-  }
-}
-
-void five_tap_reset (qk_tap_dance_state_t *state, void *user_data) {
-  five_tap_state.state = 0;
 }
 
 //**************** F5 TAP *********************//
@@ -1823,8 +1767,6 @@ qk_tap_dance_action_t tap_dance_actions[] = {
   [FW_CANCEL] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, fw_cancel_finished, fw_cancel_reset, QUAD_TAP_TIMEOUT),
   [STATUS_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, status_finished, status_reset, QUAD_TAP_TIMEOUT),
   [F5_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, f5_finished, f5_reset, QUAD_TAP_TIMEOUT),
-  [ONE_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, one_tap_finished, one_tap_reset, QUAD_TAP_TIMEOUT),
-  [FIVE_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, five_tap_finished, five_tap_reset, QUAD_TAP_TIMEOUT),
   [F6_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, f6_finished, f6_reset, QUAD_TAP_TIMEOUT),
   [F7_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, f7_finished, f7_reset, QUAD_TAP_TIMEOUT),
   [F8_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, f8_finished, f8_reset, QUAD_TAP_TIMEOUT),
@@ -1880,7 +1822,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [_MAC] = LAYOUT(
            // left side
            TD(STATUS_TD), _KC_F1, _KC_F2, _KC_F3, _KC_F4, TD(SET_TD), _KC_F6, _KC_F7, _KC_F8,
-           TD(F5_TD), TD(ONE_TD), _2_PLEFT, _3_SLASH, _4_PRGHT, TD(FIVE_TD),
+           TD(F5_TD), _1_CTRL_1, _2_PLEFT, _3_SLASH, _4_PRGHT, _5_CTRL_5,
            TD(F6_TD), _KC_Q, _KC_W, _KC_E, _KC_R, _KC_T,
            TD(F7_TD), _KC_A, _KC_S, _KC_D, _KC_F, _KC_G,
            TD(F8_TD), _KC_Z, _KC_X, _KC_C, _KC_V, _KC_B,
@@ -2165,7 +2107,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [_PC] = LAYOUT(
            // left side
            TD(STATUS_TD), _KC_F1, _KC_F2, _KC_F3, _KC_F4, TD(SET_TD), _KC_F6, _KC_F7, TD(F8_TD),
-           TD(F17_TD), TD(ONE_TD), _2_PLEFT, _3_SLASH, _4_PRGHT, TD(FIVE_TD),
+           TD(F17_TD), _1_CTRL_1, _2_PLEFT, _3_SLASH, _4_PRGHT, _5_CTRL_5,
            TD(F18_TD), _KC_Q, _KC_W, _KC_E, _KC_R, _KC_T,
            TD(F19_TD), _KC_A, _KC_S, _KC_D, _KC_F, _KC_G,
            TD(F20_TD),  _KC_Z, _KC_X, _KC_C, _KC_V, _KC_B,
@@ -2925,9 +2867,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
         // custom autoshifted keys - when pressed, other key + shift is sent
         // autoshifted numbers
+        case _1_CTRL_1: { return lead_autoshifted_modified_numbers(KC_1, KC_1, KC_LCTL, pressed); }
         case _2_PLEFT: { return lead_autoshifted_modified_numbers(KC_2, KC_9, KC_LSFT, pressed); }
         case _3_SLASH: { return lead_autoshifted_modified_numbers(KC_3, KC_MINS, KC_LSFT, pressed); }
         case _4_PRGHT: { return lead_autoshifted_modified_numbers(KC_4, KC_0, KC_LSFT, pressed); }
+        case _5_CTRL_5: { return lead_autoshifted_modified_numbers(KC_5, KC_5, KC_LCTL, pressed); }
         case _7_BANG: { return lead_autoshifted_modified_numbers(KC_7, KC_1, KC_LSFT, pressed); }
         case _8_DASH: { return lead_autoshifted_modified_numbers(KC_8, KC_MINS, KC_NO, pressed); }
         case _9_QUEST: { return lead_autoshifted_modified_numbers(KC_9, KC_SLSH, KC_LSFT, pressed); }
