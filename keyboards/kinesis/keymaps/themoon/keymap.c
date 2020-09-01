@@ -2065,10 +2065,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 [_PALM_L_MAC] = LAYOUT(
          HYPR(KC_INS), HYPR(KC_F1), HYPR(KC_F2), HYPR(KC_F3), HYPR(KC_F4), HYPR(KC_F5), HYPR(KC_F6), HYPR(KC_F7), HYPR(KC_F8),
-         HYPR(KC_F7), HYPR(KC_1), KC_MRWD, KC_MPLY, KC_MFFD, HYPR(KC_5),
+         HYPR(KC_F7), HYPR(KC_1), HYPR(KC_2), HYPR(KC_3), HYPR(KC_4), HYPR(KC_5),
          HYPR(KC_F8), HYPR(KC_Q), HYPR(KC_W), HYPR(KC_E), HYPR(KC_R), HYPR(KC_T),
          HYPR(KC_F9), HYPR(KC_A), HYPR(KC_S), HYPR(KC_D), HYPR(KC_F), HYPR(KC_G),
-         HYPR(KC_F10), HYPR(KC_Z), KC__VOLDOWN, HYPR(KC_C), KC__VOLUP, HYPR(KC_B),
+         HYPR(KC_F10), HYPR(KC_Z), HYPR(KC_X), HYPR(KC_C), HYPR(KC_V), HYPR(KC_B),
                    HYPR(KC_GRV), S(KC_TAB), _CLOSE_HIDE_MAC, KC_TAB,
                                     HYPR(KC_BSPC), HYPR(KC_F13),
                                                   HYPR(KC_SLSH),
@@ -2088,10 +2088,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 [_PALM_R_MAC] = LAYOUT(
          HYPR(KC_INS), HYPR(KC_F1), HYPR(KC_F2), HYPR(KC_F3), HYPR(KC_F4), HYPR(KC_F5), HYPR(KC_F6), HYPR(KC_F7), HYPR(KC_F8),
-         HYPR(KC_F7), HYPR(KC_1), KC_MRWD, KC_MPLY, KC_MFFD, HYPR(KC_5),
+         HYPR(KC_F7), KC_MRWD, KC__VOLDOWN, KC_MPLY, KC__VOLUP, KC_MFFD,
          HYPR(KC_F8), HYPR(KC_Q), HYPR(KC_W), HYPR(KC_E), HYPR(KC_R), HYPR(KC_T),
          HYPR(KC_F9), HYPR(KC_A), HYPR(KC_S), HYPR(KC_D), HYPR(KC_F), HYPR(KC_G),
-         HYPR(KC_F10), HYPR(KC_Z), KC__VOLDOWN, HYPR(KC_C), KC__VOLUP, HYPR(KC_B),
+         HYPR(KC_F10), HYPR(KC_Z), HYPR(KC_X), HYPR(KC_C), HYPR(KC_V), HYPR(KC_B),
                    HYPR(KC_GRV), S(KC_TAB), _CLOSE_HIDE_MAC, KC_TAB,
                                     HYPR(KC_BSLS), HYPR(KC_F13),
                                                   HYPR(KC_SLSH),
@@ -2350,10 +2350,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 [_PALM_L_PC] = LAYOUT(
          C(A(KC_INS)), C(A(KC_F1)), C(A(KC_F2)), C(A(KC_F3)), C(A(KC_F4)), C(A(KC_F5)), C(A(KC_F6)), C(A(KC_F7)), C(A(KC_F8)),
-         C(A(KC_F17)), C(A(KC_1)), KC_MPRV, KC_MPLY, KC_MNXT, C(A(KC_5)),
+         C(A(KC_F17)), C(A(KC_1)), C(A(KC_2)), C(A(KC_3)), C(A(KC_4)), C(A(KC_5)),
          C(A(KC_F18)), C(A(KC_Q)), C(A(KC_W)), C(A(KC_E)), C(A(KC_R)), C(A(KC_T)),
          C(A(KC_F19)), C(A(KC_A)), C(A(KC_S)), C(A(KC_D)), C(A(KC_F)), C(A(KC_G)),
-         C(A(KC_F20)), C(A(KC_Z)), KC_VOLD, C(A(KC_C)), KC_VOLU, C(A(KC_B)),
+         C(A(KC_F20)), C(A(KC_Z)), C(A(KC_X)), C(A(KC_C)), C(A(KC_V)), C(A(KC_B)),
                     C(A(KC_GRV)), S(KC_TAB), _CLOSE_HIDE_PC, KC_TAB,
                                 KC_MPRV, C(A(KC_F13)),
                                         C(A(KC_SLSH)),
@@ -2373,10 +2373,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 [_PALM_R_PC] = LAYOUT(
          C(A(KC_INS)), C(A(KC_F1)), C(A(KC_F2)), C(A(KC_F3)), C(A(KC_F4)), C(A(KC_F5)), C(A(KC_F6)), C(A(KC_F7)), C(A(KC_F8)),
-         C(A(KC_F17)), C(A(KC_1)), KC_MPRV, KC_MPLY, KC_MNXT, C(A(KC_5)),
+         C(A(KC_F17)), KC_MPRV, KC_VOLD, KC_MPLY, KC_VOLU, KC_MNXT,
          C(A(KC_F18)), C(A(KC_Q)), C(A(KC_W)), C(A(KC_E)), C(A(KC_R)), C(A(KC_T)),
          C(A(KC_F19)), C(A(KC_A)), C(A(KC_S)), C(A(KC_D)), C(A(KC_F)), C(A(KC_G)),
-         C(A(KC_F20)), C(A(KC_Z)), KC_VOLD, C(A(KC_C)), KC_VOLU, C(A(KC_B)),
+         C(A(KC_F20)), C(A(KC_Z)), C(A(KC_X)), C(A(KC_C)), C(A(KC_V)), C(A(KC_B)),
                     C(A(KC_GRV)), S(KC_TAB), _CLOSE_HIDE_PC, KC_TAB,
                                 C(A(KC_BSPC)), C(A(KC_F13)),
                                               C(A(KC_SLSH)),
