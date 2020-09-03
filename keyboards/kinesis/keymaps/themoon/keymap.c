@@ -89,6 +89,8 @@ enum holding_keycodes {
   _CAS_9,
   _CAS_U,
   _CAS_I,
+  _CAS_H,
+  _CAS_SC,
   _CAS_O,
   _CAS_M,
   _CAS_DOT,
@@ -112,15 +114,6 @@ enum holding_keycodes {
   _KC_Z, _KC_X, _KC_C, _KC_V, _KC_B, _KC_N, _KC_M, _KC_DOT, _KC_QUOT,
   _KC_LBRC, _KC_COMM, _KC_RBRC,
   _KC_GRV,
-
-  _CAS_F5,
-  _CAS_F6,
-  _CAS_F7,
-  _CAS_F8,
-  _CAS_F9,
-  _CAS_F10,
-  _CAS_F11,
-  _CAS_F12,
 
   _HIDE_CLOSE_MAC,
   _HIDE_CLOSE_PC,
@@ -1799,13 +1792,13 @@ qk_tap_dance_action_t tap_dance_actions[] = {
 * ,-------------------------------------------------------------------------------------------------------------------.
 * |  STAT  |  F1  |  F2  |  F3  |  F4  |F5/SET|  F6 |  F8  |  F9  |  F10  |  F12 |GC_F13|GC_F14|GC_F15|      |   FW   |
 * |--------+------+------+------+------+------+---------------------------+------+------+------+------+------+--------|
-* |_CAS_F5 |  1   |  2(  |  3_  |   4) |  5   |                           |  6   |  7!  |  8-  |  9?  |  0   |_CAS_F9 |
+* |  TD_F5 |  1   |  2(  |  3_  |   4) |  5   |                           |  6   |  7!  |  8-  |  9?  |  0   | TD_F9  |
 * |--------+------+------+------+------+------|                           +------+------+------+------+------+--------|
-* |_CAS_F6 |  Q   |   W  |   E  |   R  |  T   |                           |   Y  |   U  |  I   |   O  |  P   |_CAS_F10|
+* |  TD_F6 |  Q   |   W  |   E  |   R  |  T   |                           |   Y  |   U  |  I   |   O  |  P   | TD_F10 |
 * |--------+------+------+------+------+------|                           |------+------+------+------+------+--------|
-* |_CAS_F7 |  A   |   S  |   D  |   F  |  G   |                           |   H  |   J  |  K   |   L  |  ;:  |_CAS_F11|
+* |  TD_F7 |  A   |   S  |   D  |   F  |  G   |                           |   H  |   J  |  K   |   L  |  ;:  | TD_F11 |
 * |--------+------+------+------+------+------|                           |------+------+------+------+------+--------|
-* |_CAS_F8 |  Z   |   X  |   C  |   V  |  B   |                           |   N  |   M  |  Up  |  .>  |  '"  |_CAS_F12|
+* |  TD_F8 |  Z   |   X  |   C  |   V  |  B   |                           |   N  |   M  |  Up  |  .>  |  '"  | TD_F12 |
 * `--------+------+------+------+------+-------                           `------+------+------+------+------+--------'
 *          |  `~  |  [{  |Sel/,<|  ]}  |                                         | Left | Down | Right|AppKey|
 *          `---------------------------'                                         `---------------------------'
@@ -2077,7 +2070,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          HYPR(KC_F9), HYPR(KC_F10), HYPR(KC_F11), HYPR(KC_F12), G(C(KC_F13)), G(C(KC_F14)), G(C(KC_F15)), _, _,
          HYPR(KC_6), _CAS_7, _CAS_8, _CAS_9, HYPR(KC_0), HYPR(KC_F11),
          HYPR(KC_Y), _CAS_U, _CAS_I, _CAS_O, HYPR(KC_P), HYPR(KC_F12),
-         HYPR(KC_H), S(KC_TAB), _HIDE_CLOSE_MAC, KC_TAB, HYPR(KC_SCLN), HYPR(KC_F13),
+         _CAS_H, S(KC_TAB), _HIDE_CLOSE_MAC, KC_TAB, _CAS_SC, HYPR(KC_F13),
          HYPR(KC_N), _CAS_M, KC_PGUP, _CAS_DOT, HYPR(KC_QUOT), HYPR(KC_F14),
                         KC_HOME, KC_PGDN, KC_END, HYPR(KC_NUBS),
          HYPR(KC_F14), HYPR(KC_SPC),
@@ -2362,7 +2355,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          C(A(KC_F9)), C(A(KC_F10)), C(A(KC_F11)), C(A(KC_F12)), A(S(KC_F13)), A(S(KC_F14)), A(S(KC_F15)), _, _,
          C(A(KC_6)), _CAS_7, _CAS_8, _CAS_9, C(A(KC_0)), C(A(KC_F21)),
          C(A(KC_Y)), _CAS_U, _CAS_I, _CAS_O, C(A(KC_P)), C(A(KC_F22)),
-         C(A(KC_H)), S(KC_TAB), _HIDE_CLOSE_PC, KC_TAB, C(A(KC_SCLN)), C(A(KC_F23)),
+         _CAS_H, S(KC_TAB), _HIDE_CLOSE_PC, KC_TAB, _CAS_SC, C(A(KC_F23)),
          C(A(KC_N)), _CAS_M, KC_PGUP, _CAS_DOT, C(A(KC_QUOT)), C(A(KC_F24)),
                         C(KC_HOME), KC_PGDN, C(KC_END), C(A(KC_NUBS)),
          C(A(KC_PAUS)), C(A(KC_SPC)),
@@ -2876,15 +2869,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case _8_DASH: { return lead_autoshifted_modified_numbers(KC_8, KC_MINS, KC_NO, pressed); }
         case _9_QUEST: { return lead_autoshifted_modified_numbers(KC_9, KC_SLSH, KC_LSFT, pressed); }
 
-        case _CAS_F5: { return lead_custom_autoshifted_with_mods(KC_F5, KC_LALT, KC_F5, KC_F5, KC_LALT, KC_LSFT, pressed, AUTOSHIFT_SPECIAL_TERM); }
-        case _CAS_F6: { return lead_custom_autoshifted_with_mods(KC_F6, KC_LALT, KC_F6, KC_F6, KC_LALT, KC_LSFT, pressed, AUTOSHIFT_SPECIAL_TERM); }
-        case _CAS_F7: { return lead_custom_autoshifted_with_mods(KC_F7, KC_LALT, KC_F7, KC_F7, KC_LALT, KC_LSFT, pressed, AUTOSHIFT_SPECIAL_TERM); }
-        case _CAS_F8: { return lead_custom_autoshifted_with_mods(KC_F8, KC_LALT, KC_F8, KC_F8, KC_LALT, KC_LSFT, pressed, AUTOSHIFT_SPECIAL_TERM); }
-        case _CAS_F9: { return lead_custom_autoshifted_with_mods(KC_F9, KC_LALT, KC_F9, KC_F9, KC_LALT, KC_LSFT, pressed, AUTOSHIFT_SPECIAL_TERM); }
-        case _CAS_F10: { return lead_custom_autoshifted_with_mods(KC_F10, KC_LALT, KC_F10, KC_F10, KC_LALT, KC_LSFT, pressed, AUTOSHIFT_SPECIAL_TERM); }
-        case _CAS_F11: { return lead_custom_autoshifted_with_mods(KC_F11, KC_LALT, KC_F11, KC_F11, KC_LALT, KC_LSFT, pressed, AUTOSHIFT_SPECIAL_TERM); }
-        case _CAS_F12: { return lead_custom_autoshifted_with_mods(KC_F12, KC_LALT, KC_F12, KC_F12, KC_LALT, KC_LSFT, pressed, AUTOSHIFT_SPECIAL_TERM); }
-
         case KC_UP: { if (is_after_lead(KC_UP, pressed)) { return false; } return true; }
         case KC_DOWN: { if (is_after_lead(KC_DOWN, pressed)) { return false; } return true; }
         case KC_BSPC: { if (is_after_lead(KC_BSPC, pressed)) { return false; } return true; }
@@ -3164,12 +3148,14 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case _CTRL_M: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_M, KC_LGUI, KC_NO, KC_NO, KC_NO, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_M, KC_LGUI, KC_LSFT, KC_NO, KC_NO, pressed, AUTOSHIFT_QWERTY_KEYS_WITH_MODIFIERS_TERM, true); }
 
         // resizing
-        case _CAS_U: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_U, KC_NO, KC_NO, KC_NO, KC_NO, KC_LCTL, KC_LALT, KC_NO, KC_NO, KC_U, KC_LSFT, KC_LCTL, KC_LALT, KC_NO, pressed, AUTOSHIFT_SPECIAL_TERM, true); }
-        case _CAS_I: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_I, KC_NO, KC_NO, KC_NO, KC_NO, KC_LCTL, KC_LALT, KC_NO, KC_NO, KC_I, KC_LSFT, KC_LCTL, KC_LALT, KC_NO, pressed, AUTOSHIFT_SPECIAL_TERM, true); }
-        case _CAS_O: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_O, KC_NO, KC_NO, KC_NO, KC_NO, KC_LCTL, KC_LALT, KC_NO, KC_NO, KC_O, KC_LSFT, KC_LCTL, KC_LALT, KC_NO, pressed, AUTOSHIFT_SPECIAL_TERM, true); }
         case _CAS_7: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_7, KC_NO, KC_NO, KC_NO, KC_NO, KC_LCTL, KC_LALT, KC_NO, KC_NO, KC_7, KC_LSFT, KC_LCTL, KC_LALT, KC_NO, pressed, AUTOSHIFT_SPECIAL_TERM, true); }
         case _CAS_8: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_8, KC_NO, KC_NO, KC_NO, KC_NO, KC_LCTL, KC_LALT, KC_NO, KC_NO, KC_8, KC_LSFT, KC_LCTL, KC_LALT, KC_NO, pressed, AUTOSHIFT_SPECIAL_TERM, true); }
         case _CAS_9: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_9, KC_NO, KC_NO, KC_NO, KC_NO, KC_LCTL, KC_LALT, KC_NO, KC_NO, KC_9, KC_LSFT, KC_LCTL, KC_LALT, KC_NO, pressed, AUTOSHIFT_SPECIAL_TERM, true); }
+        case _CAS_U: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_U, KC_NO, KC_NO, KC_NO, KC_NO, KC_LCTL, KC_LALT, KC_NO, KC_NO, KC_U, KC_LSFT, KC_LCTL, KC_LALT, KC_NO, pressed, AUTOSHIFT_SPECIAL_TERM, true); }
+        case _CAS_I: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_I, KC_NO, KC_NO, KC_NO, KC_NO, KC_LCTL, KC_LALT, KC_NO, KC_NO, KC_I, KC_LSFT, KC_LCTL, KC_LALT, KC_NO, pressed, AUTOSHIFT_SPECIAL_TERM, true); }
+        case _CAS_O: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_O, KC_NO, KC_NO, KC_NO, KC_NO, KC_LCTL, KC_LALT, KC_NO, KC_NO, KC_O, KC_LSFT, KC_LCTL, KC_LALT, KC_NO, pressed, AUTOSHIFT_SPECIAL_TERM, true); }
+        case _CAS_H: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_H, KC_NO, KC_NO, KC_NO, KC_NO, KC_LCTL, KC_LALT, KC_NO, KC_NO, KC_H, KC_LSFT, KC_LCTL, KC_LALT, KC_NO, pressed, AUTOSHIFT_SPECIAL_TERM, true); }
+        case _CAS_SC: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_SCLN, KC_NO, KC_NO, KC_NO, KC_NO, KC_LCTL, KC_LALT, KC_NO, KC_NO, KC_SCLN, KC_LSFT, KC_LCTL, KC_LALT, KC_NO, pressed, AUTOSHIFT_SPECIAL_TERM, true); }
         case _CAS_M: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_M, KC_NO, KC_NO, KC_NO, KC_NO, KC_LCTL, KC_LALT, KC_NO, KC_NO, KC_M, KC_LSFT, KC_LCTL, KC_LALT, KC_NO, pressed, AUTOSHIFT_SPECIAL_TERM, true); }
         case _CAS_DOT: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_DOT, KC_NO, KC_NO, KC_NO, KC_NO, KC_LCTL, KC_LALT, KC_NO, KC_NO, KC_DOT, KC_LSFT, KC_LCTL, KC_LALT, KC_NO, pressed, AUTOSHIFT_SPECIAL_TERM, true); }
         case _MEH_HYPR_F15: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_F15, KC_NO, KC_NO, KC_NO, KC_NO, KC_LGUI, KC_LALT, KC_LCTL, KC_NO, KC_F15, KC_LGUI, KC_LSFT, KC_LALT, KC_LCTL, pressed, 250, true); }
