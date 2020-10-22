@@ -672,6 +672,23 @@ void led_blue_off(void) {
   PORTF |= (1<<0);
 }
 
+
+void red_led_off_is_not_used(uint32_t delay) {
+    if (!macro1_recording && !macro2_recording && !macro3_recording && !macro4_recording && !lead_led) { _delay_ms(delay); led_red_off(); }
+}
+
+void yellow_led_off_is_not_used(uint32_t delay) {
+    if (!macro1_recording && !macro3_recording && !change_lang_led && !lead_led) { _delay_ms(delay); led_yellow_off(); }
+}
+
+void green_led_off_is_not_used(uint32_t delay) {
+    if (!macro2_recording && !macro4_recording && !lead_led) { _delay_ms(delay); led_green_off(); }
+}
+
+void blue_led_off_is_not_used(uint32_t delay) {
+    if (!caps_led) { _delay_ms(delay); led_blue_off(); }
+}
+
 void switch_lead_led_on(void) {
   if (!lead_led) {
     led_red_on();
@@ -683,9 +700,9 @@ void switch_lead_led_on(void) {
 
 void switch_lead_led_off(void) {
   if (lead_led) {
-    if (!macro1_recording && !change_lang_led) { led_yellow_off(); }
-    if (!macro2_recording) { led_green_off(); }
-    if (!macro1_recording && !macro2_recording) { led_red_off(); }
+    yellow_led_off_is_not_used(0);
+    green_led_off_is_not_used(0);
+    red_led_off_is_not_used(0);
     lead_led = false;
   }
 }
@@ -695,10 +712,10 @@ void all_leds_on(void) {
 }
 
 void all_leds_off(void) {
-    if (!macro1_recording && !change_lang_led) { led_yellow_off(); }
-    if (!macro2_recording) { led_green_off(); }
-    if (!macro1_recording && !macro2_recording) { led_red_off(); }
-    if (!caps_led) { led_blue_off(); }
+    yellow_led_off_is_not_used(0);
+    green_led_off_is_not_used(0);
+    red_led_off_is_not_used(0);
+    blue_led_off_is_not_used(0);
 }
 
 void blink_all_leds_short(void) {
@@ -1831,22 +1848,22 @@ void dynamic_macro_1_finished (qk_tap_dance_state_t *state, void *user_data) {
        lshift_macro_pressed = false;
        rshift_macro_pressed = false;
 
-       if (!lead_led) { led_red_off(); if (!change_lang_led) { led_yellow_off(); } led_green_off(); };
+       red_led_off_is_not_used(0); yellow_led_off_is_not_used(0); green_led_off_is_not_used(0);
 
     } else {
       switch (dynamic_macro_1_state.state) {
           case SINGLE_TAP:
             if (macro1_overridden) {
-                led_yellow_on(); playMacro1(); if (!change_lang_led) { led_yellow_off(); }
+                led_yellow_on(); playMacro1(); yellow_led_off_is_not_used(0);
             } else {
-                SEND_STRING(DEF_DM1); key_code(KC_ENTER); led_yellow_on(); _delay_ms(1000); if (!change_lang_led) { led_yellow_off(); }
+                SEND_STRING(DEF_DM1); key_code(KC_ENTER); led_yellow_on(); _delay_ms(1000); yellow_led_off_is_not_used(0);
             }; break;
 
           case DOUBLE_TAP: 
             if (macro2_overridden) {
-                led_green_on(); playMacro2(); led_green_off();
+                led_green_on(); playMacro2(); green_led_off_is_not_used(0);
             } else {
-               SEND_STRING(DEF_DM2); key_code(KC_ENTER); led_green_on(); _delay_ms(1000); led_green_off();
+               SEND_STRING(DEF_DM2); key_code(KC_ENTER); led_green_on(); _delay_ms(1000); green_led_off_is_not_used(0);
             }; break;
 
           case SINGLE_HOLD:
@@ -1898,22 +1915,22 @@ void dynamic_macro_2_finished (qk_tap_dance_state_t *state, void *user_data) {
        lshift_macro_pressed = false;
        rshift_macro_pressed = false;
 
-       if (!lead_led) { led_red_off(); if (!change_lang_led) { led_yellow_off(); } led_green_off(); };
+       red_led_off_is_not_used(0); yellow_led_off_is_not_used(0); green_led_off_is_not_used(0);
 
     } else {
       switch (dynamic_macro_2_state.state) {
           case SINGLE_TAP:
             if (macro3_overridden) {
-                led_yellow_on(); playMacro3(); if (!change_lang_led) { led_yellow_off(); }
+                led_yellow_on(); playMacro3(); yellow_led_off_is_not_used(0);
             } else {
-                SEND_STRING(DEF_DM3); led_yellow_on(); _delay_ms(1000); if (!change_lang_led) { led_yellow_off(); }
+                SEND_STRING(DEF_DM3); led_yellow_on(); _delay_ms(1000); yellow_led_off_is_not_used(0);
             }; break;
 
           case DOUBLE_TAP:
             if (macro4_overridden) {
-                led_green_on(); playMacro4(); led_green_off();
+                led_green_on(); playMacro4(); green_led_off_is_not_used(0);
             } else {
-               SEND_STRING(DEF_DM4); led_green_on(); _delay_ms(1000); led_green_off();
+               SEND_STRING(DEF_DM4); led_green_on(); _delay_ms(1000); green_led_off_is_not_used(0);
             }; break;
 
           case SINGLE_HOLD:
@@ -2685,7 +2702,7 @@ void matrix_scan_user(void) {
         led_yellow_on();
      } else {
         change_lang_led = false;
-        if (!lead_led && !macro1_recording) { led_yellow_off(); }
+        yellow_led_off_is_not_used(0);
      }
    }
 
@@ -2693,24 +2710,24 @@ void matrix_scan_user(void) {
      scroll_left_led = false;
      led_blue_on(); _delay_ms(20);
      led_green_on(); _delay_ms(20);
-     if (!caps_led) { led_blue_off(); }
+     blue_led_off_is_not_used(0);
      led_yellow_on(); _delay_ms(20);
-     if (!macro2_recording) { led_green_off(); }
+     green_led_off_is_not_used(0);
      led_red_on(); _delay_ms(20);
-     if (!macro1_recording && !change_lang_led) { led_yellow_off(); }
-     if (!macro1_recording && !macro2_recording) { _delay_ms(20); led_red_off(); }
+     yellow_led_off_is_not_used(0);
+     red_led_off_is_not_used(20);
    }
 
    if (scroll_right_led) {
      scroll_right_led = false;
      led_red_on(); _delay_ms(20);
      led_yellow_on(); _delay_ms(20);
-     if (!macro1_recording && !macro2_recording) { led_red_off(); }
+     red_led_off_is_not_used(0);
      led_green_on(); _delay_ms(20);
-     if (!macro1_recording && !change_lang_led) { led_yellow_off(); }
+     yellow_led_off_is_not_used(0);
      led_blue_on(); _delay_ms(20);
-     if (!macro2_recording) { led_green_off(); }
-     if (!caps_led) { _delay_ms(20); led_blue_off(); }
+     green_led_off_is_not_used(0);
+     blue_led_off_is_not_used(20);
    }
 
    if (failsafeMac) {
@@ -3451,28 +3468,15 @@ void led_set_user(uint8_t usb_led) {
 
   caps_led ? led_blue_on() : led_blue_off();
   lead_led ? switch_lead_led_on() : switch_lead_led_off();
+  red_led_off_is_not_used(0);
 
   if (macro1_recording || macro3_recording) {
     led_red_on();
     led_yellow_on();
-  } else {
-    if (!lead_led && !change_lang_led) {
-      led_yellow_off();
-    }
-    if (!macro2_recording & !macro3_recording  & !macro4_recording & !lead_led) {
-      led_red_off();
-    }
   }
 
   if (macro2_recording || macro4_recording) {
     led_red_on();
     led_green_on();
-  } else {
-    if (!lead_led && !change_lang_led) {
-      led_green_off();
-    }
-    if (!macro1_recording & !macro3_recording  & !macro4_recording & !lead_led) {
-      led_red_off();
-    }
   }
 }
