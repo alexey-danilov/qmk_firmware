@@ -84,12 +84,12 @@ enum holding_keycodes {
   __KC_F16,
   __KC_F17,
 
-  _CAS_7,
-  _CAS_8,
-  _CAS_9,
   _CAS_U,
   _CAS_I,
   _CAS_O,
+  _CAS_J,
+  _CAS_K,
+  _CAS_L,
   _CAS_M,
   _CAS_DOT,
 
@@ -200,14 +200,22 @@ static bool init_complete;
 
 static bool macro1_overridden = false;
 static bool macro2_overridden = false;
+static bool macro3_overridden = false;
+static bool macro4_overridden = false;
 
 static bool macro1_recording = false;
 static bool macro2_recording = false;
+static bool macro3_recording = false;
+static bool macro4_recording = false;
 
 static uint16_t macro1Buffer[MACRO_BUFFER];
 static uint16_t macro2Buffer[MACRO_BUFFER];
+static uint16_t macro3Buffer[MACRO_BUFFER];
+static uint16_t macro4Buffer[MACRO_BUFFER];
 static uint16_t macroPointer1 = 0;
 static uint16_t macroPointer2 = 0;
+static uint16_t macroPointer3 = 0;
+static uint16_t macroPointer4 = 0;
 static uint16_t macro_key_down = 999;
 static uint16_t macro_key_up = 1000;
 
@@ -226,7 +234,7 @@ static bool rshift_macro_pressed = false;
 //}
 
 bool isMacroKey(uint16_t key) {
-  if (!macro1_recording && !macro2_recording) {
+  if (!macro1_recording && !macro2_recording & !macro3_recording && !macro4_recording) {
     return false;
   }
   switch (key) {
@@ -363,6 +371,44 @@ void playMacro2(void) {
    dprint("\n... Done printing macro buffer 2\n");
 }
 
+void playMacro3(void) {
+   dprint("\n... Printing macro buffer 3: ");
+   for (uint16_t i = 0; i <= macroPointer3; ) {
+     uint16_t event = macro3Buffer[i];
+     if (event == KC_NO) { dprintf("\n >>> Reached end of macro 3 at %d", i); break; }
+     i++;
+     if (i >= macroPointer3) { dprintf("\n >>> Reached end of macro 3 at %d", i); break; }
+     uint16_t key = macro3Buffer[i];
+     i++;
+     if (i >= macroPointer3) { dprintf("\n >>> Reached end of macro 3 at %d", i); break; }
+     if (key == KC_NO) { dprintf("\n >>> Reached end of macro 3 at %d", i); break; }
+
+     if (event == macro_key_down) { register_code(key); } else { unregister_code(key); }
+   }
+   clear_keyboard();
+   layer_clear();
+   dprint("\n... Done printing macro buffer 3\n");
+}
+
+void playMacro4(void) {
+   dprint("\n... Printing macro buffer 4: ");
+   for (uint16_t i = 0; i <= macroPointer4; ) {
+     uint16_t event = macro4Buffer[i];
+     if (event == KC_NO) { dprintf("\n >>> Reached end of macro 4 at %d", i); break; }
+     i++;
+     if (i >= macroPointer4) { dprintf("\n >>> Reached end of macro 4 at %d", i); break; }
+     uint16_t key = macro4Buffer[i];
+     i++;
+     if (i >= macroPointer4) { dprintf("\n >>> Reached end of macro 4 at %d", i); break; }
+     if (key == KC_NO) { dprintf("\n >>> Reached end of macro 4 at %d", i); break; }
+
+     if (event == macro_key_down) { register_code(key); } else { unregister_code(key); }
+   }
+   clear_keyboard();
+   layer_clear();
+   dprint("\n... Done printing macro buffer 4\n");
+}
+
 void printMacro1(void) {
   for (uint16_t i = 0; i < macroPointer1; i++) {
     dprintf("\nmacro 1: %d == ", i); isMacroKey(macro1Buffer[i]);
@@ -372,6 +418,18 @@ void printMacro1(void) {
 void printMacro2(void) {
   for (uint16_t i = 0; i < macroPointer2; i++) {
     dprintf("\nmacro 2: %d == ", i); isMacroKey(macro2Buffer[i]);
+  }
+}
+
+void printMacro3(void) {
+  for (uint16_t i = 0; i < macroPointer3; i++) {
+    dprintf("\nmacro 3: %d == ", i); isMacroKey(macro3Buffer[i]);
+  }
+}
+
+void printMacro4(void) {
+  for (uint16_t i = 0; i < macroPointer4; i++) {
+    dprintf("\nmacro 4: %d == ", i); isMacroKey(macro4Buffer[i]);
   }
 }
 
@@ -386,15 +444,35 @@ void changeModInMacroBuffer(uint8_t mod, bool added) {
        dprint("\n!!! Macro buffer 1 full");
      }
    } else if (macro2_recording) {
-     if ((macroPointer2 + 2) < MACRO_BUFFER) {
-         dprint("\n >>> Adding macro 1 key");
-           macro2Buffer[macroPointer2] = added ? macro_key_down : macro_key_up;
-           macroPointer2++;
-           macro2Buffer[macroPointer2] = mod;
-           macroPointer2++;
-     } else {
-       dprint("\n!!! Macro buffer 2 full");
-     }
+      if ((macroPointer2 + 2) < MACRO_BUFFER) {
+          dprint("\n >>> Adding macro 1 key");
+            macro2Buffer[macroPointer2] = added ? macro_key_down : macro_key_up;
+            macroPointer2++;
+            macro2Buffer[macroPointer2] = mod;
+            macroPointer2++;
+      } else {
+        dprint("\n!!! Macro buffer 2 full");
+      }
+   } else if (macro3_recording) {
+      if ((macroPointer3 + 2) < MACRO_BUFFER) {
+          dprint("\n >>> Adding macro 1 key");
+            macro3Buffer[macroPointer3] = added ? macro_key_down : macro_key_up;
+            macroPointer3++;
+            macro3Buffer[macroPointer3] = mod;
+            macroPointer3++;
+      } else {
+        dprint("\n!!! Macro buffer 3 full");
+      }
+   } else if (macro4_recording) {
+      if ((macroPointer4 + 2) < MACRO_BUFFER) {
+          dprint("\n >>> Adding macro 1 key");
+            macro4Buffer[macroPointer4] = added ? macro_key_down : macro_key_up;
+            macroPointer4++;
+            macro4Buffer[macroPointer4] = mod;
+            macroPointer4++;
+      } else {
+        dprint("\n!!! Macro buffer 4 full");
+      }
    }
 }
 
@@ -421,7 +499,7 @@ void changeModInMacro(uint8_t current_mods, uint8_t mod) {
 }
 
 void recordMacroKey(uint16_t key, bool down) {
-  if (!macro1_recording && !macro2_recording) {
+  if (!macro1_recording && !macro2_recording && !macro3_recording && !macro4_recording) {
     dprint("\nMacro is not recording, ignoring key\n");
     return;
   }
@@ -463,21 +541,51 @@ void recordMacroKey(uint16_t key, bool down) {
       //   dprint("\n??? Printing macro buffer 1 done \n");
     }
   } else if (macro2_recording) {
-    if ((macroPointer2 + 2) < MACRO_BUFFER) {
-        dprint("\n >>> Adding macro 2 key");
-        if (down) { macro2Buffer[macroPointer2] = macro_key_down; dprint("\n<<< Added macro 2 macro_key_down"); }
-        else { macro2Buffer[macroPointer2] = macro_key_up; dprint("\n<<< Added macro 2 macro_key_up"); }
-        macroPointer2++;
-        macro2Buffer[macroPointer2] = key;
-        dprint("\n<<< Added macro 2 key");
-        macroPointer2++;
-    } else {
-      dprint("\n!!! Macro buffer 2 full");
-      //   dprint("\n??? Printing macro buffer 2");
-      //   printMacro2();
-      //   dprint("\n??? Printing macro buffer 2 done \n");
+     if ((macroPointer2 + 2) < MACRO_BUFFER) {
+         dprint("\n >>> Adding macro 2 key");
+         if (down) { macro2Buffer[macroPointer2] = macro_key_down; dprint("\n<<< Added macro 2 macro_key_down"); }
+         else { macro2Buffer[macroPointer2] = macro_key_up; dprint("\n<<< Added macro 2 macro_key_up"); }
+         macroPointer2++;
+         macro2Buffer[macroPointer2] = key;
+         dprint("\n<<< Added macro 2 key");
+         macroPointer2++;
+     } else {
+       dprint("\n!!! Macro buffer 2 full");
+       //   dprint("\n??? Printing macro buffer 2");
+       //   printMacro2();
+       //   dprint("\n??? Printing macro buffer 2 done \n");
+     }
+  } else if (macro3_recording) {
+      if ((macroPointer3 + 2) < MACRO_BUFFER) {
+          dprint("\n >>> Adding macro 3 key");
+          if (down) { macro3Buffer[macroPointer3] = macro_key_down; dprint("\n<<< Added macro 3 macro_key_down"); }
+          else { macro3Buffer[macroPointer3] = macro_key_up; dprint("\n<<< Added macro 3 macro_key_up"); }
+          macroPointer3++;
+          macro3Buffer[macroPointer3] = key;
+          dprint("\n<<< Added macro 3 key");
+          macroPointer3++;
+      } else {
+        dprint("\n!!! Macro buffer 3 full");
+        //   dprint("\n??? Printing macro buffer 3");
+        //   printMacro3();
+        //   dprint("\n??? Printing macro buffer 3 done \n");
+      }
+    } else if (macro4_recording) {
+        if ((macroPointer4 + 2) < MACRO_BUFFER) {
+            dprint("\n >>> Adding macro 4 key");
+            if (down) { macro4Buffer[macroPointer4] = macro_key_down; dprint("\n<<< Added macro 4 macro_key_down"); }
+            else { macro4Buffer[macroPointer4] = macro_key_up; dprint("\n<<< Added macro 4 macro_key_up"); }
+            macroPointer4++;
+            macro4Buffer[macroPointer4] = key;
+            dprint("\n<<< Added macro 4 key");
+            macroPointer4++;
+        } else {
+          dprint("\n!!! Macro buffer 4 full");
+          //   dprint("\n??? Printing macro buffer 4");
+          //   printMacro4();
+          //   dprint("\n??? Printing macro buffer 4 done \n");
+        }
     }
-  }
 }
 
 void down(uint16_t key) { register_code(key); recordMacroKey(key, true); }
@@ -590,7 +698,7 @@ void all_leds_off(void) {
     if (!macro1_recording && !change_lang_led) { led_yellow_off(); }
     if (!macro2_recording) { led_green_off(); }
     if (!macro1_recording && !macro2_recording) { led_red_off(); }
-    if(!caps_led) { led_blue_off(); }
+    if (!caps_led) { led_blue_off(); }
 }
 
 void blink_all_leds_short(void) {
@@ -935,31 +1043,32 @@ bool lead_autoshifted_custom_term(uint16_t code, bool pressed, uint16_t hold_dur
 }
 
 enum {
-  TAP_MACRO = 0,
-  SET_TD = 1,
-  STATUS_TD = 2,
-  FW_TD = 3,
-  FW_CANCEL = 4,
-  MAC_FAILSAFE = 5,
-  MAC_EXIT_FAILSAFE = 6,
-  PC_FAILSAFE = 7,
-  PC_EXIT_FAILSAFE = 8,
-  F5_TD = 9,
-  F6_TD = 10,
-  F7_TD = 11,
-  F8_TD = 12,
-  F9_TD = 13,
-  F10_TD = 14,
-  F11_TD = 15,
-  F12_TD = 16,
-  F17_TD = 17,
-  F18_TD = 18,
-  F19_TD = 19,
-  F20_TD = 20,
-  F21_TD = 21,
-  F22_TD = 22,
-  F23_TD = 23,
-  F24_TD = 24
+  TAP_MACRO_1 = 0,
+  TAP_MACRO_2 = 1,
+  SET_TD = 2,
+  STATUS_TD = 3,
+  FW_TD = 4,
+  FW_CANCEL = 5,
+  MAC_FAILSAFE = 6,
+  MAC_EXIT_FAILSAFE = 7,
+  PC_FAILSAFE = 8,
+  PC_EXIT_FAILSAFE = 9,
+  F5_TD = 10,
+  F6_TD = 11,
+  F7_TD = 12,
+  F8_TD = 13,
+  F9_TD = 14,
+  F10_TD = 15,
+  F11_TD = 16,
+  F12_TD = 17,
+  F17_TD = 18,
+  F18_TD = 19,
+  F19_TD = 20,
+  F20_TD = 21,
+  F21_TD = 22,
+  F22_TD = 23,
+  F23_TD = 24,
+  F24_TD = 25
 };
 
 enum {
@@ -1700,11 +1809,11 @@ void fw_cancel_reset (qk_tap_dance_state_t *state, void *user_data) {
   fw_cancel_tap_state.state = 0;
 }
 
-//**************** DYNAMIC MACRO TAP *********************//
-static tap dynamic_macro_state = { .is_press_action = true, .state = 0 };
+//**************** DYNAMIC MACRO 1 TAP *********************//
+static tap dynamic_macro_1_state = { .is_press_action = true, .state = 0 };
 
-void dynamic_macro_finished (qk_tap_dance_state_t *state, void *user_data) {
-  dynamic_macro_state.state = cur_dance(state);
+void dynamic_macro_1_finished (qk_tap_dance_state_t *state, void *user_data) {
+  dynamic_macro_1_state.state = cur_dance(state);
   if (!is_after_lead(KC_F13, true)) {
 
     if (macro1_recording || macro2_recording) {
@@ -1725,19 +1834,19 @@ void dynamic_macro_finished (qk_tap_dance_state_t *state, void *user_data) {
        if (!lead_led) { led_red_off(); if (!change_lang_led) { led_yellow_off(); } led_green_off(); };
 
     } else {
-      switch (dynamic_macro_state.state) {
+      switch (dynamic_macro_1_state.state) {
           case SINGLE_TAP:
             if (macro1_overridden) {
                 led_yellow_on(); playMacro1(); if (!change_lang_led) { led_yellow_off(); }
             } else {
-                SEND_STRING(DEF_DM1); key_code(KC_ENTER); led_red_on(); _delay_ms(1000); led_red_off(); led_red_off();
+                SEND_STRING(DEF_DM1); key_code(KC_ENTER); led_yellow_on(); _delay_ms(1000); if (!change_lang_led) { led_yellow_off(); }
             }; break;
 
           case DOUBLE_TAP: 
             if (macro2_overridden) {
                 led_green_on(); playMacro2(); led_green_off();
             } else {
-               SEND_STRING(DEF_DM2); key_code(KC_ENTER); led_green_on(); _delay_ms(1000); led_green_off(); led_green_off();
+               SEND_STRING(DEF_DM2); key_code(KC_ENTER); led_green_on(); _delay_ms(1000); led_green_off();
             }; break;
 
           case SINGLE_HOLD:
@@ -1762,13 +1871,81 @@ void dynamic_macro_finished (qk_tap_dance_state_t *state, void *user_data) {
   }
 }
 
-void dynamic_macro_reset (qk_tap_dance_state_t *state, void *user_data) {
-  dynamic_macro_state.state = 0;
+void dynamic_macro_1_reset (qk_tap_dance_state_t *state, void *user_data) {
+  dynamic_macro_1_state.state = 0;
+}
+
+
+//**************** DYNAMIC MACRO 1 TAP *********************//
+static tap dynamic_macro_2_state = { .is_press_action = true, .state = 0 };
+
+void dynamic_macro_2_finished (qk_tap_dance_state_t *state, void *user_data) {
+  dynamic_macro_2_state.state = cur_dance(state);
+  if (!is_after_lead(KC_F17, true)) {
+
+    if (macro3_recording || macro4_recording) {
+       dprint("\nStopping record of macros");
+       macro3_recording = false;
+       macro4_recording = false;
+
+       lgui_macro_pressed = false;
+       rgui_macro_pressed = false;
+       lctl_macro_pressed = false;
+       rctl_macro_pressed = false;
+       lalt_macro_pressed = false;
+       ralt_macro_pressed = false;
+       lshift_macro_pressed = false;
+       lshift_macro_pressed = false;
+       rshift_macro_pressed = false;
+
+       if (!lead_led) { led_red_off(); if (!change_lang_led) { led_yellow_off(); } led_green_off(); };
+
+    } else {
+      switch (dynamic_macro_1_state.state) {
+          case SINGLE_TAP:
+            if (macro3_overridden) {
+                led_yellow_on(); playMacro3(); if (!change_lang_led) { led_yellow_off(); }
+            } else {
+                SEND_STRING(DEF_DM3); led_yellow_on(); _delay_ms(1000); if (!change_lang_led) { led_yellow_off(); }
+            }; break;
+
+          case DOUBLE_TAP:
+            if (macro4_overridden) {
+                led_green_on(); playMacro4(); led_green_off();
+            } else {
+               SEND_STRING(DEF_DM4); led_green_on(); _delay_ms(1000); led_green_off();
+            }; break;
+
+          case SINGLE_HOLD:
+              macroPointer3 = 0;
+              macro3_recording = true;
+              dprint("\nStarting recording of macro 1");
+              led_red_on();
+              led_yellow_on();
+              macro3_overridden = true;
+          break;
+
+          default:
+              macroPointer4 = 0;
+              macro4_recording = true;
+              dprint("\nStarting recording of macro 2");
+              led_red_on();
+              led_green_on();
+              macro4_overridden = true;
+          break;
+        }
+    }
+  }
+}
+
+void dynamic_macro_2_reset (qk_tap_dance_state_t *state, void *user_data) {
+  dynamic_macro_2_state.state = 0;
 }
 
 // all tap macros
 qk_tap_dance_action_t tap_dance_actions[] = {
-  [TAP_MACRO] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, dynamic_macro_finished, dynamic_macro_reset, MACRO_TIMEOUT),
+  [TAP_MACRO_1] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, dynamic_macro_1_finished, dynamic_macro_1_reset, MACRO_TIMEOUT),
+  [TAP_MACRO_2] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, dynamic_macro_2_finished, dynamic_macro_2_reset, MACRO_TIMEOUT),
   [FW_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, fw_finished, fw_reset, QUAD_TAP_TIMEOUT),
   [FW_CANCEL] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, fw_cancel_finished, fw_cancel_reset, QUAD_TAP_TIMEOUT),
   [STATUS_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, status_finished, status_reset, QUAD_TAP_TIMEOUT),
@@ -1834,7 +2011,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
            TD(F8_TD), _KC_Z, _KC_X, _KC_C, _KC_V, _KC_B,
                _KC_GRV, _KC_LBRC, ALT_SHIFT_COMM, _KC_RBRC,
                                                // left thumb keys
-			                              KC_BSPC, TD(TAP_MACRO),
+			                            KC_BSPC, TD(TAP_MACRO_1),
                                                    ALT_SLASH_MAC,
                               CMD_ESC, SHIFT_ENTER_MAC, CTRL_DEL,
                                                  // left palm key
@@ -1847,7 +2024,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	_KC_N, _KC_M, KC_UP, _KC_DOT, _KC_QUOT, TD(F12_TD),
 	KC_LEFT, KC_DOWN, KC_RGHT, _KC_NUBS,
            // right thumb keys
-           _KC_F17, KC_BSPC,
+           TD(TAP_MACRO_2), KC_BSPC,
            ALT_EQL_MAC,
            CTRL_BSLS, SHIFT_TAB_MAC, CMD_SPACE,
            // right palm key
@@ -1872,7 +2049,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          _CTRL_H, __________,  __________,  __________,  __________,  __________,
          __________, _CTRL_M, _SELECT_UP_MAC, _CTRL_DOT, __________, __________,
                    _SELECT_LEFT_MAC,  _SELECT_DOWN_MAC,  _SELECT_RIGHT_MAC, KC_NUBS,
-         __________, _DEL_LEFT_MAC,
+         _KC_F17, _DEL_LEFT_MAC,
          _KC_EQL,
          _KC_MINS, CHANGE_LANG_MAC, LEAD_SPACE,
          __KC_F16
@@ -1941,7 +2118,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
                __________,  __________,  __________,  KC_NUBS,
-         __________, C(KC_BSPC),
+         _KC_F17, C(KC_BSPC),
          _KC_EQL,
          _KC_MINS, _KC_TAB, _KC_F1,
          __KC_F16
@@ -2010,7 +2187,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
                __________,  __________,  __________,  _KC_NUBS,
-         __________, _KC_BSPC,
+         _KC_F17, _KC_BSPC,
          _KC_EQL,
          _KC_MINS, _KC_TAB, _KC_SPACE,
          _KC_F16
@@ -2033,7 +2210,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
                    __________,  __________,  __________, _KC_NUBS,
-         __________, KC_BSPC,
+         _KC_F17, KC_BSPC,
          KC_EQL,
          KC_BSLS, KC_TAB, KC_SPACE,
          C(A(KC_F16))
@@ -2069,18 +2246,18 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          HYPR(KC_F8), HYPR(KC_Q), HYPR(KC_W), HYPR(KC_E), HYPR(KC_R), HYPR(KC_T),
          HYPR(KC_F9), HYPR(KC_A), HYPR(KC_S), HYPR(KC_D), HYPR(KC_F), HYPR(KC_G),
          HYPR(KC_F10), HYPR(KC_Z), HYPR(KC_X), HYPR(KC_C), HYPR(KC_V), HYPR(KC_B),
-                   HYPR(KC_GRV), HYPR(KC_LBRC), HYPR(KC_COMM), HYPR(KC_RBRC),
+                   HYPR(KC_GRV), S(KC_TAB), _HIDE_CLOSE_MAC, KC_TAB,
                                     HYPR(KC_BSPC), HYPR(KC_F13),
                                                   HYPR(KC_SLSH),
                      LGUI(KC_Z), LGUI(LSFT(KC_Z)), HYPR(KC_DEL),
                                                      PALM_L_MAC,
          HYPR(KC_F9), HYPR(KC_F10), HYPR(KC_F11), HYPR(KC_F12), G(C(KC_F13)), G(C(KC_F14)), G(C(KC_F15)), _, _,
-         HYPR(KC_6), _CAS_7, _CAS_8, _CAS_9, HYPR(KC_0), HYPR(KC_F11),
+         HYPR(KC_6), HYPR(KC_7), HYPR(KC_8), HYPR(KC_9), HYPR(KC_0), HYPR(KC_F11),
          HYPR(KC_Y), _CAS_U, _CAS_I, _CAS_O, HYPR(KC_P), HYPR(KC_F12),
-         HYPR(KC_H), S(KC_TAB), _HIDE_CLOSE_MAC, KC_TAB, HYPR(KC_SCLN), HYPR(KC_F13),
+         HYPR(KC_H), _CAS_J, _CAS_K, _CAS_L, HYPR(KC_SCLN), HYPR(KC_F13),
          HYPR(KC_N), _CAS_M, KC_PGUP, _CAS_DOT, HYPR(KC_QUOT), HYPR(KC_F14),
                         KC_HOME, KC_PGDN, KC_END, HYPR(KC_NUBS),
-         HYPR(KC_F14), HYPR(KC_SPC),
+         HYPR(KC_F17), HYPR(KC_SPC),
          HYPR(KC_EQL),
          HYPR(KC_BSLS), _S_F3, _F3,
          _MEH_HYPR_F16
@@ -2088,11 +2265,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 [_PALM_R_MAC] = LAYOUT(
          HYPR(KC_INS), HYPR(KC_F1), HYPR(KC_F2), HYPR(KC_F3), HYPR(KC_F4), HYPR(KC_F5), HYPR(KC_F6), HYPR(KC_F7), HYPR(KC_F8),
-         HYPR(KC_F7), HYPR(KC_1), HYPR(KC_2), HYPR(KC_3), HYPR(KC_4), HYPR(KC_5),
+         HYPR(KC_F7), KC_MRWD, KC__VOLDOWN, KC_MPLY, KC__VOLUP, KC_MFFD,
          HYPR(KC_F8), HYPR(KC_Q), HYPR(KC_W), HYPR(KC_E), HYPR(KC_R), HYPR(KC_T),
          HYPR(KC_F9), HYPR(KC_A), HYPR(KC_S), HYPR(KC_D), HYPR(KC_F), HYPR(KC_G),
          HYPR(KC_F10), HYPR(KC_Z), HYPR(KC_X), HYPR(KC_C), HYPR(KC_V), HYPR(KC_B),
-                   HYPR(KC_GRV), KC__VOLDOWN, KC_MPLY, KC__VOLUP,
+                   HYPR(KC_GRV), S(KC_TAB), _HIDE_CLOSE_MAC, KC_TAB,
                                     HYPR(KC_BSLS), HYPR(KC_F13),
                                                   HYPR(KC_SLSH),
                      LGUI(KC_Z), LGUI(LSFT(KC_Z)), HYPR(KC_DEL),
@@ -2119,7 +2296,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
            TD(F20_TD),  _KC_Z, _KC_X, _KC_C, _KC_V, _KC_B,
                 _KC_GRV, _KC_LBRC, CTRL_SHIFT_COMM, _KC_RBRC,
                                                  // left thumb keys
-			                                KC_BSPC, TD(TAP_MACRO),
+			                              KC_BSPC, TD(TAP_MACRO_1),
                                                       ALT_SLASH_PC,
                            CTRL_ESC, SHIFT_ENTER_PC, ALT_SHIFT_DEL,
                                                    // left palm key
@@ -2132,7 +2309,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   	_KC_N, _KC_M, KC_UP, _KC_DOT, _KC_QUOT, TD(F24_TD),
   	KC_LEFT, KC_DOWN, KC_RGHT, _KC_APP,
            // right thumb keys
-           _KC_PAUS, KC_BSPC,
+           TD(TAP_MACRO_2), KC_BSPC,
            ALT_EQL_PC,
            RGUI_BSLS, SHIFT_TAB_PC, CTRL_SPACE,
            // right palm key
@@ -2158,7 +2335,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________, __________, __________, __________, __________, __________,
          __________,  __________, _SELECT_UP_PC, __________,  __________,  __________,
          _SELECT_LEFT_PC, _SELECT_DOWN_PC, _SELECT_RIGHT_PC, __________,
-         __________, _DEL_LEFT_PC,
+         _KC_PAUS, _DEL_LEFT_PC,
          _KC_EQL,
          _KC_MINS, CHANGE_LANG_PC, LEAD_SPACE,
          __KC_F16
@@ -2227,7 +2404,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
                   __________, __________,  __________, __________,
-         __________, _KC_BSPC,
+         _KC_PAUS, _KC_BSPC,
          _KC_EQL,
          _KC_MINS, _KC_F2, _KC_F1,
          __KC_F16
@@ -2319,7 +2496,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          __________, __________, __________, __________, __________, __________,
          __________, __________, __________, __________, __________, __________,
                    __________,  __________,  __________, __________,
-         __________, KC_BSPC,
+         _KC_PAUS, KC_BSPC,
          KC_EQL,
          KC_BSLS, KC_TAB, KC_SPACE,
          C(A(KC_F16))
@@ -2354,15 +2531,15 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          C(A(KC_F18)), C(A(KC_Q)), C(A(KC_W)), C(A(KC_E)), C(A(KC_R)), C(A(KC_T)),
          C(A(KC_F19)), C(A(KC_A)), C(A(KC_S)), C(A(KC_D)), C(A(KC_F)), C(A(KC_G)),
          C(A(KC_F20)), C(A(KC_Z)), C(A(KC_X)), C(A(KC_C)), C(A(KC_V)), C(A(KC_B)),
-                    C(A(KC_GRV)), C(A(KC_LBRC)), C(A(KC_COMM)), C(A(KC_RBRC)),
+                    C(A(KC_GRV)), S(KC_TAB), _HIDE_CLOSE_PC, KC_TAB,
                                 KC_MPRV, C(A(KC_F13)),
                                         C(A(KC_SLSH)),
                  C(KC_Z), C(S(KC_Z)), C(A(S(KC_DEL))),
                                             PALM_L_PC,
          C(A(KC_F9)), C(A(KC_F10)), C(A(KC_F11)), C(A(KC_F12)), A(S(KC_F13)), A(S(KC_F14)), A(S(KC_F15)), _, _,
-         C(A(KC_6)), _CAS_7, _CAS_8, _CAS_9, C(A(KC_0)), C(A(KC_F21)),
+         C(A(KC_6)), C(A(KC_7)), C(A(KC_8)), C(A(KC_9)), C(A(KC_0)), C(A(KC_F21)),
          C(A(KC_Y)), _CAS_U, _CAS_I, _CAS_O, C(A(KC_P)), C(A(KC_F22)),
-         C(A(KC_H)), S(KC_TAB), _HIDE_CLOSE_PC, KC_TAB, C(A(KC_SCLN)), C(A(KC_F23)),
+         C(A(KC_H)), _CAS_J, _CAS_K, _CAS_L, C(A(KC_SCLN)), C(A(KC_F23)),
          C(A(KC_N)), _CAS_M, KC_PGUP, _CAS_DOT, C(A(KC_QUOT)), C(A(KC_F24)),
                         C(KC_HOME), KC_PGDN, C(KC_END), C(A(KC_NUBS)),
          C(A(KC_PAUS)), C(A(KC_SPC)),
@@ -2373,11 +2550,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 [_PALM_R_PC] = LAYOUT(
          C(A(KC_INS)), C(A(KC_F1)), C(A(KC_F2)), C(A(KC_F3)), C(A(KC_F4)), C(A(KC_F5)), C(A(KC_F6)), C(A(KC_F7)), C(A(KC_F8)),
-         C(A(KC_F17)), C(A(KC_1)), C(A(KC_2)), C(A(KC_3)), C(A(KC_4)), C(A(KC_5)),
+         C(A(KC_F17)), KC_MPRV, KC_VOLD, KC_MPLY, KC_VOLU, KC_MNXT,
          C(A(KC_F18)), C(A(KC_Q)), C(A(KC_W)), C(A(KC_E)), C(A(KC_R)), C(A(KC_T)),
          C(A(KC_F19)), C(A(KC_A)), C(A(KC_S)), C(A(KC_D)), C(A(KC_F)), C(A(KC_G)),
          C(A(KC_F20)), C(A(KC_Z)), C(A(KC_X)), C(A(KC_C)), C(A(KC_V)), C(A(KC_B)),
-                    C(A(KC_GRV)), KC_VOLD, KC_MPLY, KC_VOLU,
+                    C(A(KC_GRV)), S(KC_TAB), _HIDE_CLOSE_PC, KC_TAB,
                                 C(A(KC_BSPC)), C(A(KC_F13)),
                                               C(A(KC_SLSH)),
                        C(KC_Z), C(S(KC_Z)), C(A(S(KC_DEL))),
@@ -2818,18 +2995,24 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
         // native window switching support
         case KC_TAB: {
-          if (isMac) {
-            up(KC_LSFT); up(KC_LALT); up(KC_LCTL);
-          } else if (isPc) {
+          if (palm_r_mac_layer) { down(KC_LGUI); };
+          if (palm_r_pc_layer) { down(KC_LALT); };
+          if (palm_l_mac_layer) {
+            up(KC_LCTL); up(KC_LSFT); up(KC_LALT);
+          }
+          if (palm_l_mac_layer) {
             up(KC_LCTL);
           }
           return true;
         }
 
         case S(KC_TAB): {
-          if (isMac) {
-            up(KC_LALT); up(KC_LCTL);
-          } else if (isPc) {
+          if (palm_r_mac_layer) { down(KC_LGUI); };
+          if (palm_r_pc_layer) { down(KC_LALT); };
+          if (palm_l_mac_layer) {
+            up(KC_LCTL); up(KC_LALT);
+          }
+          if (palm_l_mac_layer) {
             up(KC_LCTL);
           }
           return true;
@@ -3167,9 +3350,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case _CAS_U: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_U, KC_NO, KC_NO, KC_NO, KC_NO, KC_LCTL, KC_LALT, KC_NO, KC_NO, KC_U, KC_LSFT, KC_LCTL, KC_LALT, KC_NO, pressed, AUTOSHIFT_SPECIAL_TERM, true); }
         case _CAS_I: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_I, KC_NO, KC_NO, KC_NO, KC_NO, KC_LCTL, KC_LALT, KC_NO, KC_NO, KC_I, KC_LSFT, KC_LCTL, KC_LALT, KC_NO, pressed, AUTOSHIFT_SPECIAL_TERM, true); }
         case _CAS_O: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_O, KC_NO, KC_NO, KC_NO, KC_NO, KC_LCTL, KC_LALT, KC_NO, KC_NO, KC_O, KC_LSFT, KC_LCTL, KC_LALT, KC_NO, pressed, AUTOSHIFT_SPECIAL_TERM, true); }
-        case _CAS_7: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_7, KC_NO, KC_NO, KC_NO, KC_NO, KC_LCTL, KC_LALT, KC_NO, KC_NO, KC_7, KC_LSFT, KC_LCTL, KC_LALT, KC_NO, pressed, AUTOSHIFT_SPECIAL_TERM, true); }
-        case _CAS_8: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_8, KC_NO, KC_NO, KC_NO, KC_NO, KC_LCTL, KC_LALT, KC_NO, KC_NO, KC_8, KC_LSFT, KC_LCTL, KC_LALT, KC_NO, pressed, AUTOSHIFT_SPECIAL_TERM, true); }
-        case _CAS_9: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_9, KC_NO, KC_NO, KC_NO, KC_NO, KC_LCTL, KC_LALT, KC_NO, KC_NO, KC_9, KC_LSFT, KC_LCTL, KC_LALT, KC_NO, pressed, AUTOSHIFT_SPECIAL_TERM, true); }
+        case _CAS_J: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_J, KC_NO, KC_NO, KC_NO, KC_NO, KC_LCTL, KC_LALT, KC_NO, KC_NO, KC_J, KC_LSFT, KC_LCTL, KC_LALT, KC_NO, pressed, AUTOSHIFT_SPECIAL_TERM, true); }
+        case _CAS_K: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_K, KC_NO, KC_NO, KC_NO, KC_NO, KC_LCTL, KC_LALT, KC_NO, KC_NO, KC_K, KC_LSFT, KC_LCTL, KC_LALT, KC_NO, pressed, AUTOSHIFT_SPECIAL_TERM, true); }
+        case _CAS_L: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_L, KC_NO, KC_NO, KC_NO, KC_NO, KC_LCTL, KC_LALT, KC_NO, KC_NO, KC_L, KC_LSFT, KC_LCTL, KC_LALT, KC_NO, pressed, AUTOSHIFT_SPECIAL_TERM, true); }
         case _CAS_M: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_M, KC_NO, KC_NO, KC_NO, KC_NO, KC_LCTL, KC_LALT, KC_NO, KC_NO, KC_M, KC_LSFT, KC_LCTL, KC_LALT, KC_NO, pressed, AUTOSHIFT_SPECIAL_TERM, true); }
         case _CAS_DOT: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_DOT, KC_NO, KC_NO, KC_NO, KC_NO, KC_LCTL, KC_LALT, KC_NO, KC_NO, KC_DOT, KC_LSFT, KC_LCTL, KC_LALT, KC_NO, pressed, AUTOSHIFT_SPECIAL_TERM, true); }
         case _MEH_HYPR_F15: { return replace_key_and_mods_if_held_replace_key_and_mods(KC_F15, KC_NO, KC_NO, KC_NO, KC_NO, KC_LGUI, KC_LALT, KC_LCTL, KC_NO, KC_F15, KC_LGUI, KC_LSFT, KC_LALT, KC_LCTL, pressed, 250, true); }
