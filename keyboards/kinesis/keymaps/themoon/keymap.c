@@ -3452,14 +3452,14 @@ void led_set_user(uint8_t usb_led) {
   caps_led ? led_blue_on() : led_blue_off();
   lead_led ? switch_lead_led_on() : switch_lead_led_off();
 
-  if (macro1_recording) {
+  if (macro1_recording || macro3_recording) {
     led_red_on();
     led_yellow_on();
   } else {
     if (!lead_led && !change_lang_led) {
       led_yellow_off();
     }
-    if (!macro2_recording & !lead_led) {
+    if (!macro2_recording & !macro3_recording  & !macro4_recording & !lead_led) {
       led_red_off();
     }
   }
@@ -3471,7 +3471,7 @@ void led_set_user(uint8_t usb_led) {
     if (!lead_led && !change_lang_led) {
       led_green_off();
     }
-    if (!macro1_recording & !lead_led) {
+    if (!macro1_recording & !macro3_recording  & !macro4_recording & !lead_led) {
       led_red_off();
     }
   }
