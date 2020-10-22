@@ -1876,7 +1876,7 @@ void dynamic_macro_1_reset (qk_tap_dance_state_t *state, void *user_data) {
 }
 
 
-//**************** DYNAMIC MACRO 1 TAP *********************//
+//**************** DYNAMIC MACRO 2 TAP *********************//
 static tap dynamic_macro_2_state = { .is_press_action = true, .state = 0 };
 
 void dynamic_macro_2_finished (qk_tap_dance_state_t *state, void *user_data) {
@@ -1901,7 +1901,7 @@ void dynamic_macro_2_finished (qk_tap_dance_state_t *state, void *user_data) {
        if (!lead_led) { led_red_off(); if (!change_lang_led) { led_yellow_off(); } led_green_off(); };
 
     } else {
-      switch (dynamic_macro_1_state.state) {
+      switch (dynamic_macro_2_state.state) {
           case SINGLE_TAP:
             if (macro3_overridden) {
                 led_yellow_on(); playMacro3(); if (!change_lang_led) { led_yellow_off(); }
@@ -3144,7 +3144,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case CTRL_BSLS: {
           if (is_after_lead(KC_BSLS, pressed)) { return false; }
           static uint16_t ctrl_bsls_layer_timer;
-          momentary_layer_tap_with_hold(KC_BSLS, KC_NO, KC_LCTL, KC_NO, KC_NO, KC_NO, &ctrl_bsls_layer_timer, &ctrl_bsls_interrupted, pressed, AUTOSHIFT_SPECIAL_TERM, 300, true, KC_BSLS, KC_LSFT, KC_NO);
+          momentary_layer_tap_with_hold(KC_BSLS, KC_NO, KC_LCTL, KC_NO, KC_NO, KC_NO, &ctrl_bsls_layer_timer, &ctrl_bsls_interrupted, pressed, AUTOSHIFT_SPECIAL_TERM, 600, true, KC_BSLS, KC_LSFT, KC_NO);
           return true;
         }
 
@@ -3158,7 +3158,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case ALT_EQL_MAC: {
           if (is_after_lead(KC_EQL, pressed)) { return false; }
           static uint16_t alt_eql_mac_layer_timer;
-          momentary_layer_tap_with_hold(KC_EQL, KC_NO, KC_LALT, KC_NO, KC_NO, KC_NO, &alt_eql_mac_layer_timer, &alt_eql_mac_interrupted, pressed, AUTOSHIFT_SPECIAL_TERM, 300, false, KC_EQL, KC_LSFT, KC_NO);
+          momentary_layer_tap_with_hold(KC_EQL, KC_NO, KC_LALT, KC_NO, KC_NO, KC_NO, &alt_eql_mac_layer_timer, &alt_eql_mac_interrupted, pressed, AUTOSHIFT_SPECIAL_TERM, 600, false, KC_EQL, KC_LSFT, KC_NO);
           return true;
         }
 
@@ -3249,14 +3249,14 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case RGUI_BSLS: {
           if (is_after_lead(KC_BSLS, pressed)) { return false; }
           static uint16_t rgui_bsls_layer_timer;
-          momentary_layer_tap_with_hold(KC_BSLS, KC_NO, KC_RGUI, KC_NO, KC_NO, KC_NO, &rgui_bsls_layer_timer, &rgui_bsls_interrupted, pressed, AUTOSHIFT_SPECIAL_TERM, 300, false, KC_BSLS, KC_LSFT, KC_NO);
+          momentary_layer_tap_with_hold(KC_BSLS, KC_NO, KC_RGUI, KC_NO, KC_NO, KC_NO, &rgui_bsls_layer_timer, &rgui_bsls_interrupted, pressed, AUTOSHIFT_SPECIAL_TERM, 600, false, KC_BSLS, KC_LSFT, KC_NO);
           return true;
         }
 
         case ALT_EQL_PC: {
           if (is_after_lead(KC_EQL, pressed)) { return false; }
           static uint16_t alt_eql_pc_layer_timer;
-          momentary_layer_tap_with_hold(KC_EQL, KC_NO, KC_LALT, KC_NO, KC_NO, KC_NO, &alt_eql_pc_layer_timer, &alt_eql_pc_interrupted, pressed, AUTOSHIFT_SPECIAL_TERM, 400, false, KC_EQL, KC_LSFT, KC_NO);
+          momentary_layer_tap_with_hold(KC_EQL, KC_NO, KC_LALT, KC_NO, KC_NO, KC_NO, &alt_eql_pc_layer_timer, &alt_eql_pc_interrupted, pressed, AUTOSHIFT_SPECIAL_TERM, 600, false, KC_EQL, KC_LSFT, KC_NO);
           return true;
         }
 
@@ -3464,7 +3464,7 @@ void led_set_user(uint8_t usb_led) {
     }
   }
 
-  if (macro2_recording) {
+  if (macro2_recording || macro4_recording) {
     led_red_on();
     led_green_on();
   } else {
