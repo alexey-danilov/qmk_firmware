@@ -673,19 +673,19 @@ void led_blue_off(void) {
 }
 
 
-void red_led_off_is_not_used() {
+void red_led_off_is_not_used(void) {
     if (!macro1_recording && !macro2_recording && !macro3_recording && !macro4_recording && !lead_led) { led_red_off(); }
 }
 
-void yellow_led_off_is_not_used() {
+void yellow_led_off_is_not_used(void) {
     if (!macro1_recording && !macro3_recording && !change_lang_led && !lead_led) { led_yellow_off(); }
 }
 
-void green_led_off_is_not_used() {
+void green_led_off_is_not_used(void) {
     if (!macro2_recording && !macro4_recording && !lead_led) { led_green_off(); }
 }
 
-void blue_led_off_is_not_used() {
+void blue_led_off_is_not_used(void) {
     if (!caps_led) { led_blue_off(); }
 }
 
@@ -700,9 +700,9 @@ void switch_lead_led_on(void) {
 
 void switch_lead_led_off(void) {
   if (lead_led) {
-    yellow_led_off_is_not_used();
-    green_led_off_is_not_used();
-    red_led_off_is_not_used();
+    if (!macro1_recording && !macro2_recording && !macro3_recording && !macro4_recording) { led_red_off(); }
+    if (!macro1_recording && !macro3_recording && !change_lang_led) { led_yellow_off(); }
+    if (!macro2_recording && !macro4_recording) { led_green_off(); }
     lead_led = false;
   }
 }
@@ -1153,6 +1153,8 @@ void fw_finished (qk_tap_dance_state_t *state, void *user_data) {
       case DOUBLE_TAP:
           macro1_overridden = false;
           macro2_overridden = false;
+          macro3_overridden = false;
+          macro4_overridden = false;
           blink_all_leds_short_and_short();
           break;
 
@@ -2871,7 +2873,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     }
 
     // custom dynamic macros don't play nicely with standard LT functionality;
-    if ((macro1_recording || macro2_recording) && pressed) {
+    if ((macro1_recording || macro2_recording || macro3_recording || macro4_recording) && pressed) {
       if (keycode == CTRL_SPACE || keycode == CMD_SPACE) {
         key_code(KC_SPC);
         return false;

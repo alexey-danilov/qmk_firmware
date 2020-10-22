@@ -4,8 +4,8 @@
 #define QUAD_TAP_TIMEOUT 400
 #define MACRO_TIMEOUT 700
 
-#define DEF_DM4 "_"
-#define DEF_DM4 "_"
+#define DEF_DM4 ""
+#define DEF_DM4 ""
 #define DEF_DM3 ""
 #define DEF_DM4 ""
 
@@ -17,7 +17,7 @@
 #define AUTOSHIFT_SPECIAL_TERM 150 // ' -> "
 #define AUTOSHIFT_NUMBERS_TERM 150 // mod + numbers: cmd + 2 -> cmd + shift + 2
 
-#define MACRO_BUFFER 512 // real size of buffer will be less: it holds 2 keys for a single press + modifiers; roughly / 2.5
+#define MACRO_BUFFER 750 // real size of buffer will be less: it holds 2 keys for a single press + modifiers; roughly / 2.5
 
 #include "../../config.h"
 #endif
