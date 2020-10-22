@@ -4,8 +4,8 @@
 #define QUAD_TAP_TIMEOUT 400
 #define MACRO_TIMEOUT 700
 
-#define DEF_DM4 ""
-#define DEF_DM4 ""
+#define DEF_DM1 ""
+#define DEF_DM2 ""
 #define DEF_DM3 ""
 #define DEF_DM4 ""
 
