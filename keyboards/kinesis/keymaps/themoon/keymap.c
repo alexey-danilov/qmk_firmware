@@ -193,8 +193,8 @@ static bool failsafePc;
 static bool caps_led;
 static bool change_lang_led;
 static bool trigger_lang_change;
-static bool scroll_left_led;
-static bool scroll_right_led;
+static bool scroll_from_left_led;
+static bool scroll_from_right_led;
 static bool lead_led;
 static bool init_complete;
 
@@ -940,7 +940,7 @@ bool change_lang(uint16_t lang_switch_code, uint16_t mod_to_be_replaced, uint16_
       up(mod_to_be_replaced);
 
       if (held_shorter(hold_timer, AUTOSHIFT_SPECIAL_TERM)){
-          scroll_right_led = true;
+          scroll_from_right_led = true;
           trigger_lang_change = true;
           with_2_mods(lang_switch_code, lang_switch_mod1, lang_switch_mod2);
           if (isMac && capsOnHardCheck()) {
@@ -1856,16 +1856,16 @@ void dynamic_macro_1_finished (qk_tap_dance_state_t *state, void *user_data) {
       switch (dynamic_macro_1_state.state) {
           case SINGLE_TAP:
             if (macro1_overridden) {
-                led_yellow_on(); playMacro1(); yellow_led_off_is_not_used();
+                scroll_from_left_led = true; playMacro1();
             } else {
-                SEND_STRING(DEF_DM1); key_code(KC_ENTER); led_yellow_on(); _delay_ms(1000); yellow_led_off_is_not_used();
+                led_yellow_on(); SEND_STRING(DEF_DM1); key_code(KC_ENTER); yellow_led_off_is_not_used();
             }; break;
 
           case DOUBLE_TAP: 
             if (macro2_overridden) {
-                led_green_on(); playMacro2(); green_led_off_is_not_used();
+                scroll_from_left_led = true; playMacro2();
             } else {
-               SEND_STRING(DEF_DM2); key_code(KC_ENTER); led_green_on(); _delay_ms(1000); green_led_off_is_not_used();
+                led_green_on(); SEND_STRING(DEF_DM2); key_code(KC_ENTER); green_led_off_is_not_used();
             }; break;
 
           case SINGLE_HOLD:
@@ -1923,16 +1923,16 @@ void dynamic_macro_2_finished (qk_tap_dance_state_t *state, void *user_data) {
       switch (dynamic_macro_2_state.state) {
           case SINGLE_TAP:
             if (macro3_overridden) {
-                led_yellow_on(); playMacro3(); yellow_led_off_is_not_used();
+                scroll_from_right_led = true; playMacro3();
             } else {
-                SEND_STRING(DEF_DM3); led_yellow_on(); _delay_ms(1000); yellow_led_off_is_not_used();
+                led_yellow_on(); SEND_STRING(DEF_DM3); key_code(KC_ENTER); led_yellow_on(); yellow_led_off_is_not_used();
             }; break;
 
           case DOUBLE_TAP:
             if (macro4_overridden) {
-                led_green_on(); playMacro4(); green_led_off_is_not_used();
+               scroll_from_right_led = true; playMacro4();
             } else {
-               SEND_STRING(DEF_DM4); led_green_on(); _delay_ms(1000); green_led_off_is_not_used();
+               led_green_on(); SEND_STRING(DEF_DM4); key_code(KC_ENTER); green_led_off_is_not_used();
             }; break;
 
           case SINGLE_HOLD:
@@ -2708,8 +2708,8 @@ void matrix_scan_user(void) {
      }
    }
 
-   if (scroll_left_led) {
-     scroll_left_led = false;
+   if (scroll_from_left_led) {
+     scroll_from_left_led = false;
      led_blue_on(); _delay_ms(20);
      led_green_on(); _delay_ms(20);
      blue_led_off_is_not_used();
@@ -2720,8 +2720,8 @@ void matrix_scan_user(void) {
      if (!macro1_recording && !macro2_recording && !macro3_recording && !macro4_recording && !lead_led) { _delay_ms(20); led_red_off(); }
    }
 
-   if (scroll_right_led) {
-     scroll_right_led = false;
+   if (scroll_from_right_led) {
+     scroll_from_right_led = false;
      led_red_on(); _delay_ms(20);
      led_yellow_on(); _delay_ms(20);
      red_led_off_is_not_used();
@@ -3140,11 +3140,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           if (is_after_lead(KC_F3, pressed)) { return false; }
           static uint16_t cmd_esc_layer_timer;
           if (following_custom_leader(KC_LEFT, KC_LGUI, KC_LALT, KC_NO, &left_arrow_timer, !pressed, 1000)) {
-            //  if (pressed) { scroll_left_led = true; }
+            //  if (pressed) { scroll_from_left_led = true; }
             return true;
           }
           if (following_custom_leader(KC_RGHT, KC_LGUI, KC_LALT, KC_NO, &right_arrow_timer, !pressed, 1000)) {
-            //  if (pressed) { scroll_right_led = true; }
+            //  if (pressed) { scroll_from_right_led = true; }
             return true;
           }
           if (momentary_layer_tap(KC_ESC, KC_NO, KC_LGUI, KC_NO, KC_NO, KC_NO, &cmd_esc_layer_timer, &cmd_esc_interrupted, pressed, 200, true)) {
@@ -3192,7 +3192,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           if (is_after_lead(KC_TAB, pressed)) { return false; }
           // invert lang led after pressing esc as a leader key + tab
           if (following_custom_leader(KC_NO, KC_NO, KC_NO, KC_NO, &esc_timer, pressed, 300)) {
-            scroll_right_led = true;
+            scroll_from_right_led = true;
             trigger_lang_change = true;
             return false;
           }
@@ -3245,11 +3245,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           if (is_after_lead(KC_F3, pressed)) { return false; }
           static uint16_t ctrl_esc_layer_timer;
           if (following_custom_leader(KC_HOME, KC_NO, KC_NO, KC_NO, &left_arrow_timer, !pressed, 1000)) {
-            //  if (pressed) { scroll_left_led = true; }
+            //  if (pressed) { scroll_from_left_led = true; }
             return true;
           }
           if (following_custom_leader(KC_END, KC_NO, KC_NO, KC_NO, &right_arrow_timer, !pressed, 1000)) {
-            //  if (pressed) { scroll_right_led = true; }
+            //  if (pressed) { scroll_from_right_led = true; }
             return true;
           }
           if (momentary_layer_tap(KC_ESC, KC_NO, KC_LCTL, KC_NO, KC_NO, KC_NO, &ctrl_esc_layer_timer, &ctrl_esc_interrupted, pressed, 200, true)) {
@@ -3297,7 +3297,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           if (is_after_lead(KC_TAB, pressed)) { return false; }
           // invert lang led after pressing esc as a leader key + tab
           if (following_custom_leader(KC_NO, KC_NO, KC_NO, KC_NO, &esc_timer, pressed, 300)) {
-            scroll_right_led = true;
+            scroll_from_right_led = true;
             trigger_lang_change = true;
             return false;
           }
