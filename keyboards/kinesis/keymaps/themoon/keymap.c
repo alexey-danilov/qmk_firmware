@@ -673,19 +673,19 @@ void led_blue_off(void) {
 }
 
 
-void red_led_off_is_not_used(void) {
+void red_led_off_if_not_used(void) {
     if (!macro1_recording && !macro2_recording && !macro3_recording && !macro4_recording && !lead_led) { led_red_off(); }
 }
 
-void yellow_led_off_is_not_used(void) {
+void yellow_led_off_if_not_used(void) {
     if (!macro1_recording && !macro3_recording && !change_lang_led && !lead_led) { led_yellow_off(); }
 }
 
-void green_led_off_is_not_used(void) {
+void green_led_off_if_not_used(void) {
     if (!macro2_recording && !macro4_recording && !lead_led) { led_green_off(); }
 }
 
-void blue_led_off_is_not_used(void) {
+void blue_led_off_if_not_used(void) {
     if (!caps_led) { led_blue_off(); }
 }
 
@@ -711,19 +711,36 @@ void all_leds_on(void) {
   led_red_on(); led_yellow_on(); led_green_on(); led_blue_on();
 }
 
-void all_leds_off(void) {
-    yellow_led_off_is_not_used();
-    green_led_off_is_not_used();
-    red_led_off_is_not_used();
-    blue_led_off_is_not_used();
+void all_leds_off_force(void) {
+    macro1_recording=false;
+    macro2_recording=false;
+    macro3_recording=false;
+    macro4_recording=false;
+    caps_led=false;
+    change_lang_led=false;
+    trigger_lang_change=false;
+    scroll_from_left_led=false;
+    scroll_from_right_led=false;
+    lead_led=false;
+    led_red_off();
+    led_green_off();
+    led_blue_off();
+    led_yellow_off();
+}
+
+void all_leds_off_if_not_used(void) {
+    yellow_led_off_if_not_used();
+    green_led_off_if_not_used();
+    red_led_off_if_not_used();
+    blue_led_off_if_not_used();
 }
 
 void blink_all_leds_short(void) {
-  all_leds_on(); _delay_ms(100); all_leds_off();
+  all_leds_on(); _delay_ms(100); all_leds_off_if_not_used();
 }
 
 void blink_all_leds_long(void) {
-  all_leds_on(); _delay_ms(1000); all_leds_off();
+  all_leds_on(); _delay_ms(1000); all_leds_off_if_not_used();
 }
 
 void blink_all_leds_short_and_short(void) {
@@ -1115,7 +1132,7 @@ void fw_finished (qk_tap_dance_state_t *state, void *user_data) {
   fw_tap_state.state = cur_dance(state);
     switch (fw_tap_state.state) {
       case SINGLE_TAP:
-          all_leds_off();
+          all_leds_off_if_not_used();
           if (isMac) {
             _delay_ms(250);
             led_yellow_on();
@@ -1140,7 +1157,7 @@ void fw_finished (qk_tap_dance_state_t *state, void *user_data) {
 
       case SINGLE_HOLD:
           layer_off(_KEYB_CONTROL);
-          all_leds_off();
+          all_leds_off_force();
           if (isMac) {
             layer_on(_FAILSAFE_MAC);
             led_yellow_on();
@@ -1155,6 +1172,7 @@ void fw_finished (qk_tap_dance_state_t *state, void *user_data) {
           macro2_overridden = false;
           macro3_overridden = false;
           macro4_overridden = false;
+          all_leds_off_force();
           blink_all_leds_short_and_short();
           break;
 
@@ -1179,17 +1197,17 @@ void mac_layer_finished (qk_tap_dance_state_t *state, void *user_data) {
   switch (mac_layer_tap_state.state) {
     case SINGLE_TAP:
         layer_off(_KEYB_CONTROL);
-        all_leds_off();
+        all_leds_off_if_not_used();
         layer_on(_FAILSAFE_MAC);
         break;
     case DOUBLE_HOLD:
         layer_off(_FAILSAFE_MAC);
         layer_off(_KEYB_CONTROL);
-        all_leds_off();
+        all_leds_off_if_not_used();
         eeconfig_update_default_layer(1UL << _MAC);
         default_layer_set(1UL << _MAC);
         isMac = true; isPc = false;
-        all_leds_off();
+        all_leds_off_if_not_used();
         led_red_on();
         led_yellow_on();
         _delay_ms(250);
@@ -1201,7 +1219,7 @@ void mac_layer_finished (qk_tap_dance_state_t *state, void *user_data) {
         _delay_ms(250);
         led_yellow_on();
         _delay_ms(250);
-        all_leds_off();
+        all_leds_off_if_not_used();
         break;
     default: break;
   }
@@ -1236,12 +1254,12 @@ void pc_layer_finished (qk_tap_dance_state_t *state, void *user_data) {
     case SINGLE_TAP:
         layer_off(_KEYB_CONTROL);
         layer_on(_FAILSAFE_PC);
-        all_leds_off();
+        all_leds_off_if_not_used();
         break;
     case DOUBLE_HOLD:
         layer_off(_FAILSAFE_PC);
         layer_off(_KEYB_CONTROL);
-        all_leds_off();
+        all_leds_off_if_not_used();
         eeconfig_update_default_layer(1UL << _PC);
         default_layer_set(1UL << _PC);
         isPc = true; isMac = false;
@@ -1256,7 +1274,7 @@ void pc_layer_finished (qk_tap_dance_state_t *state, void *user_data) {
         _delay_ms(250);
         led_green_on();
         _delay_ms(250);
-        all_leds_off();
+        all_leds_off_if_not_used();
         break;
     default: break;
   }
@@ -1819,7 +1837,7 @@ void fw_cancel_finished (qk_tap_dance_state_t *state, void *user_data) {
   fw_cancel_tap_state.state = cur_dance(state);
   if (!is_after_lead(KC_F5, true)) {
     switch (fw_cancel_tap_state.state) {
-      default: layer_off(_KEYB_CONTROL); all_leds_off(); break;
+      default: layer_off(_KEYB_CONTROL); all_leds_off_if_not_used(); break;
     }
   }
 }
@@ -1850,7 +1868,7 @@ void dynamic_macro_1_finished (qk_tap_dance_state_t *state, void *user_data) {
        lshift_macro_pressed = false;
        rshift_macro_pressed = false;
 
-       red_led_off_is_not_used(); yellow_led_off_is_not_used(); green_led_off_is_not_used();
+       red_led_off_if_not_used(); yellow_led_off_if_not_used(); green_led_off_if_not_used();
 
     } else {
       switch (dynamic_macro_1_state.state) {
@@ -1858,14 +1876,14 @@ void dynamic_macro_1_finished (qk_tap_dance_state_t *state, void *user_data) {
             if (macro1_overridden) {
                 scroll_from_left_led = true; playMacro1();
             } else {
-                led_yellow_on(); SEND_STRING(DEF_DM1); key_code(KC_ENTER); yellow_led_off_is_not_used();
+                led_yellow_on(); SEND_STRING(DEF_DM1); key_code(KC_ENTER); yellow_led_off_if_not_used();
             }; break;
 
           case DOUBLE_TAP: 
             if (macro2_overridden) {
                 scroll_from_left_led = true; playMacro2();
             } else {
-                led_green_on(); SEND_STRING(DEF_DM2); key_code(KC_ENTER); green_led_off_is_not_used();
+                led_green_on(); SEND_STRING(DEF_DM2); key_code(KC_ENTER); green_led_off_if_not_used();
             }; break;
 
           case SINGLE_HOLD:
@@ -1917,7 +1935,7 @@ void dynamic_macro_2_finished (qk_tap_dance_state_t *state, void *user_data) {
        lshift_macro_pressed = false;
        rshift_macro_pressed = false;
 
-       red_led_off_is_not_used(); yellow_led_off_is_not_used(); green_led_off_is_not_used();
+       red_led_off_if_not_used(); yellow_led_off_if_not_used(); green_led_off_if_not_used();
 
     } else {
       switch (dynamic_macro_2_state.state) {
@@ -1925,14 +1943,14 @@ void dynamic_macro_2_finished (qk_tap_dance_state_t *state, void *user_data) {
             if (macro3_overridden) {
                 scroll_from_right_led = true; playMacro3();
             } else {
-                led_yellow_on(); SEND_STRING(DEF_DM3); key_code(KC_ENTER); led_yellow_on(); yellow_led_off_is_not_used();
+                led_yellow_on(); SEND_STRING(DEF_DM3); key_code(KC_ENTER); led_yellow_on(); yellow_led_off_if_not_used();
             }; break;
 
           case DOUBLE_TAP:
             if (macro4_overridden) {
                scroll_from_right_led = true; playMacro4();
             } else {
-               led_green_on(); SEND_STRING(DEF_DM4); key_code(KC_ENTER); green_led_off_is_not_used();
+               led_green_on(); SEND_STRING(DEF_DM4); key_code(KC_ENTER); green_led_off_if_not_used();
             }; break;
 
           case SINGLE_HOLD:
@@ -2673,12 +2691,12 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 };
 
 void matrix_init_user(void) {
-    all_leds_off();
+    all_leds_off_if_not_used();
     led_red_on(); _delay_ms(200);
     led_yellow_on(); _delay_ms(200);
     led_green_on(); _delay_ms(200);
     led_blue_on(); wait_ms(500);
-    all_leds_off();
+    all_leds_off_if_not_used();
 
     switch (biton32(eeconfig_read_default_layer())) {
       case _MAC: isMac = true; isPc = false; break;
@@ -2704,7 +2722,7 @@ void matrix_scan_user(void) {
         led_yellow_on();
      } else {
         change_lang_led = false;
-        yellow_led_off_is_not_used();
+        yellow_led_off_if_not_used();
      }
    }
 
@@ -2712,11 +2730,11 @@ void matrix_scan_user(void) {
      scroll_from_left_led = false;
      led_blue_on(); _delay_ms(20);
      led_green_on(); _delay_ms(20);
-     blue_led_off_is_not_used();
+     blue_led_off_if_not_used();
      led_yellow_on(); _delay_ms(20);
-     green_led_off_is_not_used();
+     green_led_off_if_not_used();
      led_red_on(); _delay_ms(20);
-     yellow_led_off_is_not_used();
+     yellow_led_off_if_not_used();
      if (!macro1_recording && !macro2_recording && !macro3_recording && !macro4_recording && !lead_led) { _delay_ms(20); led_red_off(); }
    }
 
@@ -2724,11 +2742,11 @@ void matrix_scan_user(void) {
      scroll_from_right_led = false;
      led_red_on(); _delay_ms(20);
      led_yellow_on(); _delay_ms(20);
-     red_led_off_is_not_used();
+     red_led_off_if_not_used();
      led_green_on(); _delay_ms(20);
-     yellow_led_off_is_not_used();
+     yellow_led_off_if_not_used();
      led_blue_on(); _delay_ms(20);
-     green_led_off_is_not_used();
+     green_led_off_if_not_used();
      if (!caps_led) { _delay_ms(20); led_blue_off(); }
    }
 
@@ -3470,7 +3488,7 @@ void led_set_user(uint8_t usb_led) {
 
   caps_led ? led_blue_on() : led_blue_off();
   lead_led ? switch_lead_led_on() : switch_lead_led_off();
-  red_led_off_is_not_used();
+  red_led_off_if_not_used();
 
   if (macro1_recording || macro3_recording) {
     led_red_on();
