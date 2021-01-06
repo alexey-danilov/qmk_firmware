@@ -1132,6 +1132,7 @@ void fw_finished (qk_tap_dance_state_t *state, void *user_data) {
   fw_tap_state.state = cur_dance(state);
     switch (fw_tap_state.state) {
       case SINGLE_TAP:
+          key_code(KC_F17);
           all_leds_off_if_not_used();
           if (isMac) {
             _delay_ms(250);
