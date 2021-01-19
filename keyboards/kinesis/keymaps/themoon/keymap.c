@@ -736,7 +736,7 @@ void all_leds_off_if_not_used(void) {
 }
 
 void blink_all_leds_short(void) {
-  all_leds_on(); _delay_ms(200); all_leds_off_if_not_used();
+  all_leds_on(); _delay_ms(100); all_leds_off_if_not_used();
 }
 
 void blink_all_leds_long(void) {
@@ -744,11 +744,11 @@ void blink_all_leds_long(void) {
 }
 
 void blink_all_leds_short_and_short(void) {
-  blink_all_leds_short(); _delay_ms(200); blink_all_leds_short();
+  blink_all_leds_short(); _delay_ms(100); blink_all_leds_short();
 }
 
 void blink_all_leds_short_and_long(void) {
-  blink_all_leds_short(); _delay_ms(200); blink_all_leds_long();
+  blink_all_leds_short(); _delay_ms(100); blink_all_leds_long();
 }
 
 bool capsOnHardCheck(void) {
@@ -957,7 +957,7 @@ bool change_lang(uint16_t lang_switch_code, uint16_t mod_to_be_replaced, uint16_
       up(mod_to_be_replaced);
 
       if (held_shorter(hold_timer, AUTOSHIFT_SPECIAL_TERM)){
-          scroll_from_right_led = true;
+          scroll_from_left_led = true;
           trigger_lang_change = true;
           with_2_mods(lang_switch_code, lang_switch_mod1, lang_switch_mod2);
           if (isMac && capsOnHardCheck()) {
@@ -1087,22 +1087,29 @@ enum {
   MAC_EXIT_FAILSAFE = 7,
   PC_FAILSAFE = 8,
   PC_EXIT_FAILSAFE = 9,
-  F5_TD = 10,
-  F6_TD = 11,
-  F7_TD = 12,
-  F8_TD = 13,
-  F9_TD = 14,
-  F10_TD = 15,
-  F11_TD = 16,
-  F12_TD = 17,
-  F17_TD = 18,
-  F18_TD = 19,
-  F19_TD = 20,
-  F20_TD = 21,
-  F21_TD = 22,
-  F22_TD = 23,
-  F23_TD = 24,
-  F24_TD = 25
+  SIDE_F5_TD = 10,
+  SIDE_F6_TD = 11,
+  SIDE_F7_TD = 12,
+  SIDE_F8_TD = 13,
+  SIDE_F9_TD = 14,
+  SIDE_F10_TD = 15,
+  SIDE_F11_TD = 16,
+  SIDE_F12_TD = 17,
+  SIDE_F17_TD = 18,
+  SIDE_F18_TD = 19,
+  SIDE_F19_TD = 20,
+  SIDE_F20_TD = 21,
+  SIDE_F21_TD = 22,
+  SIDE_SIDE_F22_TD = 23,
+  SIDE_F23_TD = 24,
+  SIDE_F24_TD = 25,
+  MAIN_F1_TD = 26,
+  MAIN_F2_TD = 27,
+  MAIN_F3_TD = 28,
+  MAIN_F4_TD = 29,
+  MAIN_F6_TD = 30,
+  MAIN_F7_TD = 31,
+  MAIN_F8_TD = 32
 };
 
 enum {
@@ -1125,7 +1132,7 @@ int cur_dance (qk_tap_dance_state_t *state) {
   else return 6;
 }
 
-//**************** FW TAP *********************//
+//**************** side FW TAP *********************//
 static tap fw_tap_state = { .is_press_action = true, .state = 0 };
 
 void fw_finished (qk_tap_dance_state_t *state, void *user_data) {
@@ -1342,10 +1349,206 @@ void status_reset (qk_tap_dance_state_t *state, void *user_data) {
   status_tap_state.state = 0;
 }
 
-//**************** F5 TAP *********************//
+//**************** main F1 TAP *********************//
+static tap main_f1_tap_state = { .is_press_action = true, .state = 0 };
+
+void main_f1_finished (qk_tap_dance_state_t *state, void *user_data) {
+  main_f1_tap_state.state = cur_dance(state);
+  if (!is_after_lead(KC_F1, true)) {
+    switch (main_f1_tap_state.state) {
+      case SINGLE_TAP:
+          key_code(KC_F1); break;
+
+      case SINGLE_HOLD:
+          with_1_mod(KC_F1, KC_LSFT); blink_all_leds_short(); break;
+
+      case DOUBLE_TAP:
+          with_1_mod(KC_F1, KC_LCTL); blink_all_leds_short_and_short(); break;
+
+      case DOUBLE_HOLD:
+          with_2_mods(KC_F1, KC_LCTL, KC_LSFT); scroll_from_left_led = true; break;
+
+      default: break;
+    }
+  }
+}
+
+void main_f1_reset (qk_tap_dance_state_t *state, void *user_data) {
+  main_f1_tap_state.state = 0;
+}
+
+//**************** main F2 TAP *********************//
+static tap main_f2_tap_state = { .is_press_action = true, .state = 0 };
+
+void main_f2_finished (qk_tap_dance_state_t *state, void *user_data) {
+  main_f2_tap_state.state = cur_dance(state);
+  if (!is_after_lead(KC_F2, true)) {
+    switch (main_f2_tap_state.state) {
+      case SINGLE_TAP:
+          key_code(KC_F2); break;
+
+      case SINGLE_HOLD:
+          with_1_mod(KC_F2, KC_LSFT); blink_all_leds_short(); break;
+
+      case DOUBLE_TAP:
+          with_1_mod(KC_F2, KC_LCTL); blink_all_leds_short_and_short(); break;
+
+      case DOUBLE_HOLD:
+          with_2_mods(KC_F2, KC_LCTL, KC_LSFT); scroll_from_left_led = true; break;
+
+      default: break;
+    }
+  }
+}
+
+void main_f2_reset (qk_tap_dance_state_t *state, void *user_data) {
+  main_f2_tap_state.state = 0;
+}
+
+//**************** main F3 TAP *********************//
+static tap main_f3_tap_state = { .is_press_action = true, .state = 0 };
+
+void main_f3_finished (qk_tap_dance_state_t *state, void *user_data) {
+  main_f3_tap_state.state = cur_dance(state);
+  if (!is_after_lead(KC_F3, true)) {
+    switch (main_f3_tap_state.state) {
+      case SINGLE_TAP:
+          key_code(KC_F3); break;
+
+      case SINGLE_HOLD:
+          with_1_mod(KC_F3, KC_LSFT); blink_all_leds_short(); break;
+
+      case DOUBLE_TAP:
+          with_1_mod(KC_F3, KC_LCTL); blink_all_leds_short_and_short(); break;
+
+      case DOUBLE_HOLD:
+          with_2_mods(KC_F3, KC_LCTL, KC_LSFT); scroll_from_left_led = true; break;
+
+      default: break;
+    }
+  }
+}
+
+void main_f3_reset (qk_tap_dance_state_t *state, void *user_data) {
+  main_f3_tap_state.state = 0;
+}
+
+//**************** main F4 TAP *********************//
+static tap main_f4_tap_state = { .is_press_action = true, .state = 0 };
+
+void main_f4_finished (qk_tap_dance_state_t *state, void *user_data) {
+  main_f4_tap_state.state = cur_dance(state);
+  if (!is_after_lead(KC_F4, true)) {
+    switch (main_f4_tap_state.state) {
+      case SINGLE_TAP:
+          key_code(KC_F4); break;
+
+      case SINGLE_HOLD:
+          with_1_mod(KC_F4, KC_LSFT); blink_all_leds_short(); break;
+
+      case DOUBLE_TAP:
+          with_1_mod(KC_F4, KC_LCTL); blink_all_leds_short_and_short(); break;
+
+      case DOUBLE_HOLD:
+          with_2_mods(KC_F4, KC_LCTL, KC_LSFT); scroll_from_left_led = true; break;
+
+      default: break;
+    }
+  }
+}
+
+void main_f4_reset (qk_tap_dance_state_t *state, void *user_data) {
+  main_f4_tap_state.state = 0;
+}
+
+//**************** main F6 TAP *********************//
+static tap main_f6_tap_state = { .is_press_action = true, .state = 0 };
+
+void main_f6_finished (qk_tap_dance_state_t *state, void *user_data) {
+  main_f6_tap_state.state = cur_dance(state);
+  if (!is_after_lead(KC_F6, true)) {
+    switch (main_f6_tap_state.state) {
+      case SINGLE_TAP:
+          key_code(KC_F6); break;
+
+      case SINGLE_HOLD:
+          with_1_mod(KC_F6, KC_LSFT); blink_all_leds_short(); break;
+
+      case DOUBLE_TAP:
+          with_1_mod(KC_F6, KC_LCTL); blink_all_leds_short_and_short(); break;
+
+      case DOUBLE_HOLD:
+          with_2_mods(KC_F6, KC_LCTL, KC_LSFT); scroll_from_left_led = true; break;
+
+      default: break;
+    }
+  }
+}
+
+void main_f6_reset (qk_tap_dance_state_t *state, void *user_data) {
+  main_f6_tap_state.state = 0;
+}
+
+//**************** main F7 TAP *********************//
+static tap main_f7_tap_state = { .is_press_action = true, .state = 0 };
+
+void main_f7_finished (qk_tap_dance_state_t *state, void *user_data) {
+  main_f7_tap_state.state = cur_dance(state);
+  if (!is_after_lead(KC_F7, true)) {
+    switch (main_f7_tap_state.state) {
+      case SINGLE_TAP:
+          key_code(KC_F7); break;
+
+      case SINGLE_HOLD:
+          with_1_mod(KC_F7, KC_LSFT); blink_all_leds_short(); break;
+
+      case DOUBLE_TAP:
+          with_1_mod(KC_F7, KC_LCTL); blink_all_leds_short_and_short(); break;
+
+      case DOUBLE_HOLD:
+          with_2_mods(KC_F7, KC_LCTL, KC_LSFT); scroll_from_left_led = true; break;
+
+      default: break;
+    }
+  }
+}
+
+void main_f7_reset (qk_tap_dance_state_t *state, void *user_data) {
+  main_f7_tap_state.state = 0;
+}
+
+//**************** main F8 TAP *********************//
+static tap main_f8_tap_state = { .is_press_action = true, .state = 0 };
+
+void main_f8_finished (qk_tap_dance_state_t *state, void *user_data) {
+  main_f8_tap_state.state = cur_dance(state);
+  if (!is_after_lead(KC_F8, true)) {
+    switch (main_f8_tap_state.state) {
+      case SINGLE_TAP:
+          key_code(KC_F8); break;
+
+      case SINGLE_HOLD:
+          with_1_mod(KC_F8, KC_LSFT); blink_all_leds_short(); break;
+
+      case DOUBLE_TAP:
+          with_1_mod(KC_F8, KC_LCTL); blink_all_leds_short_and_short(); break;
+
+      case DOUBLE_HOLD:
+          with_2_mods(KC_F8, KC_LCTL, KC_LSFT); scroll_from_left_led = true; break;
+
+      default: break;
+    }
+  }
+}
+
+void main_f8_reset (qk_tap_dance_state_t *state, void *user_data) {
+  main_f8_tap_state.state = 0;
+}
+
+//**************** side F5 TAP *********************//
 static tap f5_tap_state = { .is_press_action = true, .state = 0 };
 
-void f5_finished (qk_tap_dance_state_t *state, void *user_data) {
+void side_f5_finished (qk_tap_dance_state_t *state, void *user_data) {
   f5_tap_state.state = cur_dance(state);
   if (!is_after_lead(KC_F5, true)) {
     switch (f5_tap_state.state) {
@@ -1359,21 +1562,21 @@ void f5_finished (qk_tap_dance_state_t *state, void *user_data) {
           with_2_mods(KC_F5, KC_LALT, KC_LCTL); blink_all_leds_short_and_short(); break;
 
       case DOUBLE_HOLD:
-          with_3_mods(KC_F5, KC_LSFT, KC_LALT, KC_LCTL); blink_all_leds_long(); break;
+          with_3_mods(KC_F5, KC_LSFT, KC_LALT, KC_LCTL); scroll_from_left_led = true; break;
 
       default: break;
     }
   }
 }
 
-void f5_reset (qk_tap_dance_state_t *state, void *user_data) {
+void side_f5_reset (qk_tap_dance_state_t *state, void *user_data) {
   f5_tap_state.state = 0;
 }
 
-//**************** F6 TAP *********************//
+//**************** side F6 TAP *********************//
 static tap f6_tap_state = { .is_press_action = true, .state = 0 };
 
-void f6_finished (qk_tap_dance_state_t *state, void *user_data) {
+void side_f6_finished (qk_tap_dance_state_t *state, void *user_data) {
   f6_tap_state.state = cur_dance(state);
   if (!is_after_lead(KC_F6, true)) {
     switch (f6_tap_state.state) {
@@ -1387,24 +1590,24 @@ void f6_finished (qk_tap_dance_state_t *state, void *user_data) {
           with_2_mods(KC_F6, KC_LALT, KC_LCTL); blink_all_leds_short_and_short(); break;
 
       case DOUBLE_HOLD:
-          with_3_mods(KC_F6, KC_LSFT, KC_LALT, KC_LCTL); blink_all_leds_long(); break;
+          with_3_mods(KC_F6, KC_LSFT, KC_LALT, KC_LCTL); scroll_from_left_led = true; break;
 
       default: break;
     }
   }
 }
 
-void f6_reset (qk_tap_dance_state_t *state, void *user_data) {
+void side_f6_reset (qk_tap_dance_state_t *state, void *user_data) {
   f6_tap_state.state = 0;
 }
 
-//**************** F7 TAP *********************//
-static tap f7_tap_state = { .is_press_action = true, .state = 0 };
+//**************** side F7 TAP *********************//
+static tap side_f7_tap_state = { .is_press_action = true, .state = 0 };
 
-void f7_finished (qk_tap_dance_state_t *state, void *user_data) {
-  f7_tap_state.state = cur_dance(state);
+void side_f7_finished (qk_tap_dance_state_t *state, void *user_data) {
+  side_f7_tap_state.state = cur_dance(state);
   if (!is_after_lead(KC_F7, true)) {
-    switch (f7_tap_state.state) {
+    switch (side_f7_tap_state.state) {
       case SINGLE_TAP:
           with_1_mod(KC_F7, KC_LALT);  break;
 
@@ -1415,24 +1618,24 @@ void f7_finished (qk_tap_dance_state_t *state, void *user_data) {
           with_2_mods(KC_F7, KC_LALT, KC_LCTL); blink_all_leds_short_and_short(); break;
 
       case DOUBLE_HOLD:
-          with_3_mods(KC_F7, KC_LSFT, KC_LALT, KC_LCTL); blink_all_leds_long(); break;
+          with_3_mods(KC_F7, KC_LSFT, KC_LALT, KC_LCTL); scroll_from_left_led = true; break;
 
       default: break;
     }
   }
 }
 
-void f7_reset (qk_tap_dance_state_t *state, void *user_data) {
-  f7_tap_state.state = 0;
+void side_f7_reset (qk_tap_dance_state_t *state, void *user_data) {
+  side_f7_tap_state.state = 0;
 }
 
-//**************** F8 TAP *********************//
-static tap f8_tap_state = { .is_press_action = true, .state = 0 };
+//**************** side F8 TAP *********************//
+static tap side_f8_tap_state = { .is_press_action = true, .state = 0 };
 
-void f8_finished (qk_tap_dance_state_t *state, void *user_data) {
-  f8_tap_state.state = cur_dance(state);
+void side_f8_finished (qk_tap_dance_state_t *state, void *user_data) {
+  side_f8_tap_state.state = cur_dance(state);
   if (!is_after_lead(KC_F8, true)) {
-    switch (f8_tap_state.state) {
+    switch (side_f8_tap_state.state) {
       case SINGLE_TAP:
           with_1_mod(KC_F8, KC_LALT);  break;
 
@@ -1443,24 +1646,24 @@ void f8_finished (qk_tap_dance_state_t *state, void *user_data) {
           with_2_mods(KC_F8, KC_LALT, KC_LCTL); blink_all_leds_short_and_short(); break;
 
       case DOUBLE_HOLD:
-          with_3_mods(KC_F8, KC_LSFT, KC_LALT, KC_LCTL); blink_all_leds_long(); break;
+          with_3_mods(KC_F8, KC_LSFT, KC_LALT, KC_LCTL); scroll_from_left_led = true; break;
 
       default: break;
     }
   }
 }
 
-void f8_reset (qk_tap_dance_state_t *state, void *user_data) {
-  f8_tap_state.state = 0;
+void side_f8_reset (qk_tap_dance_state_t *state, void *user_data) {
+  side_f8_tap_state.state = 0;
 }
 
-//**************** F9 TAP *********************//
-static tap f9_tap_state = { .is_press_action = true, .state = 0 };
+//**************** side F9 TAP *********************//
+static tap side_f9_tap_state = { .is_press_action = true, .state = 0 };
 
-void f9_finished (qk_tap_dance_state_t *state, void *user_data) {
-  f9_tap_state.state = cur_dance(state);
+void side_f9_finished (qk_tap_dance_state_t *state, void *user_data) {
+  side_f9_tap_state.state = cur_dance(state);
   if (!is_after_lead(KC_F9, true)) {
-    switch (f9_tap_state.state) {
+    switch (side_f9_tap_state.state) {
       case SINGLE_TAP:
           with_1_mod(KC_F9, KC_LALT); break;
 
@@ -1471,24 +1674,24 @@ void f9_finished (qk_tap_dance_state_t *state, void *user_data) {
           with_2_mods(KC_F9, KC_LALT, KC_LCTL); blink_all_leds_short_and_short(); break;
 
       case DOUBLE_HOLD:
-          with_3_mods(KC_F9, KC_LSFT, KC_LALT, KC_LCTL); blink_all_leds_long(); break;
+          with_3_mods(KC_F9, KC_LSFT, KC_LALT, KC_LCTL); scroll_from_right_led = true; break;
 
       default: break;
     }
   }
 }
 
-void f9_reset (qk_tap_dance_state_t *state, void *user_data) {
-  f9_tap_state.state = 0;
+void side_f9_reset (qk_tap_dance_state_t *state, void *user_data) {
+  side_f9_tap_state.state = 0;
 }
 
-//**************** F10 TAP *********************//
-static tap f10_tap_state = { .is_press_action = true, .state = 0 };
+//**************** side F10 TAP *********************//
+static tap side_f10_tap_state = { .is_press_action = true, .state = 0 };
 
-void f10_finished (qk_tap_dance_state_t *state, void *user_data) {
-  f10_tap_state.state = cur_dance(state);
+void side_f10_finished (qk_tap_dance_state_t *state, void *user_data) {
+  side_f10_tap_state.state = cur_dance(state);
   if (!is_after_lead(KC_F10, true)) {
-    switch (f10_tap_state.state) {
+    switch (side_f10_tap_state.state) {
       case SINGLE_TAP:
           with_1_mod(KC_F10, KC_LALT); break;
 
@@ -1499,24 +1702,24 @@ void f10_finished (qk_tap_dance_state_t *state, void *user_data) {
           with_2_mods(KC_F10, KC_LALT, KC_LCTL); blink_all_leds_short_and_short(); break;
 
       case DOUBLE_HOLD:
-          with_3_mods(KC_F10, KC_LSFT, KC_LALT, KC_LCTL); blink_all_leds_long(); break;
+          with_3_mods(KC_F10, KC_LSFT, KC_LALT, KC_LCTL); scroll_from_right_led = true; break;
 
       default: break;
     }
   }
 }
 
-void f10_reset (qk_tap_dance_state_t *state, void *user_data) {
-  f10_tap_state.state = 0;
+void side_f10_reset (qk_tap_dance_state_t *state, void *user_data) {
+  side_f10_tap_state.state = 0;
 }
 
-//**************** F11 TAP *********************//
-static tap f11_tap_state = { .is_press_action = true, .state = 0 };
+//**************** side F11 TAP *********************//
+static tap side_f11_tap_state = { .is_press_action = true, .state = 0 };
 
-void f11_finished (qk_tap_dance_state_t *state, void *user_data) {
-  f11_tap_state.state = cur_dance(state);
+void side_f11_finished (qk_tap_dance_state_t *state, void *user_data) {
+  side_f11_tap_state.state = cur_dance(state);
   if (!is_after_lead(KC_F11, true)) {
-    switch (f11_tap_state.state) {
+    switch (side_f11_tap_state.state) {
       case SINGLE_TAP:
           with_1_mod(KC_F11, KC_LALT); break;
 
@@ -1527,24 +1730,24 @@ void f11_finished (qk_tap_dance_state_t *state, void *user_data) {
           with_2_mods(KC_F11, KC_LALT, KC_LCTL); blink_all_leds_short_and_short(); break;
 
       case DOUBLE_HOLD:
-          with_3_mods(KC_F11, KC_LSFT, KC_LALT, KC_LCTL); blink_all_leds_long(); break;
+          with_3_mods(KC_F11, KC_LSFT, KC_LALT, KC_LCTL); scroll_from_right_led = true; break;
 
       default: break;
     }
   }
 }
 
-void f11_reset (qk_tap_dance_state_t *state, void *user_data) {
-  f11_tap_state.state = 0;
+void side_f11_reset (qk_tap_dance_state_t *state, void *user_data) {
+  side_f11_tap_state.state = 0;
 }
 
-//**************** F12 TAP *********************//
-static tap f12_tap_state = { .is_press_action = true, .state = 0 };
+//**************** side F12 TAP *********************//
+static tap side_f12_tap_state = { .is_press_action = true, .state = 0 };
 
-void f12_finished (qk_tap_dance_state_t *state, void *user_data) {
-  f12_tap_state.state = cur_dance(state);
+void side_f12_finished (qk_tap_dance_state_t *state, void *user_data) {
+  side_f12_tap_state.state = cur_dance(state);
   if (!is_after_lead(KC_F12, true)) {
-    switch (f12_tap_state.state) {
+    switch (side_f12_tap_state.state) {
       case SINGLE_TAP:
           with_1_mod(KC_F12, KC_LALT); break;
 
@@ -1555,24 +1758,24 @@ void f12_finished (qk_tap_dance_state_t *state, void *user_data) {
           with_2_mods(KC_F12, KC_LALT, KC_LCTL); blink_all_leds_short_and_short(); break;
 
       case DOUBLE_HOLD:
-          with_3_mods(KC_F12, KC_LSFT, KC_LALT, KC_LCTL); blink_all_leds_long(); break;
+          with_3_mods(KC_F12, KC_LSFT, KC_LALT, KC_LCTL); scroll_from_right_led = true; break;
 
       default: break;
     }
   }
 }
 
-void f12_reset (qk_tap_dance_state_t *state, void *user_data) {
-  f12_tap_state.state = 0;
+void side_f12_reset (qk_tap_dance_state_t *state, void *user_data) {
+  side_f12_tap_state.state = 0;
 }
 
-//**************** F17 TAP *********************//
-static tap f17_tap_state = { .is_press_action = true, .state = 0 };
+//**************** side F17 TAP *********************//
+static tap side_f17_tap_state = { .is_press_action = true, .state = 0 };
 
-void f17_finished (qk_tap_dance_state_t *state, void *user_data) {
-  f17_tap_state.state = cur_dance(state);
+void side_f17_finished (qk_tap_dance_state_t *state, void *user_data) {
+  side_f17_tap_state.state = cur_dance(state);
   if (!is_after_lead(KC_F17, true)) {
-    switch (f17_tap_state.state) {
+    switch (side_f17_tap_state.state) {
       case SINGLE_TAP:
           key_code(KC_F17); break;
 
@@ -1583,24 +1786,24 @@ void f17_finished (qk_tap_dance_state_t *state, void *user_data) {
           with_2_mods(KC_F17, KC_LALT, KC_LCTL); blink_all_leds_short_and_short(); break;
 
       case DOUBLE_HOLD:
-          with_3_mods(KC_F17, KC_LSFT, KC_LALT, KC_LCTL); blink_all_leds_long(); break;
+          with_3_mods(KC_F17, KC_LSFT, KC_LALT, KC_LCTL); scroll_from_left_led = true; break;
 
       default: break;
     }
   }
 }
 
-void f17_reset (qk_tap_dance_state_t *state, void *user_data) {
-  f17_tap_state.state = 0;
+void side_f17_reset (qk_tap_dance_state_t *state, void *user_data) {
+  side_f17_tap_state.state = 0;
 }
 
-//**************** F18 TAP *********************//
-static tap f18_tap_state = { .is_press_action = true, .state = 0 };
+//**************** side F18 TAP *********************//
+static tap side_f18_tap_state = { .is_press_action = true, .state = 0 };
 
-void f18_finished (qk_tap_dance_state_t *state, void *user_data) {
-  f18_tap_state.state = cur_dance(state);
+void side_f18_finished (qk_tap_dance_state_t *state, void *user_data) {
+  side_f18_tap_state.state = cur_dance(state);
   if (!is_after_lead(KC_F18, true)) {
-    switch (f18_tap_state.state) {
+    switch (side_f18_tap_state.state) {
       case SINGLE_TAP:
           key_code(KC_F18); break;
 
@@ -1611,24 +1814,24 @@ void f18_finished (qk_tap_dance_state_t *state, void *user_data) {
           with_2_mods(KC_F18, KC_LALT, KC_LCTL); blink_all_leds_short_and_short(); break;
 
       case DOUBLE_HOLD:
-          with_3_mods(KC_F18, KC_LSFT, KC_LALT, KC_LCTL); blink_all_leds_long(); break;
+          with_3_mods(KC_F18, KC_LSFT, KC_LALT, KC_LCTL); scroll_from_left_led = true; break;
 
       default: break;
     }
   }
 }
 
-void f18_reset (qk_tap_dance_state_t *state, void *user_data) {
-  f18_tap_state.state = 0;
+void side_f18_reset (qk_tap_dance_state_t *state, void *user_data) {
+  side_f18_tap_state.state = 0;
 }
 
-//**************** F19 TAP *********************//
-static tap f19_tap_state = { .is_press_action = true, .state = 0 };
+//**************** side F19 TAP *********************//
+static tap side_side_f19_tap_state = { .is_press_action = true, .state = 0 };
 
-void f19_finished (qk_tap_dance_state_t *state, void *user_data) {
-  f19_tap_state.state = cur_dance(state);
+void side_f19_finished (qk_tap_dance_state_t *state, void *user_data) {
+  side_side_f19_tap_state.state = cur_dance(state);
   if (!is_after_lead(KC_F19, true)) {
-    switch (f19_tap_state.state) {
+    switch (side_side_f19_tap_state.state) {
       case SINGLE_TAP:
           key_code(KC_F19); break;
 
@@ -1639,24 +1842,24 @@ void f19_finished (qk_tap_dance_state_t *state, void *user_data) {
           with_2_mods(KC_F19, KC_LALT, KC_LCTL); blink_all_leds_short_and_short(); break;
 
       case DOUBLE_HOLD:
-          with_3_mods(KC_F19, KC_LSFT, KC_LALT, KC_LCTL); blink_all_leds_long(); break;
+          with_3_mods(KC_F19, KC_LSFT, KC_LALT, KC_LCTL); scroll_from_left_led = true; break;
 
       default: break;
     }
   }
 }
 
-void f19_reset (qk_tap_dance_state_t *state, void *user_data) {
-  f19_tap_state.state = 0;
+void side_f19_reset (qk_tap_dance_state_t *state, void *user_data) {
+  side_side_f19_tap_state.state = 0;
 }
 
-//**************** F20 TAP *********************//
-static tap f20_tap_state = { .is_press_action = true, .state = 0 };
+//**************** side F20 TAP *********************//
+static tap side_f20_tap_state = { .is_press_action = true, .state = 0 };
 
-void f20_finished (qk_tap_dance_state_t *state, void *user_data) {
-  f20_tap_state.state = cur_dance(state);
+void side_f20_finished (qk_tap_dance_state_t *state, void *user_data) {
+  side_f20_tap_state.state = cur_dance(state);
   if (!is_after_lead(KC_F20, true)) {
-    switch (f20_tap_state.state) {
+    switch (side_f20_tap_state.state) {
       case SINGLE_TAP:
           key_code(KC_F20); break;
 
@@ -1667,24 +1870,24 @@ void f20_finished (qk_tap_dance_state_t *state, void *user_data) {
           with_2_mods(KC_F20, KC_LALT, KC_LCTL); blink_all_leds_short_and_short(); break;
 
       case DOUBLE_HOLD:
-          with_3_mods(KC_F20, KC_LSFT, KC_LALT, KC_LCTL); blink_all_leds_long(); break;
+          with_3_mods(KC_F20, KC_LSFT, KC_LALT, KC_LCTL); scroll_from_left_led = true; break;
 
       default: break;
     }
   }
 }
 
-void f20_reset (qk_tap_dance_state_t *state, void *user_data) {
-  f20_tap_state.state = 0;
+void side_f20_reset (qk_tap_dance_state_t *state, void *user_data) {
+  side_f20_tap_state.state = 0;
 }
 
-//**************** F21 TAP *********************//
-static tap f21_tap_state = { .is_press_action = true, .state = 0 };
+//**************** side F21 TAP *********************//
+static tap side_f21_tap_state = { .is_press_action = true, .state = 0 };
 
-void f21_finished (qk_tap_dance_state_t *state, void *user_data) {
-  f21_tap_state.state = cur_dance(state);
+void side_f21_finished (qk_tap_dance_state_t *state, void *user_data) {
+  side_f21_tap_state.state = cur_dance(state);
   if (!is_after_lead(KC_F21, true)) {
-    switch (f21_tap_state.state) {
+    switch (side_f21_tap_state.state) {
       case SINGLE_TAP:
           key_code(KC_F21); break;
 
@@ -1695,24 +1898,24 @@ void f21_finished (qk_tap_dance_state_t *state, void *user_data) {
           with_2_mods(KC_F21, KC_LALT, KC_LCTL); blink_all_leds_short_and_short(); break;
 
       case DOUBLE_HOLD:
-          with_3_mods(KC_F21, KC_LSFT, KC_LALT, KC_LCTL); blink_all_leds_long(); break;
+          with_3_mods(KC_F21, KC_LSFT, KC_LALT, KC_LCTL); scroll_from_right_led = true; break;
 
       default: break;
     }
   }
 }
 
-void f21_reset (qk_tap_dance_state_t *state, void *user_data) {
-  f21_tap_state.state = 0;
+void side_f21_reset (qk_tap_dance_state_t *state, void *user_data) {
+  side_f21_tap_state.state = 0;
 }
 
-//**************** F22 TAP *********************//
-static tap f22_tap_state = { .is_press_action = true, .state = 0 };
+//**************** side F22 TAP *********************//
+static tap side_f22_tap_state = { .is_press_action = true, .state = 0 };
 
-void f22_finished (qk_tap_dance_state_t *state, void *user_data) {
-  f22_tap_state.state = cur_dance(state);
+void side_f22_finished (qk_tap_dance_state_t *state, void *user_data) {
+  side_f22_tap_state.state = cur_dance(state);
   if (!is_after_lead(KC_F22, true)) {
-    switch (f22_tap_state.state) {
+    switch (side_f22_tap_state.state) {
       case SINGLE_TAP:
           key_code(KC_F22); break;
 
@@ -1723,24 +1926,24 @@ void f22_finished (qk_tap_dance_state_t *state, void *user_data) {
           with_2_mods(KC_F22, KC_LALT, KC_LCTL); blink_all_leds_short_and_short(); break;
 
       case DOUBLE_HOLD:
-          with_3_mods(KC_F22, KC_LSFT, KC_LALT, KC_LCTL); blink_all_leds_long(); break;
+          with_3_mods(KC_F22, KC_LSFT, KC_LALT, KC_LCTL); scroll_from_right_led = true; break;
 
       default: break;
     }
   }
 }
 
-void f22_reset (qk_tap_dance_state_t *state, void *user_data) {
-  f22_tap_state.state = 0;
+void side_f22_reset (qk_tap_dance_state_t *state, void *user_data) {
+  side_f22_tap_state.state = 0;
 }
 
-//**************** F23 TAP *********************//
-static tap f23_tap_state = { .is_press_action = true, .state = 0 };
+//**************** side F23 TAP *********************//
+static tap side_f23_tap_state = { .is_press_action = true, .state = 0 };
 
-void f23_finished (qk_tap_dance_state_t *state, void *user_data) {
-  f23_tap_state.state = cur_dance(state);
+void side_f23_finished (qk_tap_dance_state_t *state, void *user_data) {
+  side_f23_tap_state.state = cur_dance(state);
   if (!is_after_lead(KC_F23, true)) {
-    switch (f23_tap_state.state) {
+    switch (side_f23_tap_state.state) {
       case SINGLE_TAP:
           key_code(KC_F23); break;
 
@@ -1751,24 +1954,24 @@ void f23_finished (qk_tap_dance_state_t *state, void *user_data) {
           with_2_mods(KC_F23, KC_LALT, KC_LCTL); blink_all_leds_short_and_short(); break;
 
       case DOUBLE_HOLD:
-          with_3_mods(KC_F23, KC_LSFT, KC_LALT, KC_LCTL); blink_all_leds_long(); break;
+          with_3_mods(KC_F23, KC_LSFT, KC_LALT, KC_LCTL); scroll_from_right_led = true; break;
 
       default: break;
     }
   }
 }
 
-void f23_reset (qk_tap_dance_state_t *state, void *user_data) {
-  f23_tap_state.state = 0;
+void side_f23_reset (qk_tap_dance_state_t *state, void *user_data) {
+  side_f23_tap_state.state = 0;
 }
 
-//**************** F24 TAP *********************//
-static tap f24_tap_state = { .is_press_action = true, .state = 0 };
+//**************** side F24 TAP *********************//
+static tap side_f24_tap_state = { .is_press_action = true, .state = 0 };
 
-void f24_finished (qk_tap_dance_state_t *state, void *user_data) {
-  f24_tap_state.state = cur_dance(state);
+void side_f24_finished (qk_tap_dance_state_t *state, void *user_data) {
+  side_f24_tap_state.state = cur_dance(state);
   if (!is_after_lead(KC_F24, true)) {
-    switch (f24_tap_state.state) {
+    switch (side_f24_tap_state.state) {
       case SINGLE_TAP:
           key_code(KC_F24); break;
 
@@ -1779,15 +1982,15 @@ void f24_finished (qk_tap_dance_state_t *state, void *user_data) {
           with_2_mods(KC_F24, KC_LALT, KC_LCTL); blink_all_leds_short_and_short(); break;
 
       case DOUBLE_HOLD:
-          with_3_mods(KC_F24, KC_LSFT, KC_LALT, KC_LCTL); blink_all_leds_long(); break;
+          with_3_mods(KC_F24, KC_LSFT, KC_LALT, KC_LCTL); scroll_from_right_led = true; break;
 
       default: break;
     }
   }
 }
 
-void f24_reset (qk_tap_dance_state_t *state, void *user_data) {
-  f24_tap_state.state = 0;
+void side_f24_reset (qk_tap_dance_state_t *state, void *user_data) {
+  side_f24_tap_state.state = 0;
 }
 
 //**************** SETTINGS TAP *********************//
@@ -1817,10 +2020,10 @@ void set_finished (qk_tap_dance_state_t *state, void *user_data) {
       case DOUBLE_HOLD:
           // print screen
           if (isMac) {
-            with_1_mod(KC_F5, KC_LCTL); blink_all_leds_long(); break;
+            with_1_mod(KC_F5, KC_LCTL); scroll_from_left_led = true; break;
           }
           if (isPc) {
-            key_code(KC_PSCR); blink_all_leds_long(); break;
+            key_code(KC_PSCR); scroll_from_left_led = true; break;
           }
       default: break;
     }
@@ -1831,7 +2034,7 @@ void set_reset (qk_tap_dance_state_t *state, void *user_data) {
   set_tap_state.state = 0;
 }
 
-//**************** FW CANCEL TAP *********************//
+//**************** side FW CANCEL TAP *********************//
 static tap fw_cancel_tap_state = { .is_press_action = true, .state = 0 };
 
 void fw_cancel_finished (qk_tap_dance_state_t *state, void *user_data) {
@@ -1987,22 +2190,29 @@ qk_tap_dance_action_t tap_dance_actions[] = {
   [FW_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, fw_finished, fw_reset, QUAD_TAP_TIMEOUT),
   [FW_CANCEL] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, fw_cancel_finished, fw_cancel_reset, QUAD_TAP_TIMEOUT),
   [STATUS_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, status_finished, status_reset, QUAD_TAP_TIMEOUT),
-  [F5_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, f5_finished, f5_reset, QUAD_TAP_TIMEOUT),
-  [F6_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, f6_finished, f6_reset, QUAD_TAP_TIMEOUT),
-  [F7_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, f7_finished, f7_reset, QUAD_TAP_TIMEOUT),
-  [F8_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, f8_finished, f8_reset, QUAD_TAP_TIMEOUT),
-  [F9_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, f9_finished, f9_reset, QUAD_TAP_TIMEOUT),
-  [F10_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, f10_finished, f10_reset, QUAD_TAP_TIMEOUT),
-  [F11_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, f11_finished, f11_reset, QUAD_TAP_TIMEOUT),
-  [F12_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, f12_finished, f12_reset, QUAD_TAP_TIMEOUT),
-  [F17_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, f17_finished, f17_reset, QUAD_TAP_TIMEOUT),
-  [F18_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, f18_finished, f18_reset, QUAD_TAP_TIMEOUT),
-  [F19_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, f19_finished, f19_reset, QUAD_TAP_TIMEOUT),
-  [F20_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, f20_finished, f20_reset, QUAD_TAP_TIMEOUT),
-  [F21_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, f21_finished, f21_reset, QUAD_TAP_TIMEOUT),
-  [F22_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, f22_finished, f22_reset, QUAD_TAP_TIMEOUT),
-  [F23_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, f23_finished, f23_reset, QUAD_TAP_TIMEOUT),
-  [F24_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, f24_finished, f24_reset, QUAD_TAP_TIMEOUT),
+  [MAIN_F1_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, main_f1_finished, main_f1_reset, QUAD_TAP_TIMEOUT),
+  [MAIN_F2_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, main_f2_finished, main_f2_reset, QUAD_TAP_TIMEOUT),
+  [MAIN_F3_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, main_f3_finished, main_f3_reset, QUAD_TAP_TIMEOUT),
+  [MAIN_F4_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, main_f4_finished, main_f4_reset, QUAD_TAP_TIMEOUT),
+  [MAIN_F6_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, main_f6_finished, main_f6_reset, QUAD_TAP_TIMEOUT),
+  [MAIN_F7_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, main_f7_finished, main_f7_reset, QUAD_TAP_TIMEOUT),
+  [MAIN_F8_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, main_f8_finished, main_f8_reset, QUAD_TAP_TIMEOUT),
+  [SIDE_F5_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, side_f5_finished, side_f5_reset, QUAD_TAP_TIMEOUT),
+  [SIDE_F6_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, side_f6_finished, side_f6_reset, QUAD_TAP_TIMEOUT),
+  [SIDE_F7_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, side_f7_finished, side_f7_reset, QUAD_TAP_TIMEOUT),
+  [SIDE_F8_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, side_f8_finished, side_f8_reset, QUAD_TAP_TIMEOUT),
+  [SIDE_F9_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, side_f9_finished, side_f9_reset, QUAD_TAP_TIMEOUT),
+  [SIDE_F10_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, side_f10_finished, side_f10_reset, QUAD_TAP_TIMEOUT),
+  [SIDE_F11_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, side_f11_finished, side_f11_reset, QUAD_TAP_TIMEOUT),
+  [SIDE_F12_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, side_f12_finished, side_f12_reset, QUAD_TAP_TIMEOUT),
+  [SIDE_F17_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, side_f17_finished, side_f17_reset, QUAD_TAP_TIMEOUT),
+  [SIDE_F18_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, side_f18_finished, side_f18_reset, QUAD_TAP_TIMEOUT),
+  [SIDE_F19_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, side_f19_finished, side_f19_reset, QUAD_TAP_TIMEOUT),
+  [SIDE_F20_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, side_f20_finished, side_f20_reset, QUAD_TAP_TIMEOUT),
+  [SIDE_F21_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, side_f21_finished, side_f21_reset, QUAD_TAP_TIMEOUT),
+  [SIDE_SIDE_F22_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, side_f22_finished, side_f22_reset, QUAD_TAP_TIMEOUT),
+  [SIDE_F23_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, side_f23_finished, side_f23_reset, QUAD_TAP_TIMEOUT),
+  [SIDE_F24_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, side_f24_finished, side_f24_reset, QUAD_TAP_TIMEOUT),
   [SET_TD] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, set_finished, set_reset, QUAD_TAP_TIMEOUT),
   [MAC_FAILSAFE] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, mac_layer_finished, mac_layer_reset, QUAD_TAP_TIMEOUT),
   [MAC_EXIT_FAILSAFE] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, mac_failsafe_off_finished, mac_failsafe_off_reset, QUAD_TAP_TIMEOUT),
@@ -2042,11 +2252,11 @@ qk_tap_dance_action_t tap_dance_actions[] = {
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [_MAC] = LAYOUT(
            // left side
-           TD(STATUS_TD), _KC_F1, _KC_F2, _KC_F3, _KC_F4, TD(SET_TD), _KC_F6, _KC_F7, _KC_F8,
-           TD(F5_TD), _1_CTRL_1, _2_PLEFT, _3_SLASH, _4_PRGHT, _5_CTRL_5,
-           TD(F6_TD), _KC_Q, _KC_W, _KC_E, _KC_R, _KC_T,
-           TD(F7_TD), _KC_A, _KC_S, _KC_D, _KC_F, _KC_G,
-           TD(F8_TD), _KC_Z, _KC_X, _KC_C, _KC_V, _KC_B,
+           TD(STATUS_TD), TD(MAIN_F1_TD), TD(MAIN_F2_TD), TD(MAIN_F3_TD), TD(MAIN_F4_TD), TD(SET_TD), TD(MAIN_F6_TD), TD(MAIN_F7_TD), TD(MAIN_F8_TD),
+           TD(SIDE_F5_TD), _1_CTRL_1, _2_PLEFT, _3_SLASH, _4_PRGHT, _5_CTRL_5,
+           TD(SIDE_F6_TD), _KC_Q, _KC_W, _KC_E, _KC_R, _KC_T,
+           TD(SIDE_F7_TD), _KC_A, _KC_S, _KC_D, _KC_F, _KC_G,
+           TD(SIDE_F8_TD), _KC_Z, _KC_X, _KC_C, _KC_V, _KC_B,
                _KC_GRV, _KC_LBRC, ALT_SHIFT_COMM, _KC_RBRC,
                                                // left thumb keys
 			                            KC_BSPC, TD(TAP_MACRO_1),
@@ -2056,10 +2266,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 			                                          PALM_L_MAC,
     // right side
     _KC_F9, _KC_F10, _KC_F11, _KC_F12, _, _, _, _, TD(FW_TD),
-	_6, _7_BANG, _8_DASH, _9_QUEST, _0, TD(F9_TD),
-	_KC_Y, _KC_U, _KC_I, _KC_O, _KC_P, TD(F10_TD),
-	_KC_H, _KC_J, _KC_K, _KC_L, _KC_SCLN, TD(F11_TD),
-	_KC_N, _KC_M, KC_UP, _KC_DOT, _KC_QUOT, TD(F12_TD),
+	_6, _7_BANG, _8_DASH, _9_QUEST, _0, TD(SIDE_F9_TD),
+	_KC_Y, _KC_U, _KC_I, _KC_O, _KC_P, TD(SIDE_F10_TD),
+	_KC_H, _KC_J, _KC_K, _KC_L, _KC_SCLN, TD(SIDE_F11_TD),
+	_KC_N, _KC_M, KC_UP, _KC_DOT, _KC_QUOT, TD(SIDE_F12_TD),
 	KC_LEFT, KC_DOWN, KC_RGHT, _KC_NUBS,
            // right thumb keys
            TD(TAP_MACRO_2), KC_BSPC,
@@ -2327,11 +2537,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // base pc layer
 [_PC] = LAYOUT(
            // left side
-           TD(STATUS_TD), _KC_F1, _KC_F2, _KC_F3, _KC_F4, TD(SET_TD), _KC_F6, _KC_F7, TD(F8_TD),
-           TD(F17_TD), _1_CTRL_1, _2_PLEFT, _3_SLASH, _4_PRGHT, _5_CTRL_5,
-           TD(F18_TD), _KC_Q, _KC_W, _KC_E, _KC_R, _KC_T,
-           TD(F19_TD), _KC_A, _KC_S, _KC_D, _KC_F, _KC_G,
-           TD(F20_TD),  _KC_Z, _KC_X, _KC_C, _KC_V, _KC_B,
+           TD(STATUS_TD), TD(MAIN_F1_TD), TD(MAIN_F2_TD), TD(MAIN_F3_TD), TD(MAIN_F4_TD), TD(SET_TD), TD(MAIN_F6_TD), TD(MAIN_F7_TD), TD(MAIN_F8_TD),
+           TD(SIDE_F17_TD), _1_CTRL_1, _2_PLEFT, _3_SLASH, _4_PRGHT, _5_CTRL_5,
+           TD(SIDE_F18_TD), _KC_Q, _KC_W, _KC_E, _KC_R, _KC_T,
+           TD(SIDE_F19_TD), _KC_A, _KC_S, _KC_D, _KC_F, _KC_G,
+           TD(SIDE_F20_TD),  _KC_Z, _KC_X, _KC_C, _KC_V, _KC_B,
                 _KC_GRV, _KC_LBRC, CTRL_SHIFT_COMM, _KC_RBRC,
                                                  // left thumb keys
 			                              KC_BSPC, TD(TAP_MACRO_1),
@@ -2341,10 +2551,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 			                                             PALM_L_PC,
     // right side
     _KC_F9, _KC_F10, _KC_F11, _KC_F12, _, _, _, _, TD(FW_TD),
-  	_6, _7_BANG, _8_DASH, _9_QUEST, _0, TD(F21_TD),
-  	_KC_Y, _KC_U, _KC_I, _KC_O, _KC_P, TD(F22_TD),
-  	_KC_H, _KC_J, _KC_K, _KC_L, _KC_SCLN, TD(F23_TD),
-  	_KC_N, _KC_M, KC_UP, _KC_DOT, _KC_QUOT, TD(F24_TD),
+  	_6, _7_BANG, _8_DASH, _9_QUEST, _0, TD(SIDE_F21_TD),
+  	_KC_Y, _KC_U, _KC_I, _KC_O, _KC_P, TD(SIDE_SIDE_F22_TD),
+  	_KC_H, _KC_J, _KC_K, _KC_L, _KC_SCLN, TD(SIDE_F23_TD),
+  	_KC_N, _KC_M, KC_UP, _KC_DOT, _KC_QUOT, TD(SIDE_F24_TD),
   	KC_LEFT, KC_DOWN, KC_RGHT, _KC_APP,
            // right thumb keys
            TD(TAP_MACRO_2), KC_BSPC,
@@ -2727,8 +2937,8 @@ void matrix_scan_user(void) {
      }
    }
 
-   if (scroll_from_left_led) {
-     scroll_from_left_led = false;
+   if (scroll_from_right_led) {
+     scroll_from_right_led = false;
      led_blue_on(); _delay_ms(20);
      led_green_on(); _delay_ms(20);
      blue_led_off_if_not_used();
@@ -2739,8 +2949,8 @@ void matrix_scan_user(void) {
      if (!macro1_recording && !macro2_recording && !macro3_recording && !macro4_recording && !lead_led) { _delay_ms(20); led_red_off(); }
    }
 
-   if (scroll_from_right_led) {
-     scroll_from_right_led = false;
+   if (scroll_from_left_led) {
+     scroll_from_left_led = false;
      led_red_on(); _delay_ms(20);
      led_yellow_on(); _delay_ms(20);
      red_led_off_if_not_used();
@@ -3211,7 +3421,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           if (is_after_lead(KC_TAB, pressed)) { return false; }
           // invert lang led after pressing esc as a leader key + tab
           if (following_custom_leader(KC_NO, KC_NO, KC_NO, KC_NO, &esc_timer, pressed, 300)) {
-            scroll_from_right_led = true;
+            scroll_from_left_led = true;
             trigger_lang_change = true;
             return false;
           }
@@ -3316,7 +3526,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           if (is_after_lead(KC_TAB, pressed)) { return false; }
           // invert lang led after pressing esc as a leader key + tab
           if (following_custom_leader(KC_NO, KC_NO, KC_NO, KC_NO, &esc_timer, pressed, 300)) {
-            scroll_from_right_led = true;
+            scroll_from_left_led = true;
             trigger_lang_change = true;
             return false;
           }
