@@ -1383,7 +1383,7 @@ void main_f1_finished (qk_tap_dance_state_t *state, void *user_data) {
           with_1_mod(KC_F1, KC_LSFT); blink_green_led_short(); break;
 
       case DOUBLE_TAP:
-          with_1_mod(KC_F1, KC_LSFT); blink_green_led_short_twice(); break;
+          with_1_mod(KC_F1, KC_LCTL); blink_green_led_short_twice(); break;
 
       case DOUBLE_HOLD:
           with_2_mods(KC_F1, KC_LCTL, KC_LSFT); blink_all_leds_short(); break;
