@@ -2107,7 +2107,7 @@ void dynamic_macro_1_finished (qk_tap_dance_state_t *state, void *user_data) {
             if (macro2_overridden) {
                 scroll_from_left_led = true; playMacro2();
             } else {
-                led_green_on(); SEND_STRING(DEF_DM2); key_code(KC_ENTER); wait_ms(3000); SEND_STRING(DEF_DM2); key_code(KC_ENTER); wait_ms(3000); SEND_STRING("sudo su tomcat"); key_code(KC_ENTER); wait_ms(2000); SEND_STRING(DEF_DM2); key_code(KC_ENTER); green_led_off_if_not_used();
+                led_green_on(); SEND_STRING(DEF_DM2); key_code(KC_ENTER); green_led_off_if_not_used();
             }; break;
 
           case SINGLE_HOLD:
