@@ -1345,7 +1345,7 @@ void status_finished (qk_tap_dance_state_t *state, void *user_data) {
           // sleep
           blink_all_leds_short_and_short();
           if (isMac) {
-            down(KC_LCTL); down(KC_LSFT); SEND_STRING(SS_DOWN(X_POWER) SS_UP(X_POWER)); up(KC_LSFT); up(KC_LCTL); break;
+            down(KC_LGUI); down(KC_LALT); SEND_STRING(SS_DOWN(X_POWER) SS_UP(X_POWER)); up(KC_LALT); up(KC_LGUI); break;
           }
           if (isPc) {
             down(KC_SLEP); up(KC_SLEP); break;
