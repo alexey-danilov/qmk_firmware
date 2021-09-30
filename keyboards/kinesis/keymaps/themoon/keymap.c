@@ -1159,7 +1159,6 @@ void fw_finished (qk_tap_dance_state_t *state, void *user_data) {
   fw_tap_state.state = cur_dance(state);
     switch (fw_tap_state.state) {
       case SINGLE_TAP:
-          key_code(KC_F17);
           all_leds_off_if_not_used();
           if (isMac) {
             _delay_ms(250);
@@ -1196,6 +1195,7 @@ void fw_finished (qk_tap_dance_state_t *state, void *user_data) {
           break;
 
       case DOUBLE_TAP:
+          with_1_mod(KC_F20, KC_LGUI);
           macro1_overridden = false;
           macro2_overridden = false;
           macro3_overridden = false;
@@ -2538,9 +2538,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          HYPR(KC_F9), HYPR(KC_A), HYPR(KC_S), HYPR(KC_D), HYPR(KC_F), HYPR(KC_G),
          HYPR(KC_F10), HYPR(KC_Z), HYPR(KC_X), HYPR(KC_C), HYPR(KC_V), HYPR(KC_B),
                    HYPR(KC_GRV), S(KC_TAB), _HIDE_CLOSE_MAC, KC_TAB,
-                                    HYPR(KC_BSLS), HYPR(KC_F13),
-                                                  HYPR(KC_SLSH),
-                     LGUI(KC_Z), LGUI(LSFT(KC_Z)), HYPR(KC_DEL),
+                                                 KC_F17, KC_F18,
+                                                         KC_F19,
+                           LGUI(KC_Z), LGUI(LSFT(KC_Z)), KC_F20,
                                                   _MEH_HYPR_F15,
          __________,  __________,  __________,  __________,  G(C(KC_F13)), G(C(KC_F14)), G(C(KC_F15)), __________, __________,
          _KC_6, _KC_7, _KC_8, _KC_9, _KC_0,  __________,
