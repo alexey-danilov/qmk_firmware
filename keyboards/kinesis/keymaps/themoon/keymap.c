@@ -1195,7 +1195,6 @@ void fw_finished (qk_tap_dance_state_t *state, void *user_data) {
           break;
 
       case DOUBLE_TAP:
-          with_1_mod(KC_F20, KC_LGUI);
           macro1_overridden = false;
           macro2_overridden = false;
           macro3_overridden = false;
