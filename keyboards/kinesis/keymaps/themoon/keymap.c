@@ -2524,7 +2524,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          HYPR(KC_H), _CAS_J, _CAS_K, _CAS_L, HYPR(KC_SCLN), HYPR(KC_F13),
          HYPR(KC_N), _CAS_M, KC_PGUP, _CAS_DOT, HYPR(KC_QUOT), HYPR(KC_F14),
                         KC_HOME, KC_PGDN, KC_END, HYPR(KC_NUBS),
-         HYPR(KC_F17), HYPR(KC_SPC),
+         HYPR(KC_SPC), HYPR(KC_BSPC),
          HYPR(KC_EQL),
          HYPR(KC_BSLS), _S_F3, _F3,
          _MEH_HYPR_F16
