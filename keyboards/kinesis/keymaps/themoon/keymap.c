@@ -772,7 +772,7 @@ void toggleCaps(void) {
     if (capsOnHardCheck()) {
         key_code(KC_CAPS); caps_led = false; led_blue_off();
     } else {
-        key_code(KC_LCAP); caps_led = true; led_blue_on();
+        key_code(KC_CAPS); caps_led = true; led_blue_on();
     }
 }
 
@@ -2099,10 +2099,10 @@ void dynamic_macro_1_finished (qk_tap_dance_state_t *state, void *user_data) {
             if (macro1_overridden) {
                 scroll_from_left_led = true; playMacro1();
             } else {
-                led_yellow_on(); SEND_STRING(DEF_DM1); key_code(KC_ENTER); yellow_led_off_if_not_used();
+                led_yellow_on(); SEND_STRING(DEF_DM1); yellow_led_off_if_not_used();
             }; break;
 
-          case DOUBLE_TAP: 
+          case DOUBLE_TAP:
             if (macro2_overridden) {
                 scroll_from_left_led = true; playMacro2();
             } else {
@@ -2166,7 +2166,7 @@ void dynamic_macro_2_finished (qk_tap_dance_state_t *state, void *user_data) {
             if (macro3_overridden) {
                 scroll_from_right_led = true; playMacro3();
             } else {
-                led_yellow_on(); SEND_STRING(DEF_DM3); key_code(KC_ENTER); led_yellow_on(); yellow_led_off_if_not_used();
+                led_yellow_on(); SEND_STRING(DEF_DM3); led_yellow_on(); yellow_led_off_if_not_used();
             }; break;
 
           case DOUBLE_TAP:
@@ -2948,8 +2948,9 @@ void matrix_scan_user(void) {
    if (trigger_lang_change) {
      trigger_lang_change = false;
      if (!change_lang_led) {
-        change_lang_led = true;
-        led_yellow_on();
+        // todo: uncomment to change led on lang
+        // change_lang_led = true;
+        //led_yellow_on();
      } else {
         change_lang_led = false;
         yellow_led_off_if_not_used();
