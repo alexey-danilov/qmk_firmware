@@ -1335,10 +1335,10 @@ void status_finished (qk_tap_dance_state_t *state, void *user_data) {
   if (!is_after_lead(KC_INS, true)) {
     switch (status_tap_state.state) {
       case SINGLE_TAP:
-          key_code(KC_INS); break;
+          key_code(KC_F20); blink_all_leds_short(); break;
 
       case SINGLE_HOLD:
-          with_1_mod(KC_INS, KC_LSFT); blink_green_led_short(); break;
+          with_1_mod(KC_F20, KC_LSFT); blink_all_leds_long(); break;
 
       case DOUBLE_TAP:
           // sleep
@@ -2531,15 +2531,15 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
 
 [_PALM_R_MAC] = LAYOUT(
-         HYPR(KC_INS), HYPR(KC_F1), HYPR(KC_F2), HYPR(KC_F3), HYPR(KC_F4), KC__MUTE, HYPR(KC_F6), HYPR(KC_F7), HYPR(KC_F8),
+         HYPR(KC_F20), HYPR(KC_F1), HYPR(KC_F2), HYPR(KC_F3), HYPR(KC_F4), KC__MUTE, HYPR(KC_F6), HYPR(KC_F7), HYPR(KC_F8),
          HYPR(KC_F7), HYPR(KC_1), KC__VOLDOWN, KC_MPLY, KC__VOLUP, HYPR(KC_5),
          HYPR(KC_F8), HYPR(KC_Q), HYPR(KC_W), HYPR(KC_E), HYPR(KC_R), HYPR(KC_T),
          HYPR(KC_F9), HYPR(KC_A), HYPR(KC_S), HYPR(KC_D), HYPR(KC_F), HYPR(KC_G),
          HYPR(KC_F10), HYPR(KC_Z), HYPR(KC_X), HYPR(KC_C), HYPR(KC_V), HYPR(KC_B),
                    HYPR(KC_GRV), S(KC_TAB), _HIDE_CLOSE_MAC, KC_TAB,
-                                                 KC_F17, KC_F18,
-                                                         KC_F19,
-                           LGUI(KC_Z), LGUI(LSFT(KC_Z)), KC_F20,
+                                                 KC_F18, KC_F19,
+                                                  HYPR(KC_SLSH),
+                     LGUI(KC_Z), LGUI(LSFT(KC_Z)), HYPR(KC_DEL),
                                                   _MEH_HYPR_F15,
          __________,  __________,  __________,  __________,  G(C(KC_F13)), G(C(KC_F14)), G(C(KC_F15)), __________, __________,
          _KC_6, _KC_7, _KC_8, _KC_9, _KC_0,  __________,
